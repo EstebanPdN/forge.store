@@ -86,6 +86,8 @@ float text_wrap_h(const char *s, float size, float width);
 float line_h(float size);
 /** Distance from the top of a line (the y given to text calls) to its baseline. */
 float text_base(float size, int weight, int family);
+/** Integer line origin that centres the cropped glyph ink on cy (not the line box). */
+float text_ink_top(const char *s, float cy, float size, int weight, int family);
 void text_reset(void);
 void text_frame(void);
 

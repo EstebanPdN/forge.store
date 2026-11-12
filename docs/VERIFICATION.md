@@ -19,7 +19,7 @@ and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/
 | Shared tabs | 762 checks | Exact geometry, 340 ms endpoints, interruption continuity and cursor bounds |
 | Font/text | Passed | FNT3 metrics, replacement/wrap, invalid UTF-8, large offsets, XY translation, missing atlas |
 | GitHub markup | Passed | Mixed inline flow, UTF-8, lists/tables, release cards, bounded mutation/truncation |
-| Web preview | Loaded in Code Atlas | 23 curated apps, 400×240 + 320×240 screen boxes, no broken loaded images; requested status offsets checked |
+| Web preview | Loaded in Code Atlas | 23 curated apps, 400×240 + 320×240 screen boxes, no broken loaded images; status cap boxes and battery centred |
 
 The queue and video tests are different: video tests inject verified local files to isolate
 playback correctness; they do not establish that a remote URL is available.
@@ -32,13 +32,18 @@ Captured Home, Downloads package, Settings, SD, video and seek states. The packa
 one complete resource row. The Old run played the ALttP trailer; the New run played the
 ALttP dual-screen clip. Sampled store audio logs reported zero underruns in these runs.
 
-Status-bar refinement was captured separately in dark and light themes with an explicit test
-battery value of 82%: Wi-Fi position retained, battery moved up 1 px, time/percentage down
-1 px from the previous baseline, percentage on the far right. Production reads real status;
-the synthetic 82% value belongs only to this explicit test capture.
+Status-bar refinement uses the cropped FNT3 glyph bounds: 9 px numeral/percent ink inside a
+23 px right capsule leaves 7 px above and below. The 11 px rounded battery outline leaves
+6 px above and below, including a vertically centred terminal. Wi-Fi retains its position.
+The battery's final optical position is 1 px right of equal horizontal layout gaps,
+as requested after visual review, without moving the time or percentage.
+The web uses trimmed capital boxes and equal battery gaps.
+Dark/light captures include explicit 82%, full/charging and low-battery fixtures. Production
+reads real status; synthetic battery values require an explicit local test script.
 
-The screenshots use a debug build to drive test commands and capture framebuffers. The
-published build disables private debug dumps. Source changes after a capture invalidate its
+The earlier playback screenshots use a debug build. Final status/download captures use the
+public build, which permits explicit test scripts but disables private memory dumps.
+Source changes after a capture invalidate its
 claim to represent a later binary; `azahar_run.py` records source and executable hashes.
 
 ## Corrections found during publication review
@@ -65,4 +70,21 @@ remote glyph coverage and some effects still differ from the web. No global “1
 claim is made. Interrupted install recovery and unsupported external CIA replacements retain
 explicit limitations; they are not silently treated as successful.
 
-Remote publication verification is appended after the repository is created.
+## Publication verification
+
+The public repository is `EstebanPdN/forje.store`; no release was created. All seven pinned
+raw resource URLs were downloaded over anonymous HTTPS and matched the manifest's complete
+SHA-256 hashes and sizes (16,044,949 bytes total). A clean `git archive` checkout also built
+the native CIA and 3DSX using the included RomFS, without the owner's intermediate assets.
+GitHub's repository checks passed for the initial publication.
+
+An isolated New 3DS profile running the public build started with **no video cache**.
+All seven resources downloaded automatically on the first attempt, reached one complete
+package (16,044,949 bytes), and matched their hashes on the emulator's SD. Scripted navigation
+and shutdown completed in 68.7 seconds. Sampled store-music counters remained at zero
+underruns; this is emulator evidence, not physical-console qualification.
+
+The final packaged binary also completed an Old 3DS emulator run using those downloaded
+files as its cache, with dark/light status captures and a visible trailer frame after a
+seek to 30 seconds. Its executable hash matches the distributed 3DSX.
+Machine-readable publication evidence is in [publication.json](verification/publication.json).

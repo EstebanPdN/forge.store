@@ -514,6 +514,22 @@ float text_w(const char *s, float size) { return s ? run(font_style(size, FONT_W
 float line_h(float size) { return font_style(size, FONT_WEIGHT_BODY, FONT_UI)->line; }
 float text_base(float size, int weight, int family) { return font_style(size, weight, family)->base; }
 
+float text_ink_top(const char *s, float cy, float size, int weight, int family) {
+    const Style *st = font_style(size, weight, family);
+    int top = 128, bottom = -128;
+    while (s && *s) {
+        u32 cp;
+        s += utf8(s, &cp);
+        if (cp == '\n') break;
+        const Glyph *g = glyph(st, cp);
+        if (!g || !g->w || !g->h) continue;
+        if (g->oy < top) top = g->oy;
+        if (g->oy + g->h > bottom) bottom = g->oy + g->h;
+    }
+    if (bottom < top) return roundf(cy - st->line / 2.0f);
+    return roundf(cy - st->base - (top + bottom) / 2.0f);
+}
+
 // Wrapped paragraphs: line breaks are computed once and cached.
 #define WCACHE 192
 typedef struct {

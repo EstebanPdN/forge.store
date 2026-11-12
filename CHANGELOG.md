@@ -12,6 +12,7 @@ Initial source publication in `EstebanPdN/forje.store`, with no GitHub release.
 - Nonblocking completion of GitHub reader requests; shared final-shutdown deadline for video.
 - Public builds disable memory dumps; compiler flag changes invalidate object caches.
 - Maintained documentation, dependency notices, repository checks and explicit build artifacts.
+- Status numerals and rounded battery centred by their raster bounds; balanced battery spacing.
 
 Earlier visual work includes shared grey tabs, rounded GitHub avatars/buttons, centered
 status indicators, stationary banner logos, badges above selection, and evenly stepped

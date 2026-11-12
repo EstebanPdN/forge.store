@@ -124,25 +124,21 @@ static void lower_utf8(char *out, size_t n, const char *s) {
     out[o] = 0;
 }
 
-// Native status bar: two 24 px glass pills. Left: the emblem, the wordmark (the largest
+// Native status bar. Left: the emblem, the wordmark (the largest
 // text) and the section after a hairline, sharing the wordmark's baseline. Right: signal,
-// clock, battery and percentage; the approved optical offsets use whole pixels.
+// clock, battery and percentage, centred on their actual raster bounds.
 #define SB_Y 6
 #define SB_H 24
+#define SB_RIGHT_H 23  // Odd height gives equal margins around 9 px digits / 11 px battery.
 #define SB_DIGITS 12
 
-/** Top of a line whose digits (cap height ~0.72 em) are centred on cy. */
-static float digits_top(float cy, float size, int weight, int family) {
-    return roundf(cy + .36f * size) - text_base(size, weight, family);
-}
-
 static void status_battery_draw(float x,float cy,int percent,bool charging,float a){
-    x=roundf(x);cy=roundf(cy);
+    x=roundf(x);
     u32 ink=rgb(TH.ink,a);
     // 21x11 body with a 3 px radius around a 1 px gap, so the charge never touches the rim.
-    float top=cy-5;
+    float top=roundf(cy-5.5f);
     rrect_outline(x,top,21,11,3,1,rgb(TH.ink,.55f*a));
-    rrect(x+22,cy-1,2,4,1,rgb(TH.ink,.55f*a));
+    rrect(x+22,top+4,2,3,1,rgb(TH.ink,.55f*a));
     int fill=(int)roundf(17*clampf(percent/100.f,0,1));
     u32 color=charging?rgb(0x2fb574,a):percent<=20?rgb(DANGER,a):ink;
     if(fill)rrect(x+2,top+2,fmaxf(fill,3),7,1.5f,color);
@@ -208,13 +204,15 @@ static void statusbar_draw(void) {
     float cw=ceilf(text_style_w(sys.clock,SB_DIGITS,600,FONT_UI)), pw=ceilf(text_style_w(pct,SB_DIGITS,600,FONT_UI));
     float rw=11+(dl?13+9:0)+16+9+cw+11+pw+5+24+10;
     float rx=TOP_W-8-rw, tx=rx+11;
-    rrect(rx,y,rw,SB_H,SB_H/2,rgb(TH.glass,TH.glass_a*a));
-    float dy=digits_top(cy,SB_DIGITS,600,FONT_UI)+1;
+    float rcy=y+SB_RIGHT_H/2.0f;
+    rrect(rx,y,rw,SB_RIGHT_H,SB_RIGHT_H/2.0f,rgb(TH.glass,TH.glass_a*a));
+    float dy=text_ink_top(sys.clock,rcy,SB_DIGITS,600,FONT_UI);
     if(dl){ draw_icon("download",tx+6.5f,cy,13,rgb(FORGE,a)); tx+=13+9; }
     wifi_draw(tx,cy-6,sys.wifi,a); tx+=16+9;
     text_style(sys.clock,tx,dy,SB_DIGITS,600,FONT_UI,ink,AL_LEFT); tx+=cw+11;
-    status_battery_draw(tx,cy-1,sys.pct,sys.charging,a); tx+=24+5;
-    text_style(pct,tx,dy,SB_DIGITS,600,FONT_UI,soft,AL_LEFT);
+    // Reviewed optical position: 1 px right of the equal-gap position.
+    status_battery_draw(tx-2,rcy,sys.pct,sys.charging,a); tx+=24+5;
+    text_style(pct,tx,text_ink_top(pct,rcy,SB_DIGITS,600,FONT_UI),SB_DIGITS,600,FONT_UI,soft,AL_LEFT);
 }
 
 // ---- performance overlay ----------------------------------------------------------------------------

@@ -57,7 +57,7 @@
 .screen .sb-pill .sb-wifi { width: 16px; height: 14px; }
 .screen .sb-wifi path { stroke-width: 1.6px; }
 .screen .sb-power { gap: 4px; }
-.screen .sb-battery { position: relative; top: -2px; }
+.screen .sb-battery { position: relative; top: 0; left: -1px; } /* 6/4 px flex gaps → 5/5 px */
 .screen .sb-cell { width: 18px; height: 8px; border: 1px solid currentColor; border-radius: 2px; padding: 0; overflow: hidden; box-shadow: none; opacity: 1; }
 .screen .sb-fill { height: 6px; border-radius: 0; transition: none; }
 .screen .sb-nub { width: 2px; height: 4px; margin-left: 1px; border-radius: 0 1px 1px 0; }
@@ -304,5 +304,5 @@
   .nav-track, .nav-thumb, .ui-seg .thumb { transition: none; }
 }
 
-/* Optical status alignment: digits lower, battery raised, percentage last. */
-.screen .sb-clock, .screen .sb-pct { position: relative; top: 1px; }
+/* Flex centres the visible numeral/capital box instead of the font's line leading. */
+.screen .sb-clock, .screen .sb-pct { text-box: trim-both cap alphabetic; }

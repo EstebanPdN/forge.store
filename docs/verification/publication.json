@@ -1,0 +1,98 @@
+{
+  "date": "2026-11-11",
+  "anonymous_resource_downloads": {
+    "transport": "anonymous HTTPS, no authentication headers",
+    "results": [
+      {
+        "id": "alttp/trailer",
+        "http": 200,
+        "bytes": 5941159,
+        "sha256": "b8865ea4d1ca2d1df179c7eec3c377d6d3d6de54014a0495aff971cad1c99e86",
+        "seconds": 1.01
+      },
+      {
+        "id": "alttp/light-world",
+        "http": 200,
+        "bytes": 711836,
+        "sha256": "7b59424a20307d04e9fb70481220d9887558d6f8f0a35e83157e910a8f1ab030",
+        "seconds": 0.52
+      },
+      {
+        "id": "minish/minish-woods",
+        "http": 200,
+        "bytes": 931111,
+        "sha256": "83d0df6f311a4618d3f0ce7a8005d55a95f647850dcb2d4d2c8202d564176640",
+        "seconds": 0.42
+      },
+      {
+        "id": "mk64/trailer",
+        "http": 200,
+        "bytes": 5931857,
+        "sha256": "b5c881b5750c7c3a9fe7fc8432879ea7005ce8e560a46e0533ab66ecdeace613",
+        "seconds": 0.76
+      },
+      {
+        "id": "mk64/luigi-raceway",
+        "http": 200,
+        "bytes": 1188789,
+        "sha256": "9648ebd25225811e3d78e5b47207236d8cb0ef96ac05ab3d3fba959df3880c49",
+        "seconds": 0.58
+      },
+      {
+        "id": "doom/forest",
+        "http": 200,
+        "bytes": 657894,
+        "sha256": "2f1de1e3e8ab75ba74bb7aecbb8c752ae153d3efe272c54a31d6c15e3a172a01",
+        "seconds": 0.36
+      },
+      {
+        "id": "starwing/corneria",
+        "http": 200,
+        "bytes": 682303,
+        "sha256": "157ec7c9a8318ad3d44f4f5c1d5f2571a8e03999094a6a02bb0a26d258a9fb23",
+        "seconds": 0.39
+      }
+    ],
+    "total_bytes": 16044949
+  },
+  "native_first_download": {
+    "profile": "New 3DS emulator",
+    "seeded_cache": false,
+    "image_sha256": "e87a63d987fe58975eb5a04ca42582bac7e6f3a69f42fb443f4b62f71ac2b2cc",
+    "completed": 7,
+    "bytes": 16044949,
+    "attempts_each": 1,
+    "store_music_underruns_sampled": 0,
+    "normal_scripted_exit": true,
+    "cache_sha256_verified": true
+  },
+  "final_visual_and_playback": {
+    "profile": "Old 3DS emulator",
+    "image_sha256": "c534b3ae988355e4ee2c1df6e40129dcf22a5a731ca9837ece4f9ff0c8ef858f",
+    "seeded_cache": "files obtained by the actual first-download run",
+    "screens": [
+      "home",
+      "light",
+      "full",
+      "low",
+      "video at 30 seconds"
+    ],
+    "normal_scripted_exit": true,
+    "status_geometry": {
+      "pill_height": 23,
+      "digits_height": 9,
+      "digits_margins": [
+        7,
+        7
+      ],
+      "battery_height": 11,
+      "battery_margins": [
+        6,
+        6
+      ],
+      "battery_x_relative_to_equal_gaps": 1,
+      "wifi_moved": false
+    }
+  },
+  "hardware_validation": false
+}
