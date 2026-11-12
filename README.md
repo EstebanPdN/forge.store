@@ -34,9 +34,7 @@ The application targets Old and New Nintendo 3DS. Automated tests and emulator c
 recorded in [Verification](docs/VERIFICATION.md); physical-console HOME/sleep, installation,
 launch and sustained audio/video performance still need confirmation.
 
-This project was developed with the help of [OpenAI Codex](https://openai.com/codex/)
-and [Claude Code](https://claude.com/product/claude-code).
-The author’s explanation of that process is in [AI_DEVELOPMENT.md](AI_DEVELOPMENT.md).
+This project was developed with the help of [OpenAI Codex](https://openai.com/codex/) and [Claude Code](https://claude.com/product/claude-code). Learn more about the development process [here](AI_DEVELOPMENT.md).
 
 The repository is named **`forje.store`**. The application’s established name, SD directory,
 title ID and product code remain **forge.store** for compatibility.

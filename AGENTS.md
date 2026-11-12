@@ -11,3 +11,4 @@
 - Do not create GitHub releases or deploy the website without an explicit request. Source/binary
   publication is also an explicit action; this file does not authorize it on its own.
 - Use Code Atlas preview tools for browser checks. Do not replace the user's browser session.
+- Public-facing copy is written in my voice. Follow the existing public port READMEs; never refer to me as “the author” or “the owner”. Reuse the established AI-development disclosure verbatim and preserve `AI_DEVELOPMENT.md`.

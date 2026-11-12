@@ -75,7 +75,7 @@ explicit limitations; they are not silently treated as successful.
 The public repository is `EstebanPdN/forje.store`; no release was created. All seven pinned
 raw resource URLs were downloaded over anonymous HTTPS and matched the manifest's complete
 SHA-256 hashes and sizes (16,044,949 bytes total). A clean `git archive` checkout also built
-the native CIA and 3DSX using the included RomFS, without the owner's intermediate assets.
+the native CIA and 3DSX using the included RomFS, without local intermediate assets.
 GitHub's repository checks passed for the initial publication.
 
 An isolated New 3DS profile running the public build started with **no video cache**.

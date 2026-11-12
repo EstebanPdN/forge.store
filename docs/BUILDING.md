@@ -82,7 +82,7 @@ is opt-in via `FORGE_DUMP_URL`; the distributed build must leave it unset.
 - Browser-based art/audio renderers are offline authoring utilities, not build dependencies.
   The generated RomFS is the normal build input. In Code Atlas, use its preview tools for
   browser inspection and do not replace them with standalone automation.
-- `tools/prepare-assets.sh` is a legacy local import helper; it requires the owner's source
+- `tools/prepare-assets.sh` is a legacy local import helper; it requires my other local source
   projects and is not needed to build or run this repository.
 
 Before publishing a build, return to `FORGE_DEBUG=0`, rebuild, run repository checks and use

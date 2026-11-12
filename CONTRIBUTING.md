@@ -15,7 +15,7 @@ Do not reformat the whole project alongside an unrelated fix.
 
 Preserve third-party licenses. Record asset sources and processing in the asset register;
 unknown permission stays unknown. Never commit ROMs, firmware, saves, private dumps,
-credentials, local caches or the owner's private repository content.
+credentials, local caches or private repository content.
 
 Open a pull request with what changed, why and the checks actually run. No release or
 website deployment should be triggered by a documentation or source publication.

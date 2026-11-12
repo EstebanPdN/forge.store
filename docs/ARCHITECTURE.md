@@ -20,7 +20,7 @@
 
 Build output goes to `3ds/build/` and is ignored. `.local/` holds private diagnostics and
 historical material. Checked-in RomFS keeps an ordinary native build independent of the
-owner's other repositories and the one-time rendering environment.
+other local projects and the one-time rendering environment.
 
 ## Native module map
 
