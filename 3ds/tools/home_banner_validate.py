@@ -133,8 +133,8 @@ def animations(data):
                 yaw = tracks[4]; xs = tracks[6]; zs = tracks[8]
                 assert len(yaw) == len(xs) == len(zs) and min(yaw) < -.4 and max(yaw) > .4, 'missing lateral swing'
                 for angle, x, z in zip(yaw, xs, zs):
-                    assert abs(-8.2*math.cos(angle)+.7*math.sin(angle)+x+8.2) < 1e-5, 'coin pivot drifts horizontally'
-                    assert abs(8.2*math.sin(angle)+.7*math.cos(angle)+z-.7) < 1e-5, 'coin pivot drifts in depth'
+                    assert abs(-8.61*math.cos(angle)+.735*math.sin(angle)+x+8.61) < 1e-5, 'coin pivot drifts horizontally'
+                    assert abs(8.61*math.sin(angle)+.735*math.cos(angle)+z-.735) < 1e-5, 'coin pivot drifts in depth'
         result.append(dict(frames=duration, members=members, curves=curve_count, scales_positive=True, rotation_tracks=rotation_tracks))
     return result
 

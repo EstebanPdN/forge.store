@@ -1,14 +1,14 @@
 {
-  "store_build": 2026111209,
-  "version": "2026.11.12.9",
+  "store_build": 2026111210,
+  "version": "2026.11.12.10",
   "files": {
     "forge-store.cia": {
       "bytes": 49451968,
-      "sha256": "d1c0c78509adf9c62fdd8f3d2c8725f3caf2d70a4dab47d048a913afe1c42e12"
+      "sha256": "1a6e6e50eacf6b610dbc412d6ed55744e6f08eb643635f3bc6b126ff4b914303"
     },
     "forge-store.3dsx": {
       "bytes": 49756200,
-      "sha256": "5e95438caf9b41d0032792007c48467f491a53aa44235a41043b0d0184b9e2c9"
+      "sha256": "63d8399c13f38bf5328c06c14899c6bbd1db2b27c0a58d11c4e5aaf9481fa7b3"
     }
   }
 }

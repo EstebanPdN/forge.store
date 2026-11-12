@@ -1,5 +1,9 @@
 # Changelog
 
+## HOME banner spacing — 2026.11.12.10
+
+- Raise the wordmark to clear the descender above the subtitle and enlarge the complete banner by 5%, preserving the lateral medallion rotation.
+
 ## HOME banner lettering and rotation — 2026.11.12.9
 
 - Enlarge and align the HOME wordmark, preserving its full 512px texture width.

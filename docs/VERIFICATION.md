@@ -1,8 +1,16 @@
 # Verification record
 
-Publication candidate: **2026.11.12.9**, native C implementation. This is a development
+Publication candidate: **2026.11.12.10**, native C implementation. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## HOME banner spacing — 2026.11.12.10
+
+The title baseline moves up 12 texture pixels, leaving a clear gap above the subtitle.
+All banner geometry scales uniformly by 1.05 about the composition center; the rotation
+pivot compensation scales with it. The source preview is reviewed again and the native
+package and eleven banner checks validate the updated resource. Physical HOME remains
+unqualified; the preview is a render of the source model.
 
 ## HOME lettering and lateral rotation — 2026.11.12.9
 

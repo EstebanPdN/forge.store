@@ -35,8 +35,8 @@ def main():
     bold=ImageFont.truetype(str(out/'brand.ttf'),88);bold.set_variation_by_axes([800])
     regular=ImageFont.truetype(str(out/'brand.ttf'),88);regular.set_variation_by_axes([400])
     small=ImageFont.truetype(str(out/'ui.ttf'),28);small.set_variation_by_axes([800])
-    d.text((0,78),'forge.',font=bold,fill='#dd741b',anchor='ls')
-    d.text((round(d.textlength('forge.',font=bold)),78),'store',font=regular,fill='#2c3e45',anchor='ls')
+    d.text((0,66),'forge.',font=bold,fill='#dd741b',anchor='ls')
+    d.text((round(d.textlength('forge.',font=bold)),66),'store',font=regular,fill='#2c3e45',anchor='ls')
     d.text((4,119),'Ports for Nintendo 3DS',font=small,fill='#465960',anchor='ls')
     text=text.point(lambda v: (v//16)*17)
     text.save(out/'wordmark.png')
@@ -61,6 +61,7 @@ def main():
     paper=mat('Oval',image='oval.png',alpha=True); lettering=mat('Wordmark',image='wordmark.png',alpha=True)
     rim=mat('Porcelain',(1,1,1,1));edge=mat('Edge',(.68,.73,.76,1));face=mat('Logo',image='logo.png')
     def primitive(p,n,uv,idx,m):
+        p=[(x*1.05,1+(y-1)*1.05,z*1.05) for x,y,z in p]
         attrs=dict(POSITION=access(p,'VEC3'),NORMAL=access(n,'VEC3'))
         if uv:attrs['TEXCOORD_0']=access(uv,'VEC2')
         return dict(attributes=attrs,indices=access(idx,'SCALAR',5123),material=m,mode=4)
@@ -100,7 +101,7 @@ def main():
     for t in times:
         yaw=math.radians(24)*math.sin(t*math.tau/6)
         rotations.append((0,math.sin(yaw/2),0,math.cos(yaw/2)))
-        positions.append((cx-cx*math.cos(yaw)-.7*math.sin(yaw),0,.7+cx*math.sin(yaw)-.7*math.cos(yaw)))
+        positions.append((1.05*(cx-cx*math.cos(yaw)-.7*math.sin(yaw)),0,1.05*(.7+cx*math.sin(yaw)-.7*math.cos(yaw))))
     g['animations']=[dict(name='COMMON',samplers=[dict(input=access(times,'SCALAR'),output=access(rotations,'VEC4'),interpolation='LINEAR'),dict(input=access(times,'SCALAR'),output=access(positions,'VEC3'),interpolation='LINEAR')],channels=[dict(sampler=0,target=dict(node=coin,path='rotation')),dict(sampler=1,target=dict(node=coin,path='translation'))])]
     g['cameras']=[dict(type='perspective',perspective=dict(aspectRatio=400/240,yfov=math.pi/6,znear=26.5,zfar=1000))]
     g['nodes'].append(dict(name='BannerCamera',camera=0,translation=[0,1,44.786]));g['scenes'][0]['nodes'].append(len(g['nodes'])-1)

@@ -11,7 +11,9 @@ world-space pivot in X/Z; Y remains fixed and scale remains one. The medallion's
 billboarding is disabled so HOME does not cancel its authored rotation. The backdrop
 and lettering retain YAxial billboarding with identity rest transforms.
 
-The title is about 19% larger, with both font weights sharing one baseline. Its
+The complete composition is uniformly enlarged by 5% about its center. The wordmark
+baseline is raised 12 texture pixels to separate its descenders from the subtitle.
+The title is about 19% larger than the initial lettering, with both font weights sharing one baseline. Its
 512×128 RGBA4 texture is explicitly restored after conversion, avoiding the converter's
 256px width cap. This is pre-rasterized lettering, not a claim of hardware pixel-perfect
 sampling; HOME owns final projection/filtering.
