@@ -1,13 +1,45 @@
 # Verification record
 
-Publication candidate: **2026-11-11**, native C implementation plus web V2. This is a development
+Publication candidate: **2026.11.12.2**, native C implementation plus web V2. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
 
-## Gallery, startup and cache refinement
+## Native audio, gallery motion and update confirmation
 
-The current build includes the gallery corrections, 90% Home/status opacity, Settings gear,
-increased audio mix, automatic startup updates and shared GitHub cache/prefetch. Its evidence
+The new startup flow checks on every launch, shows the offered version before downloading,
+and waits for Yes/No. No exits with a black fade. Its icon family uses native integer pixels:
+spinner → download arrow → check, or spinner → check when current. Both confirmation buttons
+are 88 pixels wide. The gallery now pushes both images over 340 ms after their textures load.
+The video mute button uses the same complete icon as web V2; no separate diagonal is positioned
+over it. One continuous orange frame now slides between thumbnails with the tabs' sampled
+340 ms easing, including reversal during motion. Home's approved 90% opacity is unchanged.
+
+- Twenty-three production-source updater scenarios passed ASan/UBSan. Rejection and shutdown
+  while waiting issue no binary request and create no staging file. Acceptance, rejection and
+  waiting-worker shutdown also passed TSan. AM installation services remain mocked.
+- All 19 bundled PCM files passed the production gain routine without saturated samples:
+  music +4.09 dB, intro +3.52 dB and effects +9.54 dB. The host test also covers all 65,536 signed
+  input values. These gains precede the existing DSP mixer ceiling.
+- The native icon harness passed 1,630 binary coverage masks and all 25 state transitions,
+  including interrupted transitions, three-pixel stroke geometry and actual downloading motion.
+  One emulator download-icon capture matched all 1,600 pixels of its 40×40 host mask at 1:1.
+- The regenerated font assets passed 48,675 glyph checks. Text tests passed 1,343,072 pair/phase
+  cases, 1,379,636 strings and 235,284 wrapped lines, including the new localized prompts.
+- Code Atlas verified four simultaneous 340 ms web animations: outgoing/incoming images on
+  both screens. At midpoint they moved 200 pixels above and 74 pixels below. Repeated navigation
+  left one current lower layer and no failed loaded gallery images.
+- The shared native tabs sampler passed 762 geometry/timing checks. Web thumbnail cursor and
+  track use the same `cubic-bezier(.22,1,.36,1)` curve over 340 ms; the cursor is 50×32 pixels.
+
+Emulator update offers, download progress and installation-complete screens use explicit UI
+fixtures; those fixtures never install a title. Actual newer-build installation and restart
+still need physical-console validation. Captures and recording summaries are indexed in
+[update-confirmation.json](verification/update-confirmation.json).
+
+## Earlier gallery, startup and cache refinement
+
+The preceding build introduced gallery corrections, 90% Home/status opacity, Settings gear,
+increased audio mix, startup updates and shared GitHub cache/prefetch. Its evidence
 is recorded separately in [refinement.json](verification/refinement.json).
 
 - The public CIA and 3DSX compile with devkitARM GCC 16.1.0. The existing SDK `crtn.o`

@@ -15,7 +15,11 @@ continues to the introduction without claiming that the installation is up to da
   even if the platform resolver has not returned. A late response cannot start an update.
 - The manifest must contain a positive integer `store_build`, a bounded file size and a
   lowercase SHA-256 digest. Download destinations and binary URLs are fixed in the application.
-- Only a larger build number triggers an update. The complete file is staged on SD, flushed,
+- Only a larger build number offers an update. The touch screen shows a bounded `version`
+  label, falling back to the numeric build if the label is absent or invalid. No binary request,
+  staging file or installation starts before **Yes**. **No** fades both screens to black and
+  closes the store. This decision has no timeout; HOME/exit can cancel the waiting worker.
+- After confirmation, the complete file is staged on SD, flushed,
   and checked against its declared size and hash before installation. Failed downloads leave
   the running application available; the next launch checks again.
 - CIA updates require both the staged CIA and the running title to match the store's fixed
@@ -27,14 +31,21 @@ continues to the introduction without claiming that the installation is up to da
   replacement was interrupted. Restart uses the available HBL handoff and depends on the loader.
 
 The startup screen uses the same background renderer, typography and sounds as the rest of
-the interface. Download/install progress appears before a black fade and restart. HOME/sleep
+the interface. A single native pixel icon family rotates while checking, morphs into a check
+when current or into a download arrow when an update is available. The arrow moves during
+download/installation and becomes the same check when finished. Its three-pixel strokes use
+binary coverage and integer LCD coordinates, without filtered textures. Compact confirmation
+buttons share their drawing and touch bounds. The store logo appears only in the following
+introduction. Download/install progress appears
+before a black fade and restart. HOME/sleep
 pauses worker callbacks; final shutdown cancels work and observes the shared join deadline.
 Production-source host tests cover failure paths with AM services mocked. Actual self-update,
 restart and interrupted-write recovery still require physical-console qualification.
 
 ## Publishing another build
 
-1. Increase `STORE_BUILD` in `3ds/source/store_version.h`; never reuse or decrease a published value.
+1. Increase `STORE_BUILD` and set `STORE_VERSION` in `3ds/source/store_version.h`; never reuse or
+   decrease a published build value.
 2. Build with `FORGE_DEBUG=0 zsh 3ds/build.sh` and complete the applicable checks.
 3. Run `python3 tools/package-build.py`. It copies CIA/3DSX and generates `SHA256SUMS`, the full
    source fingerprint manifest and the compact `update.json` from those exact files.

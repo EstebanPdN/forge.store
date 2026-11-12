@@ -24,7 +24,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
    if case=='large-size':files['forge-store.cia']['bytes']=97*1024*1024
    if case=='missing-file':del files['forge-store.cia']
    if case=='size':files['forge-store.cia']['bytes']=-1
-   body=json.dumps({'store_build':seq if case=='current' else seq-1 if case=='older' else seq+1,'files':files}).encode()
+   body=json.dumps({'store_build':seq if case=='current' else seq-1 if case=='older' else seq+1,'version':'bad\nlabel' if case=='bad-version' else '2026.11.12.3','files':files}).encode()
    if case=='malformed':body=b'{'
    if case=='huge':body=b'x'*18000
   else:body=payload[:-5] if case=='truncated' else payload
@@ -44,16 +44,15 @@ static int mbedtls_sha256_finish_ret(mbedtls_sha256_context*c,unsigned char*p){C
  for n in ['store_version.h','store_update_policy.h','http_cache.h','reader_cache.h','reader_cache.c']:(p/n).write_text((root/'source'/n).read_text())
  types=(root/'source/store_update.h').read_text().replace('#include "common.h"','#include "platform.h"');(p/'store_update.h').write_text(types)
  src=(root/'source/store_update.c').read_text().replace('#include "network.h"','').replace('#include "hbl_launch.h"','')
- src+='''
-int main(int argc,char**argv){curl_global_init(CURL_GLOBAL_DEFAULT);hb=!strncmp(argv[1],"hb",2);homebrew=hb;fault=atoi(argv[2]);strcpy(executable,"sdmc:/app.3dsx");FILE*f=fopen(executable,"wb");fwrite("3DSXold",1,7,f);fclose(f);if(!strcmp(argv[1],"hb-missing"))strcpy(executable,"sdmc:/missing.3dsx");if(!strcmp(argv[1],"deadline")){started_at=osGetTime()-5001;store_update_poll();assert(store_update_state()==UPDATE_OFFLINE);}if(!strcmp(argv[1],"cancelled"))cancelled=true;run(NULL);int want=atoi(argv[3]);assert(store_update_state()==want);if(want!=UPDATE_DONE)assert(finishes==0||fault==2);if(want==UPDATE_DONE&&!hb)assert(starts==1&&finishes==1&&writes>0);if(fault==1||fault==2)assert(cancels==1);if(!strcmp(argv[1],"wrong-title")||fault==3)assert(starts==0);if(hb){f=fopen("sdmc:/app.3dsx","rb");char b[8]={0};fread(b,1,7,f);fclose(f);assert(!memcmp(b,want==UPDATE_DONE?"3DSXxxx":"3DSXold",7));}if(hb&&want==UPDATE_DONE){f=fopen("sdmc:/app.forge-previous.3dsx","rb");assert(f);char backup[8]={0};assert(fread(backup,1,7,f)==7&&!memcmp(backup,"3DSXold",7));fclose(f);}assert(access(DATA_DIR "/store-update.part",F_OK));curl_global_cleanup();return 0;}
-'''
+ src+='\n'+(root/'tests/update-host/decision-main.inc').read_text()
  (p/'updater.c').write_text(src)
  flags=['clang','-g','-O1','-fsanitize=address,undefined','-Wno-deprecated-declarations','-I'+temp,'-I/opt/homebrew/include','-L/opt/homebrew/lib','-ljansson','-lcurl','-lz','-lpthread']
  subprocess.run(flags+[str(p/'updater.c'),'-o',str(p/'updater')],check=True)
  env={**os.environ,'TEST_PORT':str(server.server_port)}
- cases=[('current',0,1),('older',0,1),('malformed',0,2),('huge',0,2),('size',0,2),('large-size',0,2),('bad-hex',0,2),('missing-file',0,2),('deadline',0,2),('cancelled',0,2),('hash',0,6),('truncated',0,6),('wrong-title',0,6),('valid',3,6),('valid',1,6),('valid',2,6),('valid',0,5),('hb-valid',0,5),('hb-bad',0,6),('hb-missing',0,6)]
+ cases=[('current',0,1),('older',0,1),('malformed',0,2),('huge',0,2),('size',0,2),('large-size',0,2),('bad-hex',0,2),('missing-file',0,2),('deadline',0,2),('cancelled',0,2),('hash',0,6),('truncated',0,6),('wrong-title',0,6),('valid',3,6),('valid',1,6),('valid',2,6),('valid',0,5),('hb-valid',0,5),('hb-bad',0,6),('hb-missing',0,6),('decline',0,8),('cancel-wait',0,8),('bad-version',0,5)]
  for case,fault,want in cases:
   state.update(case=case,calls=0);subprocess.run([str(p/'updater'),case,str(fault),str(want)],cwd=p,env=env,check=True)
+  if case in ['decline','cancel-wait']:assert state['calls']==1,(case,state)
  cache=(root/'source/http_cache.c').read_text().replace('#include "network.h"','#include "platform.h"')
  cache+=r'''
 int main(int argc,char**argv){http_cache_init();curl_global_init(CURL_GLOBAL_DEFAULT);char e[128];size_t n;char*b=http_cache_get("https://fixture/cache/test","*/*",1024,atoi(argv[1]),NULL,NULL,&n,e,sizeof e);assert(b&&!strcmp(b,argv[2])&&n==strlen(b));free(b);
@@ -83,6 +82,10 @@ int main(void){
 '''
  (p/'concurrent.c').write_text(concurrency)
  tsan=[f.replace('-fsanitize=address,undefined','-fsanitize=thread') for f in flags]
+ subprocess.run(tsan+[str(p/'updater.c'),'-o',str(p/'updater-tsan')],check=True)
+ for case,want in [('valid',5),('decline',8),('cancel-wait',8)]:
+  state.update(case=case,calls=0);subprocess.run([str(p/'updater-tsan'),case,'0',str(want)],cwd=p,env=env,check=True)
+ print('PASS: accept, reject and shutdown while awaiting consent; ThreadSanitizer.')
  subprocess.run(tsan+[str(p/'concurrent.c'),str(p/'reader_cache.c'),'-o',str(p/'concurrent')],check=True)
  state.update(case='fresh',calls=0)
  subprocess.run([str(p/'concurrent')],cwd=p,env=env,check=True)

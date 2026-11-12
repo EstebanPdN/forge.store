@@ -14,6 +14,10 @@ jobs:
           python-version: '3.12'
       - run: python3 tools/check-repository.py
       - run: python3 -m compileall -q tools 3ds/tools 3ds/tests
+      - name: Native audio headroom and pixel icon geometry
+        run: |
+          python3 3ds/tests/run-audio-gain.py
+          python3 3ds/tests/run-update-icon.py
       - name: JavaScript syntax
         run: |
           while IFS= read -r -d '' file; do

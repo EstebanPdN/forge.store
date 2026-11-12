@@ -111,12 +111,17 @@ export class DetailScene extends Scene {
     if (!n || this.playing) return;
     index = (index + n) % n;
     if (index === this.mediaIndex) return;
-    this.heroEls[this.mediaIndex].classList.remove('on');
+    const previous = this.heroEls[this.mediaIndex];
+    this.mediaDirection = (index - this.mediaIndex + n) % n <= n / 2 ? 1 : -1;
+    for (const motion of this.mediaAnimations || []) motion.cancel();
+    this.mediaAnimations = [];
+    previous.classList.remove('on');
     this.mediaIndex = index;
     const el = this.heroEls[index];
     el.classList.remove('on');
     void el.offsetWidth;
     el.classList.add('on');
+    if (this.tab === 'shots') this.slideMedia(previous, el, this.mediaDirection);
     this.syncCounter();
     if (user) {
       this.audio.sfx('move', { pitch: 2 });
@@ -124,6 +129,15 @@ export class DetailScene extends Scene {
     }
     if (this.tab === 'shots') this.syncShotsTab();
     this.renderAction();
+  }
+
+  slideMedia(previous, current, direction, removePrevious = false) {
+    const options = { duration: 340, easing: 'cubic-bezier(.65,0,.35,1)', fill: 'none' };
+    const out = previous.animate([{ opacity: 1, transform: 'translateX(0)' }, { opacity: 1, transform: `translateX(${-direction * 100}%)` }], options);
+    const incoming = current.animate([{ opacity: 1, transform: `translateX(${direction * 100}%)` }, { opacity: 1, transform: 'translateX(0)' }], options);
+    this.mediaAnimations ||= [];
+    this.mediaAnimations.push(out, incoming);
+    if (removePrevious) out.finished.then(() => previous.remove(), () => previous.remove());
   }
 
   /** Screenshots rotate on their own; a selected video stays put until you play it. */
@@ -412,7 +426,9 @@ export class DetailScene extends Scene {
         m.type === 'video' ? h('span.dt-thumb-play', icon('play')) : null,
       ),
     );
-    this.thumbTrack = h('div.dt-thumbs-track', this.thumbs);
+    this.thumbCursor = h('div.dt-thumb-cursor', { 'aria-hidden': 'true' });
+    this.thumbCursorReady = false;
+    this.thumbTrack = h('div.dt-thumbs-track', this.thumbs, this.thumbCursor);
     this.shotView = h('div.dt-shot-view');
     const el = h('div.dt-pad.dt-shots', h('div.dt-thumbs', this.thumbTrack), this.shotView);
     requestAnimationFrame(() => this.syncShotsTab());
@@ -421,12 +437,21 @@ export class DetailScene extends Scene {
 
   syncShotsTab() {
     if (!this.thumbs || !this.shotView) return;
+    const oldPreview = this.shotView.querySelector('.dt-gallery-in img, .dt-gallery-in video, .dt-gallery-in .dt-shot-none') || this.shotView.querySelector('.dt-shot-bottom img, .dt-shot-bottom video, .dt-shot-none');
     const m = this.mediaList[this.mediaIndex];
     this.thumbs.forEach((b, i) => b.classList.toggle('on', i === this.mediaIndex));
     const selected = this.thumbs[this.mediaIndex];
     const view = this.thumbTrack.parentElement.clientWidth;
-    const shift = clamp(selected.offsetLeft + selected.offsetWidth / 2 - view / 2, 0, Math.max(0, this.thumbTrack.scrollWidth - view));
+    const last = this.thumbs.at(-1);
+    const shift = clamp(selected.offsetLeft + selected.offsetWidth / 2 - view / 2, 0, Math.max(0, last.offsetLeft + last.offsetWidth - view));
     this.thumbTrack.style.transform = `translateX(${-shift}px)`;
+    if (!this.thumbCursorReady) this.thumbCursor.style.transition = 'none';
+    this.thumbCursor.style.transform = `translateX(${selected.offsetLeft - 2}px)`;
+    if (!this.thumbCursorReady) {
+      void this.thumbCursor.offsetWidth;
+      this.thumbCursor.style.transition = '';
+      this.thumbCursorReady = true;
+    }
     if (m.type === 'video') {
       const preview = m.bottom
         ? h('video', { src: m.bottom, muted: true, preload: 'auto', playsinline: true, on: { loadedmetadata: (e) => (e.target.currentTime = 0.5) } })
@@ -449,7 +474,14 @@ export class DetailScene extends Scene {
       h('button.ui-btn.surface', { type: 'button', 'aria-label': t('detail.previousMedia'), on: { click: () => this.showMedia((this.mediaIndex + this.mediaList.length - 1) % this.mediaList.length, true) } }, icon('back')),
       h('span', `${this.mediaIndex + 1} / ${this.mediaList.length}`),
       h('button.ui-btn.surface', { type: 'button', 'aria-label': t('detail.nextMedia'), on: { click: () => this.showMedia((this.mediaIndex + 1) % this.mediaList.length, true) } }, icon('next'))));
-    animate(this.shotView.firstChild, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 340, fill: 'none' });
+    const preview = this.shotView.firstChild;
+    const current = preview.querySelector('img, video, .dt-shot-none');
+    if (oldPreview && current) {
+      const outgoing = h('div.dt-gallery-layer', oldPreview);
+      const incoming = h('div.dt-gallery-layer.dt-gallery-in', current);
+      preview.prepend(outgoing, incoming);
+      this.slideMedia(outgoing, incoming, this.mediaDirection || 1, true);
+    }
   }
 
   // Install -------------------------------------------------------------------
@@ -960,12 +992,14 @@ export class DetailScene extends Scene {
 
   onHide() {
     clearInterval(this.carousel);
+    for (const motion of this.mediaAnimations || []) motion.cancel();
     this.stopVideo(true);
   }
 
   destroy() {
     super.destroy();
     clearInterval(this.carousel);
+    for (const motion of this.mediaAnimations || []) motion.cancel();
     this.stopVideo(true);
     this.banner?.destroy();
   }

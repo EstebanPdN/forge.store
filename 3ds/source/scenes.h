@@ -9,6 +9,9 @@ extern float EYE;  // stereo offset scale for the eye being drawn (0 = mono)
 void scenes_init(float intro_delay);
 void scenes_intro_restart(float delay);
 void scenes_draw_background(bool top);
+/** Startup confirmation uses the same buttons and touch geometry as the store. */
+void scenes_draw_update_confirmation(const char *version,int focus,float alpha);
+int scenes_update_confirmation_input(int *focus); // -1 none, 0 decline, 1 accept
 void scenes_update(void);
 void scenes_exit(void);
 void scenes_draw_top(void);

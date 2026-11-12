@@ -3,7 +3,15 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdio.h>
 #include "store_version.h"
+static inline void store_update_version_label(json_t *root,int64_t build,char *out,size_t cap) {
+    const char *label=json_string_value(json_object_get(root,"version"));
+    bool valid=label&&*label&&strlen(label)<=32;
+    if(valid)for(const char *p=label;*p;p++)
+        if(!((*p>='0'&&*p<='9')||(*p>='A'&&*p<='Z')||(*p>='a'&&*p<='z')||*p=='.'||*p=='-'||*p=='_')){valid=false;break;}
+    if(valid)snprintf(out,cap,"%s",label);else snprintf(out,cap,"%lld",(long long)build);
+}
 // Manifest is fetched over verified HTTPS from the fixed, trusted repository.
 // Reject malformed metadata before choosing a destination or creating an AM handle.
 static inline bool store_update_metadata(json_t *root, bool homebrew, uint64_t *bytes, char hash[65],

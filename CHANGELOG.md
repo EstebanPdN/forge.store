@@ -1,5 +1,22 @@
 # Changelog
 
+## Audio, gallery motion and update confirmation — 2026-11-12
+
+- Amplify music PCM by 1.60×, intro audio by 1.50× and effects by 3×, independently of the
+  existing DSP mix ceiling. Check every bundled PCM file for saturation.
+- Slide both gallery images for 340 ms after their textures are ready; animate thumbnail
+  scrolling and use the same motion in web V2.
+- Slide one continuous thumbnail selection frame with the tabs' 340 ms easing, including
+  interruption and reversal, instead of switching individual thumbnail borders.
+- Center the startup update content. One native pixel icon family morphs from a rotating
+  stroke to a download arrow or check, animates the arrow during download, and ends in the
+  same check. Three-pixel strokes stay crisp without repeating the intro logo.
+- Show the target version and Yes/No before downloading an update. Rejecting it fades both
+  screens to black and closes the store. Always check on launch; retain the five-second deadline.
+- Make Yes/No buttons 88 pixels wide and center their group on the touch screen.
+- Use the complete shared mute icon in the video button instead of an offset diagonal overlay.
+- Keep the approved 90% opacity of Home information surfaces.
+
 ## Gallery and background services — 2026-11-11
 
 - Correct the repository name to `forge.store` and update maintained download/resource links.

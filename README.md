@@ -49,9 +49,10 @@ package** in the background. Downloads shows one package with combined progress.
 becomes playable after its own file passes SHA-256 verification; navigation remains available.
 No account or token is needed. See [Installation](docs/INSTALLING.md) for controls and cache management.
 
-Every launch checks for a store update before the introduction. Newer builds download and
-install automatically; an unavailable check continues to the store. This build enables that
-updater, so older installations need one manual update first. Public GitHub pages and common
+Every launch checks for a store update before the introduction. When a newer build is found,
+the touch screen shows its version: **Yes** downloads and installs it; **No** fades to black
+and closes the store. An unavailable check continues to the introduction. Builds without the
+updater need one manual update first. Public GitHub pages and common
 images are also cached and refreshed in the background. See [Updates and cache](docs/UPDATES-AND-CACHE.md).
 
 Game installations are separate from this package. Some ports require files supplied by the

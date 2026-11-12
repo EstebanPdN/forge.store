@@ -1,0 +1,184 @@
+{
+  "version": "2026.11.12.2",
+  "store_build": 2026111202,
+  "public_binaries": {
+    "forge-store.cia": {
+      "bytes": 44680128,
+      "sha256": "c5ac3cc2e12a6e4e81960daf8b9044cb6368c9c43690be968b8fe4bc25ec06b3"
+    },
+    "forge-store.3dsx": {
+      "bytes": 45230436,
+      "sha256": "1c5b3a8e0708516e2ada2848c9de1afca62ff14d583ceb020899127516590cb7"
+    }
+  },
+  "host": {
+    "updater_asan_ubsan_scenarios": 23,
+    "updater_tsan": [
+      "accept",
+      "decline",
+      "shutdown while waiting"
+    ],
+    "cache_tsan_requests": 24,
+    "pcm_files": 19,
+    "pcm_saturation": false,
+    "signed_audio_inputs": 65536,
+    "gain_db": {
+      "music": 4.09,
+      "intro": 3.52,
+      "effects": 9.54
+    },
+    "icon_masks": 1630,
+    "icon_state_pairs": 25,
+    "glyphs": 48675,
+    "text_pairs": 1343072,
+    "text_strings": 1379636,
+    "wrapped_lines": 235284,
+    "shared_tab_geometry_checks": 762
+  },
+  "emulator": [
+    {
+      "model": "Old 3DS",
+      "executable_sha256": "dc3598c2a92b4910c020a017d9b86f07ee5d15af8b0bfb2b0892beb00fe17645",
+      "source_matches_package": false,
+      "captures": {
+        "check.png": "b1869c9fa7f491d4783b7c47fc8b221d3880fbba051936eb04c6caa09443311c",
+        "downloading-1.png": "0b6101f4cb0a03d6a355288f5443ad17685d63983c36240106c1bc49caf0b6a0",
+        "downloading-2.png": "17b26747c00daf43ffcc2976a082ab1baaf828c9976d23448c829466d1997c08",
+        "downloading-3.png": "6610482bb38176cb90667cfede0a5f0239a143e63e0d2759d3480c2a87079a0d",
+        "fade.png": "523f27fa03ca5aa88eae32928a4ca31adf080773d79dd3ee9f6a0c307228400a",
+        "installing.png": "887045bd66ab22d89c2bca442e14d62b89337960f1f936bd591efc230327a9e7",
+        "morph-check.png": "58016eeabac438f7c37d5bd554f1f287ff9f2f6034acd5d7d89c1614b4020305",
+        "morph-download-1.png": "2ae612d520eb4d6c14f6644c5ee9ec0c8dbd3ebff01cface02108fbc0b8c9b9b",
+        "morph-download-2.png": "913fd7c28d921e58d9f86a1229bae5316bc455a0e4ab2eb7b21722b22f35e0ab",
+        "offer.png": "f8a553867f8054bedb4a69ae565f63a7ad2a964785602720d5996ba26d155598",
+        "spin-0.png": "5e5b7ac06c5994a6d341c20bf4c915f39fe7097cd29afbc2cd67cef5c4f7f891",
+        "spin-1.png": "671fb28636820904e0599626233ba19e9022b7bafc0490fba008808fd7bd1a6c"
+      },
+      "checks": [
+        "checking spinner",
+        "spinner-to-download morph",
+        "88 px confirmation buttons",
+        "accept by touch",
+        "animated download arrow",
+        "installation progress fixture",
+        "download-to-check morph",
+        "black fade",
+        "normal exit"
+      ],
+      "update_installation": "UI fixtures only; no title installed",
+      "music_underruns_observed": 0,
+      "revision_note": "Captured before the final thumbnail cursor adjustment. Audio and startup updater sources are unchanged; the final public build is exercised by the additional run below."
+    },
+    {
+      "model": "New 3DS",
+      "executable_sha256": "dc3598c2a92b4910c020a017d9b86f07ee5d15af8b0bfb2b0892beb00fe17645",
+      "source_matches_package": false,
+      "captures": {
+        "audio-home.png": "31a668f5ace0bccec0cb3e32b2cd6c4218c39e7080e53dca2a9b3537a9c7775d",
+        "audio-muted.png": "2e0167f566007a5559e80ccbddb2b89a5f1c402785ac89ad6ad8e6df764e780c",
+        "audio-paused.png": "ce3ce925b04e47a83d91485d7221aad0b8a20f78fc330abb00172fc00819e043",
+        "audio-playing.png": "e29ae40eb77ccf0f6b8849d39816ed979820c3d17952483427b55375bb5b2dba",
+        "audio-resumed.png": "20de019be920b00a106b700e8a4e47357e72278d271f66cbc43cc04fc7da0042",
+        "audio-return.png": "2fb4ab1a600e9c79ca712b46e2503b89f7e5e5c73eb0786e81eb85b1508f67dd",
+        "audio-seek.png": "7a0c9e91f715d7e5faf28f46d54d80b2a01e003866fc97c0a8395f7c4b67d110",
+        "audio-unmuted.png": "b79bef2346b4126996c789cb437ed59c5797557efaef90c338030cabf1040009",
+        "checking.png": "ade47b349760f0ef11f3a0ded294a21f71b83b4789de912a342e3760ca904268",
+        "current.png": "1e98f24078796c649c287b7347b501e37a9fed581bda4bbd4dd6ebee8646d617",
+        "gallery-after.png": "bc8743b427339486d285befbbedfe909bcd0ad57d8b0319e7092210f9f40cc4d",
+        "gallery-before.png": "a93a0050462ddfb2de234192bc6eeca15a5efa550f04bacf51fd3826b5d566b0",
+        "gallery-middle.png": "b33d9e5540d390dfa6df1ea18ba2213a24029b495696318fb6e08a607dc754b4",
+        "gallery-touch.png": "f327edec09d3dee68895abafb799b2aac440943a800b4daf1ac169072d00c655"
+      },
+      "checks": [
+        "live startup check",
+        "Home and audible music",
+        "trailer mute/unmute icon",
+        "music duck and restore",
+        "paused seek +5 seconds",
+        "resume",
+        "gallery keyboard/touch push",
+        "normal exit"
+      ],
+      "update_installation": "Live metadata check returned current; video cache explicitly seeded",
+      "music_underruns_observed": 0,
+      "revision_note": "Captured before the final thumbnail cursor adjustment. Audio and startup updater sources are unchanged; the final public build is exercised by the additional run below."
+    },
+    {
+      "model": "New 3DS",
+      "executable_sha256": "1c5b3a8e0708516e2ada2848c9de1afca62ff14d583ceb020899127516590cb7",
+      "source_matches_package": true,
+      "captures": {
+        "mute-final.png": "43e7307abccddb79eb8ea6736c1b01afa0e51f5b214ea6b9224e38fe15d7904c",
+        "thumb-after.png": "453e548227432d41da7553e0d8e34724d2fc0773720ee44bef14b05111808c8a",
+        "thumb-before.png": "20246f5c0a65b2276a290af92c0cdfb57a1a8391c7529587ee19840b9aa4cb27",
+        "thumb-early.png": "d9ab51db93e46f6dd7ee9c69b887cbc6bc5db1fed27d7df37d11e7b6efc5e895",
+        "thumb-interrupt.png": "c73924064455fc294ebcb77525003faea3f626bb7a7f5838fad07f6e2bcd5ee8",
+        "thumb-middle.png": "e23173b5e62819e582a6e3a801d29333dddf4c155f7dd72a9e90418afafbeac7",
+        "thumb-reverse.png": "28e0e01b796fccc8a81fd5e14f9aefe41663e32340a428146f122477298540f6",
+        "thumb-settled.png": "d281cf9dc8b62e02ee84cc655c6dbf8e173a7c04ee11a0cc2a930a0d5e0ef166",
+        "thumb-touch-end.png": "371c12cbeff96ec179a3416e82c12b424a2dae94477a155194699ddcfee7a11b",
+        "thumb-touch.png": "735b3104ff96c23de841a1463649da5b2cbdbeead04d31e8b965e7d0ee49eb99",
+        "volume-final.png": "b2d938b3d7b5abdd9de46a4981df29958f0cf70a6f18eb9255038b6c1e2a8101"
+      },
+      "checks": [
+        "live current-build check",
+        "Home music",
+        "thumbnail frame before/during/after navigation",
+        "reverse and interrupt cursor motion",
+        "touch navigation",
+        "both gallery image transitions",
+        "centered complete mute/unmute icon",
+        "normal exit"
+      ],
+      "music_underruns_observed": 0,
+      "video_cache": "Explicitly seeded with verified resources"
+    }
+  ],
+  "decline": {
+    "result": "normal exit after fade with keyboard and touch",
+    "scope": "Earlier isolated New 3DS UI captures; unchanged decision/exit code",
+    "backend": "Host tests assert no binary HTTP request, staging file or AM transaction before consent"
+  },
+  "pixel_icon": {
+    "comparison": "native framebuffer vs host binary mask",
+    "matched_pixels": 1600,
+    "size": [
+      40,
+      40
+    ],
+    "filtered_fringe": false
+  },
+  "audio_recording": {
+    "sha256": "57f8bae2a2a9fb0e6f9cbc871d8c9257656016bf571fb466ddb9b7e7bf9b4d05",
+    "bytes": 217138,
+    "peak_dbfs": -0.5,
+    "format": "emulator audio recording; physical output not measured"
+  },
+  "web": {
+    "tool": "Code Atlas preview",
+    "simultaneous_gallery_animations": 4,
+    "duration_ms": 340,
+    "midpoint_offsets_px": [
+      200,
+      74
+    ],
+    "current_lower_layers_after_repeated_navigation": 1,
+    "failed_loaded_gallery_images": 0,
+    "thumbnail_cursor": {
+      "size_px": [
+        50,
+        32
+      ],
+      "duration_ms": 340,
+      "easing": "cubic-bezier(.22,1,.36,1)",
+      "single_continuous_frame": true
+    }
+  },
+  "limits": [
+    "No physical-console validation",
+    "AM self-install services mocked on host",
+    "No emulator self-install represented as real installation",
+    "No global pixel-parity score",
+    "No GitHub release"
+  ]
+}

@@ -1,6 +1,7 @@
 // NDSP stereo PCM at 32000 Hz. Short effects stay in linear memory; the opening
 // arrangement and music loop stream from RomFS through a few seconds of read-ahead.
 #include "audio.h"
+#include "audio_gain.h"
 
 #define RATE 32000
 #define CH_MUSIC 0
@@ -90,6 +91,7 @@ static void music_reader(void *unused) {
             __atomic_store_n(&stream_wanted, false, __ATOMIC_RELEASE);
             continue;
         }
+        audio_gain_pcm((s16 *)dst, MUSIC_BLOCK * 2, AUDIO_MUSIC_GAIN_Q8);
         LightLock_Lock(&ring_lock);
         if (gen == __atomic_load_n(&stream_gen, __ATOMIC_ACQUIRE)) ring_head++;  // else: restarted meanwhile
         LightLock_Unlock(&ring_lock);
@@ -171,6 +173,7 @@ static Clip *load(const char *name) {
         return NULL;
     }
     fclose(f);
+    audio_gain_pcm(data, size / sizeof *data, !strncmp(name, "sfx-", 4) ? AUDIO_SFX_GAIN_Q8 : AUDIO_INTRO_GAIN_Q8);
     DSP_FlushDataCache(data, size);
     c = &clips[nclips++];
     snprintf(c->name, sizeof c->name, "%s", name);

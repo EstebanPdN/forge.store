@@ -329,3 +329,13 @@
 .scene-top.gallery:not(.playing) .dt-shade { opacity: 0; pointer-events: none; }
 .scene-top.gallery:not(.playing) .dt-counter { top: 8px; }
 .scene-top.gallery .dt-shot.on { animation: none; }
+.scene-top.gallery .dt-shot { transition: none; }
+.dt-gallery-layer { position: absolute; inset: 0; overflow: hidden; }
+.dt-gallery-layer img, .dt-gallery-layer video { width: 100%; height: 100%; object-fit: contain; }
+.dt-thumbs-track { position: relative; transition: transform 340ms cubic-bezier(.22,1,.36,1); }
+.dt-thumb.on { transform: none; box-shadow: inset 0 0 0 1px var(--line); }
+.dt-thumb-cursor {
+  position: absolute; top: -2px; left: 0; width: 50px; height: 32px;
+  border: 2px solid var(--forge); border-radius: 6px; pointer-events: none; z-index: 1;
+  transition: transform 340ms cubic-bezier(.22,1,.36,1);
+}

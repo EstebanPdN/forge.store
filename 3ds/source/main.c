@@ -20,6 +20,7 @@
 #include "dsp_dump.h"
 #include "debug_dump.h"
 #include "store_update.h"
+#include "update_icon.h"
 #include "github_prefetch.h"
 
 #define BOOT_FADE 0.7f  // black -> background, before the intro starts
@@ -286,6 +287,7 @@ static Cmd cmds[256];
 static int ncmds;
 static char shot_name[40];
 static bool quit_req;
+static void update_test_view(int state);
 
 static void test_load(void) {
     FILE *f = fopen(DATA_DIR "/test.txt", "r");
@@ -349,6 +351,9 @@ static u32 script_apply(int frame, bool *touch, int *tx, int *ty) {
             }
             case 'v':
                 if(f==0)scenes_test_view(c->name);
+                break;
+            case 'u':
+                if(f==0)update_test_view(c->a[0]); // Explicit test.txt only; never installs a fixture.
                 break;
             case 'b':
                 if(f==0){
@@ -458,36 +463,122 @@ static void save_shot(const char *name, const u8 *top, const u8 *bot) {
     free(buf);
 }
 
-// Startup gate owns the screens until a bounded update check has finished.
+// Startup UI owns the screens until checking, confirmation or installation ends.
 static bool update_gate=true;
-static float update_settled=-1, intro_epoch;
+static float update_settled=-1, update_changed, update_gate_started, intro_epoch;
+static int update_focus=1, update_fixture=-1;
 static StoreUpdateState update_seen=(StoreUpdateState)-1;
+static UpdateIcon update_animation;
+static float update_progress_from, update_progress_to;
+static float update_progress_space(void){return lerpf(update_progress_from,update_progress_to,ease_inout(span(NOW,update_changed,.34f)));}
+static StoreUpdateState update_state(void) {
+    return update_fixture>=0?(StoreUpdateState)update_fixture:store_update_state();
+}
+static const char *update_version(void) {
+    return update_fixture>=0?"2026.11.12.3":store_update_version();
+}
+static void update_test_view(int state) {
+    if(state < -1 || state > UPDATE_DECLINED)return;
+    if(!update_gate||update_fixture<0||state<0){
+        update_seen=(StoreUpdateState)-1;update_gate_started=NOW;update_focus=1;
+        update_progress_from=update_progress_to=0;update_animation.initialized=false;
+    }
+    update_fixture=state;update_gate=true;update_settled=-1;
+}
+static UpdateIconKind update_icon_kind(StoreUpdateState state){
+    if(state==UPDATE_CHECKING)return UI_SPIN;
+    if(state==UPDATE_CURRENT||state==UPDATE_DONE)return UI_CHECK;
+    if(state==UPDATE_DOWNLOADING||state==UPDATE_INSTALLING)return UI_DOWNLOADING;
+    if(state==UPDATE_AVAILABLE||state==UPDATE_DECLINED)return UI_DOWNLOAD;
+    return UI_WARN;
+}
+static void update_mark(float cx,float cy) {
+    UpdateIconFrame frame;uint8_t pixels[UPDATE_ICON_SIZE][UPDATE_ICON_SIZE];
+    update_icon_frame(&update_animation,NOW,&frame);update_icon_raster(&frame,pixels);
+    u32 color=C2D_Color32((int)lerpf(255,79,frame.green),(int)lerpf(138,158,frame.green),(int)lerpf(31,134,frame.green),255);
+    int left=(int)roundf(cx)-UPDATE_ICON_SIZE/2,top=(int)roundf(cy)-UPDATE_ICON_SIZE/2;
+    // Whole-pixel scanline runs: no interpolated texture or anti-aliased geometry.
+    for(int y=0;y<UPDATE_ICON_SIZE;y++)for(int x=0;x<UPDATE_ICON_SIZE;){
+        if(!pixels[y][x]){x++;continue;}
+        int start=x;while(x<UPDATE_ICON_SIZE&&pixels[y][x])x++;
+        C2D_DrawRectSolid(left+start,top+y,.5f,x-start,1,color);
+    }
+}
 static void update_screen(bool top) {
     scenes_draw_background(top);
-    if(top){C2D_Image emblem=ui_img("sb-emblem");float k=24.f/emblem.subtex->width;draw_img(emblem,188,66,k,k,1);}
-    if(!top){text_style("forge.store",160,110,18,750,FONT_BRAND,rgb(TH.ink,.8f),AL_CENTER);return;}
-    StoreUpdateState state=store_update_state();
-    bool working=state==UPDATE_CHECKING||state==UPDATE_DOWNLOADING||state==UPDATE_INSTALLING;
-    if(working)ring(200,78,20,2.5f,NOW*3,NOW*3+4.6f,rgb(FORGE,1));
-    else {circle(200,78,22,rgb(state==UPDATE_CURRENT||state==UPDATE_DONE?MINT:AMBER,.15f));draw_icon(state==UPDATE_CURRENT||state==UPDATE_DONE?"check":"warn",200,78,22,rgb(state==UPDATE_CURRENT||state==UPDATE_DONE?MINT:AMBER,1));}
-    const char *keys[]={"update.checking","update.current","update.offline","update.downloading","update.installing","update.done","update.failed"};
-    const char *label=T(keys[state]);
+    StoreUpdateState state=update_seen==(StoreUpdateState)-1?UPDATE_CHECKING:update_seen;
+    if(!top){
+        if(state==UPDATE_AVAILABLE||state==UPDATE_DECLINED)scenes_draw_update_confirmation(update_version(),update_focus,1);
+        else if(state==UPDATE_DOWNLOADING||state==UPDATE_INSTALLING){
+            text(T("detail.version"),160,98,11,rgb(TH.ink_soft,1),AL_CENTER);
+            text_style(update_version(),160,120,18,700,0,rgb(TH.ink,1),AL_CENTER);
+        }
+        return;
+    }
+    const char *key;
+    switch(state){
+        case UPDATE_CURRENT:key="update.current";break;
+        case UPDATE_OFFLINE:key="update.offline";break;
+        case UPDATE_DOWNLOADING:key="update.downloading";break;
+        case UPDATE_INSTALLING:key="update.installing";break;
+        case UPDATE_DONE:key="update.done";break;
+        case UPDATE_FAILED:key="update.failed";break;
+        case UPDATE_AVAILABLE:case UPDATE_DECLINED:key="update.available";break;
+        default:key="update.checking";break;
+    }
+    const char *label=T(key);
     float h=text_wrap_h_style(label,14,700,360);
-    // Wrapped and centered as a block; short localized states remain one line.
-    if(h<=line_h(14))text_style(label,200,116,14,700,0,rgb(TH.ink,1),AL_CENTER);
-    else text_wrap_style(label,20,116,14,700,rgb(TH.ink,1),360);
-    if(state==UPDATE_DOWNLOADING||state==UPDATE_INSTALLING){float p=clampf(store_update_progress(),0,1);rrect(60,166,280,5,2.5f,rgb(TH.surface3,1));rrect(60,166,fmaxf(1,280*p),5,2.5f,rgb(FORGE,1));char percent[20];snprintf(percent,sizeof percent,"%d %%",(int)(p*100));text(percent,200,181,11,rgb(TH.ink_soft,1),AL_CENTER);}
+    bool progress=state==UPDATE_DOWNLOADING||state==UPDATE_INSTALLING;
+    // Centre the complete icon + label (+ progress) block around y=120.
+    float height=48+16+h+update_progress_space(),y=(SCR_H-height)/2;
+    update_mark(200,y+24);
+    if(h<=line_h(14))text_style(label,200,y+64,14,700,0,rgb(TH.ink,1),AL_CENTER);
+    else text_wrap_style(label,20,y+64,14,700,rgb(TH.ink,1),360);
+    if(progress){
+        float p=update_fixture>=0?.42f:clampf(store_update_progress(),0,1),by=y+64+h+12;
+        rrect(60,by,280,5,2.5f,rgb(TH.surface3,1));rrect(60,by,fmaxf(1,280*p),5,2.5f,rgb(FORGE,1));
+        char percent[20];snprintf(percent,sizeof percent,"%d %%",(int)(p*100));
+        text(percent,200,by+9,11,rgb(TH.ink_soft,1),AL_CENTER);
+    }
 }
 static void update_boot(void){
     store_update_poll();
-    StoreUpdateState state=store_update_state();
-    if(state!=update_seen){update_seen=state;sfx(state==UPDATE_CURRENT||state==UPDATE_DONE?"complete":state==UPDATE_DOWNLOADING?"download":"page");}
+    StoreUpdateState state=update_state();
+    // A fast response still gives the rotating mark time to read as a check.
+    if(NOW-update_gate_started<.9f)state=UPDATE_CHECKING;
+    if(state!=update_seen){
+        update_progress_from=update_progress_space();
+        update_progress_to=state==UPDATE_DOWNLOADING||state==UPDATE_INSTALLING?34:0;
+        update_icon_set(&update_animation,update_icon_kind(state),NOW);
+        update_seen=state;update_changed=NOW;update_settled=-1;
+        if(state==UPDATE_AVAILABLE)update_focus=1;
+        sfx(state==UPDATE_CURRENT||state==UPDATE_DONE?"complete":state==UPDATE_DOWNLOADING?"download":"page");
+    }
+    if(state==UPDATE_AVAILABLE){
+        if(NOW-update_changed>.2f){
+            int choice=scenes_update_confirmation_input(&update_focus);
+            if(choice>=0){
+                bool decided=update_fixture>=0||store_update_decide(choice!=0);
+                if(decided){
+                    if(update_fixture>=0)update_fixture=choice?UPDATE_DOWNLOADING:UPDATE_DECLINED;
+                    sfx(choice?"select":"close");
+                }
+            }
+        }
+        return;
+    }
+    if(state==UPDATE_DECLINED){if(NOW-update_changed>=.4f)quit_req=true;return;}
     bool terminal=state==UPDATE_CURRENT||state==UPDATE_OFFLINE||state==UPDATE_DONE||state==UPDATE_FAILED;
     if(!terminal)return;
-    if(update_settled<0)update_settled=fmaxf(NOW,.8f);
-    if(NOW<update_settled+1.15f)return;
-    if(state==UPDATE_DONE){store_update_restart();quit_req=true;return;}
+    if(update_settled<0)update_settled=NOW;
+    if(NOW<update_settled+1.5f)return;
+    if(state==UPDATE_DONE){if(update_fixture<0)store_update_restart();quit_req=true;return;}
     update_gate=false;intro_epoch=NOW;scenes_intro_restart(BOOT_FADE);
+}
+static float update_cover(void){
+    if(update_seen==UPDATE_DECLINED)return ease_inout(span(NOW,update_changed,.4f));
+    if(update_settled>=0)return ease_inout(span(NOW,update_settled+1.1f,.4f));
+    return 1-ease_inout(span(NOW,update_gate_started,.3f));
 }
 
 static void render(void) {
@@ -630,7 +721,7 @@ int main(int argc, char **argv) {
         status_refresh();
         float want = scenes_statusbar() ? 1 : 0;
         sb_a = clampf(sb_a + (want - sb_a) * (1 - powf(.0005f, DT)), 0, 1);
-        cover = update_gate ? (update_settled<0?1-ease_inout(span(NOW,0,.3f)):ease_inout(span(NOW,update_settled+.75f,.4f))) : fmaxf(1-ease_inout(span(NOW,intro_epoch,BOOT_FADE)),scenes_exit_fade());
+        cover = update_gate ? update_cover() : fmaxf(1-ease_inout(span(NOW,intro_epoch,BOOT_FADE)),scenes_exit_fade());
 
         // FrameBegin now precedes updates, so citro3d includes both update and drawing.
         debug_beat("render");

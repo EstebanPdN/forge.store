@@ -50,8 +50,9 @@ exactly zero**: the 3DS kernel can return a positive timeout code.
 ## Runtime flow
 
 1. Load bundled settings/catalog/art and initialize services, graphics and audio.
-2. Check for store updates with a five-second UI deadline. A verified newer build downloads,
-   installs and requests restart; a current/unavailable result fades into the introduction.
+2. Check for store updates with a five-second UI deadline. A verified newer build waits for
+   confirmation, then downloads, installs and requests restart. Rejecting it fades to black
+   and exits; a current/unavailable result fades into the introduction. The choice has no timeout.
 3. Present the introduction/theme choice and bring Home into view. Start one persistent media
    worker and the low-priority GitHub prefetch pass once Home is usable. Keep pumping queues and input.
 4. Verify each cached video or download to a private `.part` path, hash it and rename atomically.

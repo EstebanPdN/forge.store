@@ -189,6 +189,30 @@ static bool hit(float x, float y, float w, float h) {
            abs(IN.last_x - IN.start_x) < 10 && abs(IN.last_y - IN.start_y) < 10;
 }
 
+static float update_prompt_top(void){return (240-(108+text_wrap_h(T("update.prompt"),11,288)))/2;}
+static float update_prompt_buttons_y(void){return update_prompt_top()+76+text_wrap_h(T("update.prompt"),11,288);}
+enum { UPDATE_NO_X=66, UPDATE_YES_X=166, UPDATE_BUTTON_W=88 };
+void scenes_draw_update_confirmation(const char *version,int focus,float a){
+    float y=update_prompt_top(),h=text_wrap_h(T("update.prompt"),11,288);
+    text_style(T("update.confirmTitle"),160,y,14,700,0,C(TH.ink,a),AL_CENTER);
+    if(h<=line_h(11))text(T("update.prompt"),160,y+28,11,C(TH.ink_soft,a),AL_CENTER);
+    else text_wrap(T("update.prompt"),16,y+28,11,C(TH.ink_soft,a),288);
+    char fitted[80];fit_label_style(fitted,sizeof fitted,version,18,700,268);
+    text_style(fitted,160,y+34+h,18,700,0,C(FORGE,a),AL_CENTER);
+    float by=update_prompt_buttons_y();
+    button(UPDATE_NO_X,by,UPDATE_BUTTON_W,32,T("detail.no"),NULL,"B",BTN_SURFACE,a);
+    button(UPDATE_YES_X,by,UPDATE_BUTTON_W,32,T("detail.yes"),NULL,"A",BTN_PRIMARY,a);
+    rrect_outline((focus?UPDATE_YES_X:UPDATE_NO_X)-2,by-2,UPDATE_BUTTON_W+4,36,10,1,C(TH.ink,.5f*a));
+}
+int scenes_update_confirmation_input(int *focus){
+    if(IN.down&(KEY_LEFT|KEY_RIGHT)){*focus=(IN.down&KEY_RIGHT)!=0;sfx("move");}
+    float y=update_prompt_buttons_y();
+    if((IN.down&KEY_B)||hit(UPDATE_NO_X,y,UPDATE_BUTTON_W,32))return 0;
+    if(hit(UPDATE_YES_X,y,UPDATE_BUTTON_W,32))return 1;
+    if(IN.down&KEY_A)return *focus;
+    return -1;
+}
+
 // UI reads never touch the SD. Installer/launch validation retains its fresh,
 // synchronous checks; only presentation uses these worker-owned probe results.
 static struct { json_t *requirement; FileView file; } requirement_views[256];
@@ -1093,6 +1117,9 @@ static void video_ui_show(bool on){
     if(on!=video_ui_on){video_ui_from=video_overlay_alpha;video_ui_changed=NOW;video_ui_on=on;}
 }
 static int dtab, shot_i, shot_prev = -1, news_open;
+static int shot_direction=1;
+static bool shot_waiting;
+static UiTabs gallery_thumbs;
 static float news_rows[16];
 static int news_count;
 static struct { float x,y,w; const char *url; json_t *check; } requirement_tools[32];
@@ -1158,6 +1185,7 @@ static void open_detail(void) {
     thumb_shift = 0;
     shot_i = 0;
     shot_prev = -1;
+    shot_waiting=false;shot_direction=1;memset(&gallery_thumbs,0,sizeof gallery_thumbs);
     shot_t = NOW;
     dscroll = dscroll_target = 0;
     news_open = 0; requirement_tool_count=0;
@@ -1183,13 +1211,33 @@ static C2D_Image shot_img(int i, bool bottom, bool *ok) {
     return sheet_img(s, b % 4);
 }
 
+static C2D_Image gallery_image(int index,bool bottom,bool *ok);
+static float gallery_progress(void) { return shot_waiting?0:ease_inout(span(NOW,shot_t,.34f)); }
+// Reuse the tabs' sampled, interruptible 340 ms cursor and scroll animation.
+static void gallery_thumbs_layout(void){
+    UiTabs *t=&gallery_thumbs;int selected=shot_i+nvideo,total=dapp->shots+nvideo;
+    float shift=clampf(selected*50+23-150,0,fmaxf(0,total*50-304));
+    if(!t->ready||t->selected!=selected){
+        if(t->ready)tabs_sample(t);
+        t->selected=selected;t->changed=NOW;
+        t->from_shift=t->shift;t->from_thumb=t->thumb;t->from_w=t->thumb_w;
+        t->to_shift=shift;t->to_thumb=selected*50;t->to_w=50;
+        if(!t->ready){t->from_shift=shift;t->from_thumb=t->to_thumb;t->from_w=50;t->changed=NOW-1;}
+        t->ready=true;
+    }
+    tabs_sample(t);thumb_shift=t->shift;
+}
+static void detail_select_shot(int index,int direction) {
+    if(index==shot_i)return;
+    if(!shot_waiting)shot_prev=shot_i;
+    shot_i=index;shot_direction=direction<0?-1:1;
+    gallery_thumbs_layout();shot_t=NOW;shot_waiting=true;
+}
 static void detail_next_shot(int d) {
     int nv = nvideo, total = dapp->shots + nv;
     if (total < 2)
         return;
-    shot_prev = shot_i;
-    shot_i = (shot_i + nv + d + total) % total - nv;
-    shot_t = NOW;
+    detail_select_shot((shot_i + nv + d + total) % total - nv,d);
 }
 
 static void open_sheet(void) {
@@ -1332,9 +1380,14 @@ static void detail_update(void) {
         if(IN.touch_up&&!IN.dragged){if(touched)video_ui_show(true);else video_ui_show(!video_ui_on);}
         return;
     }
-    if (!test_freeze_media && dtab != 1 && NOW - shot_t > 4.8f && shot_i >= 0 && dapp->shots > 1) {
-        shot_prev=shot_i; shot_i=(shot_i+1)%dapp->shots; shot_t=NOW;
+    if(shot_waiting){
+        bool top_ready=false,bottom_ready=false;
+        gallery_image(shot_i,false,&top_ready);gallery_image(shot_i,true,&bottom_ready);
+        bool has_bottom=shot_i<0||dapp->shot_bottom[shot_i];
+        if(top_ready&&(!has_bottom||bottom_ready)){shot_waiting=false;shot_t=NOW;}
     }
+    if (!test_freeze_media && dtab != 1 && NOW - shot_t > 4.8f && shot_i >= 0 && dapp->shots > 1)
+        detail_select_shot((shot_i+1)%dapp->shots,1);
     dscroll = lerpf(dscroll, dscroll_target, 1 - powf(.0005f, DT));
     if(uninstall_on) {
         if(IN.down&KEY_B || hit(16,148,130,28)) { uninstall_on=false; sfx("back"); }
@@ -1432,12 +1485,10 @@ static void detail_update(void) {
         }
     if (dtab == 1) {
         int total = nvideo + dapp->shots, selected = shot_i + nvideo;
-        thumb_shift = clampf(selected * 50 + 23 - 150, 0, fmaxf(0, total * 50 - 304));
+        gallery_thumbs_layout();
         for (int i = 0; i < total; i++)
             if (hit(10 + i * 50 - thumb_shift, 44,46,28)) {
-                shot_prev = shot_i;
-                shot_i = i - nvideo;
-                shot_t = NOW;
+                detail_select_shot(i-nvideo,i>selected?1:-1);
                 sfx("move");
             }
         if (shot_i < 0 && (IN.down & KEY_A || hit(GALLERY_X,gallery_play_y,GALLERY_W,28) || hit(10,81,GALLERY_PREVIEW_W,111))) {
@@ -1571,6 +1622,7 @@ static void detail_top_overlay(float sa) {
 
 // Both screens use the same 340 ms gallery transition, including video posters.
 static C2D_Image gallery_image(int index,bool bottom,bool *ok) {
+    if(index < -nvideo || index >= dapp->shots){*ok=false;return (C2D_Image){0};}
     if(index>=0) {
         if(bottom&&!dapp->shot_bottom[index]){*ok=false;return (C2D_Image){0};}
         return shot_img(index,bottom,ok);
@@ -1588,15 +1640,20 @@ static void detail_top(float sa) {
         return;
     }
     bool ok=false;C2D_Image cur=gallery_image(shot_i,false,&ok);
-    float p=ease_inout(span(NOW,shot_t,.34f));
-    if(ok){
+    float p=gallery_progress();
+    bool previous=false;C2D_Image old={0};
+    if(shot_prev!=shot_i&&p<1)old=gallery_image(shot_prev,false,&previous);
+    if(dtab==1&&previous){
+        float offset=roundf(400*p);
+        draw_img(old,-shot_direction*offset,0,1,1,sa);
+        if(ok)draw_img(cur,shot_direction*(400-offset),0,1,1,sa);
+    }else if(ok){
         // Pixel-aligned in the gallery; retain the slow background drift on other tabs.
         float drift=dtab==1||test_freeze_media?1:1+.07f*(1-ease_out(span(NOW,shot_t,6.5f)));
-        bool previous=false;
-        if(shot_prev!=shot_i&&p<1){C2D_Image old=gallery_image(shot_prev,false,&previous);if(previous)draw_img(old,0,0,1,1,sa);}
+        if(previous)draw_img(old,0,0,1,1,sa);
         draw_img(cur,200-200*drift,120-120*drift,drift,drift,sa*(previous?p:1));
-        if(shot_i<0)draw_icon("play",200,105,26,C(0xffffff,sa));
     }else banner_draw(dapp,sa,0);
+    if(shot_i<0)draw_icon("play",200,105,26,C(0xffffff,sa*p));
     detail_top_overlay(sa);
 }
 
@@ -1695,8 +1752,7 @@ static float detail_shots(float y, float a) {
         text(T("detail.noShots"), 160, y + 70, 10, C(TH.ink_faint, a), AL_CENTER);
         return 160;
     }
-    float shift = clampf(selected * 50 + 23 - 150, 0, fmaxf(0, total * 50 - 304));
-    thumb_shift = shift;
+    gallery_thumbs_layout();float shift=thumb_shift;
     for (int i = 0; i < total; i++) {
         float x = 10 + i * 50 - shift;
         if (x + 46 < 0 || x > 320)
@@ -1708,27 +1764,29 @@ static float detail_shots(float y, float a) {
             im = sheet_img(&video_posters, i);
         } else
             im = shot_img(i - nvideo, false, &ok);
-        if (i == selected)
-            rrect(x - 2, y + 1, 50, 32, 6, C(FORGE, a));
         if (ok)
-            draw_img(im, x, y + 3, 46.f / 400, 28.f / 240, a * (i == selected ? 1 : .55f));
+            draw_img(im, x, y + 3, 46.f / 400, 28.f / 240, a * (.55f+.45f*clampf(1-fabsf(i*50-gallery_thumbs.thumb)/50,0,1)));
         if (i < nvideo)
             draw_icon("play", x + 23, y + 17, 12, C(0xffffff, a));
     }
+    rrect_outline(roundf(8+gallery_thumbs.thumb-shift),y+1,50,32,6,2,C(FORGE,a));
     y += 42;
     bool ok;C2D_Image im=gallery_image(shot_i,true,&ok);
     float preview_h=shot_i<0&&!json_is_string(json_object_get(selected_video(),"bottom"))?83:111;
     rrect(10,y,GALLERY_PREVIEW_W,preview_h,8,C(0,.85f*a));
-    float phase=ease_inout(span(NOW,shot_t,.34f));
+    float phase=gallery_progress();
     bool previous=false;
+    float offset=roundf(GALLERY_PREVIEW_W*phase);
+    scissor(BOT_W,10,y,GALLERY_PREVIEW_W,preview_h);
     if(shot_prev!=shot_i&&phase<1){
         C2D_Image old=gallery_image(shot_prev,true,&previous);
-        if(previous){float scale=fminf((float)GALLERY_PREVIEW_W/old.subtex->width,preview_h/old.subtex->height);draw_img(old,10+(GALLERY_PREVIEW_W-old.subtex->width*scale)/2,y+(preview_h-old.subtex->height*scale)/2,scale,scale,a);}
+        if(previous){float scale=fminf((float)GALLERY_PREVIEW_W/old.subtex->width,preview_h/old.subtex->height);draw_img(old,10+(GALLERY_PREVIEW_W-old.subtex->width*scale)/2-shot_direction*offset,y+(preview_h-old.subtex->height*scale)/2,scale,scale,a);}
     }
     if(ok){
         float scale=fminf((float)GALLERY_PREVIEW_W/im.subtex->width,preview_h/im.subtex->height);
-        draw_img(im,10+(GALLERY_PREVIEW_W-im.subtex->width*scale)/2,y+(preview_h-im.subtex->height*scale)/2,scale,scale,a*(previous?phase:1));
+        draw_img(im,10+(GALLERY_PREVIEW_W-im.subtex->width*scale)/2+(previous?shot_direction*(GALLERY_PREVIEW_W-offset):0),y+(preview_h-im.subtex->height*scale)/2,scale,scale,a);
     }else draw_icon("eye",84,y+preview_h/2,20,C(TH.ink_faint,a));
+    float dx=DRAW_X;DRAW_X=0;scissor(BOT_W,0,36,BOT_W,164);DRAW_X=dx;
     json_t *m = shot_i < 0 ? selected_video() : json_array_get(json_object_get(dapp->j, "shots"), shot_i);
     const char *caption=LJ(json_object_get(m,shot_i<0?"title":"caption"));
     float title_h;
@@ -1751,7 +1809,7 @@ static float detail_shots(float y, float a) {
     }
     button(GALLERY_X,GALLERY_NAV_Y,GALLERY_NAV_W,28,NULL,"back",NULL,BTN_SURFACE,a);
     button(310-GALLERY_NAV_W,GALLERY_NAV_Y,GALLERY_NAV_W,28,NULL,"next",NULL,BTN_SURFACE,a);
-    char count[24];snprintf(count,sizeof count,"%d / %d",selected+1,total);
+    char count[32];snprintf(count,sizeof count,"%d / %d",selected+1,total);
     text_style(count,GALLERY_X+GALLERY_W/2,GALLERY_NAV_Y+7,10,600,0,C(TH.ink_soft,a),AL_CENTER);
     return 159;
 }
@@ -2022,9 +2080,7 @@ static void detail_bottom(float sa) {
             rect(0, 0, 320, 240, C(TH.bg, .86f * sa));
         button(12, 12, 42, 26, NULL, "back", "B", BTN_SURFACE, sa);
         float ma = video_has_audio() ? sa : .35f * sa;
-        button(266, 12, 42, 26, NULL, "volume", "Y", BTN_SURFACE, ma);
-        if (video_muted())
-            C2D_DrawLine(273, 21, C(FORGE, ma), 282, 29, C(FORGE, ma), 1.5f, .5f);
+        button(266, 12, 42, 26, NULL, video_muted() ? "mute" : "volume", "Y", BTN_SURFACE, ma);
         for (int i = 0; i < 2; i++) {
             float x = i ? 226 : 50;
             rrect(x, 86, 44, 44, 22, C(TH.surface, sa));

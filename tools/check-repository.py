@@ -53,8 +53,10 @@ if build.exists():
     info=json.loads(build.read_text());
     version=int(re.search(r'#define STORE_BUILD (\d+)',(ROOT/'3ds/source/store_version.h').read_text())[1])
     check(info.get('store_build')==version,'Update manifest/build sequence differs')
+    display_version=re.search(r'#define STORE_VERSION "([^"]+)"',(ROOT/'3ds/source/store_version.h').read_text())[1]
+    check(info.get('version')==display_version,'Update display version differs')
     update=build.parent/'update.json'
-    check(update.exists() and json.loads(update.read_text())=={k:info[k] for k in ('store_build','files')},'Compact update manifest differs')
+    check(update.exists() and json.loads(update.read_text())=={k:info[k] for k in ('store_build','version','files')},'Compact update manifest differs')
     check(not info['debug_dumps'] and not info['dump_upload'],'Public build has debug uploads/dumps')
     for name,item in info['files'].items():
         p=build.parent/name;check(p.exists() and p.stat().st_size==item['bytes'] and digest(p)==item['sha256'],f'Build checksum: {name}')

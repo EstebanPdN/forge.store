@@ -11,6 +11,8 @@
 static Thread worker;
 static int state = UPDATE_CHECKING;
 static bool cancelled, homebrew;
+static int decision;
+static char offered_version[40];
 static u64 started_at;
 static uint32_t received, total;
 static char executable[1024];
@@ -18,6 +20,13 @@ static char metadata[16384];
 static size_t metadata_size;
 static void publish(StoreUpdateState s) { __atomic_store_n(&state, s, __ATOMIC_RELEASE); }
 StoreUpdateState store_update_state(void) { return __atomic_load_n(&state, __ATOMIC_ACQUIRE); }
+const char *store_update_version(void) { return offered_version; }
+bool store_update_decide(bool accept) {
+    if (store_update_state() != UPDATE_AVAILABLE) return false;
+    int waiting = 0;
+    return __atomic_compare_exchange_n(&decision, &waiting, accept ? 1 : -1, false,
+                                      __ATOMIC_RELEASE, __ATOMIC_RELAXED);
+}
 float store_update_progress(void) {
     uint32_t n = __atomic_load_n(&total, __ATOMIC_RELAXED);
     return n ? (float)__atomic_load_n(&received, __ATOMIC_RELAXED) / n : 0;
@@ -183,6 +192,7 @@ static void run(void *unused) {
     int64_t build = 0;
     char expected[65];
     bool valid = store_update_metadata(root, homebrew, &bytes, expected, &build);
+    if(valid)store_update_version_label(root,build,offered_version,sizeof offered_version);
     json_decref(root);
     if (!valid) {
         publish(UPDATE_OFFLINE);
@@ -194,17 +204,22 @@ static void run(void *unused) {
                                     __ATOMIC_ACQUIRE);
         return;
     }
+    // Publish all offer metadata before the main thread renders the prompt. The
+    // deadline applies only to checking, never to the user's time to decide.
+    int expected_state = UPDATE_CHECKING;
+    if (stopped() || !__atomic_compare_exchange_n(&state, &expected_state, UPDATE_AVAILABLE, false,
+                                                  __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
+        return;
+    while(!stopped() && !__atomic_load_n(&decision,__ATOMIC_ACQUIRE))svcSleepThread(20000000);
+    if(stopped() || __atomic_load_n(&decision,__ATOMIC_ACQUIRE)<0){publish(UPDATE_DECLINED);return;}
+    bg_wait();
+    if(stopped()){publish(UPDATE_DECLINED);return;}
     struct statvfs space;
     if (statvfs("sdmc:/", &space) ||
         (uint64_t)space.f_bavail * space.f_frsize < bytes * 2 + 8 * 1024 * 1024) {
         publish(UPDATE_FAILED);
         return;
     }
-    // A timed-out check can never begin installing later, after the intro opened.
-    int expected_state = UPDATE_CHECKING;
-    if (stopped() || !__atomic_compare_exchange_n(&state, &expected_state, UPDATE_DOWNLOADING, false,
-                                                  __ATOMIC_ACQ_REL, __ATOMIC_ACQUIRE))
-        return;
     const char *staged = DATA_DIR "/store-update.part";
     Download d = {.limit = bytes};
     d.file = fopen(staged, "wb");
