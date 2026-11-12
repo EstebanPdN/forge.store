@@ -74,7 +74,7 @@ static void music_reader(void *unused) {
             __atomic_store_n(&stream_wanted, false, __ATOMIC_RELEASE);
             continue;
         }
-        audio_gain_pcm((s16 *)dst, MUSIC_BLOCK * 2, AUDIO_MUSIC_GAIN_Q8);
+        audio_gain_music_pcm((s16 *)dst, MUSIC_BLOCK);
         LightLock_Lock(&ring_lock);
         if (gen == __atomic_load_n(&stream_gen, __ATOMIC_ACQUIRE)) ring_head++;  // else: restarted meanwhile
         LightLock_Unlock(&ring_lock);

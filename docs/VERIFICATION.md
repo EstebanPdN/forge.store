@@ -1,8 +1,18 @@
 # Verification record
 
-Publication candidate: **2026.11.12.4**, native C implementation plus web V2. This is a development
+Publication candidate: **2026.11.12.5**, native C implementation plus web V2. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## Default music gain — 2026.11.12.5
+
+The music gain doubles from Q8 410 to 820 on the console and from 0.85 to 1.7 on the web.
+The native PCM test covers all 65,536 input values, stereo balance and every bundled sample.
+The music's measured RMS rises to 1.950× (opening) and 1.947× (loop) after smooth peak
+protection, with no saturated samples. Intro and effect gains remain unchanged.
+Web offline controls pass mute, video duck/restore and master-volume checks.
+The [audio evidence](verification/music-volume.json) records exact build hashes and the
+emulator smoke test. Physical speaker output has not been measured.
 
 ## Home preload and offline reader — 2026.11.12.4
 

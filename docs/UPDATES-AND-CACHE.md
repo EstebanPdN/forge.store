@@ -149,6 +149,9 @@ The ordinary build packages the two music streams as `FPC2` inside gzip. A rever
 second-difference predictor runs independently on the left/right PCM16 channels; gzip handles
 compression and CRC. The worker reconstructs the original 32 kHz samples before applying the
 existing audio gain. It feeds the same read-ahead ring and DSP buffers. Effects remain PCM.
+Build 2026.11.12.5 doubles the music gain, with a smooth stereo-linked shoulder above
+PCM magnitude 24,576 that approaches 31,744. Quiet samples receive the full gain;
+transient peaks avoid hard clipping. Saved master volume, muting and video ducking still apply.
 The production-source test compares every sample across opening/loop boundaries and restarts,
 and checks truncated streams, CRC failures, empty/missing files and malformed headers.
 

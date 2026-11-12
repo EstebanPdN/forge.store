@@ -1,6 +1,6 @@
 // Run runAudioChecks() in the Code Atlas preview. Offline renders exercise the
 // real bus controls; they detect reverb bypasses that gain-value checks miss.
-import { AudioEngine } from '../../src/js/core/audio.js';
+import { AudioEngine, MUSIC_LEVEL } from '../../src/js/core/audio.js';
 
 function rms(buffer, start, end) {
   const data = buffer.getChannelData(0);
@@ -15,7 +15,7 @@ async function render(change, restore) {
   const e = new AudioEngine();
   e.createGraph(ctx);
   e.musicWanted = true;
-  e.musicBus.gain.value = .85;
+  e.musicBus.gain.value = MUSIC_LEVEL;
   for (let s = 0; s < 33; s++) e.music.play(s, .05 + s * .15);
   const first = ctx.suspend(1).then(() => { change(e); return ctx.resume(); });
   const second = restore && ctx.suspend(3).then(() => { restore(e); return ctx.resume(); });

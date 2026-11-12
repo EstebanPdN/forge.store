@@ -1,5 +1,11 @@
 # Changelog
 
+## Louder default music — 2026.11.12.5
+
+- Double the music gain in the native app and web reference, including restoration after video.
+- Protect native music peaks with a smooth stereo-linked shoulder. Keep the saved master
+  volume, music toggle, intro, effects and video levels unchanged.
+
 ## Home preload and offline reader — 2026.11.12.4
 
 - Warm Forge backgrounds/logos before the intro, retain an LRU working set on Home and

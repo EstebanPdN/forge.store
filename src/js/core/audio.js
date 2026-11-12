@@ -3,6 +3,7 @@
 import { Music } from './music.js';
 
 const NOTE = (midi) => 440 * 2 ** ((midi - 69) / 12);
+export const MUSIC_LEVEL = 1.7; // Twice the previous 0.85 music level.
 
 export class AudioEngine {
   constructor() {
@@ -108,7 +109,7 @@ export class AudioEngine {
     const g = this.musicBus.gain;
     g.cancelScheduledValues(this.ctx.currentTime);
     g.setValueAtTime(g.value, this.ctx.currentTime);
-    g.linearRampToValueAtTime(this.ducked ? 0 : 0.85, this.ctx.currentTime + fade);
+    g.linearRampToValueAtTime(this.ducked ? 0 : MUSIC_LEVEL, this.ctx.currentTime + fade);
   }
 
   /** Silences the music while a trailer with sound plays, and brings it back after. */
@@ -117,7 +118,7 @@ export class AudioEngine {
     if (!this.ctx) return;
     const g = this.musicBus.gain;
     g.cancelScheduledValues(this.ctx.currentTime);
-    g.setTargetAtTime(on || !this.musicWanted || !this.musicOn ? 0 : 0.85, this.ctx.currentTime, 0.18);
+    g.setTargetAtTime(on || !this.musicWanted || !this.musicOn ? 0 : MUSIC_LEVEL, this.ctx.currentTime, 0.18);
   }
 
   stopMusic(keepWanted = false, fade = 0.6) {

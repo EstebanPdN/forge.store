@@ -1,0 +1,60 @@
+{
+  "version": "2026.11.12.5",
+  "public_binaries": {
+    "forge-store.cia": {
+      "bytes": 48657344,
+      "sha256": "739f045455d12c0544ad9dfd801cc6e4311a9e36f61d5a989885464bc8d9e82b"
+    },
+    "forge-store.3dsx": {
+      "bytes": 49195480,
+      "sha256": "158f9afa96158e10f3cc6ad6bc2ccdbdb67eb0b0b2ecd6db57d3c9e1a3e8a71f"
+    }
+  },
+  "music_gain_ratio": 2,
+  "native_gain_q8": {
+    "before": 410,
+    "after": 820
+  },
+  "web_music_gain": {
+    "before": 0.85,
+    "after": 1.7
+  },
+  "native_rms_ratio_after_peak_protection": {
+    "opening": 1.95,
+    "loop": 1.947
+  },
+  "host": {
+    "pcm_assets": 19,
+    "all_signed_inputs": 65536,
+    "sanitizers": [
+      "ASan",
+      "UBSan"
+    ],
+    "saturated_music_samples": 0,
+    "stereo_balance": "linked attenuation; integer quantization bounded"
+  },
+  "web": {
+    "mute_duck_restore_master_volume": "passed offline Web Audio renders",
+    "music_level": 1.7,
+    "offline_duration_seconds": 80,
+    "maximum_master_volume_peak": 0.9543298482894897,
+    "clipped": false
+  },
+  "emulator": {
+    "model": "Old 3DS",
+    "executable_sha256": "158f9afa96158e10f3cc6ad6bc2ccdbdb67eb0b0b2ecd6db57d3c9e1a3e8a71f",
+    "source_matches_package": true,
+    "normal_exit": true,
+    "default_master_volume": 0.8,
+    "music_underruns": [
+      0
+    ],
+    "seeded_video_cache": true,
+    "captures": {
+      "music.png": "4c95eaaf993edd4d4bdc59be48201e30c2e076df66040cdf0262daeb44cfc7ab",
+      "restored.png": "dae6428082263f601e19b3c65b76062e4f85ce2b127e9f091a87b2cfe9ca95fa",
+      "video.png": "9bffff40bf1f1040951a05c30471bfc8d55fe3c5064f2744e4ed9130d91a01dd"
+    }
+  },
+  "physical_console": "Speaker output not measured."
+}
