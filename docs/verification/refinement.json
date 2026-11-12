@@ -134,17 +134,21 @@
       "scenario": "trailer",
       "screen": "bottom",
       "unaligned_unmasked": true,
-      "within_rgb16_percent": 84.22,
-      "exact_percent": 20.28,
-      "mae": 9.51
+      "within_rgb16_percent": 84.23,
+      "exact_percent": 18.87,
+      "mae": 9.67,
+      "web_png_sha256": "2ac33492902e60cd8d8a5aae4bc81fc25242e4a613f19dc0a6ab9397d584c105",
+      "native_png_sha256": "b206e615020c0fbd31e0f4bc2e33b03a260cc8722a3cfaa9f63119036a0a666d"
     },
     {
       "scenario": "castle",
       "screen": "bottom",
       "unaligned_unmasked": true,
       "within_rgb16_percent": 79.33,
-      "exact_percent": 17.02,
-      "mae": 11.71
+      "exact_percent": 17.93,
+      "mae": 11.6,
+      "web_png_sha256": "fb4e300ed8fb82a83ff9db935214e3d6224405e5eeb1b5235fd7de6cbeb3945c",
+      "native_png_sha256": "c53985d719a245964b06003e602bb75083adf874c83b97be7c94f2d4b8f29f5c"
     }
   ],
   "resources": [
@@ -203,5 +207,53 @@
     "Only two whole-screen visual comparisons; not global parity.",
     "Self-update AM services mocked; real install/restart qualification pending.",
     "Emulator timings do not establish physical-console performance."
-  ]
+  ],
+  "publication": {
+    "code_commit": "261ddb556b3219e76088a8096ce9993e21058444",
+    "repository": "https://github.com/EstebanPdN/forge.store",
+    "releases_created": false,
+    "repository_checks": "https://github.com/EstebanPdN/forge.store/actions/runs/43140340266",
+    "anonymous_binary_downloads": [
+      {
+        "file": "forge-store.cia",
+        "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/261ddb556b3219e76088a8096ce9993e21058444/builds/3ds/forge-store.cia",
+        "bytes": 44671936,
+        "sha256": "09a8430876994194a0ac9ed37cc3e27f6da13c4bac4ce96d255df83821bfd372",
+        "verified": true
+      },
+      {
+        "file": "forge-store.3dsx",
+        "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/261ddb556b3219e76088a8096ce9993e21058444/builds/3ds/forge-store.3dsx",
+        "bytes": 45223312,
+        "sha256": "a4e938f32632ef29f01c06d42d095915eaa04a998a5dfabcd4f44255ae7cbf09",
+        "verified": true
+      }
+    ],
+    "qr_decoded_to_exact_pinned_cia_url": true
+  },
+  "published_emulator": {
+    "model": "New 3DS",
+    "executable_sha256": "a4e938f32632ef29f01c06d42d095915eaa04a998a5dfabcd4f44255ae7cbf09",
+    "script": "15:schecking;55:sstatus-early;115:sstatus-late;420:vhome;460:b82,0;580:shome;1000:vdownloads;1120:spackage-downloading;1500:vhome;2500:vdownloads;2620:spackage;2800:vgithub-profile;3200:sprofile;3220:vhome;3310:shome-return;3330:vvideo-trailer;3430:strailer;3450:t235,110;3610:splaying;3640:q",
+    "started_with_empty_video_and_http_cache": true,
+    "startup_update_state": "UPDATE_CURRENT from live published update.json",
+    "verified_resources": 7,
+    "total_resource_bytes": 16044949,
+    "resource_attempts_each": 1,
+    "completed": true,
+    "music_underruns_max": 0,
+    "trailer_audio": "active and unmuted at 2.59 seconds",
+    "captures": {
+      "checking": "7c9b1c9468e9b2a924251411f3a2bc23e4c5965806a0cbe82f2fb3be54dafc76",
+      "home-return": "c557995002ee799ef2e1d25c6928c6530be2e4959315cf32729cab54eaf1709d",
+      "home": "f705c4966358bfa587882e99ffb621031bbf87ebd19cf20953c8040c9efe56ef",
+      "package-downloading": "d7adbef1b2ac23723010ba7d6ebe35fbcc9624566728c49d876814a1f5b3ddeb",
+      "package": "1541c0759454216dee9fd609df3d82682246b4a0276a7b21502462c9173f0d1c",
+      "playing": "d65bae21e648c86ff6f5e07d4a167e4a0bedf6e684acb7cea7a32b326f06eb2e",
+      "profile": "563433f1cfeba09327b4825f89c68cf181575e5bdcc8cfaad277d5faf69cd0d0",
+      "status-early": "a045e35659116b76fcbadd375d4247ac8aad5e102afe2fb1641713587a56b08e",
+      "status-late": "b63e2f16f68bf48afe65539ca46b649df78b532797bb9f9fb9728bbe8c4c090a",
+      "trailer": "295146785065ae6a9bf3c4193947660b2251c07d7e826c149156dae52e8aace4"
+    }
+  }
 }

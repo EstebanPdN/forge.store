@@ -27,15 +27,21 @@ is recorded separately in [refinement.json](verification/refinement.json).
   return from Home with cached badges, and dual-screen playback. Fifteen captures retain the
   exact executable/source hashes. The script completed normally; sampled music counters
   remained at zero underruns. Videos were explicitly seeded with the seven verified resources.
-- A preceding New 3DS candidate completed the GitHub cache/navigation run. It exposed the
-  loss of decoded small images on return, which the final candidate fixes with a 128 KiB warm
-  cache. Earlier candidate screenshots do not substitute for final-build evidence.
+- A New 3DS profile then ran the same published executable with empty video and HTTP caches.
+  The live startup check reached `UPDATE_CURRENT`. All seven resources downloaded on their
+  first attempt and matched their full hashes; Downloads showed one complete package. The
+  trailer played with audio, the script exited normally, and sampled music underruns remained
+  zero. Ten captures preserve the final executable hash. This confirms checking and downloading,
+  not installation of a newer store build on physical hardware.
 - Code Atlas checked the web gallery at native screen size. Unaligned, unmasked comparisons
-  of the whole lower screen measured 84.22% of trailer pixels and 79.33% of Castle pixels within
-  RGB tolerance 16/255. Exact matches were 20.28% and 17.02%; these are two scenarios, not a
+  of the whole lower screen measured 84.23% of trailer pixels and 79.33% of Castle pixels within
+  RGB tolerance 16/255. Exact matches were 18.87% and 17.93%; these are two scenarios, not a
   global parity score. Text rasterization, strip layout and live download-size metadata differ.
 - All seven resource URLs under the corrected repository name were downloaded anonymously
   and matched their complete SHA-256 hashes and combined 16,044,949-byte size.
+- Both published binaries were downloaded anonymously and matched the packaged sizes/hashes.
+  Repository CI passed for code commit `261ddb5`. The delivered QR was decoded independently
+  and matched the CIA URL pinned to that commit. No GitHub release was created.
 
 The startup rendering regression was reproduced with the new startup-only drawing path and
 disappeared after reusing the shared scene background renderer. Final Home captures show the
