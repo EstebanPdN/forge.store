@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="es" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/" />
+    <link rel="stylesheet" href="/src/css/tokens.css" />
+    <link rel="stylesheet" href="/src/css/ui.css" />
+    <link rel="stylesheet" href="/src/css/home.css" />
+    <link rel="stylesheet" href="/src/css/intro.css" />
+    <style>
+      /* Static, 1:1 renders of prototype pieces for the native 3DS build. */
+      *,
+      *::before,
+      *::after {
+        animation: none !important;
+        transition: none !important;
+      }
+      html,
+      body {
+        margin: 0;
+        background: transparent;
+      }
+      #stage {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
+      .frame {
+        position: relative;
+        overflow: hidden;
+        font-family: var(--font-ui);
+      }
+      .bn-layer {
+        transform: none !important;
+      }
+      .white {
+        color: #fff !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="stage"></div>
+    <script type="module">
+      import { h } from '/src/js/core/dom.js';
+      import { icon } from '/src/js/core/icons.js';
+      import { appIcon } from '/src/js/ui/components.js';
+      import { Banner } from '/src/js/ui/banner.js';
+      const stage = document.getElementById('stage');
+      const frame = (w, hgt, ...kids) => h('div.frame', { style: { width: `${w}px`, height: `${hgt}px` } }, ...kids);
+
+      window.R = {
+        async load() {
+          this.catalog = await fetch('/catalog/forge-store.json').then((r) => r.json());
+          await document.fonts.ready;
+          return this.catalog.apps.map((a) => a.id);
+        },
+        clear() {
+          stage.replaceChildren();
+        },
+        /** Screen background: haze + diagonal-faded dot grid, with margin for the drift. */
+        bg(theme, w, hgt) {
+          document.documentElement.dataset.theme = theme;
+          stage.replaceChildren(frame(w, hgt, h('div.bg-forge')));
+          return stage.firstChild;
+        },
+        text(markup, css) {
+          const el = h('div', { html: markup, style: Object.assign({ display: 'inline-block', color: '#fff', whiteSpace: 'nowrap', padding: '2px 3px' }, css) });
+          stage.replaceChildren(el);
+          return document.fonts.ready.then(() => el);
+        },
+        emblem(size) {
+          const el = h('div.emblem-face', { style: { width: `${size}px`, height: `${size}px`, boxSizing: 'border-box' } }, h('img', { src: '/assets/brand/forge-icon.png' }));
+          stage.replaceChildren(el);
+          return new Promise((res) => (el.querySelector('img').complete ? res(el) : (el.querySelector('img').onload = () => res(el))));
+        },
+        async appIcon(id, size) {
+          const app = this.catalog.apps.find((a) => a.id === id);
+          const el = appIcon(app, { size });
+          // Apps in development keep the .dev filter (saturate .15, brightness .86, contrast .92).
+          stage.replaceChildren(el);
+          const img = el.querySelector('img');
+          if (img && !img.complete) await new Promise((r) => (img.onload = img.onerror = r));
+          return el;
+        },
+        async badge(button) {
+          const { glyph } = await import('/src/js/ui/components.js');
+          const el = h('div', { style: { display: 'inline-block', padding: '0', lineHeight: '0' } }, glyph(button));
+          stage.replaceChildren(el);
+          return el.firstChild;
+        },
+        /** Bounding box of the opaque pixels of a PNG (base64), for trimming layers. */
+        async bbox(b64) {
+          const img = new Image();
+          img.src = 'data:image/png;base64,' + b64;
+          await img.decode();
+          const c = document.createElement('canvas');
+          c.width = img.width;
+          c.height = img.height;
+          const g = c.getContext('2d');
+          g.drawImage(img, 0, 0);
+          const d = g.getImageData(0, 0, c.width, c.height).data;
+          let x0 = c.width, y0 = c.height, x1 = -1, y1 = -1;
+          for (let y = 0; y < c.height; y++)
+            for (let x = 0; x < c.width; x++)
+              if (d[(y * c.width + x) * 4 + 3] > 2) {
+                if (x < x0) x0 = x;
+                if (x > x1) x1 = x;
+                if (y < y0) y0 = y;
+                if (y > y1) y1 = y;
+              }
+          return x1 < 0 ? null : { x: x0, y: y0, w: x1 - x0 + 1, h: y1 - y0 + 1 };
+        },
+        uiIcon(name, size) {
+          const el = h('div', { style: { width: `${size}px`, height: `${size}px`, color: '#fff', display: 'grid', placeItems: 'center' } }, icon(name));
+          el.firstChild.style.width = el.firstChild.style.height = `${size}px`;
+          stage.replaceChildren(el);
+          return el;
+        },
+        /** One banner layer ('bg', 'mid' or 'logo') at 400x240, others hidden. */
+        async bannerLayer(id, layer) {
+          document.documentElement.dataset.theme = 'dark';
+          const app = this.catalog.apps.find((a) => a.id === id);
+          const b = new Banner({});
+          b.pause();
+          const slide = b.compose(app);
+          const wrap = frame(400, 240, h('div.banner', { style: { background: layer === 'bg' ? '#0e1215' : 'transparent' } }, slide, layer === 'bg' ? h('div.bn-vignette') : null));
+          stage.replaceChildren(wrap);
+          const has = !!slide.querySelector('.l-' + layer);
+          for (const l of slide.querySelectorAll('.bn-layer')) l.style.visibility = l.classList.contains('l-' + layer) ? 'visible' : 'hidden';
+          await Promise.all([...wrap.querySelectorAll('img')].map((i) => (i.complete ? 0 : new Promise((r) => (i.onload = i.onerror = r)))));
+          const bg = wrap.querySelector('.bn-bg');
+          if (bg && bg.style.backgroundImage) {
+            const url = bg.style.backgroundImage.slice(5, -2);
+            await new Promise((r) => {
+              const i = new Image();
+              i.onload = i.onerror = r;
+              i.src = url;
+            });
+          }
+          return has ? wrap : null;
+        },
+      };
+    </script>
+  </body>
+</html>

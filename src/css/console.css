@@ -1,0 +1,495 @@
+/* New 3DS XL style device. Every size here is in native screen pixels;
+   the whole device is scaled with `zoom` so both screens stay pixel-exact. */
+.device {
+  --shell: #2a2d33;
+  --shell-hi: #3c4048;
+  --shell-lo: #1b1d21;
+  --shell-ink: rgba(255, 255, 255, 0.55);
+  --bezel: #0b0c0e;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  zoom: var(--zoom, 1.6);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.device[data-shell='white'] {
+  --shell: #e7eaee;
+  --shell-hi: #ffffff;
+  --shell-lo: #c9cfd6;
+  --shell-ink: rgba(30, 40, 50, 0.45);
+}
+.device[data-shell='forge'] {
+  --shell: #f47c22;
+  --shell-hi: #ffa860;
+  --shell-lo: #c9560f;
+  --shell-ink: rgba(255, 255, 255, 0.7);
+}
+.device[data-shell='mint'] {
+  --shell: #86c7af;
+  --shell-hi: #b4e4d2;
+  --shell-lo: #5c9f88;
+  --shell-ink: rgba(20, 60, 50, 0.5);
+}
+.device[data-shell='blue'] {
+  --shell: #2c5aa0;
+  --shell-hi: #4f82cf;
+  --shell-lo: #1b3a6e;
+  --shell-ink: rgba(255, 255, 255, 0.6);
+}
+
+.shell {
+  position: relative;
+  width: 520px;
+  background:
+    radial-gradient(120% 80% at 20% 0%, rgba(255, 255, 255, 0.14), transparent 55%),
+    linear-gradient(165deg, var(--shell-hi), var(--shell) 38%, var(--shell-lo));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.35),
+    inset 0 -3px 8px rgba(0, 0, 0, 0.22),
+    0 18px 40px rgba(10, 20, 30, 0.35),
+    0 4px 10px rgba(10, 20, 30, 0.2);
+}
+.top-shell {
+  height: 314px;
+  border-radius: 24px 24px 12px 12px;
+  z-index: 2;
+}
+.bottom-shell {
+  height: 324px;
+  border-radius: 12px 12px 28px 28px;
+  margin-top: -4px;
+  z-index: 1;
+}
+.hinge {
+  position: relative;
+  z-index: 3;
+  width: 470px;
+  height: 18px;
+  margin-top: -6px;
+  border-radius: 9px;
+  background: linear-gradient(180deg, var(--shell-lo), var(--shell-hi) 45%, var(--shell) 60%, var(--shell-lo));
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+
+/* Bezels and screens */
+.bezel {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(180deg, #16181b, var(--bezel) 30%);
+  border-radius: 14px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.06),
+    inset 0 2px 6px rgba(0, 0, 0, 0.6);
+}
+.top-bezel {
+  top: 18px;
+  width: 448px;
+  height: 278px;
+}
+.bottom-bezel {
+  top: 16px;
+  width: 344px;
+  height: 262px;
+  border-radius: 12px;
+}
+.camera {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  width: 5px;
+  height: 5px;
+  margin-left: -2.5px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, #4b5a6e, #0a0c10 70%);
+}
+.screen {
+  position: absolute;
+  overflow: hidden;
+  height: 240px;
+  background: var(--bg);
+  font-family: var(--font-ui);
+  color: var(--ink);
+  font-size: 11px;
+  line-height: 1.3;
+  isolation: isolate;
+  contain: strict;
+}
+.screen.top {
+  width: 400px;
+  left: 24px;
+  top: 19px;
+}
+.screen.bottom {
+  width: 320px;
+  left: 12px;
+  top: 11px;
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14'%3E%3Ccircle cx='7' cy='7' r='4.5' fill='%23fff' fill-opacity='.85' stroke='%23000' stroke-opacity='.45'/%3E%3C/svg%3E") 7 7, pointer;
+  touch-action: none;
+}
+/* Backlight: screens fade in from black when the console powers on. */
+.screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 100;
+  background: #000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.6s var(--ease-in-out);
+}
+.device.off .screen::after {
+  opacity: 1;
+}
+/* Optional 10 px design guides */
+.device.guides .screen::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 99;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 0, 120, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 0, 120, 0.16) 1px, transparent 1px);
+  background-size: 10px 10px;
+}
+
+/* Speakers */
+.speaker {
+  position: absolute;
+  top: 118px;
+  width: 14px;
+  height: 74px;
+  background-image: radial-gradient(circle, rgba(0, 0, 0, 0.55) 1.2px, transparent 1.5px);
+  background-size: 5px 5px;
+  opacity: 0.85;
+}
+.speaker.left {
+  left: 10px;
+}
+.speaker.right {
+  right: 10px;
+}
+
+/* 3D depth slider and LED */
+.slider3d {
+  position: absolute;
+  right: 4px;
+  top: 30px;
+  width: 22px;
+  height: 84px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  cursor: ns-resize;
+}
+.slider3d .track {
+  position: relative;
+  width: 7px;
+  height: 62px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.3));
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.slider3d .knob {
+  position: absolute;
+  left: -3px;
+  width: 13px;
+  height: 9px;
+  border-radius: 3px;
+  bottom: calc(var(--depth, 0.6) * 53px);
+  background: linear-gradient(180deg, var(--shell-hi), var(--shell-lo));
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.slider3d .label {
+  font: 900 7px var(--font-ui);
+  color: var(--shell-ink);
+  letter-spacing: 0.5px;
+}
+.slider3d .led {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #3a3a3a;
+  transition: background 0.3s, box-shadow 0.3s;
+}
+.device.depth-on .slider3d .led {
+  background: #8dff6a;
+  box-shadow: 0 0 5px #8dff6a;
+}
+
+/* Physical buttons */
+.btn {
+  position: absolute;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.06s, filter 0.06s, box-shadow 0.06s;
+}
+.btn.pressed {
+  transform: translateY(1px) scale(0.96);
+  filter: brightness(0.85);
+}
+.circle-pad {
+  position: absolute;
+  left: 18px;
+  top: 34px;
+  width: 54px;
+  height: 54px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 40%, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.6));
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+.circle-pad::after {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 52%, rgba(255, 255, 255, 0.06) 53%, transparent 60%),
+    radial-gradient(circle at 40% 30%, #4a4e57, #23252a 75%);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  transform: translate(var(--cpx, 0px), var(--cpy, 0px));
+  transition: transform 0.12s var(--ease-out);
+}
+.dpad {
+  position: absolute;
+  left: 18px;
+  top: 128px;
+  width: 54px;
+  height: 54px;
+}
+.dpad .btn {
+  width: 18px;
+  height: 18px;
+  background: linear-gradient(180deg, #3b3f47, #222429);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.12);
+}
+.dpad [data-btn='UP'] {
+  left: 18px;
+  top: 0;
+  border-radius: 4px 4px 0 0;
+}
+.dpad [data-btn='DOWN'] {
+  left: 18px;
+  top: 36px;
+  border-radius: 0 0 4px 4px;
+}
+.dpad [data-btn='LEFT'] {
+  left: 0;
+  top: 18px;
+  border-radius: 4px 0 0 4px;
+}
+.dpad [data-btn='RIGHT'] {
+  left: 36px;
+  top: 18px;
+  border-radius: 0 4px 4px 0;
+}
+.dpad::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  top: 18px;
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle, #2c2f35 30%, #26282d);
+  pointer-events: none;
+}
+.cstick {
+  position: absolute;
+  right: 40px;
+  top: 30px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #555a63, #1f2125);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
+}
+.abxy {
+  position: absolute;
+  right: 12px;
+  top: 64px;
+  width: 70px;
+  height: 70px;
+}
+.abxy .btn {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 30%, #4a4e57, #1f2125 80%);
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  font: 900 10px var(--font-ui);
+  color: var(--c);
+  display: grid;
+  place-items: center;
+}
+.abxy [data-btn='X'] {
+  left: 23.5px;
+  top: 0;
+  --c: #5b8cff;
+}
+.abxy [data-btn='Y'] {
+  left: 0;
+  top: 23.5px;
+  --c: #4cd07d;
+}
+.abxy [data-btn='A'] {
+  left: 47px;
+  top: 23.5px;
+  --c: #ff5a5a;
+}
+.abxy [data-btn='B'] {
+  left: 23.5px;
+  top: 47px;
+  --c: #ffd23f;
+}
+.sysbtns {
+  position: absolute;
+  right: 18px;
+  top: 158px;
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  align-items: center;
+}
+.sysbtns .btn {
+  position: relative;
+  width: 30px;
+  height: 9px;
+  border-radius: 5px;
+  background: linear-gradient(180deg, #3b3f47, #222429);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.sysbtns label {
+  font: 900 6px var(--font-ui);
+  letter-spacing: 0.6px;
+  color: var(--shell-ink);
+  margin-top: -6px;
+}
+.home-btn {
+  left: 50%;
+  bottom: 14px;
+  width: 58px;
+  height: 16px;
+  margin-left: -29px;
+  border-radius: 8px;
+  background: linear-gradient(180deg, #3b3f47, #222429);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  display: grid;
+  place-items: center;
+  color: rgba(255, 255, 255, 0.6);
+}
+.home-btn svg {
+  width: 10px;
+  height: 10px;
+}
+.shoulder {
+  position: absolute;
+  top: -9px;
+  width: 96px;
+  height: 22px;
+  z-index: -1;
+  background: linear-gradient(180deg, var(--shell-hi), var(--shell-lo));
+  box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.25);
+  font: 900 8px var(--font-ui);
+  color: var(--shell-ink);
+  display: flex;
+  align-items: flex-start;
+  padding-top: 1px;
+}
+.shoulder[data-btn='L'] {
+  left: 6px;
+  border-radius: 16px 6px 0 0;
+  padding-left: 16px;
+}
+.shoulder[data-btn='R'] {
+  right: 6px;
+  border-radius: 6px 16px 0 0;
+  justify-content: flex-end;
+  padding-right: 16px;
+}
+.shoulder.pressed {
+  transform: translateY(2px);
+}
+.leds {
+  position: absolute;
+  left: 22px;
+  bottom: 18px;
+  display: flex;
+  gap: 8px;
+}
+.leds i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #2b2b2b;
+  transition: background 0.4s, box-shadow 0.4s;
+}
+.device:not(.off) .leds .power {
+  background: #4aa8ff;
+  box-shadow: 0 0 5px #4aa8ff;
+}
+.device.off .leds .power {
+  animation: led-breathe 2.4s ease-in-out infinite;
+}
+.device.net .leds .wifi {
+  background: #ffa020;
+  box-shadow: 0 0 5px #ffa020;
+  animation: led-blink 0.5s steps(2) infinite;
+}
+@keyframes led-breathe {
+  50% {
+    background: #4aa8ff;
+    box-shadow: 0 0 6px #4aa8ff;
+  }
+}
+@keyframes led-blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* Screens-only and side-by-side views */
+.device[data-view='screens'] .shell,
+.device[data-view='side'] .shell {
+  width: auto;
+  height: auto;
+  background: none;
+  box-shadow: none;
+  margin: 0;
+}
+.device[data-view='screens'] :is(.speaker, .slider3d, .hinge, .circle-pad, .dpad, .cstick, .abxy, .sysbtns, .home-btn, .shoulder, .leds, .camera),
+.device[data-view='side'] :is(.speaker, .slider3d, .hinge, .circle-pad, .dpad, .cstick, .abxy, .sysbtns, .home-btn, .shoulder, .leds, .camera) {
+  display: none;
+}
+.device[data-view='screens'] .bezel,
+.device[data-view='side'] .bezel {
+  position: relative;
+  left: auto;
+  top: auto;
+  transform: none;
+  padding: 5px;
+  width: auto;
+  height: auto;
+  border-radius: 10px;
+}
+.device[data-view='screens'] .screen,
+.device[data-view='side'] .screen {
+  position: relative;
+  left: auto;
+  top: auto;
+  display: block;
+  border-radius: 4px;
+}
+.device[data-view='screens'] {
+  gap: 8px;
+}
+.device[data-view='side'] {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 12px;
+}

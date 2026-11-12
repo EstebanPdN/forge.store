@@ -1,0 +1,723 @@
+/* Components shared by every scene, drawn at native 3DS resolution. */
+[hidden] {
+  display: none !important;
+}
+.layer {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.screen img {
+  -webkit-user-drag: none;
+  user-select: none;
+}
+.pixel {
+  image-rendering: pixelated;
+}
+
+/* Brand background: soft haze and the site's dot grid, drifting slowly. */
+.bg-forge {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse at 18% 12%, var(--bg-haze-1), transparent 62%),
+    radial-gradient(ellipse at 85% 88%, var(--bg-haze-2), transparent 60%),
+    var(--bg);
+}
+.bg-forge::before {
+  content: '';
+  position: absolute;
+  inset: -14px;
+  background-image: radial-gradient(var(--dot) 0.85px, transparent 1.15px);
+  background-size: 7px 7px;
+  /* Dots are strongest in the top-left corner and fade out towards the bottom-right. */
+  mask-image: radial-gradient(150% 125% at 0% 0%, #000 0%, rgba(0, 0, 0, 0.82) 22%, rgba(0, 0, 0, 0.38) 50%, transparent 82%);
+  animation: dots-drift 18s linear infinite;
+}
+@keyframes dots-drift {
+  to {
+    transform: translate(7px, 7px);
+  }
+}
+
+/* Top-screen status bar */
+.statusbar {
+  position: absolute;
+  z-index: 40;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 3px 4px 0;
+  pointer-events: none;
+  transition: opacity 0.4s, transform 0.5s var(--ease-out);
+}
+.statusbar.hidden {
+  opacity: 0;
+  transform: translateY(-8px);
+}
+.sb-pill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 15px;
+  padding: 0 6px 0 3px;
+  border-radius: 8px;
+  background: var(--glass);
+  backdrop-filter: blur(6px);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--ink);
+}
+.sb-pill.right {
+  padding: 0 4px 0 6px;
+  gap: 6px;
+}
+.sb-pill img {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1px solid #fff;
+}
+.sb-brand {
+  font-family: var(--font-brand);
+  font-weight: 400;
+  letter-spacing: -0.2px;
+}
+.sb-brand b {
+  font-weight: 800;
+}
+.sb-section {
+  /* The section name sits lowercase next to the brand: forge.store · tienda */
+  text-transform: lowercase;
+  color: var(--ink-soft);
+  font-weight: 700;
+}
+.sb-section::before {
+  content: '·';
+  margin-right: 4px;
+  color: var(--ink-faint);
+}
+.sb-pill svg {
+  width: 11px;
+  height: 11px;
+}
+.sb-dl {
+  display: none;
+  color: var(--forge);
+}
+.sb-dl.on {
+  display: block;
+  animation: dl-bob 0.9s var(--ease-in-out) infinite;
+}
+@keyframes dl-bob {
+  50% {
+    transform: translateY(1.5px);
+  }
+}
+.sb-wifi {
+  width: 13px;
+  height: 10px;
+  overflow: visible;
+}
+.sb-wifi path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+}
+.sb-wifi circle {
+  fill: currentColor;
+}
+.sb-power {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+.sb-battery {
+  display: flex;
+  align-items: center;
+}
+.sb-cell {
+  position: relative;
+  width: 18px;
+  height: 9px;
+  padding: 1.5px;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1.2px currentColor;
+  opacity: 0.95;
+}
+.sb-fill {
+  display: block;
+  height: 100%;
+  border-radius: 1.5px;
+  background: #2fb574;
+  transition: width 0.6s var(--ease-out);
+}
+.sb-battery.low .sb-fill {
+  background: var(--danger);
+}
+.sb-nub {
+  width: 1.6px;
+  height: 3.5px;
+  margin-left: 0.8px;
+  border-radius: 0 1px 1px 0;
+  background: currentColor;
+}
+.sb-pct {
+  font-size: 8.5px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Typography helpers */
+.eyebrow {
+  font-size: 7.5px;
+  font-weight: 900;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--mint-ink);
+}
+.muted {
+  color: var(--ink-soft);
+}
+.faint {
+  color: var(--ink-faint);
+}
+.ellipsis {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* Chips and badges */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  height: 13px;
+  padding: 0 5px;
+  border-radius: 7px;
+  font-size: 7.5px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+  background: var(--surface-2);
+  color: var(--ink-soft);
+}
+.chip svg {
+  width: 8px;
+  height: 8px;
+}
+.chip.mint {
+  background: var(--mint-soft);
+  color: var(--mint-ink);
+}
+.chip.forge {
+  background: var(--forge-soft);
+  color: #d0620b;
+}
+[data-theme='dark'] .chip.forge {
+  color: #ffb36b;
+}
+.chip.lav {
+  background: var(--lavender-soft);
+  color: var(--lavender);
+}
+.chip.amber {
+  background: var(--amber-soft);
+  color: #a86f00;
+}
+[data-theme='dark'] .chip.amber {
+  color: #ffcc5c;
+}
+.chip.danger {
+  background: var(--danger-soft);
+  color: var(--danger);
+}
+.chip.dark {
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  backdrop-filter: blur(4px);
+}
+
+/* Button glyphs (A, B, X, Y, L, R, START, SELECT) */
+.glyph {
+  display: inline-grid;
+  place-items: center;
+  min-width: 11px;
+  height: 11px;
+  padding: 0 2px;
+  border-radius: 6px;
+  background: var(--g, #59606a);
+  color: #fff;
+  font: 900 7px/1 var(--font-ui);
+  letter-spacing: 0;
+  text-box: trim-both cap alphabetic;
+  flex: none;
+}
+.glyph.svg {
+  /* No text trimming here: it would nudge the SVG down inside its circle. */
+  text-box: normal;
+  line-height: 0;
+  display: inline-block;
+  width: 11px;
+  min-width: 0;
+  padding: 0;
+}
+.glyph.svg svg {
+  display: block;
+  width: 11px;
+  height: 11px;
+  fill: #fff;
+  font-family: var(--font-ui);
+}
+.glyph[data-g='A'] {
+  --g: #ef4b4b;
+}
+.glyph[data-g='B'] {
+  --g: #e0ac10;
+}
+.glyph[data-g='X'] {
+  --g: #4a7cf0;
+}
+.glyph[data-g='Y'] {
+  --g: #38b768;
+}
+.glyph[data-g='L'],
+.glyph[data-g='R'] {
+  --g: #6b737e;
+  border-radius: 3px;
+}
+.glyph[data-g='START'],
+.glyph[data-g='SELECT'] {
+  --g: #6b737e;
+}
+.glyph.pm {
+  position: relative;
+  width: 11px;
+  min-width: 0;
+  padding: 0;
+}
+.glyph.pm i,
+.glyph.pm.plus::after {
+  content: '';
+  position: absolute;
+  left: 3px;
+  right: 3px;
+  top: 4.75px;
+  height: 1.5px;
+  border-radius: 1px;
+  background: #fff;
+}
+.glyph.pm.plus::after {
+  left: 4.75px;
+  right: auto;
+  top: 3px;
+  width: 1.5px;
+  height: 5px;
+}
+
+/* Buttons inside the screens */
+.ui-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 12px;
+  font: 800 10px var(--font-ui);
+  color: var(--ink);
+  background: var(--surface);
+  box-shadow: var(--shadow-1), inset 0 0 0 1px var(--line);
+  cursor: inherit;
+  transition: transform 0.15s var(--ease-out), box-shadow 0.2s, background 0.2s;
+}
+.ui-btn svg {
+  width: 11px;
+  height: 11px;
+}
+.ui-btn:active,
+.ui-btn.pressed {
+  transform: scale(0.95);
+}
+.ui-btn.primary {
+  color: #fff;
+  background: linear-gradient(135deg, var(--forge), var(--forge-2));
+  box-shadow: 0 2px 8px rgba(255, 106, 40, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  text-shadow: 0 1px 1px rgba(150, 50, 0, 0.3);
+}
+.ui-btn.mint {
+  color: #fff;
+  background: linear-gradient(135deg, #5cc29f, #3c9c7e);
+  box-shadow: 0 2px 8px rgba(60, 156, 126, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+.ui-btn.ghost {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+.ui-btn.danger {
+  color: var(--danger);
+}
+.ui-btn[disabled] {
+  opacity: 0.55;
+  filter: saturate(0.4);
+}
+.ui-btn .glyph {
+  margin-left: 1px;
+}
+.ui-btn.primary .glyph,
+.ui-btn.mint .glyph {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+/* Cards */
+.card {
+  background: var(--surface);
+  border-radius: 10px;
+  box-shadow: var(--shadow-1), inset 0 0 0 1px var(--line);
+}
+.glass {
+  background: var(--glass);
+  backdrop-filter: blur(10px) saturate(1.2);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12), inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+[data-theme='dark'] .glass {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.35), inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+}
+
+/* Segmented control with a sliding thumb */
+.ui-seg {
+  position: relative;
+  display: flex;
+  padding: 2px;
+  border-radius: 10px;
+  background: var(--surface-2);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.ui-seg button {
+  position: relative;
+  z-index: 1;
+  flex: 1;
+  height: 16px;
+  border: 0;
+  background: none;
+  border-radius: 8px;
+  font: 800 8.5px var(--font-ui);
+  color: var(--ink-soft);
+  cursor: inherit;
+  white-space: nowrap;
+  transition: color 0.25s;
+}
+.ui-seg button[aria-pressed='true'] {
+  color: var(--ink);
+}
+.ui-seg .thumb {
+  position: absolute;
+  z-index: 0;
+  top: 2px;
+  bottom: 2px;
+  left: 0;
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: var(--shadow-1);
+  transition: transform 0.35s var(--ease-out), width 0.35s var(--ease-out);
+}
+[data-theme='dark'] .ui-seg .thumb {
+  background: var(--surface-3);
+}
+
+/* Progress */
+.bar {
+  position: relative;
+  height: 5px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  overflow: hidden;
+}
+.bar i {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: calc(var(--p, 0) * 100%);
+  border-radius: 3px;
+  background: linear-gradient(90deg, var(--forge), var(--forge-2));
+  transition: width 0.25s linear;
+}
+.bar i::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, 0.55) 50%, transparent 70%);
+  background-size: 200% 100%;
+  animation: bar-shine 1.2s linear infinite;
+}
+.bar.mint i {
+  background: linear-gradient(90deg, #5cc29f, #3c9c7e);
+}
+.bar.mint i::after,
+.bar.static i::after {
+  display: none;
+}
+@keyframes bar-shine {
+  from {
+    background-position: 150% 0;
+  }
+  to {
+    background-position: -50% 0;
+  }
+}
+.spinner {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1.6px solid var(--line-strong);
+  border-top-color: var(--forge);
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Toast on the top screen */
+.toasts {
+  position: absolute;
+  z-index: 45;
+  left: 0;
+  right: 0;
+  top: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  pointer-events: none;
+}
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 300px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 12px;
+  font-size: 9.5px;
+  font-weight: 800;
+  background: var(--glass-strong);
+  box-shadow: var(--shadow-2);
+  backdrop-filter: blur(8px);
+}
+.toast .t-icon {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background: var(--mint);
+  color: #fff;
+  flex: none;
+  overflow: hidden;
+}
+.toast .t-icon img {
+  width: 18px;
+  height: 18px;
+}
+.toast .t-icon svg {
+  width: 11px;
+  height: 11px;
+}
+
+/* Bottom sheet */
+.scrim {
+  position: absolute;
+  inset: 0;
+  z-index: 30;
+  background: rgba(10, 18, 22, 0.42);
+  backdrop-filter: blur(1.5px);
+}
+.sheet {
+  position: absolute;
+  z-index: 31;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  padding: 10px 10px 8px;
+  border-radius: 14px;
+  background: var(--surface);
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.25), inset 0 0 0 1px var(--line);
+}
+.sheet h3 {
+  margin: 0 0 1px;
+  font-size: 12px;
+  font-weight: 900;
+}
+.sheet .grabber {
+  width: 26px;
+  height: 3px;
+  margin: -4px auto 6px;
+  border-radius: 2px;
+  background: var(--line-strong);
+}
+
+/* Custom scroller driven by touch drag, wheel and the D-pad */
+.scroller {
+  position: absolute;
+  overflow: hidden;
+}
+.scroller > .scroll-content {
+  will-change: transform;
+}
+.scrollbar {
+  position: absolute;
+  right: 2px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--line-strong);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.scroller.scrolling .scrollbar,
+.scroller:hover .scrollbar {
+  opacity: 1;
+}
+
+/* Touch ripple for the stylus */
+.ripple {
+  position: absolute;
+  z-index: 90;
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  animation: ripple 0.45s var(--ease-out) forwards;
+}
+@keyframes ripple {
+  from {
+    transform: scale(0.3);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.3);
+    opacity: 0;
+  }
+}
+
+/* App icon tiles */
+.app-icon {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface-2);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), inset 0 0 0 1px rgba(0, 0, 0, 0.06);
+  flex: none;
+}
+.app-icon > img,
+.app-icon > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.app-icon.pixel > img {
+  image-rendering: pixelated;
+}
+.app-icon::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 0 0 1px rgba(0, 0, 0, 0.08);
+  pointer-events: none;
+}
+/* Ports without a public release look muted until they ship. */
+.app-icon.dev > img,
+.app-icon.dev > svg {
+  filter: saturate(0.15) brightness(0.86) contrast(0.92);
+}
+
+/* 3D coin (see ui/coin.js): stacked discs give it thickness while it wobbles. */
+.coin {
+  position: relative;
+  width: var(--size);
+  height: var(--size);
+  perspective: 380px;
+}
+.coin-body {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: coin-wobble 5.2s ease-in-out infinite;
+}
+.coin-face,
+.coin-edge {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.coin-face {
+  overflow: hidden;
+  backface-visibility: hidden;
+}
+.coin-edge {
+  box-shadow: inset 0 0 0 0.6px rgba(0, 0, 0, 0.08);
+}
+.coin-shine {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: linear-gradient(110deg, transparent 32%, rgba(255, 255, 255, 0.7) 47%, transparent 62%);
+  background-size: 280% 100%;
+  mix-blend-mode: soft-light;
+  animation: coin-shine 5.2s ease-in-out infinite;
+}
+.coin-shadow {
+  position: absolute;
+  left: 14%;
+  right: 14%;
+  bottom: -13px;
+  height: 9px;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgba(40, 60, 70, 0.3), transparent);
+  animation: coin-shadow 5.2s ease-in-out infinite;
+}
+[data-theme='dark'] .coin-shadow {
+  background: radial-gradient(closest-side, rgba(0, 0, 0, 0.6), transparent);
+}
+@keyframes coin-wobble {
+  0%,
+  100% {
+    transform: rotateY(-24deg) rotateX(6deg) rotateZ(-2deg);
+  }
+  50% {
+    transform: rotateY(24deg) rotateX(-4deg) rotateZ(2deg);
+  }
+}
+@keyframes coin-shine {
+  0%,
+  100% {
+    background-position: 95% 0;
+  }
+  50% {
+    background-position: 5% 0;
+  }
+}
+@keyframes coin-shadow {
+  0%,
+  100% {
+    transform: translateX(4px) scaleX(0.9);
+  }
+  50% {
+    transform: translateX(-4px) scaleX(0.9);
+  }
+}

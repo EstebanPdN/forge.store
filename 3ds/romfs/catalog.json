@@ -1,0 +1,2388 @@
+{
+  "format": "forge-store/1",
+  "store": {
+    "id": "estebans-forge",
+    "title": "esteban's forge.",
+    "name": "forge.store",
+    "author": "EstebanPdN",
+    "subtitle": { "es": "Tienda de ports para Nintendo 3DS", "en": "Nintendo 3DS port store" },
+    "revision": 2,
+    "updated": "2026-11-11",
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/main/catalog/forge-store.json",
+    "site": "https://estebanpdn.github.io/",
+    "sources": [
+      { "id": "forge", "title": "Esteban's Forge", "type": "forge-store", "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/main/catalog/forge-store.json", "enabled": true },
+      {
+        "id": "universal-db",
+        "title": "Universal-DB",
+        "type": "unistore",
+        "url": "https://db.universal-team.net/unistore/universal-db.unistore",
+        "enabled": false
+      }
+    ]
+  },
+  "vars": { "3DSX": "/3ds", "TMP": "/3ds/forge-store/tmp", "NDS": "/nds", "FIRM": "/luma/payloads" },
+  "globalRequirements": [
+    {
+      "id": "dspfirm",
+      "path": "/3ds/dspfirm.cdc",
+      "size": 30580,
+      "label": { "es": "Firmware DSP (dspfirm.cdc)", "en": "DSP firmware (dspfirm.cdc)" },
+      "help": {
+        "es": "Sin él los juegos no tienen sonido. Si falta, la tienda lo vuelca desde tu consola automáticamente (como DSP1).",
+        "en": "Without it games have no sound. If it is missing, the store dumps it from your console automatically (like DSP1)."
+      }
+    }
+  ],
+  "categories": [
+    {
+      "id": "all",
+      "label": { "es": "Todo", "en": "All", "pt": "Tudo", "it": "Tutto", "fr": "Tout", "de": "Alle", "ru": "Все", "ja": "すべて" },
+      "icon": "grid"
+    },
+    {
+      "id": "forge",
+      "label": {
+        "es": "Forge",
+        "en": "Forge",
+        "pt": "Forge",
+        "it": "Forge",
+        "fr": "Forge",
+        "de": "Forge",
+        "ru": "Forge",
+        "ja": "Forge"
+      },
+      "icon": "anvil"
+    },
+    {
+      "id": "community",
+      "label": {
+        "es": "Comunidad",
+        "en": "Community",
+        "pt": "Comunidade",
+        "it": "Community",
+        "fr": "Communauté",
+        "de": "Community",
+        "ru": "Сообщество",
+        "ja": "コミュニティ"
+      },
+      "icon": "people"
+    },
+    {
+      "id": "emulators",
+      "label": {
+        "es": "Emuladores",
+        "en": "Emulators",
+        "pt": "Emuladores",
+        "it": "Emulatori",
+        "fr": "Émulateurs",
+        "de": "Emulatoren",
+        "ru": "Эмуляторы",
+        "ja": "エミュレーター"
+      },
+      "icon": "gamepad"
+    },
+    {
+      "id": "tools",
+      "label": {
+        "es": "Utilidades",
+        "en": "Tools",
+        "pt": "Utilitários",
+        "it": "Utility",
+        "fr": "Outils",
+        "de": "Tools",
+        "ru": "Утилиты",
+        "ja": "ツール"
+      },
+      "icon": "wrench"
+    }
+  ],
+  "apps": [
+    {
+      "id": "alttp",
+      "title": "A Link to the Past",
+      "fullTitle": "The Legend of Zelda: A Link to the Past",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "zelda3 (snesrev), zelda3-android (Waterdish, samyost1), JeodC · banner 3D: Phibonacci/TiraArt",
+      "origin": { "platform": "SNES", "year": 1991 },
+      "color": "#2f6b3a",
+      "status": "released",
+      "featured": true,
+      "repo": "EstebanPdN/zelda-alttp-3ds",
+      "page": "https://estebanpdn.github.io/a-link-to-the-past.html",
+      "stars": 785,
+      "icon": "assets/ports/alttp/icon.webp",
+      "banner": {
+        "bg": "assets/ports/alttp/art.webp",
+        "bgPos": "50% 30%",
+        "logo": "assets/ports/alttp/logo.webp",
+        "fx": "sparkles",
+        "logoScale": 1.38,
+        "logoY": 30
+      },
+      "videos": [
+        {
+          "id": "trailer",
+          "kind": "trailer",
+          "title": { "es": "Tráiler v4.0", "en": "v4.0 trailer" },
+          "src": "assets/ports/alttp/video/trailer.mp4",
+          "poster": "assets/ports/alttp/video/trailer.webp",
+          "duration": 136.6,
+          "audio": true
+        },
+        {
+          "id": "light-world",
+          "kind": "gameplay",
+          "title": { "es": "Mundo de la Luz", "en": "Light World" },
+          "top": "assets/ports/alttp/video/light-world-top.mp4",
+          "bottom": "assets/ports/alttp/video/light-world-bottom.mp4",
+          "poster": "assets/ports/alttp/video/light-world.webp",
+          "duration": 9.3
+        }
+      ],
+      "shots": [
+        {
+          "top": "assets/ports/alttp/shots/01-top.webp",
+          "bottom": "assets/ports/alttp/shots/01-bottom.webp",
+          "caption": { "es": "Título", "en": "Title" }
+        },
+        {
+          "top": "assets/ports/alttp/shots/02-top.webp",
+          "bottom": "assets/ports/alttp/shots/02-bottom.webp",
+          "caption": { "es": "Mundo de la Luz", "en": "Light World" }
+        },
+        {
+          "top": "assets/ports/alttp/shots/03-top.webp",
+          "bottom": "assets/ports/alttp/shots/03-bottom.webp",
+          "caption": { "es": "Castillo de Hyrule", "en": "Hyrule Castle" }
+        },
+        {
+          "top": "assets/ports/alttp/shots/04-top.webp",
+          "bottom": "assets/ports/alttp/shots/04-bottom.webp",
+          "caption": { "es": "Mundo Oscuro", "en": "Dark World" }
+        },
+        {
+          "top": "assets/ports/alttp/shots/05-top.webp",
+          "bottom": "assets/ports/alttp/shots/05-bottom.webp",
+          "caption": { "es": "Inventario", "en": "Inventory" }
+        },
+        {
+          "top": "assets/ports/alttp/shots/06-top.webp",
+          "bottom": "assets/ports/alttp/shots/06-bottom.webp",
+          "caption": { "es": "Randomizer", "en": "Randomizer" }
+        }
+      ],
+      "tagline": {
+        "es": "Zelda 3 nativo a dos pantallas, con idiomas, skins y randomizer.",
+        "en": "Native dual-screen Zelda 3 with languages, skins and a randomizer."
+      },
+      "description": {
+        "es": "A Link to the Past con el motor nativo zelda3: panorámico en la pantalla superior y mapas, equipo e inventario táctil en la inferior. Extrae los recursos de tu propia ROM USA en la consola e incluye siete idiomas, skins de personaje, randomizer y decenas de opciones de calidad de vida.",
+        "en": "A Link to the Past on the native zelda3 engine: widescreen on the top screen with maps, gear and a touch inventory below. It extracts its assets from your own USA ROM on the console and adds seven languages, character skins, a randomizer and dozens of quality-of-life options."
+      },
+      "features": {
+        "es": [
+          "Modos WIDE, ORIGINAL y STRETCH",
+          "Mapas, equipo y objetos en la pantalla táctil",
+          "Extrae los recursos en la propia consola",
+          "7 idiomas (más japonés en experimental)",
+          "Skins .zspr y paquetes de mods",
+          "Randomizer en la consola e importación ALttPR",
+          "Calidad de vida y turbo hasta ×5"
+        ],
+        "en": [
+          "WIDE, ORIGINAL and STRETCH modes",
+          "Maps, gear and items on the touch screen",
+          "Asset extraction on the console",
+          "7 languages (plus Japanese in experimental)",
+          ".zspr skins and mod packages",
+          "On-console randomizer and ALttPR imports",
+          "Quality of life and up to ×5 turbo"
+        ]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/Zelda 3DS/",
+      "releases": {
+        "stable": {
+          "tag": "v4.0",
+          "date": "2026-11-01",
+          "assets": {
+            "3dsx": { "name": "zelda3-3ds-v4.0.3dsx", "size": 8588148 },
+            "cia": { "name": "zelda3-3ds-v4.0.cia", "size": 7312320 },
+            "sums": { "name": "SHA256SUMS.txt", "size": 258 }
+          },
+          "notes": {
+            "es": [
+              "Juego y menús en 7 idiomas: inglés, español, portugués, italiano, francés, alemán y ruso.",
+              "Nuevo inicio con título animado, idioma automático y ajustes de Mods y Calidad de vida.",
+              "Skins de personaje con vista previa y partidas separadas.",
+              "Randomizer en la consola con 5 presets e importación de spoilers ALttPR.",
+              "Menús, HUD táctil e inventario rehechos, y muchas correcciones de transiciones y cámara."
+            ],
+            "en": [
+              "Game and menus in 7 languages: English, Spanish, Portuguese, Italian, French, German and Russian.",
+              "New startup home with an animated title, automatic language, Mods and Quality of Life settings.",
+              "Character skins with previews and separate quest saves.",
+              "On-console randomizer with 5 presets and ALttPR spoiler imports.",
+              "Reworked menus, touch HUD and inventory, plus many transition and camera fixes."
+            ]
+          }
+        },
+        "experimental": {
+          "tag": "v4.1-E6",
+          "date": "2026-11-08",
+          "assets": {
+            "3dsx": { "name": "zelda3-3ds-v4.1-E6.3dsx", "size": 8836884 },
+            "cia": { "name": "zelda3-3ds-v4.1-E6.cia", "size": 7545792 },
+            "sums": { "name": "SHA256SUMS.txt", "size": 267 }
+          },
+          "notes": {
+            "es": [
+              "Corrige la ubicación de objetos de mazmorra en semillas nuevas del randomizer.",
+              "WIDE ampliado al río de Zora y correcciones de mapas y cámara.",
+              "Incluye el juego en japonés, skins .zspr directas y hasta 512 mods."
+            ],
+            "en": [
+              "Fixes dungeon-item locations in new randomizer seeds.",
+              "WIDE extended to Zora's River, plus map and camera fixes.",
+              "Includes the Japanese game, direct .zspr skins and up to 512 mods."
+            ]
+          }
+        }
+      },
+      "requires": [
+        {
+          "id": "rom",
+          "label": { "es": "Tu ROM de SNES (USA, sin cabecera)", "en": "Your SNES ROM (USA, headerless)" },
+          "path": "/3ds/Zelda 3DS/zelda3.sfc",
+          "size": 1048576,
+          "hashes": [{ "label": "USA", "sha1": "6d4f10a8b10e10dbe624cb23cf03b88bb8252973" }],
+          "help": {
+            "es": "Cualquier nombre de archivo vale, sin cabecera de 512 bytes. Al abrir el juego la consola extrae zelda3_assets.dat.",
+            "en": "Any filename works, without a 512-byte header. On first launch the console extracts zelda3_assets.dat."
+          },
+          "accept": "*.sfc, *.smc",
+          "detect": [
+            {
+              "dir": "/3ds/Zelda 3DS/",
+              "ext": ["sfc", "smc"],
+              "skip": ["zelda3_fr-c.sfc"],
+              "sizes": [1048576],
+              "crc32": { "any": ["777aac2f"] }
+            }
+          ]
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "mkdir", "directory": "/3ds/Zelda 3DS/" },
+          { "type": "mkdir", "directory": "/3ds/Zelda 3DS/mods/" },
+          { "type": "downloadRelease", "asset": "3dsx", "output": "/3ds/Zelda 3DS/zelda3-3ds.3dsx" },
+          { "type": "verifySha256", "file": "/3ds/Zelda 3DS/zelda3-3ds.3dsx", "sums": "sums" },
+          { "type": "requireFile", "ref": "rom" },
+          { "type": "dumpDsp" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/3ds/Zelda 3DS/" },
+          { "type": "mkdir", "directory": "/3ds/Zelda 3DS/mods/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/zelda3-3ds.cia" },
+          { "type": "verifySha256", "file": "%TMP%/zelda3-3ds.cia", "sums": "sums" },
+          { "type": "installCia", "file": "%TMP%/zelda3-3ds.cia" },
+          { "type": "deleteFile", "file": "%TMP%/zelda3-3ds.cia" },
+          { "type": "requireFile", "ref": "rom" },
+          { "type": "dumpDsp" }
+        ]
+      },
+      "history": [
+        {
+          "tag": "v3.2",
+          "date": "2026-09-20",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Descargas e instalación de actualizaciones optimizadas.",
+              "Corrige pantallas negras y audio ausente tras Reiniciar o cambiar de ROM."
+            ],
+            "en": [
+              "Optimized update downloads and installation.",
+              "Fixed black screens and missing audio after Restart and ROM reselection."
+            ]
+          }
+        },
+        {
+          "tag": "v3.1",
+          "date": "2026-09-11",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Actualizaciones desde GitHub dentro del juego, con canales Estable y Pre-release.",
+              "Corrige el arranque de la pantalla inferior, la precisión táctil y la navegación en Old 3DS.",
+              "Ajustes simplificados: Reiniciar y elegir ROM van juntos."
+            ],
+            "en": [
+              "In-game GitHub updates with Stable and Pre-release channels.",
+              "Fixed bottom-screen startup, touch accuracy and navigation on Old 3DS.",
+              "Simplified Settings: Restart and ROM selection combined."
+            ]
+          }
+        },
+        {
+          "tag": "v3.0",
+          "date": "2026-09-10",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Renderizado por GPU PICA200 en Old 3DS con respaldo por software.",
+              "Renderizado WIDE nativo a 400×240 y modos WIDE / FIXED.",
+              "Corrige colores, parpadeos y ralentizaciones en puertas y salas."
+            ],
+            "en": [
+              "PICA200 GPU rendering on Old 3DS with a software fallback.",
+              "Native 400×240 WIDE rendering and WIDE / FIXED modes.",
+              "Fixed colors, flickering and slowdowns at doors and rooms."
+            ]
+          }
+        },
+        {
+          "tag": "v2.8",
+          "date": "2026-08-02",
+          "channel": "stable",
+          "notes": {
+            "es": ["La opción Guardar y salir vuelve a escribir la partida correctamente."],
+            "en": ["Save and exit writes regular save data correctly again."]
+          }
+        },
+        {
+          "tag": "v2.0",
+          "date": "2026-07-29",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Banner 3D con sonido en el menú HOME.",
+              "Lógica a 60 Hz más suave y presentación PICA200 con colores corregidos.",
+              "Fuente pixel legible en Equipo; corazones y barra de magia corregidos."
+            ],
+            "en": [
+              "3D HOME Menu banner with sound.",
+              "Smoother 60 Hz logic and PICA200 presentation with corrected colors.",
+              "Readable pixel font for Gear; fixed hearts and magic bar."
+            ]
+          }
+        },
+        {
+          "tag": "v1.4",
+          "date": "2026-07-27",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Controles táctiles nativos en la pantalla inferior.",
+              "Modos de imagen Original, Stretch y Wide.",
+              "Turbo configurable de ×2 a ×5 con ZL o el C-Stick."
+            ],
+            "en": [
+              "Native touch controls on the bottom screen.",
+              "Original, Stretch and Wide display modes.",
+              "Configurable ×2–×5 turbo with ZL or the C-Stick."
+            ]
+          }
+        },
+        {
+          "tag": "v1.0",
+          "date": "2026-07-27",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Primera versión nativa para 3DS: CIA y 3DSX para Old y New 3DS.",
+              "Juego a 400×240 arriba e interfaz de doble pantalla abajo.",
+              "Mapa, equipo, inventario y ajustes táctiles."
+            ],
+            "en": [
+              "First native 3DS release: CIA and 3DSX for Old and New 3DS.",
+              "400×240 gameplay on top and a dual-screen interface below.",
+              "Touch map, gear, inventory and settings."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "minish",
+      "title": "The Minish Cap",
+      "fullTitle": "The Legend of Zelda: The Minish Cap 3DS",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "zeldaret/tmc, Project Picori (999sian), samyost1, Raekwon1603",
+      "origin": { "platform": "GBA", "year": 2004 },
+      "color": "#3f8f4f",
+      "status": "released",
+      "featured": true,
+      "repo": "EstebanPdN/zelda-tmc-3ds",
+      "page": "https://estebanpdn.github.io/the-minish-cap.html",
+      "stars": 810,
+      "icon": "assets/ports/minish/icon.webp",
+      "banner": {
+        "bg": "assets/ports/minish/art.webp",
+        "bgPos": "50% 40%",
+        "logo": "assets/ports/minish/logo.webp",
+        "fx": "leaves"
+      },
+      "videos": [
+        {
+          "id": "minish-woods",
+          "kind": "gameplay",
+          "title": { "es": "Bosque Minish", "en": "Minish Woods" },
+          "top": "assets/ports/minish/video/minish-woods-top.mp4",
+          "bottom": "assets/ports/minish/video/minish-woods-bottom.mp4",
+          "poster": "assets/ports/minish/video/minish-woods.webp",
+          "duration": 12
+        }
+      ],
+      "shots": [
+        {
+          "top": "assets/ports/minish/shots/01-top.webp",
+          "bottom": "assets/ports/minish/shots/01-bottom.webp",
+          "caption": { "es": "Título", "en": "Title" }
+        },
+        {
+          "top": "assets/ports/minish/shots/02-top.webp",
+          "bottom": "assets/ports/minish/shots/02-bottom.webp",
+          "caption": { "es": "Festival Picori", "en": "Picori Festival" }
+        },
+        {
+          "top": "assets/ports/minish/shots/03-top.webp",
+          "bottom": "assets/ports/minish/shots/03-bottom.webp",
+          "caption": { "es": "Bosque Minish", "en": "Minish Woods" }
+        },
+        {
+          "top": "assets/ports/minish/shots/04-top.webp",
+          "bottom": "assets/ports/minish/shots/04-bottom.webp",
+          "caption": { "es": "Aldea Minish", "en": "Minish Village" }
+        },
+        {
+          "top": "assets/ports/minish/shots/05-top.webp",
+          "bottom": "assets/ports/minish/shots/05-bottom.webp",
+          "caption": { "es": "Cueva Crenel", "en": "Crenel Cave" }
+        },
+        {
+          "top": "assets/ports/minish/shots/06-top.webp",
+          "bottom": "assets/ports/minish/shots/06-bottom.webp",
+          "caption": { "es": "Mapa", "en": "Map" }
+        }
+      ],
+      "tagline": {
+        "es": "La aventura de Minish Cap en panorámico, con mapa y objetos en la pantalla táctil.",
+        "en": "The Minish Cap in widescreen, with map and items on the touch screen."
+      },
+      "description": {
+        "es": "Port nativo de The Minish Cap basado en Project Picori: la aventura en 400×240 arriba y mapa, misión, objetos y ajustes abajo. Usa tu propia ROM de GBA (USA o Europa, se detecta sola) y se actualiza desde el propio juego.",
+        "en": "A native port of The Minish Cap based on Project Picori: the adventure at 400×240 on top with map, quest, items and settings below. It uses your own GBA ROM (USA or Europe, detected automatically) and updates itself from inside the game."
+      },
+      "features": {
+        "es": [
+          "Panorámico 400×240, Original y Stretch",
+          "Filtros Blur, Bilinear y Pixel Perfect",
+          "Mapa, misión, objetos y ajustes táctiles",
+          "Detección automática USA / EU",
+          "New 3DS a 804 MHz y turbo con C-Stick ×2–5",
+          "Actualizador Estable / Pre-release",
+          "Importa partidas .sav de mGBA"
+        ],
+        "en": [
+          "400×240 widescreen, Original and Stretch",
+          "Blur, Bilinear and Pixel Perfect filters",
+          "Touch map, quest, items and settings",
+          "Automatic USA / EU detection",
+          "New 3DS 804 MHz and ×2–5 C-Stick turbo",
+          "Stable / Pre-release updater",
+          "Imports mGBA .sav files"
+        ]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/The Minish Cap 3DS/",
+      "releases": {
+        "stable": {
+          "tag": "v2.2",
+          "date": "2026-10-18",
+          "assets": {
+            "3dsx": { "name": "tmc-3ds-v2.2.3dsx", "size": 4975192 },
+            "cia": { "name": "tmc-3ds-v2.2.cia", "size": 3621824 },
+            "sums": { "name": "SHA256SUMS.txt", "size": 252 }
+          },
+          "notes": {
+            "es": [
+              "Retirado el Full View experimental de la combinación Wide + Pixel Perfect.",
+              "Corregido el rechazo de partidas normales por metadatos antiguos vacíos.",
+              "Código del juego y del port organizado y documentado."
+            ],
+            "en": [
+              "Removed experimental Full View from the Wide + Pixel Perfect combination.",
+              "Fixed normal saves being rejected by empty legacy metadata.",
+              "Organized and documented game and port source."
+            ]
+          }
+        },
+        "experimental": {
+          "tag": "v2.2-E1",
+          "date": "2026-10-04",
+          "assets": {
+            "3dsx": { "name": "tmc-3ds-v2.2-E1.3dsx", "size": 4983032 },
+            "cia": { "name": "tmc-3ds-v2.2-E1.cia", "size": 3625920 },
+            "sums": { "name": "SHA256SUMS.txt", "size": 261 }
+          },
+          "notes": { "es": ["Versión de prueba anterior a la 2.2."], "en": ["Test build that predates 2.2."] }
+        }
+      },
+      "requires": [
+        {
+          "id": "rom",
+          "label": { "es": "Tu ROM de GBA (USA o Europa)", "en": "Your GBA ROM (USA or Europe)" },
+          "path": "/3ds/The Minish Cap 3DS/tmc.gba",
+          "size": 16777216,
+          "accept": "*.gba",
+          "hashes": [
+            { "label": "USA", "sha1": "b4bd50e4131b027c334547b4524e2dbbd4227130" },
+            { "label": "EU", "sha1": "cff199b36ff173fb6faf152653d1bccf87c26fb7" }
+          ],
+          "help": {
+            "es": "Cualquier nombre de archivo vale. Se recomienda la versión europea.",
+            "en": "Any filename works. The European version is recommended."
+          },
+          "detect": [
+            {
+              "dir": "/3ds/The Minish Cap 3DS/",
+              "ext": ["gba"],
+              "minSize": 16777216,
+              "magic": [{ "at": 172, "any": ["BZME", "BZMP"] }]
+            }
+          ]
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "mkdir", "directory": "/3ds/The Minish Cap 3DS/" },
+          { "type": "downloadRelease", "asset": "3dsx", "output": "/3ds/The Minish Cap 3DS/tmc-3ds.3dsx" },
+          { "type": "verifySha256", "file": "/3ds/The Minish Cap 3DS/tmc-3ds.3dsx", "sums": "sums" },
+          { "type": "requireFile", "ref": "rom" },
+          { "type": "dumpDsp" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/3ds/The Minish Cap 3DS/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/tmc-3ds.cia" },
+          { "type": "verifySha256", "file": "%TMP%/tmc-3ds.cia", "sums": "sums" },
+          { "type": "installCia", "file": "%TMP%/tmc-3ds.cia" },
+          { "type": "deleteFile", "file": "%TMP%/tmc-3ds.cia" },
+          { "type": "requireFile", "ref": "rom" },
+          { "type": "dumpDsp" }
+        ]
+      },
+      "history": [
+        {
+          "tag": "v2.1",
+          "date": "2026-09-20",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Zoom del mapa inferior más suave y mejor encuadre.",
+              "La pantalla inferior queda en negro durante la leyenda Picori inicial."
+            ],
+            "en": [
+              "Smoother bottom-screen map zoom and framing.",
+              "Bottom screen stays black during the opening Picori legend."
+            ]
+          }
+        },
+        {
+          "tag": "v2.0",
+          "date": "2026-09-19",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Actualizaciones más rápidas con canales Estable y Pre-release y notas en la pantalla superior.",
+              "Corrige transiciones Wide, cámara, capas y temblores de pantalla.",
+              "Corrige cuelgues en cuevas Goron, recompensas europeas y gráficos USA/EU."
+            ],
+            "en": [
+              "Faster updates with Stable and Pre-release channels and top-screen changelogs.",
+              "Fixed Wide transitions, camera, layers and screen shake.",
+              "Fixed Goron cave crashes, European rewards and USA/EU graphics."
+            ]
+          }
+        },
+        {
+          "tag": "v1.2",
+          "date": "2026-08-26",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Banner 3D animado con música en el menú HOME.",
+              "Modos Bilinear y Ultra Sharp, y Pixel Perfect Full View experimental en New 3DS.",
+              "Pantalla inferior mejorada."
+            ],
+            "en": [
+              "Animated 3D HOME Menu banner with music.",
+              "Bilinear and Ultra Sharp modes, plus experimental Pixel Perfect Full View on New 3DS.",
+              "Improved bottom-screen layout."
+            ]
+          }
+        },
+        {
+          "tag": "v1.1",
+          "date": "2026-08-14",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Corrige partidas importadas de GBA o emulador y varios fallos de juego.",
+              "Rendimiento mucho mejor en Old 3DS.",
+              "Pantalla inferior más fluida y estable."
+            ],
+            "en": [
+              "Fixed imported GBA / emulator saves and several gameplay bugs.",
+              "Much better Old 3DS performance.",
+              "Smoother, more stable bottom screen."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "mk64",
+      "title": "Mario Kart 64",
+      "fullTitle": "Mario Kart 64 3DS",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "SpaghettiKart (HarbourMasters), n64decomp/mk64, Epic0522",
+      "origin": { "platform": "N64", "year": 1996 },
+      "color": "#d8262b",
+      "status": "released",
+      "featured": true,
+      "repo": "EstebanPdN/mario-kart-64-3ds",
+      "page": "https://estebanpdn.github.io/mario-kart-64.html",
+      "stars": 257,
+      "icon": "assets/ports/mk64/icon.webp",
+      "banner": {
+        "bg": "assets/ports/mk64/art.webp",
+        "bgPos": "50% 45%",
+        "logo": "assets/ports/mk64/logo.webp",
+        "fx": "speed",
+        "logoScale": 1.32
+      },
+      "videos": [
+        {
+          "id": "trailer",
+          "kind": "trailer",
+          "title": { "es": "Tráiler v2.0", "en": "v2.0 trailer" },
+          "src": "assets/ports/mk64/video/trailer.mp4",
+          "poster": "assets/ports/mk64/video/trailer.webp",
+          "duration": 110.6,
+          "audio": true
+        },
+        {
+          "id": "luigi-raceway",
+          "kind": "gameplay",
+          "title": { "es": "Luigi Raceway", "en": "Luigi Raceway" },
+          "top": "assets/ports/mk64/video/luigi-raceway-top.mp4",
+          "bottom": "assets/ports/mk64/video/luigi-raceway-bottom.mp4",
+          "poster": "assets/ports/mk64/video/luigi-raceway.webp",
+          "duration": 12
+        }
+      ],
+      "shots": [
+        {
+          "top": "assets/ports/mk64/shots/01-top.webp",
+          "bottom": "assets/ports/mk64/shots/01-bottom.webp",
+          "caption": { "es": "Título", "en": "Title" }
+        },
+        {
+          "top": "assets/ports/mk64/shots/02-top.webp",
+          "bottom": "assets/ports/mk64/shots/02-bottom.webp",
+          "caption": { "es": "Personajes", "en": "Characters" }
+        },
+        {
+          "top": "assets/ports/mk64/shots/03-top.webp",
+          "bottom": "assets/ports/mk64/shots/03-bottom.webp",
+          "caption": { "es": "Luigi Raceway", "en": "Luigi Raceway" }
+        },
+        {
+          "top": "assets/ports/mk64/shots/04-top.webp",
+          "bottom": "assets/ports/mk64/shots/04-bottom.webp",
+          "caption": { "es": "Koopa Troopa Beach", "en": "Koopa Troopa Beach" }
+        },
+        {
+          "top": "assets/ports/mk64/shots/05-top.webp",
+          "bottom": "assets/ports/mk64/shots/05-bottom.webp",
+          "caption": { "es": "Rainbow Road", "en": "Rainbow Road" }
+        }
+      ],
+      "tagline": {
+        "es": "Mario Kart 64 nativo con menús táctiles, cinco HUD y rivales CPU en todos los modos.",
+        "en": "Native Mario Kart 64 with touch menus, five HUDs and CPU rivals in every mode."
+      },
+      "description": {
+        "es": "Port nativo de Mario Kart 64 basado en SpaghettiKart: Gran Premio, Contrarreloj, VS y Batalla contra la CPU, menús táctiles, cinco diseños de HUD y texturas Original, Menú o Mejoradas. Usa tu ROM USA; mk64.o2r se genera en la consola la primera vez o con el extractor para PC.",
+        "en": "A native port of Mario Kart 64 based on SpaghettiKart: Grand Prix, Time Trial, VS and Battle against the CPU, touch menus, five HUD layouts and Original, Menu or Improved textures. It uses your USA ROM; mk64.o2r is built on the console the first time or with the PC extractor."
+      },
+      "features": {
+        "es": [
+          "GP, Contrarreloj, VS y Batalla contra la CPU",
+          "Texturas Original, Menú y Mejorado",
+          "5 diseños de HUD y mapas redibujados",
+          "Perfiles Rendimiento, Calidad y Personalizado",
+          "Turbo con C-Stick ×2–5 y vista trasera",
+          "Actualizaciones Estable y Experimental",
+          "Extractores para Windows, macOS y Linux"
+        ],
+        "en": [
+          "GP, Time Trial, VS and Battle vs CPU",
+          "Original, Menu and Improved textures",
+          "5 HUD layouts and redrawn maps",
+          "Performance, Quality and Custom profiles",
+          "×2–5 C-Stick turbo and rear view",
+          "Stable and Experimental updates",
+          "Extractors for Windows, macOS and Linux"
+        ]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false, "recommended": "n3ds" },
+      "notice": {
+        "es": "Pensado sobre todo para New 3DS. La primera vez que lo abras generará mk64.o2r (tarda un rato y necesita 96 MB libres); también puedes crearlo con el extractor para PC.",
+        "en": "Mainly intended for New 3DS. On first launch it builds mk64.o2r (slow, needs 96 MB free); you can also create it with the PC extractor."
+      },
+      "folder": "/3ds/MK64/",
+      "releases": {
+        "stable": {
+          "tag": "v2.0",
+          "date": "2026-10-23",
+          "assets": {
+            "3dsx": { "name": "mk64-3ds-v2.0.3dsx", "size": 49700432 },
+            "cia": { "name": "mk64-3ds-v2.0.cia", "size": 46179264 },
+            "sums": { "name": "SHA256SUMS.txt", "size": 553 }
+          },
+          "notes": {
+            "es": [
+              "Texturas Original, Menú y Mejorado, y los 20 mapas redibujados.",
+              "VS en solitario contra 7 CPU, Batalla contra 3 CPU, copas aleatorias y modo AUTO.",
+              "Turbo con C-Stick ×2–5, vista trasera y acciones de SELECT configurables.",
+              "Actualizaciones Estable y Experimental en el juego y extractores para PC."
+            ],
+            "en": [
+              "Original, Menu and Improved textures, and all 20 maps redrawn.",
+              "Solo VS against 7 CPUs, Battle against 3 CPUs, random cups and AUTO mode.",
+              "×2–5 C-Stick turbo, rear view and configurable SELECT actions.",
+              "In-game Stable and Experimental updates and PC extractors."
+            ]
+          }
+        },
+        "experimental": {
+          "tag": "v2.1-E2",
+          "date": "2026-10-31",
+          "assets": {
+            "3dsx": { "name": "mk64-3ds-v2.1-E2.3dsx", "size": 49703928 },
+            "cia": { "name": "mk64-3ds-v2.1-E2.cia", "size": 46183360 },
+            "sums": { "name": "SHA256SUMS.txt", "size": 562 }
+          },
+          "notes": {
+            "es": ["Corrige un error de vértices de GPU que podía congelar la consola al empezar Choco Mountain."],
+            "en": ["Fixes a GPU vertex layout error that could freeze the console at the start of Choco Mountain."]
+          }
+        }
+      },
+      "requires": [
+        {
+          "id": "rom",
+          "label": { "es": "Tu ROM de N64 (USA, formato .z64)", "en": "Your N64 ROM (USA, .z64 byte order)" },
+          "path": "/3ds/MK64/mk64.z64",
+          "size": 12582912,
+          "accept": "Mario Kart 64.z64, mk64.z64, baserom.us.z64",
+          "hashes": [{ "label": "USA", "sha1": "579c48e211ae952530ffc8738709f078d5dd215e" }],
+          "help": {
+            "es": "Al abrirlo por primera vez se crea mk64.o2r junto a la ROM.",
+            "en": "mk64.o2r is created next to the ROM on first launch."
+          },
+          "tool": {
+            "label": { "es": "Extractor para PC", "en": "PC extractor" },
+            "url": "https://github.com/EstebanPdN/mario-kart-64-3ds/releases/tag/v2.0"
+          },
+          "detect": [
+            {
+              "dir": "/3ds/MK64/",
+              "names": ["mk64.o2r"],
+              "minSize": 1048576,
+              "magic": [{ "at": 0, "any": ["PK"] }],
+              "derived": true
+            },
+            {
+              "dir": "/3ds/mk64-3ds/",
+              "names": ["mk64.o2r"],
+              "minSize": 1048576,
+              "magic": [{ "at": 0, "any": ["PK"] }],
+              "derived": true
+            },
+            {
+              "dir": "/3ds/MK64/",
+              "names": ["Mario Kart 64.z64", "mk64.z64", "baserom.us.z64"],
+              "sizes": [12582912],
+              "magic": [{ "at": 0, "hex": ["80371240"] }, { "at": 59, "any": ["NKTE"] }]
+            }
+          ]
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "mkdir", "directory": "/3ds/MK64/" },
+          { "type": "downloadRelease", "asset": "3dsx", "output": "/3ds/MK64/mk64-3ds.3dsx" },
+          { "type": "verifySha256", "file": "/3ds/MK64/mk64-3ds.3dsx", "sums": "sums" },
+          { "type": "requireFile", "ref": "rom" },
+          { "type": "dumpDsp" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/3ds/MK64/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/mk64-3ds.cia" },
+          { "type": "verifySha256", "file": "%TMP%/mk64-3ds.cia", "sums": "sums" },
+          { "type": "installCia", "file": "%TMP%/mk64-3ds.cia" },
+          { "type": "deleteFile", "file": "%TMP%/mk64-3ds.cia" },
+          { "type": "requireFile", "ref": "rom" },
+          { "type": "dumpDsp" }
+        ]
+      },
+      "history": [
+        {
+          "tag": "v1.5",
+          "date": "2026-09-07",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Corrige cuelgues al iniciar, salir y durante la carrera.",
+              "Mejor rendimiento y uso de memoria en Old y New 3DS.",
+              "Recursos precargados en RAM: sin lecturas de la SD en plena carrera."
+            ],
+            "en": [
+              "Fixed startup, shutdown and in-race crashes.",
+              "Better performance and memory use on Old and New 3DS.",
+              "Resources preloaded into RAM: no SD reads mid-race."
+            ]
+          }
+        },
+        {
+          "tag": "v1.1",
+          "date": "2026-08-11",
+          "channel": "stable",
+          "notes": {
+            "es": ["Se quita el atajo L + R + A: los volcados de diagnóstico se piden solo con SELECT."],
+            "en": ["Removed the L + R + A shortcut: diagnostic dumps now use SELECT only."]
+          }
+        },
+        {
+          "tag": "v1.0",
+          "date": "2026-08-11",
+          "channel": "stable",
+          "notes": {
+            "es": [
+              "Extracción de la ROM en el primer arranque, con recuperación si se interrumpe.",
+              "Interfaz completa en la pantalla inferior: clasificación, minimapa y menús.",
+              "Modos de 400 y 800 px, y proporciones Wide y Original."
+            ],
+            "en": [
+              "First-run ROM extraction with recovery from interrupted installs.",
+              "Full bottom-screen interface: standings, minimap and menus.",
+              "400 and 800 px modes with Wide and Original aspect ratios."
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "doom",
+      "title": "Legend of Doom",
+      "fullTitle": "Legend of Doom 3DS",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "Legend of Doom (DeTwelve Games), GZDoom 4.7.1, Freedoom",
+      "origin": { "platform": "GZDoom", "year": 2023 },
+      "color": "#8a3b1e",
+      "status": "released",
+      "repo": "EstebanPdN/legend-of-doom-3ds",
+      "page": "https://estebanpdn.github.io/legend-of-doom.html",
+      "stars": 41,
+      "icon": "assets/ports/doom/icon.webp",
+      "banner": {
+        "bg": "assets/ports/doom/art.webp",
+        "bgPos": "50% 55%",
+        "logo": "assets/ports/doom/logo.webp",
+        "fx": "embers",
+        "logoScale": 1.3
+      },
+      "videos": [
+        {
+          "id": "forest",
+          "kind": "gameplay",
+          "title": { "es": "Enemigos del bosque", "en": "Forest enemies" },
+          "top": "assets/ports/doom/video/forest-top.mp4",
+          "bottom": "assets/ports/doom/video/forest-bottom.mp4",
+          "poster": "assets/ports/doom/video/forest.webp",
+          "duration": 8
+        }
+      ],
+      "shots": [
+        {
+          "top": "assets/ports/doom/shots/01-top.webp",
+          "bottom": "assets/ports/doom/shots/01-bottom.webp",
+          "caption": { "es": "Título", "en": "Title" }
+        },
+        {
+          "top": "assets/ports/doom/shots/02-top.webp",
+          "bottom": "assets/ports/doom/shots/02-bottom.webp",
+          "caption": { "es": "Hyrule", "en": "Hyrule" }
+        },
+        {
+          "top": "assets/ports/doom/shots/03-top.webp",
+          "bottom": "assets/ports/doom/shots/03-bottom.webp",
+          "caption": { "es": "La cueva de la espada", "en": "Sword cave" }
+        },
+        {
+          "top": "assets/ports/doom/shots/04-top.webp",
+          "bottom": "assets/ports/doom/shots/04-bottom.webp",
+          "caption": { "es": "Enemigos del bosque", "en": "Forest enemies" }
+        },
+        {
+          "top": "assets/ports/doom/shots/05-top.webp",
+          "bottom": "assets/ports/doom/shots/05-bottom.webp",
+          "caption": { "es": "Automapa", "en": "Automap" }
+        }
+      ],
+      "tagline": {
+        "es": "El primer Zelda convertido en un shooter con GZDoom, nativo en New 3DS.",
+        "en": "The first Zelda reimagined as a GZDoom shooter, native on New 3DS."
+      },
+      "description": {
+        "es": "La conversión en primera persona del Zelda original creada por DeTwelve Games, funcionando sobre GZDoom 4.7.1. Menús, mapa y objetos táctiles, cámara con C-Stick y partidas con vista previa. No necesita ROM ni WAD: Freedoom va incluido.",
+        "en": "DeTwelve Games' first-person remake of the original Zelda, running on GZDoom 4.7.1. Touch menus, map and items, C-Stick camera and saves with previews. No ROM or WAD needed: Freedoom is included."
+      },
+      "features": {
+        "es": [
+          "GZDoom 4.7.1 nativo",
+          "Menús, mapa y objetos en la pantalla táctil",
+          "Cámara con C-Stick o táctil",
+          "Guardado y carga con vista previa",
+          "Escala de render del 50 al 100 %",
+          "Actualizador en la versión CIA",
+          "Freedoom incluido: no necesitas archivos"
+        ],
+        "en": [
+          "Native GZDoom 4.7.1",
+          "Touch menus, map and items",
+          "C-Stick or touch camera",
+          "Save and load with previews",
+          "50–100% render scale",
+          "Updater in the CIA version",
+          "Freedoom included: no files needed"
+        ]
+      },
+      "compat": { "o3ds": false, "n3ds": true, "stereo": false },
+      "folder": "/3ds/legend-of-doom/",
+      "releases": {
+        "stable": {
+          "tag": "v1.0",
+          "date": "2026-09-13",
+          "assets": {
+            "zip": { "name": "legend-of-doom-3ds-v1.0.zip", "size": 28101638 },
+            "3dsx": { "name": "legend-of-doom-3ds-v1.0.3dsx", "size": 10180556 },
+            "cia": { "name": "legend-of-doom-3ds-v1.0.cia", "size": 48624576 },
+            "sums": { "name": "SHA256SUMS.txt", "size": 550 }
+          },
+          "notes": { "es": ["Primera versión."], "en": ["Initial release."] }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [
+          { "type": "downloadRelease", "asset": "zip", "output": "%TMP%/legend-of-doom-3ds.zip" },
+          { "type": "verifySha256", "file": "%TMP%/legend-of-doom-3ds.zip", "sums": "sums" },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/legend-of-doom-3ds.zip",
+            "input": "^3ds/legend-of-doom/",
+            "output": "/",
+            "creates": [
+              { "path": "/3ds/legend-of-doom/legend-of-doom-3ds.3dsx", "size": 10180064 },
+              { "path": "/3ds/legend-of-doom/README.txt", "size": 7909 },
+              { "path": "/3ds/legend-of-doom/data/LegendOfDoom.pk3", "size": 8567887 },
+              { "path": "/3ds/legend-of-doom/data/freedoom2.wad", "size": 28787748 },
+              { "path": "/3ds/legend-of-doom/data/game_support.pk3", "size": 1793985 },
+              { "path": "/3ds/legend-of-doom/data/gzdoom.pk3", "size": 2459707 }
+            ]
+          },
+          { "type": "deleteFile", "file": "%TMP%/legend-of-doom-3ds.zip" },
+          { "type": "dumpDsp" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/3ds/legend-of-doom/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/legend-of-doom-3ds.cia" },
+          { "type": "verifySha256", "file": "%TMP%/legend-of-doom-3ds.cia", "sums": "sums" },
+          { "type": "installCia", "file": "%TMP%/legend-of-doom-3ds.cia" },
+          { "type": "deleteFile", "file": "%TMP%/legend-of-doom-3ds.cia" },
+          { "type": "dumpDsp" }
+        ]
+      }
+    },
+    {
+      "id": "starwing",
+      "title": "Starwing",
+      "fullTitle": "Starwing 3DS · Star Fox",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "Starfox Enhanced (KandoWontU), UltraStarFox, Team SFEX",
+      "origin": { "platform": "SNES", "year": 1993 },
+      "color": "#1d3e8a",
+      "status": "released",
+      "repo": "EstebanPdN/starwing-3ds",
+      "page": "https://estebanpdn.github.io/star-fox.html",
+      "stars": 25,
+      "icon": "assets/ports/starwing/icon.webp",
+      "banner": {
+        "bg": "assets/ports/starwing/art.webp",
+        "bgPos": "50% 35%",
+        "logo": "assets/ports/starwing/logo.webp",
+        "fx": "stars",
+        "logoScale": 1.02
+      },
+      "videos": [
+        {
+          "id": "corneria",
+          "kind": "gameplay",
+          "title": { "es": "Ciudad de Corneria", "en": "Corneria City" },
+          "top": "assets/ports/starwing/video/corneria-top.mp4",
+          "bottom": "assets/ports/starwing/video/corneria-bottom.mp4",
+          "poster": "assets/ports/starwing/video/corneria.webp",
+          "duration": 12
+        }
+      ],
+      "shots": [
+        {
+          "top": "assets/ports/starwing/shots/01-top.webp",
+          "bottom": "assets/ports/starwing/shots/01-bottom.webp",
+          "caption": { "es": "Título", "en": "Title" }
+        },
+        {
+          "top": "assets/ports/starwing/shots/02-top.webp",
+          "bottom": "assets/ports/starwing/shots/02-bottom.webp",
+          "caption": { "es": "Mapa de Lylat", "en": "Lylat map" }
+        },
+        {
+          "top": "assets/ports/starwing/shots/03-top.webp",
+          "bottom": "assets/ports/starwing/shots/03-bottom.webp",
+          "caption": { "es": "Corneria", "en": "Corneria" }
+        },
+        {
+          "top": "assets/ports/starwing/shots/04-top.webp",
+          "bottom": "assets/ports/starwing/shots/04-bottom.webp",
+          "caption": { "es": "Asteroides", "en": "Asteroids" }
+        },
+        {
+          "top": "assets/ports/starwing/shots/05-top.webp",
+          "bottom": "assets/ports/starwing/shots/05-bottom.webp",
+          "caption": { "es": "Venom", "en": "Venom" }
+        }
+      ],
+      "tagline": {
+        "es": "Star Fox de SNES nativo en 3DS, con interfaz táctil y 3D experimental.",
+        "en": "SNES Star Fox running natively, with a touch interface and experimental 3D."
+      },
+      "description": {
+        "es": "Star Fox (Starwing) basado en Starfox Enhanced: panorámico 400×240 arriba e interfaz táctil 320×240 abajo, audio SPC, puntos de control y Star Fox EX experimental. Prepara sus datos desde tu ROM limpia la primera vez que lo abres.",
+        "en": "Star Fox (Starwing) based on Starfox Enhanced: 400×240 widescreen on top and a 320×240 touch interface below, SPC audio, checkpoints and experimental Star Fox EX. It prepares its data from your clean ROM on first launch."
+      },
+      "features": {
+        "es": [
+          "Panorámico 400×240",
+          "Interfaz táctil propia de 320×240",
+          "Audio SPC",
+          "Puntos de control",
+          "3D estereoscópico experimental",
+          "Star Fox EX (experimental)",
+          "Actualizador integrado"
+        ],
+        "en": [
+          "400×240 widescreen",
+          "Dedicated 320×240 touch interface",
+          "SPC audio",
+          "Checkpoints",
+          "Experimental stereoscopic 3D",
+          "Star Fox EX (experimental)",
+          "Built-in updater"
+        ]
+      },
+      "compat": { "o3ds": "experimental", "n3ds": true, "stereo": "experimental" },
+      "folder": "/3ds/Starwing/",
+      "releases": {
+        "stable": {
+          "tag": "v1.1",
+          "date": "2026-10-19",
+          "o3ds": false,
+          "assets": {
+            "3dsx": { "name": "Starwing-3DS.3dsx", "size": 5586492 },
+            "cia": { "name": "Starwing-3DS.cia", "size": 4670400 },
+            "sums": { "name": "Starwing-3DS-SHA256SUMS.txt", "size": 345 }
+          },
+          "notes": {
+            "es": [
+              "Mejoras de renderizado PICA, audio y memoria.",
+              "Velocidad Original, interpolación y límite de 60 FPS por defecto.",
+              "Aviso de compatibilidad para Old 3DS."
+            ],
+            "en": [
+              "Improved PICA rendering, audio processing and memory use.",
+              "Original speed, interpolation and a 60 FPS cap by default.",
+              "Old 3DS compatibility notice."
+            ]
+          }
+        },
+        "experimental": {
+          "tag": "v1.2-E2",
+          "date": "2026-10-22",
+          "o3ds": true,
+          "assets": {
+            "3dsx": { "name": "Starwing-3DS.3dsx", "size": 5362464 },
+            "cia": { "name": "Starwing-3DS.cia", "size": 4580288 },
+            "sums": { "name": "Starwing-3DS-SHA256SUMS.txt", "size": 345 }
+          },
+          "notes": {
+            "es": [
+              "Juego experimental en Old 3DS y 2DS.",
+              "Mejoras de audio y renderizado en Old 3DS.",
+              "Ajusta la profundidad del 3D estereoscópico.",
+              "Aviso: HOME puede congelar la consola en esta versión."
+            ],
+            "en": [
+              "Experimental gameplay on Old 3DS and 2DS.",
+              "Old 3DS audio and rendering improvements.",
+              "Adjusted stereoscopic background depth.",
+              "Warning: HOME may freeze the console in this build."
+            ]
+          }
+        }
+      },
+      "requires": [
+        {
+          "id": "rom",
+          "label": { "es": "Tu ROM de Star Fox / Starwing (1 MB)", "en": "Your Star Fox / Starwing ROM (1 MB)" },
+          "path": "/3ds/Starwing/starfox.sfc",
+          "size": 1048576,
+          "accept": "*.sfc, *.smc",
+          "hashes": [
+            { "label": "USA 1.0", "crc32": "0bae0941" },
+            { "label": "USA 1.1", "crc32": "b18676b2" },
+            { "label": "USA 1.2", "crc32": "8fc4e6d0" },
+            { "label": "JP 1.0", "crc32": "41a60b3f" },
+            { "label": "JP 1.1", "crc32": "ad668a41" },
+            { "label": "EU 1.0", "crc32": "865f1a71" },
+            { "label": "EU 1.1", "crc32": "ba64da2b" },
+            { "label": "DE", "crc32": "b48ca238" }
+          ],
+          "help": {
+            "es": "Vale con o sin cabecera de 512 bytes. Los datos Starfox-Assets se crean en la consola.",
+            "en": "With or without a 512-byte header. Starfox-Assets data is built on the console."
+          },
+          "detect": [
+            {
+              "dir": "/3ds/Starwing/",
+              "ext": ["sfc", "smc"],
+              "sizes": [1048576, 1049088],
+              "crc32": {
+                "tail": 1048576,
+                "any": ["0bae0941", "b18676b2", "8fc4e6d0", "41a60b3f", "ad668a41", "865f1a71", "ba64da2b", "b48ca238"]
+              }
+            },
+            {
+              "dir": "/3ds/Starwing/",
+              "names": ["Starfox-Assets.BIN"],
+              "magic": [{ "at": 0, "any": ["SFOXAS01"] }],
+              "derived": true
+            }
+          ]
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "mkdir", "directory": "/3ds/Starwing/" },
+          { "type": "downloadRelease", "asset": "3dsx", "output": "/3ds/Starwing/Starwing-3DS.3dsx" },
+          { "type": "verifySha256", "file": "/3ds/Starwing/Starwing-3DS.3dsx", "sums": "sums" },
+          { "type": "requireFile", "ref": "rom" },
+          { "type": "dumpDsp" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/3ds/Starwing/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/Starwing-3DS.cia" },
+          { "type": "verifySha256", "file": "%TMP%/Starwing-3DS.cia", "sums": "sums" },
+          { "type": "installCia", "file": "%TMP%/Starwing-3DS.cia" },
+          { "type": "deleteFile", "file": "%TMP%/Starwing-3DS.cia" },
+          { "type": "requireFile", "ref": "rom" },
+          { "type": "dumpDsp" }
+        ]
+      },
+      "history": [
+        {
+          "tag": "v1.0",
+          "date": "2026-10-18",
+          "channel": "stable",
+          "notes": { "es": ["Primera versión."], "en": ["Initial release."] }
+        }
+      ]
+    },
+    {
+      "id": "mutiny",
+      "title": "Mutiny",
+      "fullTitle": "Mutiny 3DS",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "Mutiny © 2008 Nitrome · Chris Burt-Brown, Heather Stancliffe, Jon y Mat Annal, Dave Cowen",
+      "origin": { "platform": "Flash", "year": 2008 },
+      "color": "#7b1f1f",
+      "status": "released",
+      "repo": "EstebanPdN/mutiny-3ds",
+      "stars": 2,
+      "icon": "assets/ports/mutiny/icon.webp",
+      "pixelIcon": true,
+      "banner": {
+        "bg": "assets/ports/mutiny/art.webp",
+        "bgPos": "50% 50%",
+        "pixel": true,
+        "logo": "assets/ports/mutiny/logo.webp",
+        "logoPixel": true,
+        "logoScale": 1.12,
+        "fx": "sea"
+      },
+      "shots": [
+        {
+          "top": "assets/ports/mutiny/shots/01-top.webp",
+          "bottom": "assets/ports/mutiny/shots/01-bottom.webp",
+          "caption": { "es": "Título", "en": "Title" }
+        },
+        {
+          "top": "assets/ports/mutiny/shots/02-top.webp",
+          "bottom": "assets/ports/mutiny/shots/02-bottom.webp",
+          "caption": { "es": "Apuntando", "en": "Aiming" }
+        },
+        {
+          "top": "assets/ports/mutiny/shots/03-top.webp",
+          "bottom": "assets/ports/mutiny/shots/03-bottom.webp",
+          "caption": { "es": "Armas", "en": "Weapons" }
+        },
+        {
+          "top": "assets/ports/mutiny/shots/04-top.webp",
+          "bottom": "assets/ports/mutiny/shots/04-bottom.webp",
+          "caption": { "es": "Resultado", "en": "Result" }
+        },
+        {
+          "top": "assets/ports/mutiny/shots/05-top.webp",
+          "bottom": "assets/ports/mutiny/shots/05-bottom.webp",
+          "caption": { "es": "Partida", "en": "Match" }
+        }
+      ],
+      "tagline": {
+        "es": "La artillería pirata de Nitrome, a dos pantallas y apuntando con el lápiz.",
+        "en": "Nitrome's pirate artillery game on two screens, aimed with the stylus."
+      },
+      "description": {
+        "es": "Port nativo del juego de artillería pirata de Nitrome (2008): 15 niveles de historia, 18 mapas para dos jugadores y las 15 armas. El juego va arriba y la salud del equipo, un minimapa y los controles del turno, abajo. Apunta tocando, tirando hacia atrás y soltando.",
+        "en": "A native port of Nitrome's 2008 pirate artillery game: 15 story levels, 18 two-player maps and all 15 weapons. The game runs on top; team health, a live minimap and the turn's controls sit below. Aim by touching, pulling back and letting go."
+      },
+      "features": {
+        "es": [
+          "15 niveles de historia y 18 mapas a dos jugadores",
+          "Las 15 armas originales",
+          "Apuntado con el lápiz",
+          "Minimapa y salud del equipo táctiles",
+          "Intro, música y sonidos originales a 25 fps",
+          "No necesita archivos propios"
+        ],
+        "en": [
+          "15 story levels and 18 two-player maps",
+          "All 15 original weapons",
+          "Stylus aiming",
+          "Touch minimap and team health",
+          "Original intro, music and sounds at 25 fps",
+          "No extra files needed"
+        ]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/mutiny/",
+      "releases": {
+        "stable": {
+          "tag": "v1.0",
+          "date": "2026-11-07",
+          "assets": {
+            "3dsx": { "name": "mutiny-3ds-v1.0.3dsx", "size": 7406424 },
+            "cia": { "name": "mutiny-3ds-v1.0.cia", "size": 7541696 },
+            "sums": { "name": "SHA256SUMS.txt", "size": 173 }
+          },
+          "notes": {
+            "es": [
+              "Primera versión: el juego completo con 15 niveles, 18 mapas y 15 armas.",
+              "Interfaz a dos pantallas con minimapa en vivo.",
+              "START + SELECT inicia una partida de prueba con todas las armas."
+            ],
+            "en": [
+              "First release: the whole game with 15 levels, 18 maps and 15 weapons.",
+              "Two-screen interface with a live minimap.",
+              "START + SELECT starts a test match with every weapon."
+            ]
+          }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [
+          { "type": "mkdir", "directory": "/3ds/mutiny/" },
+          { "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/mutiny-3ds.3dsx" },
+          { "type": "verifySha256", "file": "%3DSX%/mutiny-3ds.3dsx", "sums": "sums" },
+          { "type": "dumpDsp" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/3ds/mutiny/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/mutiny-3ds.cia" },
+          { "type": "verifySha256", "file": "%TMP%/mutiny-3ds.cia", "sums": "sums" },
+          { "type": "installCia", "file": "%TMP%/mutiny-3ds.cia" },
+          { "type": "deleteFile", "file": "%TMP%/mutiny-3ds.cia" },
+          { "type": "dumpDsp" }
+        ]
+      }
+    },
+    {
+      "id": "sm64ds",
+      "title": "Super Mario 64 DS",
+      "fullTitle": "Super Mario 64 DS Native",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "sm64ds-3ds (Sébastien Breton), decompilación de Tango, libsm64",
+      "origin": { "platform": "NDS", "year": 2004 },
+      "color": "#e0a800",
+      "status": "development",
+      "progress": 35,
+      "repo": "EstebanPdN/sm64ds-3ds",
+      "page": "https://estebanpdn.github.io/super-mario-64-ds.html",
+      "stars": 2,
+      "icon": "assets/ports/sm64ds/icon.webp",
+      "banner": {
+        "bg": "assets/ports/sm64ds/art.webp",
+        "bgPos": "50% 45%",
+        "logo": "assets/ports/sm64ds/logo.webp",
+        "logoScale": 1.1,
+        "fx": "sparkles"
+      },
+      "shots": [
+        {
+          "top": "assets/ports/sm64ds/shots/01-top.webp",
+          "bottom": "assets/ports/sm64ds/shots/01-bottom.webp",
+          "caption": { "es": "Pausa (compilación 24)", "en": "Pause (build 24)" }
+        }
+      ],
+      "tagline": {
+        "es": "Super Mario 64 DS nativo con control analógico, cámara con C-Stick y 3D.",
+        "en": "Native Super Mario 64 DS with analog control, C-Stick camera and 3D."
+      },
+      "description": {
+        "es": "Adaptación nativa de Super Mario 64 DS con control analógico, cámara con C-Stick, 3D estereoscópico y menús táctiles. Aún está en desarrollo y no tiene versión pública: aquí puedes seguir su progreso.",
+        "en": "A native adaptation of Super Mario 64 DS with analog control, a C-Stick camera, stereoscopic 3D and touch menus. It is still in development with no public release: follow its progress here."
+      },
+      "features": {
+        "es": [
+          "Movimiento analógico",
+          "Cámara con C-Stick",
+          "3D estereoscópico",
+          "Menús táctiles",
+          "Un único archivo de datos preparado"
+        ],
+        "en": ["Analog movement", "C-Stick camera", "Stereoscopic 3D", "Touch menus", "A single prepared data file"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": true },
+      "folder": "/3ds/sm64ds/",
+      "releases": null,
+      "requires": [
+        {
+          "id": "rom",
+          "label": { "es": "Tu ROM de NDS (Europa, rev 0)", "en": "Your NDS ROM (Europe, rev 0)" },
+          "path": "/3ds/sm64ds/sm64ds.nds",
+          "size": 16777216,
+          "accept": "*.nds",
+          "hashes": [{ "label": "EU", "sha1": "1367529f2cb23e76ef295cb1727333ae8f0a6cd7" }],
+          "help": {
+            "es": "Se prepara en la consola (64 MB libres) o con SM64DS Packer en el PC.",
+            "en": "Prepared on the console (64 MB free) or with SM64DS Packer on a PC."
+          },
+          "detect": [
+            {
+              "dir": "/3ds/sm64ds/",
+              "ext": ["sm64ds"],
+              "sizes": [15686873],
+              "magic": [{ "at": 0, "any": ["SM64DSP1"] }],
+              "derived": true
+            },
+            {
+              "dir": "/3ds/sm64ds/",
+              "ext": ["nds"],
+              "sizes": [16777216],
+              "magic": [{ "at": 12, "any": ["ASMP"] }, { "at": 30, "hex": ["00"] }]
+            }
+          ]
+        }
+      ],
+      "install": null
+    },
+    {
+      "id": "rvc",
+      "title": "Red Viper Color",
+      "category": "forge",
+      "tags": ["emulators"],
+      "author": "EstebanPdN",
+      "credits": "Red Viper 1.3.4 (skyfloogle), r3Ddragon, Reality Boy, VBoyColor (yuk27)",
+      "origin": { "platform": "Virtual Boy", "year": 1995 },
+      "color": "#b3121b",
+      "status": "development",
+      "progress": 75,
+      "icon": "assets/ports/rvc/icon.webp",
+      "banner": { "bg": "assets/ports/rvc/art.webp", "bgPos": "50% 50%", "logo": "assets/ports/rvc/logo.webp", "fx": "scan" },
+      "shots": [
+        { "top": "assets/ports/rvc/shots/01-top.webp", "caption": { "es": "Wario Land", "en": "Wario Land" } },
+        { "top": "assets/ports/rvc/shots/02-top.webp", "caption": { "es": "Golf", "en": "Golf" } },
+        { "top": "assets/ports/rvc/shots/03-top.webp", "caption": { "es": "Tenis", "en": "Tennis" } },
+        { "top": "assets/ports/rvc/shots/04-top.webp", "caption": { "es": "Jack Bros.", "en": "Jack Bros." } }
+      ],
+      "tagline": {
+        "es": "Virtual Boy a todo color, sin perder el 3D estereoscópico.",
+        "en": "Virtual Boy in full color, keeping its stereoscopic 3D."
+      },
+      "description": {
+        "es": "Emulador de Virtual Boy basado en Red Viper 1.3.4 que añade color con paquetes pintados a mano y un modo automático. Color por ojo en 3D estereoscópico, savestates, controles reasignables y multijugador local.",
+        "en": "A Virtual Boy emulator based on Red Viper 1.3.4 that adds color through hand-painted packs and an automatic mode. Per-eye color in stereoscopic 3D, savestates, remappable controls and local multiplayer."
+      },
+      "features": {
+        "es": [
+          "Modo color con paquetes y relleno automático",
+          "Color por ojo en 3D estereoscópico",
+          "16 paquetes de color",
+          "Savestates",
+          "Controles reasignables",
+          "Multijugador local"
+        ],
+        "en": [
+          "Color mode with packs and auto fill",
+          "Per-eye color in stereoscopic 3D",
+          "16 color packs",
+          "Savestates",
+          "Remappable controls",
+          "Local multiplayer"
+        ]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": true },
+      "folder": "/3ds/red-viper-color/",
+      "releases": null,
+      "requires": [],
+      "install": null
+    },
+    {
+      "id": "worms",
+      "title": "Worms 3D",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "Worms 3D © Team17 · código recuperado y compilado de forma nativa",
+      "origin": { "platform": "GameCube", "year": 2003 },
+      "color": "#2d9be0",
+      "status": "development",
+      "progress": 50,
+      "page": "https://estebanpdn.github.io/worms-3d.html",
+      "icon": "assets/ports/worms/icon.webp",
+      "banner": {
+        "bg": "assets/ports/worms/art.webp",
+        "bgPos": "50% 40%",
+        "logo": "assets/ports/worms/logo.webp",
+        "fx": "none"
+      },
+      "shots": [
+        { "top": "assets/ports/worms/shots/01-top.webp", "caption": { "es": "Menú", "en": "Menu" } },
+        { "top": "assets/ports/worms/shots/02-top.webp", "caption": { "es": "Partida", "en": "Match" } },
+        { "top": "assets/ports/worms/shots/03-top.webp", "caption": { "es": "Puente", "en": "Bridge" } },
+        { "top": "assets/ports/worms/shots/04-top.webp", "caption": { "es": "Fortaleza", "en": "Fortress" } },
+        { "top": "assets/ports/worms/shots/05-top.webp", "caption": { "es": "Apuntando", "en": "Aiming" } }
+      ],
+      "tagline": {
+        "es": "Worms 3D reconstruido desde su código recuperado, nativo en New 3DS.",
+        "en": "Worms 3D rebuilt from its recovered code, native on New 3DS."
+      },
+      "description": {
+        "es": "Worms 3D de GameCube reconstruido a partir de su código recuperado y compilado de forma nativa para New 3DS. Jugable de principio a fin, en todos los idiomas, con partidas en la SD y cargador de mods .worms.",
+        "en": "GameCube Worms 3D rebuilt from its recovered code and compiled natively for New 3DS. Playable from start to finish, in every language, with SD saves and a .worms mod loader."
+      },
+      "features": {
+        "es": [
+          "Código recuperado compilado de forma nativa",
+          "Renderizado PICA200",
+          "Juego completo en la pantalla superior",
+          "Todos los idiomas",
+          "Partidas guardadas en la SD",
+          "Cargador de mods .worms"
+        ],
+        "en": [
+          "Recovered code compiled natively",
+          "PICA200 rendering",
+          "Complete game on the top screen",
+          "Every language",
+          "Saves on the SD card",
+          ".worms mod loader"
+        ]
+      },
+      "compat": { "o3ds": false, "n3ds": true, "stereo": false },
+      "folder": "/3ds/worms3ds/",
+      "releases": null,
+      "requires": [
+        {
+          "id": "data",
+          "label": { "es": "assets.worms desde tu disco (EU, GWMP8P)", "en": "assets.worms from your disc (EU, GWMP8P)" },
+          "path": "/3ds/worms3ds/assets.worms",
+          "size": 1047527424,
+          "help": {
+            "es": "Se crea con Worms3DExtractor para macOS a partir de tu copia del disco (unos 999 MB).",
+            "en": "Created with Worms3DExtractor for macOS from your disc copy (about 999 MB)."
+          }
+        }
+      ],
+      "install": null
+    },
+    {
+      "id": "dusklight",
+      "title": "Dusklight",
+      "fullTitle": "Dusklight 3DS · Twilight Princess",
+      "category": "forge",
+      "author": "EstebanPdN",
+      "credits": "Dusklight (TwilitRealm), zeldaret/tp, Aurora, OpenDSP",
+      "origin": { "platform": "GameCube", "year": 2006 },
+      "color": "#3b2f5c",
+      "status": "development",
+      "progress": 10,
+      "repo": "EstebanPdN/dusklight-3ds",
+      "page": "https://estebanpdn.github.io/dusklight.html",
+      "stars": 5,
+      "icon": "assets/ports/dusklight/icon.webp",
+      "banner": {
+        "bg": "assets/ports/dusklight/art.webp",
+        "bgPos": "50% 40%",
+        "mid": "assets/ports/dusklight/mid.webp",
+        "logo": "assets/ports/dusklight/logo.webp",
+        "fx": "twilight"
+      },
+      "shots": [],
+      "tagline": {
+        "es": "Twilight Princess nativo en New 3DS. Un proyecto en sus primeros pasos.",
+        "en": "Twilight Princess running natively on New 3DS. An early-stage project."
+      },
+      "description": {
+        "es": "Proyecto temprano para llevar Twilight Princess a New 3DS de forma nativa, basado en Dusklight y la decompilación de zeldaret/tp. Todavía no es jugable.",
+        "en": "An early project to bring Twilight Princess natively to New 3DS, based on Dusklight and the zeldaret/tp decompilation. Not playable yet."
+      },
+      "features": {
+        "es": ["Código del juego nativo para ARM", "Renderizador PICA200 (en progreso)", "Audio NDSP"],
+        "en": ["Native ARM game code", "PICA200 renderer (in progress)", "NDSP audio"]
+      },
+      "compat": { "o3ds": false, "n3ds": true, "stereo": false },
+      "folder": "/3ds/DuskLight/",
+      "releases": null,
+      "requires": [],
+      "install": null
+    },
+    {
+      "id": "starhaven",
+      "title": "Star Haven",
+      "fullTitle": "Star Haven · Paper Mario",
+      "category": "community",
+      "author": "SecondaryLifer",
+      "credits": "Decompilación de Paper Mario (N64)",
+      "origin": { "platform": "N64", "year": 2000 },
+      "color": "#3a2a6e",
+      "status": "released",
+      "repo": "SecondaryLifer/StarHaven",
+      "stars": 113,
+      "icon": { "glyph": "star", "bg": ["#4b358c", "#241650"], "fg": "#ffd34d" },
+      "banner": { "fx": "stars", "gradient": ["#120a2e", "#3a2a6e", "#c98bff"] },
+      "shots": [],
+      "tagline": {
+        "es": "Paper Mario de N64 nativo en 3DS, construido desde su decompilación.",
+        "en": "N64 Paper Mario running natively, built from its decompilation."
+      },
+      "description": {
+        "es": "Port nativo de Paper Mario (N64) construido a partir de la decompilación. Una sola app sirve para las ROM europea, americana e iQue: si hay varias en la SD, te pregunta cuál quieres jugar.",
+        "en": "A native port of Paper Mario (N64) built from the decompilation. One app covers the EU, US and iQue ROMs: with several on the SD card it asks which one to play."
+      },
+      "features": {
+        "es": [
+          "Nativo, construido desde la decompilación",
+          "ROM europea, americana o iQue",
+          "Mensajes claros si la ROM no es válida",
+          "Unos 15 MB menos de memoria en 1.3.13"
+        ],
+        "en": [
+          "Native, built from the decompilation",
+          "EU, US or iQue ROM",
+          "Clear messages for wrong ROMs",
+          "About 15 MB less memory in 1.3.13"
+        ]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/StarHaven/",
+      "releases": {
+        "stable": {
+          "tag": "v1.3.13",
+          "date": "2026-11-05",
+          "assets": {
+            "3dsx": { "name": "StarHaven.3dsx", "size": 14255432 },
+            "cia": { "name": "StarHaven.cia", "size": 10568640 }
+          },
+          "notes": {
+            "es": [
+              "Una sola app para todas las ROM: europea, americana e iQue.",
+              "Usa unos 15 MB menos de memoria y la descarga es más pequeña."
+            ],
+            "en": ["One app for every ROM: EU, US and iQue.", "Uses about 15 MB less memory and the download is smaller."]
+          }
+        }
+      },
+      "requires": [
+        {
+          "id": "rom",
+          "label": { "es": "Tu ROM de Paper Mario (N64)", "en": "Your Paper Mario ROM (N64)" },
+          "path": "/3ds/StarHaven/",
+          "example": "Paper Mario (USA).z64",
+          "size": 41943040,
+          "help": { "es": "Copia tu ROM en la carpeta /3ds/StarHaven/.", "en": "Put your ROM in the /3ds/StarHaven/ folder." }
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "mkdir", "directory": "/3ds/StarHaven/" },
+          { "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/StarHaven.3dsx" },
+          { "type": "requireFile", "ref": "rom" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/3ds/StarHaven/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/StarHaven.cia" },
+          { "type": "installCia", "file": "%TMP%/StarHaven.cia" },
+          { "type": "deleteFile", "file": "%TMP%/StarHaven.cia" },
+          { "type": "requireFile", "ref": "rom" }
+        ]
+      }
+    },
+    {
+      "id": "gdiffuser",
+      "title": "G-Diffuser 3DS",
+      "fullTitle": "G-Diffuser 3DS · F-Zero X",
+      "category": "community",
+      "author": "cruxxxxxx",
+      "credits": "G-Diffuser y la decompilación de F-Zero X",
+      "origin": { "platform": "N64", "year": 1998 },
+      "color": "#ff6a00",
+      "status": "released",
+      "repo": "cruxxxxxx/gdx-3ds",
+      "stars": 55,
+      "icon": { "glyph": "chevron", "bg": ["#13306b", "#0a1736"], "fg": "#ff8a1f" },
+      "banner": { "fx": "speed", "gradient": ["#06102a", "#13306b", "#ff6a00"] },
+      "shots": [],
+      "tagline": {
+        "es": "F-Zero X no oficial para 3DS, con versiones para Old y New 3DS.",
+        "en": "Unofficial F-Zero X for 3DS, with Old and New 3DS builds."
+      },
+      "description": {
+        "es": "Port no oficial de F-Zero X basado en G-Diffuser y la decompilación del juego. Hay compilaciones distintas para Old y New 3DS, con y sin Expansion Kit; la tienda elige la de tu consola. Los datos se extraen de tu ROM con gdx-extract en el PC.",
+        "en": "An unofficial F-Zero X port based on G-Diffuser and the game's decompilation. There are separate Old and New 3DS builds, with and without the Expansion Kit; the store picks the one for your console. Data is extracted from your ROM with gdx-extract on a PC."
+      },
+      "features": {
+        "es": ["Compilaciones para Old y New 3DS", "Variantes con Expansion Kit", "Extractores para Windows, macOS y Linux"],
+        "en": ["Old and New 3DS builds", "Expansion Kit variants", "Extractors for Windows, macOS and Linux"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/",
+      "releases": {
+        "stable": {
+          "tag": "v1.2.0",
+          "date": "2026-11-04",
+          "assets": {
+            "3dsx": {
+              "name": "G-Diffuser-3DS-N3DS.3dsx",
+              "size": 4764916,
+              "o3ds": { "name": "G-Diffuser-3DS-O3DS.3dsx", "size": 4765140 }
+            },
+            "cia": {
+              "name": "G-Diffuser-3DS-N3DS.cia",
+              "size": 2925504,
+              "o3ds": { "name": "G-Diffuser-3DS-O3DS.cia", "size": 2925504 }
+            },
+            "sums": { "name": "SHA256SUMS", "size": 1496 }
+          },
+          "notes": {
+            "es": [
+              "Compilaciones para Old y New 3DS, con y sin Expansion Kit.",
+              "Extractores gdx-extract para Windows, macOS y Linux."
+            ],
+            "en": [
+              "Old and New 3DS builds, with and without the Expansion Kit.",
+              "gdx-extract extractors for Windows, macOS and Linux."
+            ]
+          }
+        }
+      },
+      "requires": [
+        {
+          "id": "data",
+          "label": { "es": "Datos de F-Zero X extraídos con gdx-extract", "en": "F-Zero X data extracted with gdx-extract" },
+          "path": null,
+          "help": {
+            "es": "Sigue el README del repositorio para colocar los datos.",
+            "en": "Follow the repository README to place the data."
+          },
+          "tool": {
+            "label": { "es": "gdx-extract (PC)", "en": "gdx-extract (PC)" },
+            "url": "https://github.com/cruxxxxxx/gdx-3ds/releases/tag/v1.2.0"
+          }
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/G-Diffuser-3DS.3dsx" },
+          { "type": "verifySha256", "file": "%3DSX%/G-Diffuser-3DS.3dsx", "sums": "sums" },
+          { "type": "requireFile", "ref": "data" }
+        ],
+        "cia": [
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/G-Diffuser-3DS.cia" },
+          { "type": "verifySha256", "file": "%TMP%/G-Diffuser-3DS.cia", "sums": "sums" },
+          { "type": "installCia", "file": "%TMP%/G-Diffuser-3DS.cia" },
+          { "type": "deleteFile", "file": "%TMP%/G-Diffuser-3DS.cia" },
+          { "type": "requireFile", "ref": "data" }
+        ]
+      }
+    },
+    {
+      "id": "d1x",
+      "title": "D1X 3DS",
+      "fullTitle": "D1X 3DS · Descent",
+      "category": "community",
+      "author": "iNdioNicarao",
+      "credits": "DXX-Rebirth (Descent I)",
+      "origin": { "platform": "PC", "year": 1995 },
+      "color": "#6b4bd6",
+      "status": "released",
+      "repo": "iNdioNicarao/dxx-3ds",
+      "stars": 12,
+      "icon": { "glyph": "ship", "bg": ["#5a3fc0", "#1d1250"], "fg": "#c8f0ff" },
+      "banner": { "fx": "stars", "gradient": ["#07051a", "#2a1d6b", "#6b4bd6"] },
+      "shots": [],
+      "tagline": {
+        "es": "Descent para New 3DS con renderizado por hardware y 3D estereoscópico.",
+        "en": "Descent for New 3DS with hardware rendering and stereoscopic 3D."
+      },
+      "description": {
+        "es": "Port de Descent I para New 3DS con renderizado por hardware picaGL y 3D estereoscópico. La versión 2.1.2 iguala a la de PC e incluye paneles táctiles por contexto: automapa 3D, chat multijugador, modo espectador, jukebox y repeticiones.",
+        "en": "A Descent I port for New 3DS with hardware picaGL rendering and stereoscopic 3D. Version 2.1.2 reaches PC feature parity and adds context touch panels: 3D automap, multiplayer chat, spectator mode, jukebox and demo playback."
+      },
+      "features": {
+        "es": [
+          "Renderizado por hardware picaGL",
+          "3D estereoscópico",
+          "Paneles táctiles por contexto",
+          "Multijugador LAN / Wi-Fi"
+        ],
+        "en": ["Hardware picaGL rendering", "Stereoscopic 3D", "Context touch panels", "LAN / Wi-Fi multiplayer"]
+      },
+      "compat": { "o3ds": false, "n3ds": true, "stereo": true },
+      "folder": "/3ds/",
+      "releases": {
+        "stable": {
+          "tag": "v2.1.2",
+          "date": "2026-10-24",
+          "assets": {
+            "3dsx": { "name": "d1x-3ds-2.1.2.3dsx", "size": 1987208 },
+            "cia": { "name": "d1x-3ds-2.1.2.cia", "size": 1873344 }
+          },
+          "notes": {
+            "es": [
+              "Paridad completa con la versión de PC.",
+              "Paneles táctiles: automapa 3D, chat, espectador, jukebox y repeticiones.",
+              "Multijugador LAN / Wi-Fi mejorado."
+            ],
+            "en": [
+              "Full PC feature parity.",
+              "Touch panels: 3D automap, chat, spectator, jukebox and demo playback.",
+              "Improved LAN / Wi-Fi multiplayer."
+            ]
+          }
+        }
+      },
+      "requires": [
+        {
+          "id": "data",
+          "label": { "es": "Archivos de datos de Descent (.hog y .pig)", "en": "Descent data files (.hog and .pig)" },
+          "path": null,
+          "help": {
+            "es": "Copia los datos de tu Descent como indica el README del repositorio.",
+            "en": "Copy your Descent data as the repository README explains."
+          }
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/d1x-3ds.3dsx" },
+          { "type": "requireFile", "ref": "data" }
+        ],
+        "cia": [
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/d1x-3ds.cia" },
+          { "type": "installCia", "file": "%TMP%/d1x-3ds.cia" },
+          { "type": "deleteFile", "file": "%TMP%/d1x-3ds.cia" },
+          { "type": "requireFile", "ref": "data" }
+        ]
+      }
+    },
+    {
+      "id": "ccleste",
+      "title": "Celeste Classic",
+      "fullTitle": "ccleste · Celeste Classic",
+      "category": "community",
+      "author": "lemon32767",
+      "credits": "Port en C de Celeste Classic (PICO-8)",
+      "origin": { "platform": "PICO-8", "year": 2015 },
+      "color": "#ff4d6d",
+      "status": "released",
+      "repo": "lemon32767/ccleste",
+      "stars": 254,
+      "icon": { "glyph": "berry", "bg": ["#2b2d6e", "#141538"], "fg": "#ff4d6d" },
+      "banner": { "fx": "snow", "gradient": ["#141538", "#2b2d6e", "#ff8fa3"] },
+      "shots": [],
+      "tagline": {
+        "es": "El Celeste original de PICO-8, portado a C para 3DS.",
+        "en": "The original PICO-8 Celeste, ported to C for 3DS."
+      },
+      "description": {
+        "es": "Port en C de Celeste Classic, el prototipo de PICO-8 de Celeste, para 3DS y PC. Pequeño, rápido y sin archivos extra.",
+        "en": "A C port of Celeste Classic, the PICO-8 prototype of Celeste, for 3DS and PC. Small, fast and with no extra files."
+      },
+      "features": {
+        "es": ["Fiel al original de PICO-8", "No necesita archivos extra", "Muy ligero"],
+        "en": ["Faithful to the PICO-8 original", "No extra files needed", "Very lightweight"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/",
+      "releases": {
+        "stable": {
+          "tag": "v1.4.0",
+          "date": "2021-11-24",
+          "assets": { "3dsx": { "name": "ccleste.3dsx", "size": 3433672 } },
+          "notes": {
+            "es": ["Corrige el pelo y los efectos de sonido, añade botones y nueva semilla aleatoria al reiniciar."],
+            "en": ["Fixes hair and SFX, adds controller buttons and a new random seed on reset."]
+          }
+        }
+      },
+      "requires": [],
+      "install": { "3dsx": [{ "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/ccleste.3dsx" }] }
+    },
+    {
+      "id": "superhaxagon",
+      "title": "Super Haxagon",
+      "category": "community",
+      "author": "RedTopper",
+      "credits": "Clon de Super Hexagon",
+      "origin": { "platform": "Multi", "year": 2017 },
+      "color": "#ff2fb3",
+      "status": "released",
+      "repo": "RedTopper/Super-Haxagon",
+      "stars": 167,
+      "license": "GPL-3.0",
+      "icon": { "glyph": "hex", "bg": ["#3a0a4a", "#160320"], "fg": "#ff4fc4" },
+      "banner": { "fx": "hex", "gradient": ["#160320", "#5a0f6b", "#ff2fb3"] },
+      "shots": [],
+      "tagline": {
+        "es": "Un clon de Super Hexagon: reflejos, ritmo y hexágonos.",
+        "en": "A Super Hexagon clone: reflexes, rhythm and hexagons."
+      },
+      "description": {
+        "es": "Clon multiplataforma de Super Hexagon con versión para 3DS. Esquiva los muros que se cierran sobre el centro al ritmo de la música.",
+        "en": "A multi-platform Super Hexagon clone with a 3DS build. Dodge the walls closing in on the center to the beat of the music."
+      },
+      "features": {
+        "es": ["Partidas rápidas al ritmo de la música", "Versiones 3DSX y CIA", "Incluye instrucciones sin conexión"],
+        "en": ["Fast rounds to the music", "3DSX and CIA builds", "Offline instructions included"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/SuperHaxagon/",
+      "releases": {
+        "stable": {
+          "tag": "3.9.1",
+          "date": "2025-04-23",
+          "assets": {
+            "3dsx": { "name": "SuperHaxagon-3DS-armhf.3dsx.zip", "size": 20934515 },
+            "cia": { "name": "SuperHaxagon-3DS-armhf.cia.zip", "size": 21669131 }
+          },
+          "notes": {
+            "es": ["Las descargas incluyen un README con instrucciones sin conexión."],
+            "en": ["Downloads now include a README with offline instructions."]
+          }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [
+          { "type": "downloadRelease", "asset": "3dsx", "output": "%TMP%/SuperHaxagon-3dsx.zip" },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/SuperHaxagon-3dsx.zip",
+            "output": "/3ds/SuperHaxagon/",
+            "creates": [
+              { "path": "/3ds/SuperHaxagon/SuperHaxagon.3dsx", "size": 20800000 },
+              { "path": "/3ds/SuperHaxagon/README.md", "size": 3000 }
+            ]
+          },
+          { "type": "deleteFile", "file": "%TMP%/SuperHaxagon-3dsx.zip" }
+        ],
+        "cia": [
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/SuperHaxagon-cia.zip" },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/SuperHaxagon-cia.zip",
+            "output": "%TMP%/",
+            "creates": [{ "path": "%TMP%/SuperHaxagon.cia", "size": 21500000 }]
+          },
+          { "type": "installCia", "file": "%TMP%/SuperHaxagon.cia" },
+          { "type": "deleteFile", "file": "%TMP%/SuperHaxagon.cia" },
+          { "type": "deleteFile", "file": "%TMP%/SuperHaxagon-cia.zip" }
+        ]
+      }
+    },
+    {
+      "id": "ctrquake",
+      "title": "ctrQuake",
+      "fullTitle": "ctrQuake · Quake",
+      "category": "community",
+      "author": "Felipe Izzo (Masterfeizz)",
+      "credits": "Quake (id Software)",
+      "origin": { "platform": "PC", "year": 1996 },
+      "color": "#7a4a2a",
+      "status": "released",
+      "repo": "Masterfeizz/ctrQuake",
+      "stars": 105,
+      "icon": { "glyph": "rune", "bg": ["#5a3a22", "#1e140c"], "fg": "#e3b37a" },
+      "banner": { "fx": "embers", "gradient": ["#120c08", "#4a2e1a", "#c4702e"] },
+      "shots": [],
+      "tagline": { "es": "Quake en 3DS, con partidas online.", "en": "Quake on 3DS, with online play." },
+      "description": {
+        "es": "Port de Quake para Nintendo 3DS. Puedes crear y unirte a servidores online, y activar el dithering desde las opciones. Necesitas los archivos .pak de tu copia de Quake.",
+        "en": "A Quake port for Nintendo 3DS. Host and join online servers, and toggle dithering from the options. You need the .pak files from your copy of Quake."
+      },
+      "features": {
+        "es": ["Crea y únete a servidores online", "Dithering activable", "Versiones 3DSX y CIA"],
+        "en": ["Host and join online servers", "Toggleable dithering", "3DSX and CIA builds"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/ctrQuake/",
+      "releases": {
+        "stable": {
+          "tag": "v0.8",
+          "date": "2016-09-13",
+          "assets": { "zip": { "name": "ctrQuake.zip", "size": 8921677 }, "cia": { "name": "ctrQuake.cia", "size": 984000 } },
+          "notes": {
+            "es": ["Crea y únete a servidores online.", "Dithering activable en las opciones."],
+            "en": ["Host and join online servers.", "Dithering can be toggled in the options."]
+          }
+        }
+      },
+      "requires": [
+        {
+          "id": "data",
+          "label": { "es": "pak0.pak de tu Quake (id1)", "en": "pak0.pak from your Quake (id1)" },
+          "path": "/3ds/ctrQuake/id1/pak0.pak",
+          "size": 18689235,
+          "help": {
+            "es": "Copia pak0.pak (y pak1.pak si lo tienes) en la carpeta id1.",
+            "en": "Copy pak0.pak (and pak1.pak if you have it) into the id1 folder."
+          }
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "downloadRelease", "asset": "zip", "output": "%TMP%/ctrQuake.zip" },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/ctrQuake.zip",
+            "output": "/",
+            "creates": [{ "path": "/3ds/ctrQuake/ctrQuake.3dsx", "size": 1100000 }]
+          },
+          { "type": "mkdir", "directory": "/3ds/ctrQuake/id1/" },
+          { "type": "deleteFile", "file": "%TMP%/ctrQuake.zip" },
+          { "type": "requireFile", "ref": "data" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/3ds/ctrQuake/id1/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/ctrQuake.cia" },
+          { "type": "installCia", "file": "%TMP%/ctrQuake.cia" },
+          { "type": "deleteFile", "file": "%TMP%/ctrQuake.cia" },
+          { "type": "requireFile", "ref": "data" }
+        ]
+      }
+    },
+    {
+      "id": "openlara",
+      "title": "OpenLara",
+      "category": "community",
+      "author": "XProger",
+      "credits": "Motor libre de Tomb Raider clásico",
+      "origin": { "platform": "PS1 / PC", "year": 1996 },
+      "color": "#c9a227",
+      "status": "released",
+      "repo": "XProger/OpenLara",
+      "stars": 5149,
+      "icon": { "glyph": "scion", "bg": ["#3a3018", "#15110a"], "fg": "#e8c45a" },
+      "banner": { "fx": "dust", "gradient": ["#15110a", "#4a3a1c", "#c9a227"] },
+      "shots": [],
+      "tagline": {
+        "es": "El motor libre del Tomb Raider clásico, también en 3DS.",
+        "en": "The open-source classic Tomb Raider engine, on 3DS too."
+      },
+      "description": {
+        "es": "Motor de código abierto del Tomb Raider clásico con compilación para 3DS. Necesita los niveles de tu propia copia del juego.",
+        "en": "An open-source engine for classic Tomb Raider with a 3DS build. It needs the levels from your own copy of the game."
+      },
+      "features": {
+        "es": ["Motor de código abierto", "Compilación para 3DS", "Usa los datos de tu copia"],
+        "en": ["Open-source engine", "3DS build", "Uses data from your copy"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/OpenLara/",
+      "releases": {
+        "stable": {
+          "tag": "latest",
+          "date": "2019-01-11",
+          "assets": { "zip": { "name": "OpenLara_3ds.zip", "size": 599718 } },
+          "notes": { "es": ["Compilación para 3DS del motor."], "en": ["3DS build of the engine."] }
+        }
+      },
+      "requires": [
+        {
+          "id": "data",
+          "label": { "es": "Niveles de tu Tomb Raider", "en": "Levels from your Tomb Raider" },
+          "path": null,
+          "help": {
+            "es": "Coloca los datos como indica el README de OpenLara.",
+            "en": "Place the data as the OpenLara README explains."
+          }
+        }
+      ],
+      "install": {
+        "3dsx": [
+          { "type": "mkdir", "directory": "/3ds/OpenLara/" },
+          { "type": "downloadRelease", "asset": "zip", "output": "%TMP%/OpenLara_3ds.zip" },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/OpenLara_3ds.zip",
+            "output": "/3ds/OpenLara/",
+            "creates": [{ "path": "/3ds/OpenLara/OpenLara.3dsx", "size": 1350000 }]
+          },
+          { "type": "deleteFile", "file": "%TMP%/OpenLara_3ds.zip" },
+          { "type": "requireFile", "ref": "data" }
+        ]
+      }
+    },
+    {
+      "id": "redviper",
+      "title": "Red Viper",
+      "category": "emulators",
+      "author": "skyfloogle",
+      "credits": "Basado en r3Ddragon y Reality Boy",
+      "origin": { "platform": "Virtual Boy", "year": 1995 },
+      "color": "#d41f26",
+      "status": "released",
+      "repo": "skyfloogle/red-viper",
+      "stars": 1047,
+      "icon": { "glyph": "visor", "bg": ["#1a0506", "#000000"], "fg": "#ff2a2a" },
+      "banner": { "fx": "scan", "gradient": ["#000000", "#2a0204", "#d41f26"] },
+      "shots": [],
+      "tagline": {
+        "es": "Emulador de Virtual Boy para 3DS, con su 3D de verdad.",
+        "en": "A Virtual Boy emulator for 3DS, with real stereoscopic 3D."
+      },
+      "description": {
+        "es": "Emulador de Virtual Boy para 3DS que aprovecha la pantalla estereoscópica para mostrar los juegos en 3D como en la consola original. Copia tus ROM .vb en cualquier carpeta de la SD.",
+        "en": "A Virtual Boy emulator for 3DS that uses the stereoscopic screen to show games in 3D like the original console. Copy your .vb ROMs anywhere on the SD card."
+      },
+      "features": {
+        "es": ["3D estereoscópico real", "Velocidad completa en Old 3DS", "ROM .vb en cualquier carpeta"],
+        "en": ["Real stereoscopic 3D", "Full speed on Old 3DS", ".vb ROMs in any folder"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": true },
+      "folder": "/3ds/",
+      "releases": {
+        "stable": {
+          "tag": "v1.3.4",
+          "date": "2026-09-19",
+          "assets": { "3dsx": { "name": "red-viper.3dsx", "size": 681280 }, "cia": { "name": "red-viper.cia", "size": 701376 } },
+          "notes": {
+            "es": ["Corrige un fallo gráfico en Virtual Bowling introducido en 1.3.3."],
+            "en": ["Fixes a graphical issue with Virtual Bowling introduced in 1.3.3."]
+          }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [{ "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/red-viper.3dsx" }],
+        "cia": [
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/red-viper.cia" },
+          { "type": "installCia", "file": "%TMP%/red-viper.cia" },
+          { "type": "deleteFile", "file": "%TMP%/red-viper.cia" }
+        ]
+      }
+    },
+    {
+      "id": "mgba",
+      "title": "mGBA",
+      "category": "emulators",
+      "author": "mGBA",
+      "credits": "endrift y colaboradores",
+      "origin": { "platform": "GBA", "year": 2001 },
+      "color": "#6a3fb5",
+      "status": "released",
+      "repo": "mgba-emu/mgba",
+      "stars": 7581,
+      "license": "MPL-2.0",
+      "icon": { "glyph": "gba", "bg": ["#7b4fcf", "#3a1d78"], "fg": "#ffffff" },
+      "banner": { "fx": "pixels", "gradient": ["#1a0d3a", "#4a2a8f", "#9b7bff"] },
+      "shots": [],
+      "tagline": { "es": "El emulador de Game Boy Advance de referencia.", "en": "The go-to Game Boy Advance emulator." },
+      "description": {
+        "es": "Emulador de Game Boy Advance rápido y preciso, con versión para 3DS. También ejecuta juegos de Game Boy y Game Boy Color.",
+        "en": "A fast, accurate Game Boy Advance emulator with a 3DS build. It also runs Game Boy and Game Boy Color games."
+      },
+      "features": {
+        "es": ["GBA, Game Boy y Game Boy Color", "Rápido y preciso", "Versiones 3DSX y CIA"],
+        "en": ["GBA, Game Boy and Game Boy Color", "Fast and accurate", "3DSX and CIA builds"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/",
+      "releases": {
+        "stable": {
+          "tag": "0.10.5",
+          "date": "2025-03-09",
+          "assets": { "zip": { "name": "mGBA-0.10.5-3ds.7z", "size": 1212768 } },
+          "notes": { "es": ["Versión de mantenimiento con correcciones."], "en": ["Maintenance release with fixes."] }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [
+          { "type": "downloadRelease", "asset": "zip", "output": "%TMP%/mGBA-3ds.7z" },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/mGBA-3ds.7z",
+            "input": "^mGBA-.*-3ds.*/3dsx/mgba.3dsx",
+            "output": "%3DSX%/mgba.3dsx",
+            "creates": [{ "path": "%3DSX%/mgba.3dsx", "size": 2900000 }]
+          },
+          { "type": "deleteFile", "file": "%TMP%/mGBA-3ds.7z" }
+        ],
+        "cia": [
+          { "type": "downloadRelease", "asset": "zip", "output": "%TMP%/mGBA-3ds.7z" },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/mGBA-3ds.7z",
+            "input": "^mGBA-.*-3ds.*/cia/mgba.cia",
+            "output": "%TMP%/mgba.cia",
+            "creates": [{ "path": "%TMP%/mgba.cia", "size": 2700000 }]
+          },
+          { "type": "installCia", "file": "%TMP%/mgba.cia" },
+          { "type": "deleteFile", "file": "%TMP%/mgba.cia" },
+          { "type": "deleteFile", "file": "%TMP%/mGBA-3ds.7z" }
+        ]
+      }
+    },
+    {
+      "id": "checkpoint",
+      "title": "Checkpoint",
+      "category": "tools",
+      "author": "FlagBrew",
+      "credits": "Gestor de partidas guardadas",
+      "color": "#2bb3a3",
+      "status": "released",
+      "repo": "FlagBrew/Checkpoint",
+      "stars": 3121,
+      "license": "GPL-3.0",
+      "icon": { "glyph": "save", "bg": ["#2bb3a3", "#13615a"], "fg": "#ffffff" },
+      "banner": { "fx": "pixels", "gradient": ["#0b2a28", "#13615a", "#5fe0cf"] },
+      "shots": [],
+      "tagline": { "es": "Copias de seguridad de tus partidas en segundos.", "en": "Back up your saves in seconds." },
+      "description": {
+        "es": "Gestor de partidas guardadas rápido y sencillo para 3DS. Haz copias de seguridad y restaura las partidas de tus juegos y de tus ports antes de actualizar.",
+        "en": "A fast and simple save manager for 3DS. Back up and restore the saves of your games and ports before updating."
+      },
+      "features": {
+        "es": ["Copia y restaura partidas", "Juegos de 3DS, DS y homebrew", "Muy rápido"],
+        "en": ["Back up and restore saves", "3DS, DS and homebrew titles", "Very fast"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/Checkpoint/",
+      "releases": {
+        "stable": {
+          "tag": "v5.3.0",
+          "date": "2026-10-13",
+          "assets": {
+            "3dsx": { "name": "Checkpoint.3dsx", "size": 3652156 },
+            "cia": { "name": "Checkpoint.cia", "size": 2646976 }
+          },
+          "notes": { "es": ["Versión estable más reciente."], "en": ["Latest stable release."] }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [{ "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/Checkpoint.3dsx" }],
+        "cia": [
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/Checkpoint.cia" },
+          { "type": "installCia", "file": "%TMP%/Checkpoint.cia" },
+          { "type": "deleteFile", "file": "%TMP%/Checkpoint.cia" }
+        ]
+      }
+    },
+    {
+      "id": "anemone",
+      "title": "Anemone3DS",
+      "category": "tools",
+      "author": "astronautlevel2",
+      "credits": "Gestor de temas y pantallas de arranque",
+      "color": "#ff7aa8",
+      "status": "released",
+      "repo": "astronautlevel2/Anemone3DS",
+      "stars": 1170,
+      "license": "GPL-3.0",
+      "icon": { "glyph": "flower", "bg": ["#6a5acd", "#2e2470"], "fg": "#ff9cc0" },
+      "banner": { "fx": "petals", "gradient": ["#1d1640", "#6a5acd", "#ff9cc0"] },
+      "shots": [],
+      "tagline": {
+        "es": "Temas y pantallas de arranque para tu menú HOME.",
+        "en": "Themes and boot splashes for your HOME Menu."
+      },
+      "description": {
+        "es": "Gestor de temas y pantallas de arranque para Nintendo 3DS. Instala temas personalizados en el menú HOME y previsualízalos antes de aplicarlos.",
+        "en": "A theme and boot splash manager for Nintendo 3DS. Install custom HOME Menu themes and preview them before applying."
+      },
+      "features": {
+        "es": ["Temas personalizados con vista previa", "Pantallas de arranque", "Crea la carpeta /Themes/"],
+        "en": ["Custom themes with previews", "Boot splashes", "Creates the /Themes/ folder"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/Themes/",
+      "releases": {
+        "stable": {
+          "tag": "v3.0.1",
+          "date": "2024-06-18",
+          "assets": {
+            "3dsx": { "name": "Anemone3DS.3dsx", "size": 1723908 },
+            "cia": { "name": "Anemone3DS.cia", "size": 1733568 }
+          },
+          "notes": { "es": ["Versión estable más reciente."], "en": ["Latest stable release."] }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [
+          { "type": "mkdir", "directory": "/Themes/" },
+          { "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/Anemone3DS.3dsx" }
+        ],
+        "cia": [
+          { "type": "mkdir", "directory": "/Themes/" },
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/Anemone3DS.cia" },
+          { "type": "installCia", "file": "%TMP%/Anemone3DS.cia" },
+          { "type": "deleteFile", "file": "%TMP%/Anemone3DS.cia" }
+        ]
+      }
+    },
+    {
+      "id": "fbi",
+      "title": "FBI",
+      "category": "tools",
+      "author": "Steveice10",
+      "credits": "Gestor de títulos (repositorio de archivo)",
+      "color": "#2b6fd6",
+      "status": "released",
+      "repo": "Steveice10/FBI",
+      "stars": 174,
+      "license": "MIT",
+      "icon": { "glyph": "box", "bg": ["#3d86f0", "#163f8a"], "fg": "#ffffff" },
+      "banner": { "fx": "pixels", "gradient": ["#0a1a3a", "#163f8a", "#5aa2ff"] },
+      "shots": [],
+      "tagline": {
+        "es": "Instala CIA desde la SD, la red o un código QR.",
+        "en": "Install CIAs from the SD card, the network or a QR code."
+      },
+      "description": {
+        "es": "Gestor de títulos de código abierto para 3DS: instala y elimina CIA, navega por la SD y escanea códigos QR para instalar a distancia, como los de las releases de tus ports.",
+        "en": "An open-source title manager for 3DS: install and remove CIAs, browse the SD card and scan QR codes for remote installs, like the ones in your ports' releases."
+      },
+      "features": {
+        "es": ["Instala y elimina CIA", "Instalación remota por código QR", "Explorador de la SD"],
+        "en": ["Install and remove CIAs", "Remote install by QR code", "SD card browser"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/fbi/",
+      "releases": {
+        "stable": {
+          "tag": "2.6.1",
+          "date": "2024-06-25",
+          "assets": { "3dsx": { "name": "FBI.3dsx", "size": 1185720 }, "cia": { "name": "FBI.cia", "size": 1192896 } },
+          "notes": { "es": ["Versión de archivo final."], "en": ["Final archival release."] }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [{ "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/FBI.3dsx" }],
+        "cia": [
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/FBI.cia" },
+          { "type": "installCia", "file": "%TMP%/FBI.cia" },
+          { "type": "deleteFile", "file": "%TMP%/FBI.cia" }
+        ]
+      }
+    },
+    {
+      "id": "lynx3ds",
+      "title": "lynx3ds",
+      "category": "tools",
+      "author": "PeterWarrington",
+      "credits": "Basado en el navegador Lynx",
+      "color": "#20b26b",
+      "status": "released",
+      "repo": "PeterWarrington/lynx3ds",
+      "stars": 3,
+      "license": "MIT",
+      "icon": { "glyph": "globe", "bg": ["#20b26b", "#0d5a35"], "fg": "#e8fff2" },
+      "banner": { "fx": "pixels", "gradient": ["#06261a", "#0d5a35", "#5fe0a0"] },
+      "shots": [],
+      "tagline": { "es": "Un navegador web de texto, bonito y rápido.", "en": "A beautiful, fast text-mode web browser." },
+      "description": {
+        "es": "Navegador web en modo texto para 3DS, portado desde Lynx. Ideal para leer README y notas de versión directamente en la consola.",
+        "en": "A text-mode web browser for 3DS, ported from Lynx. Handy for reading READMEs and release notes right on the console."
+      },
+      "features": {
+        "es": ["Navegación en modo texto", "Rápido y ligero", "Versiones 3DSX y CIA"],
+        "en": ["Text-mode browsing", "Fast and light", "3DSX and CIA builds"]
+      },
+      "compat": { "o3ds": true, "n3ds": true, "stereo": false },
+      "folder": "/3ds/",
+      "releases": {
+        "stable": {
+          "tag": "2.0.1",
+          "date": "2026-08-06",
+          "assets": { "3dsx": { "name": "lynx3ds.3dsx", "size": 2869320 }, "cia": { "name": "lynx3ds.cia", "size": 2397120 } },
+          "notes": { "es": ["Versión estable más reciente."], "en": ["Latest stable release."] }
+        }
+      },
+      "requires": [],
+      "install": {
+        "3dsx": [{ "type": "downloadRelease", "asset": "3dsx", "output": "%3DSX%/lynx3ds.3dsx" }],
+        "cia": [
+          { "type": "downloadRelease", "asset": "cia", "output": "%TMP%/lynx3ds.cia" },
+          { "type": "installCia", "file": "%TMP%/lynx3ds.cia" },
+          { "type": "deleteFile", "file": "%TMP%/lynx3ds.cia" }
+        ]
+      }
+    }
+  ]
+}

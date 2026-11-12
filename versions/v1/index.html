@@ -1,0 +1,132 @@
+<!doctype html>
+<html lang="es" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>forge.store — prototipo 3DS</title>
+    <link rel="icon" href="assets/brand/forge-icon.png" />
+    <link rel="stylesheet" href="src/css/tokens.css" />
+    <link rel="stylesheet" href="src/css/page.css" />
+    <link rel="stylesheet" href="src/css/console.css" />
+    <link rel="stylesheet" href="src/css/ui.css" />
+    <link rel="stylesheet" href="src/css/intro.css" />
+    <link rel="stylesheet" href="src/css/home.css" />
+    <link rel="stylesheet" href="src/css/detail.css" />
+    <link rel="stylesheet" href="src/css/install.css" />
+    <link rel="stylesheet" href="src/css/panels.css" />
+    <link rel="stylesheet" href="src/css/github.css" />
+    <script type="module" src="src/js/main.js"></script>
+  </head>
+  <body>
+    <header class="devbar">
+      <div class="brand">
+        <img src="assets/brand/forge-icon.png" alt="" />
+        <span>esteban’s <b>forge.</b></span>
+        <small>store · prototipo 3DS</small>
+      </div>
+      <div class="group" data-group="view">
+        <span>Vista</span>
+        <button class="seg" data-value="console">Consola</button>
+        <button class="seg" data-value="screens">Pantallas</button>
+        <button class="seg" data-value="side">Lado a lado</button>
+      </div>
+      <div class="group" data-group="zoom">
+        <span>Zoom</span>
+        <button class="seg" data-value="auto">Auto</button>
+        <button class="seg" data-value="1">1×</button>
+        <button class="seg" data-value="2">2×</button>
+        <button class="seg" data-value="3">3×</button>
+      </div>
+      <div class="group" data-group="theme">
+        <button class="seg" data-value="light" title="Tema claro">Claro</button>
+        <button class="seg" data-value="dark" title="Tema oscuro">Oscuro</button>
+      </div>
+      <div class="group" data-group="console">
+        <span>Consola</span>
+        <button class="seg" data-value="n3ds">New</button>
+        <button class="seg" data-value="o3ds">Old</button>
+      </div>
+      <label class="group select"><span>Idioma</span><select id="dev-lang"></select></label>
+      <div class="group" data-group="shell">
+        <span>Carcasa</span>
+        <button class="swatch" data-value="graphite" style="--sw: #2a2d33" title="Grafito"></button>
+        <button class="swatch" data-value="white" style="--sw: #e7eaee" title="Blanco"></button>
+        <button class="swatch" data-value="forge" style="--sw: #f47c22" title="Forge"></button>
+        <button class="swatch" data-value="mint" style="--sw: #86c7af" title="Menta"></button>
+        <button class="swatch" data-value="blue" style="--sw: #2c5aa0" title="Azul"></button>
+      </div>
+      <button class="action" id="toggle-guides" title="Rejilla de 10 px sobre las pantallas">Guías</button>
+      <button class="action" id="toggle-sound" title="Música y efectos"></button>
+      <button class="action" id="replay-intro" title="Cerrar la tienda y repetir la intro">↺ Intro</button>
+      <button class="action" id="first-run" title="Repetir la primera apertura: intro y elección de tema">1ª vez</button>
+      <button class="action" id="reset-sd" title="Borrar todo lo instalado en la SD simulada">Vaciar SD</button>
+    </header>
+
+    <main class="stage">
+      <div class="device off" id="device" data-view="console" data-shell="graphite">
+        <div class="shell top-shell">
+          <div class="speaker left"></div>
+          <div class="bezel top-bezel">
+            <div class="camera"></div>
+            <div class="screen top" id="screen-top"></div>
+          </div>
+          <div class="speaker right"></div>
+          <div class="slider3d" id="slider3d" title="Regulador 3D: separa las capas del banner">
+            <div class="track"><div class="knob"></div></div>
+            <div class="led"></div>
+            <div class="label">3D</div>
+          </div>
+        </div>
+        <div class="hinge"></div>
+        <div class="shell bottom-shell">
+          <button class="btn shoulder" data-btn="L">L</button>
+          <button class="btn shoulder" data-btn="R">R</button>
+          <div class="circle-pad"></div>
+          <div class="dpad">
+            <button class="btn" data-btn="UP" aria-label="Arriba"></button>
+            <button class="btn" data-btn="LEFT" aria-label="Izquierda"></button>
+            <button class="btn" data-btn="RIGHT" aria-label="Derecha"></button>
+            <button class="btn" data-btn="DOWN" aria-label="Abajo"></button>
+          </div>
+          <div class="bezel bottom-bezel">
+            <div class="screen bottom" id="screen-bottom"></div>
+          </div>
+          <div class="cstick"></div>
+          <div class="abxy">
+            <button class="btn" data-btn="X">X</button>
+            <button class="btn" data-btn="Y">Y</button>
+            <button class="btn" data-btn="A">A</button>
+            <button class="btn" data-btn="B">B</button>
+          </div>
+          <div class="sysbtns">
+            <button class="btn" data-btn="START" aria-label="Start"></button>
+            <label>START</label>
+            <button class="btn" data-btn="SELECT" aria-label="Select"></button>
+            <label>SELECT</label>
+          </div>
+          <button class="btn home-btn" data-btn="HOME" aria-label="HOME">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linejoin="round"><path d="M4 11 12 4l8 7v9H4Z" /></svg>
+          </button>
+          <div class="leds"><i class="power"></i><i class="charge"></i><i class="wifi"></i></div>
+        </div>
+      </div>
+      <div class="power-hint">
+        <i><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3.5v8M7 6.5a7.5 7.5 0 1 0 10 0" /></svg></i>
+        Haz clic o pulsa una tecla para encender
+      </div>
+    </main>
+
+    <footer class="legend" id="legend">
+      <span><b>Cruceta</b> <kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd></span>
+      <span><b>A</b> <kbd>A</kbd> / <kbd>Enter</kbd></span>
+      <span><b>B</b> <kbd>S</kbd> / <kbd>Esc</kbd></span>
+      <span><b>X</b> <kbd>Z</kbd></span>
+      <span><b>Y</b> <kbd>X</kbd></span>
+      <span><b>L · R</b> <kbd>Q</kbd> <kbd>W</kbd></span>
+      <span><b>START</b> <kbd>M</kbd></span>
+      <span><b>SELECT</b> <kbd>N</kbd></span>
+      <span><b>HOME</b> <kbd>B</kbd></span>
+      <span><b>Lápiz</b> ratón en la pantalla inferior</span>
+    </footer>
+  </body>
+</html>

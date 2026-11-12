@@ -1,0 +1,99 @@
+{
+  "video-tests": {
+    "log_sha256": "add6470a524e0f1068a267adbda0b31cf6759adc8722c5cab4196207c1c13fbf",
+    "results": [
+      "PASS ADPCM decoder matches the Python encoder's reference bit for bit (175 checks)",
+      "PASS header validation: 39 malformed headers rejected before any allocation (430 checks)",
+      "PASS split clip: full playback, duplicate frames, EOF, restart, release (1566 checks)",
+      "PASS trailer: playback, audio, pause/mute, seeking, burst seeks, EOF (1686 checks)",
+      "PASS malformed streams fail cleanly in the worker (1883 checks)",
+      "PASS lifecycle: async stop, queued/replaced/cancelled start, no audio, bounded final join (1905 checks)",
+      "PASS overload: late frames skip conversion, hopeless lag jumps to keyframes, clock keeps real time (1933 checks)",
+      "PASS legacy MJPEG stream still plays and seeks (2023 checks)",
+      "PASS video: 2023 checks",
+      "PASS ADPCM decoder matches the Python encoder's reference bit for bit (175 checks)",
+      "PASS header validation: 39 malformed headers rejected before any allocation (430 checks)",
+      "PASS split clip: full playback, duplicate frames, EOF, restart, release (1566 checks)",
+      "PASS trailer: playback, audio, pause/mute, seeking, burst seeks, EOF (1686 checks)",
+      "PASS malformed streams fail cleanly in the worker (1883 checks)",
+      "PASS lifecycle: async stop, queued/replaced/cancelled start, no audio, bounded final join (1905 checks)",
+      "PASS overload: late frames skip conversion, hopeless lag jumps to keyframes, clock keeps real time (1933 checks)",
+      "PASS legacy MJPEG stream still plays and seeks (2023 checks)",
+      "PASS video: 2023 checks",
+      "PASS alttp-light-world: 186 records, 314 pictures identical to ffmpeg's decode, 4 duplicate records, 0 sound samples",
+      "PASS alttp-trailer: 2733 records, 2479 pictures identical to ffmpeg's decode, 254 duplicate records, 3279600 sound samples",
+      "PASS doom-forest: 160 records, 285 pictures identical to ffmpeg's decode, 2 duplicate records, 0 sound samples",
+      "PASS minish-minish-woods: 240 records, 441 pictures identical to ffmpeg's decode, 0 duplicate records, 0 sound samples",
+      "PASS mk64-luigi-raceway: 240 records, 477 pictures identical to ffmpeg's decode, 0 duplicate records, 0 sound samples",
+      "PASS mk64-trailer: 2211 records, 2167 pictures identical to ffmpeg's decode, 44 duplicate records, 2653200 sound samples",
+      "PASS starwing-corneria: 240 records, 470 pictures identical to ffmpeg's decode, 0 duplicate records, 0 sound samples",
+      "PASS: video-test under address,undefined and thread"
+    ]
+  },
+  "media-validation": {
+    "log_sha256": "5b5782bea60a47d44f09908f52ebebcb2472fa9825f0c24dbfd0d0961542fee7",
+    "results": [
+      "PASS: 7 FVD2 files, 6010 frame records, 16044949 bytes"
+    ]
+  },
+  "catalog-test": {
+    "log_sha256": "fb1e44ef4f921a150126cfcf908bb08a235351a8e03e17d4efd72f6135b57b8c",
+    "results": [
+      "PASS persistence: write/flush/fsync/close/readback/rotation/promotion/restore/backup/serialization failures, recovery, hash merge, durable forget, stale writers, borrowed args",
+      "PASS requirements/launch: example/default, pathless, empty/directory/regular files, traversal/device/length rejection, title marker exclusion, fresh disk changes",
+      "PASS search/releases: real catalog suggestions, composed/decomposed Latin/Cyrillic/Japanese/Hangul, trim/localized tagline/ranking, invalid releases, actual channels/status, format fallback",
+      "PASS Universal registration: stable app addresses/art indices, new IDs, retirement, search, toggling, malformed/duplicate generation rejection",
+      "PASS visible icon working set: all seven sorted sheets coexist, leaving the grid releases six, no mid-batch eviction",
+      "PASS catalog production host tests: 242 assertions (ASan + UBSan)"
+    ]
+  },
+  "install-test": {
+    "log_sha256": "17cdd2a0a5645c0149553bf7ebf7c4128925b4d7536249924ab73514d2c06f84",
+    "results": [
+      "install integrity: 22 scenario groups passed (isolated host fixture; AM mocked)"
+    ]
+  },
+  "file-view-test": {
+    "log_sha256": "0b40e36de93dcf14234d80b1935d55d805152ae8409e6d52d379aaf476468e28",
+    "results": [
+      "asan-ubsan: FileView: 20061 assertions passed; real filesystem, forced refresh, TTL, stale handles, worker snapshot recycling, OOM/thread retry, shutdown.",
+      "tsan: FileView: 20061 assertions passed; real filesystem, forced refresh, TTL, stale handles, worker snapshot recycling, OOM/thread retry, shutdown."
+    ]
+  },
+  "media-queue-test": {
+    "log_sha256": "c7798ad5f222d0deda9510103ae23b98d25dac4e9181f1a0b545e9a24d6cba6b",
+    "results": [
+      "PASS auto-all, priority, partial never ready, navigation cancel preserves queue, ready watcher",
+      "PASS next-launch cache hits are SHA-256 verified without downloads",
+      "PASS async clear invalidates and deletes; no start/pump/detail redownload; explicit single retry",
+      "PASS installer pause aborts/requeues without spending retry budget and resumes",
+      "PASS clear cancels in-flight transfer without main-thread join or partial residue",
+      "PASS offline failure bounded to three attempts, then stable error",
+      "PASS permanent HTTP 404 does not spin/retry",
+      "PASS hash mismatch never publishes; part removed",
+      "PASS SD-full fails before network request",
+      "PASS same-size corrupt cached file is rejected and replaced",
+      "PASS pause before start preserved and explicit retry-all resumes cleared entries",
+      "PASS clear reports removal failure without recursively deleting unrelated content",
+      "PASS bounded manifest overflow is explicit error",
+      "PASS unsafe manifest path cannot escape cache",
+      "14 media queue scenarios passed"
+    ]
+  },
+  "tabs-test": {
+    "log_sha256": "3177c7d6e3bb4cbbe100d4bab5c98a80a2a1b6788ddba20fdd7e9de864cfda45",
+    "results": [
+      "762 checks passed: actual tabs_layout/sample first/last3pxinsets, exact340msdestinations, interrupt continuity, toolbar widths and cursor bounds."
+    ]
+  },
+  "text-test": {
+    "log_sha256": "3fc01c0bdf1d8d030559867a996f9ed8ae5ba724b5e10e9e565410ece2574019",
+    "results": [
+      "PASS: FNT3 loading, exact metrics, remote replacement width/wrap, UTF-8 guard-page cases, >64K offsets, text XY translation, missing atlas"
+    ]
+  },
+  "markup-test": {
+    "log_sha256": "05850d9f8b160f6c170a2dfe354255eac6246bfaee5cc79e20f4ea37f395f8f5",
+    "results": []
+  }
+}

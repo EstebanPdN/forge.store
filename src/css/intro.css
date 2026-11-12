@@ -1,0 +1,283 @@
+/* Welcome intro: the Esteban's Forge site entrance, re-timed for 400x240 + 320x240,
+   plus the first-run theme picker. */
+.intro-top,
+.intro-bottom {
+  display: grid;
+  place-items: center;
+  text-align: center;
+}
+.intro-panel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.intro-emblem {
+  position: relative;
+  width: 76px;
+  height: 76px;
+  margin-bottom: 17px;
+}
+.intro-emblem .halo {
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 210, 31, 0.35), transparent 65%);
+  opacity: 0;
+}
+.emblem-face {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 4.5px solid #fff;
+  background: #fff;
+  overflow: hidden;
+}
+.emblem-face img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+}
+.intro-eyebrow {
+  margin: 0 0 5px;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 2.6px;
+  color: #6b8d83;
+}
+[data-theme='dark'] .intro-eyebrow {
+  color: #a3c6b8;
+}
+.intro-title {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-brand);
+  font-size: 31px;
+  line-height: 1.12;
+  letter-spacing: -1.3px;
+  font-weight: 400;
+  color: #34464d;
+  white-space: nowrap;
+}
+[data-theme='dark'] .intro-title {
+  color: #f1f2f3;
+}
+.intro-title b {
+  font-weight: 750;
+}
+
+/* Bottom screen */
+.intro-bottom {
+  align-content: start;
+  padding-top: 15px;
+}
+.intro-tagline {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--ink-soft);
+}
+.intro-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  height: 14px;
+  margin-top: 3px;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--ink-faint);
+}
+.intro-status .ok {
+  display: grid;
+  place-items: center;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--mint);
+  color: #fff;
+}
+.intro-status .ok svg {
+  width: 8px;
+  height: 8px;
+}
+.intro-marquee {
+  position: relative;
+  width: 320px;
+  margin-top: 16px;
+  display: grid;
+  gap: 8px;
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent);
+}
+.intro-marquee .row {
+  display: flex;
+  gap: 10px;
+  padding-right: 10px;
+  width: max-content;
+  animation: marquee 34s linear infinite;
+}
+.intro-marquee .row.reverse {
+  animation-direction: reverse;
+  animation-duration: 40s;
+}
+.intro-marquee .app-icon {
+  box-shadow: 0 3px 8px rgba(40, 60, 70, 0.2);
+}
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+.intro-enter {
+  margin-top: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  height: 30px;
+  padding: 0 14px 0 16px;
+  border: 0;
+  border-radius: 15px;
+  background: #fff;
+  color: #3b535c;
+  font: 800 10.5px var(--font-ui);
+  box-shadow: 0 4px 14px rgba(69, 100, 113, 0.14), inset 0 0 0 1px rgba(69, 100, 113, 0.06);
+  cursor: inherit;
+}
+[data-theme='dark'] .intro-enter {
+  color: #f1f3f4;
+  background: #35383a;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3), inset 0 0 0 1px rgba(255, 255, 255, 0.07);
+}
+.intro-enter svg {
+  width: 13px;
+  height: 13px;
+  transition: transform 0.3s var(--ease-out);
+}
+.intro-enter:hover svg {
+  transform: translateX(2px);
+}
+.intro-hint {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 9px;
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--ink-faint);
+  animation: hint-pulse 2.2s ease-in-out infinite;
+}
+@keyframes hint-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+.intro-hidden {
+  opacity: 0;
+}
+
+/* First-run theme picker */
+.picker-top {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  padding-top: 27px;
+  text-align: center;
+}
+.picker-title {
+  margin: 0;
+  font: 400 23px/1.1 var(--font-brand);
+  letter-spacing: -0.8px;
+  color: var(--ink);
+}
+.picker-title b {
+  font-weight: 750;
+}
+.picker-sub {
+  margin-top: 4px;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--ink-faint);
+}
+.picker-options {
+  display: flex;
+  gap: 52px;
+  margin-top: 22px;
+}
+.theme-option {
+  display: grid;
+  justify-items: center;
+  gap: 17px;
+  opacity: 0.6;
+  transform: scale(0.88);
+  transition: opacity 0.35s, transform 0.5s var(--ease-spring);
+}
+.theme-option.on {
+  opacity: 1;
+  transform: scale(1.06);
+}
+.theme-option.on .coin-body {
+  animation-duration: 3.4s;
+}
+.theme-option .label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font: 800 11px var(--font-ui);
+  color: var(--ink-soft);
+}
+.theme-option.on .label {
+  color: var(--ink);
+}
+.theme-option .label::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--forge);
+  transform: scale(0);
+  transition: transform 0.35s var(--ease-spring);
+}
+.theme-option.on .label::before {
+  transform: scale(1);
+}
+.theme-face {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+.theme-face svg {
+  width: 36px;
+  height: 36px;
+  stroke-width: 2.1;
+}
+.theme-face.light {
+  border: 4px solid #fff;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #f3ecd8 72%);
+  color: #f2a100;
+}
+.theme-face.dark {
+  border: 4px solid #5d626d;
+  background: radial-gradient(circle at 35% 30%, #474b54, #1c1e22 72%);
+  color: #cbc3ff;
+}
+.picker-bottom {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  text-align: center;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--ink-faint);
+}
+.picker-bottom .keys {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--ink-soft);
+}

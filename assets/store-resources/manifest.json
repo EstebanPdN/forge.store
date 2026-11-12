@@ -1,0 +1,37 @@
+{
+  "alttp/trailer": {
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/alttp-trailer.fvid",
+    "sha256": "b8865ea4d1ca2d1df179c7eec3c377d6d3d6de54014a0495aff971cad1c99e86",
+    "bytes": 5941159
+  },
+  "alttp/light-world": {
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/alttp-light-world.fvid",
+    "sha256": "7b59424a20307d04e9fb70481220d9887558d6f8f0a35e83157e910a8f1ab030",
+    "bytes": 711836
+  },
+  "minish/minish-woods": {
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/minish-minish-woods.fvid",
+    "sha256": "83d0df6f311a4618d3f0ce7a8005d55a95f647850dcb2d4d2c8202d564176640",
+    "bytes": 931111
+  },
+  "mk64/trailer": {
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/mk64-trailer.fvid",
+    "sha256": "b5c881b5750c7c3a9fe7fc8432879ea7005ce8e560a46e0533ab66ecdeace613",
+    "bytes": 5931857
+  },
+  "mk64/luigi-raceway": {
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/mk64-luigi-raceway.fvid",
+    "sha256": "9648ebd25225811e3d78e5b47207236d8cb0ef96ac05ab3d3fba959df3880c49",
+    "bytes": 1188789
+  },
+  "doom/forest": {
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/doom-forest.fvid",
+    "sha256": "2f1de1e3e8ab75ba74bb7aecbb8c752ae153d3efe272c54a31d6c15e3a172a01",
+    "bytes": 657894
+  },
+  "starwing/corneria": {
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/starwing-corneria.fvid",
+    "sha256": "157ec7c9a8318ad3d44f4f5c1d5f2571a8e03999094a6a02bb0a26d258a9fb23",
+    "bytes": 682303
+  }
+}

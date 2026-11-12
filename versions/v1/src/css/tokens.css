@@ -1,0 +1,79 @@
+/* Design tokens shared by the page, the console and both 3DS screens.
+   Screen values are in native 3DS pixels: the device is zoomed as a whole. */
+@import url('../../assets/fonts/nunito.css');
+@import url('../../assets/fonts/dmsans.css');
+
+:root {
+  --font-ui: 'Nunito', 'DM Sans', system-ui, sans-serif;
+  --font-brand: 'DM Sans', 'Nunito', system-ui, sans-serif;
+
+  /* Motion: the site's entrance curve and a softer standard curve. */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Brand */
+  --gold: #ffd21f;
+  --mint: #4f9e86;
+  --mint-ink: #2f7a63;
+  --mint-soft: #dcefe7;
+  --forge: #ff8a1f;
+  --forge-2: #ff5a2c;
+  --forge-soft: #fff0e1;
+  --lavender: #7c6fd6;
+  --lavender-soft: #ebe8fb;
+  --sky: #2f8fe0;
+  --danger: #e5484d;
+  --danger-soft: #fde7e7;
+  --amber: #e7a008;
+  --amber-soft: #fff4d6;
+
+  /* Light theme (default) */
+  --bg: #f4f7f8;
+  --bg-haze-1: rgba(219, 236, 228, 0.7);
+  --bg-haze-2: rgba(228, 224, 240, 0.55);
+  --dot: rgba(127, 157, 168, 0.22);
+  --surface: #ffffff;
+  --surface-2: #eef2f4;
+  --surface-3: #e3e9ec;
+  --glass: rgba(255, 255, 255, 0.78);
+  --glass-strong: rgba(255, 255, 255, 0.92);
+  --ink: #2c3e45;
+  --ink-soft: #5d727a;
+  --ink-faint: #93a4aa;
+  --line: rgba(44, 62, 69, 0.1);
+  --line-strong: rgba(44, 62, 69, 0.18);
+  --shadow-1: 0 1px 2px rgba(40, 60, 70, 0.08), 0 2px 6px rgba(40, 60, 70, 0.06);
+  --shadow-2: 0 2px 4px rgba(40, 60, 70, 0.08), 0 6px 16px rgba(40, 60, 70, 0.1);
+  --focus: #2f8fe0;
+  --cursor: #ffffff;
+  --cursor-glow: rgba(255, 166, 61, 0.75);
+}
+
+[data-theme='dark'] {
+  --bg: #1b1c1f;
+  --bg-haze-1: rgba(65, 109, 90, 0.22);
+  --bg-haze-2: rgba(93, 75, 120, 0.16);
+  --dot: rgba(160, 180, 188, 0.12);
+  --surface: #26282c;
+  --surface-2: #2f3236;
+  --surface-3: #3a3d42;
+  --glass: rgba(38, 40, 44, 0.78);
+  --glass-strong: rgba(38, 40, 44, 0.94);
+  --ink: #eef1f2;
+  --ink-soft: #a9b5b9;
+  --ink-faint: #6f7b80;
+  --line: rgba(255, 255, 255, 0.08);
+  --line-strong: rgba(255, 255, 255, 0.14);
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 2px 6px rgba(0, 0, 0, 0.2);
+  --shadow-2: 0 2px 4px rgba(0, 0, 0, 0.3), 0 6px 16px rgba(0, 0, 0, 0.3);
+  --mint: #6cc3a5;
+  --mint-ink: #8fdcc0;
+  --mint-soft: rgba(108, 195, 165, 0.16);
+  --forge-soft: rgba(255, 138, 31, 0.16);
+  --lavender: #9d92f0;
+  --lavender-soft: rgba(157, 146, 240, 0.16);
+  --danger-soft: rgba(229, 72, 77, 0.18);
+  --amber-soft: rgba(231, 160, 8, 0.18);
+  --cursor: #ffe9c9;
+}

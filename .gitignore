@@ -42,3 +42,5 @@ docs/ui-v2-review/
 docs/history/
 docs/UI-V2-REVIEW-2026-11-10.md
 docs/UI-V2-STYLE.md
+# Also ignore dependency symlinks
+**/node_modules

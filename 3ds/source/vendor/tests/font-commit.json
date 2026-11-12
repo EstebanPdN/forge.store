@@ -1,0 +1,101 @@
+{
+  "sha": "5bb28733cec313b63fbd415b574b5ae35c8aa8b8",
+  "node_id": "C_kwDOAdQSTdoAKDViYjI4NzMzY2VjMzEzYjYzZmJkNDE1YjU3NGI1YWUzNWM4YWE4Yjg",
+  "commit": {
+    "author": {
+      "name": "Felipe Correa da Silva Sanches",
+      "email": "juca@members.fsf.org",
+      "date": "2026-10-15T07:14:07Z"
+    },
+    "committer": {
+      "name": "Felipe Corrêa da Silva Sanches",
+      "email": "juca@members.fsf.org",
+      "date": "2026-11-08T13:10:44Z"
+    },
+    "message": "cabincondensed: upstream_info.md: the 2017 pin is the shipped v2.200 build\n\nThe four shipped binaries are byte-identical to impallari/Cabin\nf0f6a1a, which the recorded 9476ee6f5459 merged. Cabin v3 (2020) was\nnever released as Cabin Condensed, so the pin is not stale.\n\nAssisted by an AI agent (Claude Opus 5.5)",
+    "tree": {
+      "sha": "ca28413d1563d31026c6fef9ef1f56892be4bda1",
+      "url": "https://api.github.com/repos/google/fonts/git/trees/ca28413d1563d31026c6fef9ef1f56892be4bda1"
+    },
+    "url": "https://api.github.com/repos/google/fonts/git/commits/5bb28733cec313b63fbd415b574b5ae35c8aa8b8",
+    "comment_count": 0,
+    "verification": {
+      "verified": false,
+      "reason": "unsigned",
+      "signature": null,
+      "payload": null,
+      "verified_at": null
+    }
+  },
+  "url": "https://api.github.com/repos/google/fonts/commits/5bb28733cec313b63fbd415b574b5ae35c8aa8b8",
+  "html_url": "https://github.com/google/fonts/commit/5bb28733cec313b63fbd415b574b5ae35c8aa8b8",
+  "comments_url": "https://api.github.com/repos/google/fonts/commits/5bb28733cec313b63fbd415b574b5ae35c8aa8b8/comments",
+  "author": {
+    "login": "felipesanches",
+    "id": 213676,
+    "node_id": "MDQ6VXNlcjIxMzY3Ng==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/213676?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/felipesanches",
+    "html_url": "https://github.com/felipesanches",
+    "followers_url": "https://api.github.com/users/felipesanches/followers",
+    "following_url": "https://api.github.com/users/felipesanches/following{/other_user}",
+    "gists_url": "https://api.github.com/users/felipesanches/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/felipesanches/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/felipesanches/subscriptions",
+    "organizations_url": "https://api.github.com/users/felipesanches/orgs",
+    "repos_url": "https://api.github.com/users/felipesanches/repos",
+    "events_url": "https://api.github.com/users/felipesanches/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/felipesanches/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "committer": {
+    "login": "felipesanches",
+    "id": 213676,
+    "node_id": "MDQ6VXNlcjIxMzY3Ng==",
+    "avatar_url": "https://avatars.githubusercontent.com/u/213676?v=4",
+    "gravatar_id": "",
+    "url": "https://api.github.com/users/felipesanches",
+    "html_url": "https://github.com/felipesanches",
+    "followers_url": "https://api.github.com/users/felipesanches/followers",
+    "following_url": "https://api.github.com/users/felipesanches/following{/other_user}",
+    "gists_url": "https://api.github.com/users/felipesanches/gists{/gist_id}",
+    "starred_url": "https://api.github.com/users/felipesanches/starred{/owner}{/repo}",
+    "subscriptions_url": "https://api.github.com/users/felipesanches/subscriptions",
+    "organizations_url": "https://api.github.com/users/felipesanches/orgs",
+    "repos_url": "https://api.github.com/users/felipesanches/repos",
+    "events_url": "https://api.github.com/users/felipesanches/events{/privacy}",
+    "received_events_url": "https://api.github.com/users/felipesanches/received_events",
+    "type": "User",
+    "user_view_type": "public",
+    "site_admin": false
+  },
+  "parents": [
+    {
+      "sha": "331d9ad511f455d8e045d1e3f27dea92b45c572f",
+      "url": "https://api.github.com/repos/google/fonts/commits/331d9ad511f455d8e045d1e3f27dea92b45c572f",
+      "html_url": "https://github.com/google/fonts/commit/331d9ad511f455d8e045d1e3f27dea92b45c572f"
+    }
+  ],
+  "stats": {
+    "total": 84,
+    "additions": 10,
+    "deletions": 74
+  },
+  "files": [
+    {
+      "sha": "15445f13e4f6fdd18ca807b4ea52e9d89a1b6391",
+      "filename": "ofl/cabincondensed/upstream_info.md",
+      "status": "modified",
+      "additions": 10,
+      "deletions": 74,
+      "changes": 84,
+      "blob_url": "https://github.com/google/fonts/blob/5bb28733cec313b63fbd415b574b5ae35c8aa8b8/ofl%2Fcabincondensed%2Fupstream_info.md",
+      "raw_url": "https://github.com/google/fonts/raw/5bb28733cec313b63fbd415b574b5ae35c8aa8b8/ofl%2Fcabincondensed%2Fupstream_info.md",
+      "contents_url": "https://api.github.com/repos/google/fonts/contents/ofl%2Fcabincondensed%2Fupstream_info.md?ref=5bb28733cec313b63fbd415b574b5ae35c8aa8b8",
+      "patch": "@@ -1,82 +1,18 @@\n-# Cabin Condensed - Investigation Report\n+# Investigation: Cabin Condensed\n \n-## Source Data\n+**Model**: Claude Opus 5.5\n+**Date**: 2026-10-15\n \n-| Field | Value |\n-|-------|-------|\n-| **Family Name** | Cabin Condensed |\n-| **Designer** | Impallari Type |\n-| **License** | OFL |\n-| **Date Added** | 2011-11-30 |\n-| **Repository URL** | https://github.com/impallari/Cabin |\n-| **Commit Hash** | `9476ee6f5459ee37cf8462452f3e4640c3a48519` |\n-| **Branch** | N/A (defaults to master) |\n-| **Config YAML** | Override in google/fonts |\n-| **Status** | complete |\n+## Initial state\n \n-## How URL Was Found\n+METADATA.pb records https://github.com/impallari/Cabin at `9476ee6f5459ee37cf8462452f3e4640c3a48519` (2017-02-23, the merge of impallari/Cabin#12), while Cabin's METADATA.pb records the same repository at `70efa8c3179359cc50b01ca184fec8a694156140` (2020-07-22, v3.001). fontc_crater triage flagged the Cabin Condensed pin as stale.\n \n-The repository URL `https://github.com/impallari/Cabin` was added in commit `c8f729cbd` (\"Add more upstreams (c,d)\"). Both Cabin and Cabin Condensed share the same upstream repository, as they are generated from the same Glyphs source files. The copyright string in the fonts confirms the connection: \"Copyright 2016 The Cabin Project Authors (impallari@gmail.com)\".\n+## Actions taken\n \n-## How Commit Was Determined\n+The four shipped binaries (CabinCondensed-Regular, -Medium, -SemiBold and -Bold, v2.200, added to google/fonts by PR #680 on 2017-05-01, unchanged since) were looked up in the repository by blob hash. They are byte-identical to the files committed in `f0f6a1a` (\"sources | fonts: v2.200 update.\", 2017-02-17), which `9476ee6` merged. Cabin v3 (2020) ships as Cabin's two variable fonts, with a width axis; google/fonts never rebuilt Cabin Condensed from it.\n \n-The commit hash `9476ee6f5459ee37cf8462452f3e4640c3a48519` was added in the batch source block update `9a14639f3` (\"Add source blocks to 602 more METADATA.pb files\").\n+## Final state\n \n-This commit corresponds to the upstream merge that produced the v2.200 fonts used in the last binary update for Cabin Condensed:\n+No change to the source block: `9476ee6` is the commit whose fonts google/fonts ships. Recording v3 would name a source that did not build them; moving Cabin Condensed to v3 would be an update of the family, with new binaries.\n \n-- **Upstream commit**: `9476ee6f` is a merge commit from 2017-02-23: \"Merge pull request #12 from m4rc1e/master\" with message \"sources | fonts: v2.200 update\"\n-- **google/fonts commit**: `eef4029d7` (\"cabincondened: v2.200 added (#680)\"), merged 2017-05-01\n-- **PR #680** (m4rc1e): \"Same as #679, both families are generated from the same .glyphs file\" -- referring to the Cabin v2.220 update in PR #679\n-\n-Note that while Cabin was later updated to v3.001 as a variable font (upstream commit `70efa8c3`), **Cabin Condensed was not updated**. The Cabin Condensed static fonts still correspond to the v2.200 era. The v3.001 Cabin variable font includes a `wdth` axis (75-100) that covers condensed widths, but Cabin Condensed remains a separate family entry with static binaries from the older commit.\n-\n-## Config YAML Status\n-\n-**No config.yaml exists** in the upstream repository at any commit, and no override config.yaml exists in the google/fonts family directory.\n-\n-At the recorded commit (`9476ee6f`), the source files are:\n-- `sources/Cabin.glyphs` (contains both regular and condensed masters)\n-- `sources/Cabin-Italic.glyphs`\n-\n-These are Glyphs format sources that are potentially compatible with gftools-builder, but a config.yaml would need to be created. The Cabin Condensed static fonts were originally extracted from these sources.\n-\n-At the later Cabin v3.001 commit (`70efa8c3`), the sources were restructured to:\n-- `sources/CabinRegular_v3001.glyphs`\n-- `sources/CabinItalic_v3001.glyphs`\n-- `sources/CabinRegular.designspace`\n-- `sources/CabinItalic.designspace`\n-- `sources/build.sh` (custom build script)\n-\n-## Verification\n-\n-- **Repository URL**: Confirmed valid; repo is cloned at `upstream_repos/fontc_crater_cache/impallari/Cabin/`\n-- **Commit hash**: Verified -- exists in the repo; the merge commit message (\"sources | fonts: v2.200 update\") directly aligns with google/fonts PR #680 (\"cabincondened: v2.200 added\")\n-- **Source files**: Glyphs sources present at the recorded commit (gftools-compatible format)\n-- **Font binary history**: Last binary update was PR #680 (m4rc1e, merged 2017-05-01)\n-\n-## Confidence Level\n-\n-**HIGH** -- The commit hash is well-supported by cross-referencing:\n-1. The upstream commit is a merge of m4rc1e's v2.200 update (PR #12 in the upstream repo)\n-2. The google/fonts PR #680 was also authored by m4rc1e and titled \"cabincondened: v2.200 added\"\n-3. PR #680 body explicitly states \"Same as #679, both families are generated from the same .glyphs file\"\n-4. The TTF files in the upstream commit's `fonts/TTF/CabinCondensed-*.ttf` correspond to the binaries added in google/fonts\n-\n-\n-## Override Config YAML\n-\n-An override `config.yaml` has been added to the google/fonts family directory. Contents:\n-\n-```yaml\n-sources:\n-  - sources/Cabin.glyphs\n-familyName: Cabin Condensed\n-buildVariable: false\n-```\n-\n-This override config enables gftools-builder to compile the font from upstream sources.\n-\n-## Open Questions\n-\n-1. Should Cabin Condensed be updated to use the v3.001 sources and the newer commit hash (`70efa8c3`), or is it intentionally kept at the v2.200 static fonts? The newer Cabin variable font already includes condensed width via the `wdth` axis.\n-2. Could a config.yaml override be created for Cabin Condensed to enable gftools-builder builds from the `.glyphs` sources at commit `9476ee6f`?\n+fontc_crater fails to build this entry in both compilers: fontc stops on the 2017 `sources/Cabin.glyphs` with \"Missing mapping on Weight for default at DesignSpace(95.0)\" (its axis mappings place 400 at 94, not at the default master's 95). That is a property of the source, not of the pin."
+    }
+  ]
+}

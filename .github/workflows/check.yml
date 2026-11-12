@@ -1,0 +1,21 @@
+name: Repository checks
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  repository:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 tools/check-repository.py
+      - run: python3 -m compileall -q tools 3ds/tools 3ds/tests
+      - name: JavaScript syntax
+        run: |
+          while IFS= read -r -d '' file; do
+            node --input-type=module --check < "$file"
+          done < <(find src/js tools -type f \( -name '*.js' -o -name '*.mjs' \) -print0)

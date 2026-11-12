@@ -1,0 +1,13 @@
+# Working in forge.store
+
+- Preserve approved web V2 appearance and the native 400×240 / 320×240 layout. Do not edit `versions/v1/`.
+- Read `docs/ARCHITECTURE.md`, `docs/BUILDING.md` and the affected original source before edits.
+- Keep the existing C/libctru/Citro2D toolchain and stable source paths. Use shared components.
+- Build with `zsh 3ds/build.sh`; avoid `--pack` unless intentionally regenerating all runtime assets.
+- Test data integrity, queue/thread lifetimes and decoder behavior with the production-source host harnesses.
+- Report compilation, host tests, emulator evidence and physical-console evidence separately.
+- Never publish local diagnostics, credentials, ROMs, firmware, saves or private repository content.
+- Keep generated intermediates in `3ds/build/` and private evidence in `.local/`, not Downloads.
+- Do not create GitHub releases or deploy the website without an explicit request. Source/binary
+  publication is also an explicit action; this file does not authorize it on its own.
+- Use Code Atlas preview tools for browser checks. Do not replace the user's browser session.

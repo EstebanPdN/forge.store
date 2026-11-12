@@ -1,0 +1,10 @@
+{
+  "sources": {
+    "SpaceMono-Regular.ttf": "95837e182baeeada83368f7748db28357f0a1b75c6b84ff7065b5edf933c8e18",
+    "SpaceMono-Bold.ttf": "405e73d41afb7e5906efce206a326af5c956f38e255f35421c260e861e599c59",
+    "OFL.txt": "8e4ee42b2553e1e01504e61cb0d46d148cd8c9e5eacaa3622a7df2d4f2955b9f"
+  },
+  "origin": "https://github.com/google/fonts/tree/main/ofl/spacemono",
+  "license": "SIL Open Font License 1.1; see OFL.txt",
+  "use": "Native monospaced code role, 10px Regular/Bold; system web fallback may differ."
+}

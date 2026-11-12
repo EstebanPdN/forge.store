@@ -1,0 +1,22 @@
+name: Bug report
+description: Report a reproducible store problem.
+body:
+  - type: input
+    id: build
+    attributes:
+      label: Build hash and CIA/3DSX format
+    validations:
+      required: true
+  - type: input
+    id: model
+    attributes:
+      label: Console model or emulator version
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps, expected result and actual result
+      description: Do not include ROMs, saves, credentials or memory dumps.
+    validations:
+      required: true

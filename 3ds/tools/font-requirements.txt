@@ -1,0 +1,5 @@
+# Offline V2 rasterization and atlas packing (3ds/tools/.venv).
+Pillow>=12
+numpy>=2
+fonttools[woff]>=4.60
+CairoSVG>=2.8

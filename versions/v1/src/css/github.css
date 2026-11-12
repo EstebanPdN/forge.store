@@ -1,0 +1,524 @@
+/* Built-in GitHub viewer: page on the top screen, touchpad on the bottom. */
+.gh-view {
+  left: 0;
+  right: 0;
+  top: 20px;
+  bottom: 0;
+}
+.gh-page {
+  padding: 2px 12px 14px;
+}
+.gh-state {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 6px;
+  min-height: 150px;
+  font-size: 9.5px;
+  font-weight: 800;
+  text-align: center;
+  color: var(--ink-soft);
+}
+.gh-state svg {
+  width: 22px;
+  height: 22px;
+}
+.gh-state small {
+  font: 600 8px ui-monospace, Menlo, monospace;
+  color: var(--ink-faint);
+}
+.gh-head {
+  display: flex;
+  gap: 9px;
+  padding: 8px 9px;
+  margin-bottom: 8px;
+  border-radius: 12px;
+  background: var(--glass);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.gh-avatar {
+  flex: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  background: var(--surface-2);
+}
+.gh-head-text {
+  min-width: 0;
+}
+.gh-name {
+  font-size: 12px;
+  line-height: 1.2;
+}
+.gh-name b {
+  font-weight: 900;
+}
+.gh-desc {
+  margin: 2px 0 0;
+  font-size: 8.5px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+.gh-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 9px;
+  margin-top: 4px;
+  font-size: 8px;
+  font-weight: 800;
+  color: var(--ink-soft);
+}
+.gh-stats span {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+.gh-stats svg {
+  width: 9px;
+  height: 9px;
+}
+.gh-stats .lang i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--forge);
+}
+.gh-note {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 10px 0 0;
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+.gh-note svg {
+  width: 9px;
+  height: 9px;
+}
+
+/* Rendered markdown, scaled for a 400×240 screen. */
+.gh-md {
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.gh-md.small {
+  font-size: 8.5px;
+  color: var(--ink-soft);
+}
+.gh-md > :first-child {
+  margin-top: 0;
+}
+.gh-md h1,
+.gh-md h2,
+.gh-md h3,
+.gh-md h4 {
+  margin: 10px 0 4px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+.gh-md h1 {
+  font-size: 14px;
+  padding-bottom: 3px;
+  border-bottom: 1px solid var(--line);
+}
+.gh-md h2 {
+  font-size: 12px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--line);
+}
+.gh-md h3 {
+  font-size: 10.5px;
+}
+.gh-md h4 {
+  font-size: 9.5px;
+}
+.gh-md p,
+.gh-md ul,
+.gh-md ol,
+.gh-md table,
+.gh-md pre,
+.gh-md blockquote {
+  margin: 0 0 6px;
+}
+.gh-md ul,
+.gh-md ol {
+  padding-left: 14px;
+}
+.gh-md li + li {
+  margin-top: 1px;
+}
+.gh-md a {
+  color: var(--sky);
+  text-decoration: none;
+}
+.gh-md img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  vertical-align: middle;
+}
+.gh-md p > a > img,
+.gh-md p > img {
+  max-height: 160px;
+}
+.gh-md code {
+  padding: 0 3px;
+  border-radius: 3px;
+  background: var(--surface-2);
+  font: 600 8px ui-monospace, Menlo, monospace;
+}
+.gh-md pre {
+  padding: 6px 7px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: var(--surface-2);
+  white-space: pre-wrap;
+}
+.gh-md pre code {
+  padding: 0;
+  background: none;
+}
+.gh-md blockquote {
+  padding: 2px 8px;
+  border-left: 2.5px solid var(--line-strong);
+  color: var(--ink-soft);
+}
+.gh-md table {
+  border-collapse: collapse;
+  font-size: 8px;
+}
+.gh-md th,
+.gh-md td {
+  padding: 2px 5px;
+  border: 1px solid var(--line);
+  text-align: left;
+}
+.gh-md hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+  margin: 8px 0;
+}
+.gh-md .markdown-alert {
+  padding: 4px 8px;
+  border-left: 2.5px solid var(--amber);
+  border-radius: 4px;
+  background: var(--amber-soft);
+}
+.gh-md .anchor,
+.gh-md .octicon {
+  display: none;
+}
+
+.gh-releases {
+  display: grid;
+  gap: 6px;
+}
+.gh-release {
+  padding: 7px 9px;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line), var(--shadow-1);
+}
+.gh-release-head {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-bottom: 5px;
+  font-size: 10px;
+}
+.gh-release-head b {
+  font-weight: 900;
+}
+.gh-release-head .faint {
+  margin-left: auto;
+  font-size: 8px;
+  font-weight: 800;
+}
+.gh-assets {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 3px;
+  margin-bottom: 6px;
+}
+.gh-asset {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  min-width: 0;
+  padding: 3px 5px;
+  border-radius: 6px;
+  background: var(--surface-2);
+  font-size: 7.8px;
+  font-weight: 800;
+}
+.gh-asset svg {
+  flex: none;
+  width: 9px;
+  height: 9px;
+}
+.gh-asset small {
+  flex: none;
+  margin-left: auto;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+.gh-topics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 7px;
+}
+.gh-home {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 6px 0 0;
+  font-size: 8.5px;
+  font-weight: 800;
+  color: var(--sky);
+}
+.gh-home svg {
+  width: 10px;
+  height: 10px;
+}
+.gh-commits {
+  display: grid;
+  gap: 3px;
+}
+.gh-commit {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  padding: 4px 6px;
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+.gh-commit img,
+.gh-commit .gh-dot {
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--surface-3);
+}
+.gh-commit div {
+  min-width: 0;
+}
+.gh-commit b {
+  display: block;
+  font-size: 8.5px;
+  font-weight: 800;
+}
+.gh-commit small {
+  display: block;
+  font-size: 7.5px;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+
+/* Bottom screen */
+.gh-bar-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.gh-bar-title svg {
+  flex: none;
+  width: 12px;
+  height: 12px;
+}
+.gh-tabs {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 32px;
+}
+.gh-tabs .ui-seg button {
+  height: 20px;
+  font-size: 9px;
+}
+.gh-pad {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  top: 60px;
+  bottom: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle, var(--line-strong) 0.9px, transparent 1.2px) 0 0 / 9px 9px,
+    var(--glass);
+  box-shadow: inset 0 0 0 1px var(--line), inset 0 2px 8px rgba(0, 0, 0, 0.08);
+  cursor: grab;
+  touch-action: none;
+}
+.gh-pad:active {
+  cursor: grabbing;
+}
+.gh-pad-hint {
+  display: grid;
+  justify-items: center;
+  gap: 3px;
+  text-align: center;
+  pointer-events: none;
+}
+.gh-pad-hint svg {
+  width: 20px;
+  height: 20px;
+  color: var(--ink-faint);
+}
+.gh-pad-hint b {
+  font-size: 10px;
+  font-weight: 900;
+}
+.gh-pad-hint small {
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--ink-faint);
+}
+.gh-track {
+  position: absolute;
+  right: 9px;
+  top: 14px;
+  width: 5px;
+  height: 104px;
+  border-radius: 3px;
+  background: var(--surface-3);
+  pointer-events: none;
+}
+.gh-thumb {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  border-radius: 3px;
+  background: var(--forge);
+  transition: transform 0.12s linear;
+}
+.gh-percent {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  font-size: 8px;
+  font-weight: 900;
+  color: var(--ink-faint);
+  pointer-events: none;
+}
+.gh-buttons {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 7px;
+  display: flex;
+  gap: 4px;
+}
+.gh-buttons .ui-btn {
+  flex: 1;
+  height: 22px;
+  border-radius: 11px;
+}
+/* QR codes and screenshots inside release notes stay small. */
+.gh-md.small img {
+  max-height: 90px;
+}
+
+/* Badge rows: small, evenly spaced and centred like on github.com. */
+.gh-md p:has(> a > img[src*='shields.io']),
+.gh-md p:has(> img[src*='shields.io']),
+.gh-md p:has(> a > img[src*='badge']) {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 3px;
+}
+.gh-md img[src*='shields.io'],
+.gh-md img[src*='badge'] {
+  height: 13px;
+  max-height: 13px;
+  border-radius: 2px;
+}
+.gh-md [align='center'] {
+  text-align: center;
+}
+
+/* Profile mode */
+.gh-avatar.round {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  box-shadow: 0 0 0 2px var(--surface);
+}
+.gh-repos {
+  display: grid;
+  gap: 4px;
+}
+.gh-repo {
+  padding: 6px 8px;
+  border-radius: 10px;
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--line);
+  transition: box-shadow 0.2s, transform 0.25s var(--ease-out);
+}
+.gh-repo.focus {
+  box-shadow: inset 0 0 0 1.5px var(--forge), var(--shadow-2);
+  transform: translateX(3px);
+}
+.gh-repo-head {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  color: var(--sky);
+}
+.gh-repo-head svg {
+  flex: none;
+  width: 10px;
+  height: 10px;
+}
+.gh-repo-head b {
+  flex: 1;
+  font-weight: 900;
+}
+.gh-repo p {
+  margin: 2px 0 0;
+  font-size: 8.3px;
+  font-weight: 600;
+  line-height: 1.35;
+  color: var(--ink-soft);
+}
+
+/* Compact rows of linked images: buttons and badges on a single line. */
+.gh-md .gh-imgrow {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+}
+.gh-md .gh-imgrow img {
+  height: 16px !important;
+  max-height: 16px !important;
+  width: auto;
+  border-radius: 3px;
+}
+.gh-md .gh-imgrow img[src*='badge'],
+.gh-md .gh-imgrow img[src*='shields.io'] {
+  height: 13px !important;
+  max-height: 13px !important;
+}
+/* GitHub's align attributes (e.g. profile cards) would float images out of flow. */
+.gh-md img[align] {
+  float: none;
+  display: block;
+  margin: 0 0 4px;
+}
