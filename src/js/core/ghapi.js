@@ -38,6 +38,10 @@ async function refresh(path, accept, key) {
 async function get(path, accept = 'application/vnd.github+json') {
   await imageMapReady;
   const key = CACHE + accept.split('.').pop() + path;
+  if (/^\/repos\/EstebanPdN\/[^/]+\/readme$/.test(path)) {
+    const local = await bundled;
+    return local?.pages['html:' + path] ?? null;
+  }
   const ttl = path.endsWith('/readme') ? 7*24*HOUR : 6*HOUR;
   let hit;
   try { hit=JSON.parse(localStorage.getItem(key)); } catch {}

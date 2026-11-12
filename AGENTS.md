@@ -1,5 +1,7 @@
 # Working in forge.store
 
+- The native 3DS application is the active product. Do not continue web prototype development or browser validation unless I explicitly request it.
+
 - Preserve approved web V2 appearance and the native 400×240 / 320×240 layout. Do not edit `versions/v1/`.
 - Read `docs/ARCHITECTURE.md`, `docs/BUILDING.md` and the affected original source before edits.
 - Keep the existing C/libctru/Citro2D toolchain and stable source paths. Use shared components.

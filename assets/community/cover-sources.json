@@ -1,0 +1,527 @@
+[
+  {
+    "app": "snes9x",
+    "title": "Super Mario World",
+    "source": "Super Mario World (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Super%20Mario%20World%20%28USA%29.png",
+    "sha256": "8c2bb5b52df24943e057efed073646fb9d3658348800602d23430dfd02812193"
+  },
+  {
+    "app": "snes9x",
+    "title": "Donkey Kong Country",
+    "source": "Donkey Kong Country (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Donkey%20Kong%20Country%20%28USA%29.png",
+    "sha256": "f2f8873d7433212f811aeff06f56681b7101eb532d1c2b21511cc7d7e5faa315"
+  },
+  {
+    "app": "snes9x",
+    "title": "Super Metroid",
+    "source": "Super Metroid (Japan, USA) (En,Ja).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Super%20Metroid%20%28Japan%2C%20USA%29%20%28En%2CJa%29.png",
+    "sha256": "5f2ee5da7bbc2fc4042ba77726e0fa19a9619bd427fa04d780d1ce1210de7d65"
+  },
+  {
+    "app": "snes9x",
+    "title": "Legend of Zelda, The - A Link to the Past",
+    "source": "Legend of Zelda, The - A Link to the Past (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20A%20Link%20to%20the%20Past%20%28USA%29.png",
+    "sha256": "ad56494a337cd5d2bf0477c7c8f2f344ef661ff43158f58cd2593b625ba2fddc"
+  },
+  {
+    "app": "snes9x",
+    "title": "Chrono Trigger",
+    "source": "Chrono Trigger (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Chrono%20Trigger%20%28USA%29.png",
+    "sha256": "424f3104c6a62d7f50b01059cfa1d80cce594e5ce7b89b7040252d12deda160b"
+  },
+  {
+    "app": "snes9x",
+    "title": "Final Fantasy III",
+    "source": "Final Fantasy III (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Final%20Fantasy%20III%20%28USA%29.png",
+    "sha256": "d8c63bd1806e8096d67277301094a4133e0a8f4131d8e7c266a70db0173c23cc"
+  },
+  {
+    "app": "snes9x",
+    "title": "Super Mario Kart",
+    "source": "Super Mario Kart (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Super%20Mario%20Kart%20%28USA%29.png",
+    "sha256": "9b070df8c591a4eeaaf1f91cb7cf4b32595303fcb744aecd72c771fbadba790d"
+  },
+  {
+    "app": "snes9x",
+    "title": "EarthBound",
+    "source": "EarthBound (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/EarthBound%20%28USA%29.png",
+    "sha256": "e02ff0685f2064e994bc4097537098df55f0ac4fe91a22fd2379cfb873758cdc"
+  },
+  {
+    "app": "snes9x",
+    "title": "Mega Man X",
+    "source": "Mega Man X (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Mega%20Man%20X%20%28USA%29.png",
+    "sha256": "8ceb600c20be8f0141bd8fa9c1974db7e1ef2ae0ff1837aadd3eef523318eabe"
+  },
+  {
+    "app": "snes9x",
+    "title": "Street Fighter II Turbo",
+    "source": "Street Fighter II Turbo (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Street%20Fighter%20II%20Turbo%20%28USA%29.png",
+    "sha256": "af84b1000406023a29ed77ef6f8e1703180ceb0adc9b47ac8a317a281cbd8164"
+  },
+  {
+    "app": "snes9x",
+    "title": "F-Zero",
+    "source": "F-Zero (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/F-Zero%20%28USA%29.png",
+    "sha256": "2a7c20e48e5f9259f3d7de0905ecd03989f7ffdb8b493a095ce04737e13b8e5d"
+  },
+  {
+    "app": "snes9x",
+    "title": "Super Castlevania IV",
+    "source": "Super Castlevania IV (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Super%20Castlevania%20IV%20%28USA%29.png",
+    "sha256": "816015835e20a5b8585a3652e8871ff115c6bc65fe74aff1c627b7c2960d823d"
+  },
+  {
+    "app": "snes9x",
+    "title": "Secret of Mana",
+    "source": "Secret of Mana (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Secret%20of%20Mana%20%28USA%29.png",
+    "sha256": "0642bad1e9d785a7c5f71757d870805663b0b2376c04111bb0bf1668916e6efd"
+  },
+  {
+    "app": "snes9x",
+    "title": "Kirby Super Star",
+    "source": "Kirby Super Star (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Kirby%20Super%20Star%20%28USA%29.png",
+    "sha256": "d64ae75f312d26e64f330256979f0e7b2424d881ba38ddf90ceb0868ba795508"
+  },
+  {
+    "app": "snes9x",
+    "title": "Super Mario World 2 - Yoshi",
+    "source": "Super Mario World 2 - Yoshi's Island (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Super_Nintendo_Entertainment_System/master/Named_Boxarts/Super%20Mario%20World%202%20-%20Yoshi%27s%20Island%20%28USA%29.png",
+    "sha256": "3c6130d3bb8824b5685b8cbffb71b2a17bab285a85ccd61b83e90c0c9afd2197"
+  },
+  {
+    "app": "psx3d",
+    "title": "Crash Bandicoot",
+    "source": "Crash Bandicoot (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Crash%20Bandicoot%20%28USA%29.png",
+    "sha256": "53da89f702471310d68dda076f42490e7f6bfcc22dd7402917c6a8077bf85a77"
+  },
+  {
+    "app": "psx3d",
+    "title": "Spyro the Dragon",
+    "source": "Spyro the Dragon (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Spyro%20the%20Dragon%20%28USA%29.png",
+    "sha256": "14d9a52c23559fbce8e337363c674d9a9abac3d81d2ba17fc9775d98728f303b"
+  },
+  {
+    "app": "psx3d",
+    "title": "Tekken 3",
+    "source": "Tekken 3 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Tekken%203%20%28USA%29.png",
+    "sha256": "080ad8cba468ea08f0d3c25b4396e586043852814a5e6d3690d86c41d8c6b1e1"
+  },
+  {
+    "app": "psx3d",
+    "title": "Final Fantasy VII",
+    "source": "Final Fantasy VII (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Final%20Fantasy%20VII%20%28USA%29.png",
+    "sha256": "34e25e5f52ea85eb410c9e1a0e1a09cb91feab97e55e152821cbeddd2514d701"
+  },
+  {
+    "app": "psx3d",
+    "title": "Metal Gear Solid",
+    "source": "Metal Gear Solid (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Metal%20Gear%20Solid%20%28USA%29.png",
+    "sha256": "213bc7c6de0ee52bb7981cd66f3294f51057b0d96ce2f6f3ad440aa452ec8120"
+  },
+  {
+    "app": "psx3d",
+    "title": "Resident Evil 2",
+    "source": "Resident Evil 2 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Resident%20Evil%202%20%28USA%29.png",
+    "sha256": "5c335ab1b11eba18da8d9172001e28087a0a8c808178c415cccff89e8c67ede0"
+  },
+  {
+    "app": "psx3d",
+    "title": "Gran Turismo 2",
+    "source": "Gran Turismo 2 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Gran%20Turismo%202%20%28USA%29.png",
+    "sha256": "3670a12f17ff0ea011d88660b49265c78c46d17738897b8bfa888afe0d7c9387"
+  },
+  {
+    "app": "psx3d",
+    "title": "Castlevania - Symphony of the Night",
+    "source": "Castlevania - Symphony of the Night (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Castlevania%20-%20Symphony%20of%20the%20Night%20%28USA%29.png",
+    "sha256": "0a3064fc4eaa9c9fab4885dc5b65dac044b4079ab731a036f06411bb20048b57"
+  },
+  {
+    "app": "psx3d",
+    "title": "Silent Hill",
+    "source": "Silent Hill (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Silent%20Hill%20%28USA%29.png",
+    "sha256": "4209c5abbaa7561545abea28b4e15050b1304e9df52ca22d8c3bef430033f4df"
+  },
+  {
+    "app": "psx3d",
+    "title": "Tony Hawk",
+    "source": "Tony Hawk's Pro Skater (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Tony%20Hawk%27s%20Pro%20Skater%20%28USA%29.png",
+    "sha256": "8ea09ee6ac67b972f99d26972966cac8db455d8bed327f61419293669e60320a"
+  },
+  {
+    "app": "psx3d",
+    "title": "Tomb Raider",
+    "source": "Tomb Raider (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Tomb%20Raider%20%28USA%29.png",
+    "sha256": "0a59fbe7fe454f4fc586af4da1df0fc6a15ddcc12fe0b1e7bd00ab2ea4089ea9"
+  },
+  {
+    "app": "psx3d",
+    "title": "PaRappa the Rapper",
+    "source": "PaRappa the Rapper (USA) (En,Fr,De,Es,It).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/PaRappa%20the%20Rapper%20%28USA%29%20%28En%2CFr%2CDe%2CEs%2CIt%29.png",
+    "sha256": "caad2e40547901900c3729af6c7d8f75ab197fdbdf598e6e8d71b421763ddec3"
+  },
+  {
+    "app": "psx3d",
+    "title": "CTR - Crash Team Racing",
+    "source": "CTR - Crash Team Racing (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/CTR%20-%20Crash%20Team%20Racing%20%28USA%29.png",
+    "sha256": "7f4a385ecedc8a743f23ba2fb8eda985e2f2bb509243619e687af6cd78618766"
+  },
+  {
+    "app": "psx3d",
+    "title": "Ape Escape",
+    "source": "Ape Escape (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Ape%20Escape%20%28USA%29.png",
+    "sha256": "2291c59aa090252f17781fedf5422f1ba98bdea788e715a082c3efb1d14f6691"
+  },
+  {
+    "app": "psx3d",
+    "title": "Wipeout",
+    "source": "Wipeout (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Boxarts/Wipeout%20%28USA%29.png",
+    "sha256": "62998fadabe2548f9d0a1a1ad5807c59bec3823378538b709226c1755f84cd60"
+  },
+  {
+    "app": "mgba",
+    "title": "Metroid - Zero Mission",
+    "source": "Metroid - Zero Mission (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Metroid%20-%20Zero%20Mission%20%28USA%29.png",
+    "sha256": "87df10baca8bea5b5e05123e6b282a601f39693761e8aef27c8ad6f466a5fc24"
+  },
+  {
+    "app": "mgba",
+    "title": "Mario Kart - Super Circuit",
+    "source": "Mario Kart - Super Circuit (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Mario%20Kart%20-%20Super%20Circuit%20%28USA%29.png",
+    "sha256": "21e774463bbb272670484d070b281f1a7c16c3a2bfe0a8ff1b6ffadabd8e01c9"
+  },
+  {
+    "app": "mgba",
+    "title": "Legend of Zelda, The - The Minish Cap",
+    "source": "Legend of Zelda, The - The Minish Cap (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20The%20Minish%20Cap%20%28USA%29.png",
+    "sha256": "299ec4f71780caf229616286d13e5a57e135427814be00000ede6589eb627642"
+  },
+  {
+    "app": "mgba",
+    "title": "Pokemon - Emerald Version",
+    "source": "Pokemon - Emerald Version (USA, Europe).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Pokemon%20-%20Emerald%20Version%20%28USA%2C%20Europe%29.png",
+    "sha256": "f39a4d3d7044d2ad693a60f6af362619f7268cd9187c6576f3d4e3373dfa49b5"
+  },
+  {
+    "app": "mgba",
+    "title": "Advance Wars",
+    "source": "Advance Wars (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Advance%20Wars%20%28USA%29.png",
+    "sha256": "e8bc3d7e27d8902b639c2b4834e072a93cb81389b51bdf1278681738cad0a45c"
+  },
+  {
+    "app": "mgba",
+    "title": "Golden Sun",
+    "source": "Golden Sun (USA, Europe).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Golden%20Sun%20%28USA%2C%20Europe%29.png",
+    "sha256": "e1e96c261bea930a23c966ae2a5fc80a318e9f509af5480b450a6e6309bc2574"
+  },
+  {
+    "app": "mgba",
+    "title": "Fire Emblem",
+    "source": "Fire Emblem (USA) (Virtual Console).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Fire%20Emblem%20%28USA%29%20%28Virtual%20Console%29.png",
+    "sha256": "5f124445041d1ad1f4f44a00ed2e5c9ede64a80de64e7c3e79be6a0742346dbe"
+  },
+  {
+    "app": "mgba",
+    "title": "Castlevania - Aria of Sorrow",
+    "source": "Castlevania - Aria of Sorrow (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Castlevania%20-%20Aria%20of%20Sorrow%20%28USA%29.png",
+    "sha256": "801302e90259bf53c714bbb50c53a92ed8b9023f1accf7676a988841255cddc3"
+  },
+  {
+    "app": "mgba",
+    "title": "Metroid Fusion",
+    "source": "Metroid Fusion (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Metroid%20Fusion%20%28USA%29.png",
+    "sha256": "bb0c041dda892fc734b42491e45a6ffa34d0d52577a176133988421095e7db67"
+  },
+  {
+    "app": "mgba",
+    "title": "Wario Land 4",
+    "source": "Wario Land 4 (USA, Europe).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Wario%20Land%204%20%28USA%2C%20Europe%29.png",
+    "sha256": "5dd814253caf640f74e9cb1c01f7d48ff75a5fb8d8a84f83b04ba2678c71af2a"
+  },
+  {
+    "app": "mgba",
+    "title": "Mario _ Luigi - Superstar Saga",
+    "source": "Mario _ Luigi - Superstar Saga (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Mario%20_%20Luigi%20-%20Superstar%20Saga%20%28USA%29.png",
+    "sha256": "96dce31b94b6e8876697588bae0300fecf8bd224af08cbc8f8511a9acd6caf92"
+  },
+  {
+    "app": "mgba",
+    "title": "Kirby _ The Amazing Mirror",
+    "source": "Kirby _ The Amazing Mirror (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Kirby%20_%20The%20Amazing%20Mirror%20%28USA%29.png",
+    "sha256": "d7052e92dbe6a8da7f3b7b5fb623b131958f21bf04d2c29ad90666a5faaf3a85"
+  },
+  {
+    "app": "mgba",
+    "title": "Sonic Advance",
+    "source": "Sonic Advance (USA) (En,Ja).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Sonic%20Advance%20%28USA%29%20%28En%2CJa%29.png",
+    "sha256": "47a5909952c90c1931b5ba2cbb943b561b7a64459d0df68920b1e2d773807031"
+  },
+  {
+    "app": "mgba",
+    "title": "Final Fantasy Tactics Advance",
+    "source": "Final Fantasy Tactics Advance (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Final%20Fantasy%20Tactics%20Advance%20%28USA%29.png",
+    "sha256": "3078970248e49c557409980579c96d53063a0a60b50b224ed5ce67613df08ea9"
+  },
+  {
+    "app": "mgba",
+    "title": "Super Mario Advance 4",
+    "source": "Super Mario Advance 4 - Super Mario Bros. 3 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Game_Boy_Advance/master/Named_Boxarts/Super%20Mario%20Advance%204%20-%20Super%20Mario%20Bros.%203%20%28USA%29.png",
+    "sha256": "e9cdf32486282b9f8bf24bca3a19005c35385e8584444a4fa1796885733f8e48"
+  },
+  {
+    "app": "daedalus",
+    "title": "Super Mario 64",
+    "source": "Super Mario 64 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Super%20Mario%2064%20%28USA%29.png",
+    "sha256": "ec5ba1a5967bf2b5276ac164e5ce2970cee6c5bec4eb3013396faf2a6aa1ec2c"
+  },
+  {
+    "app": "daedalus",
+    "title": "Legend of Zelda, The - Ocarina of Time",
+    "source": "Legend of Zelda, The - Ocarina of Time (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20Ocarina%20of%20Time%20%28USA%29.png",
+    "sha256": "1d71330d40934b4234901ea1df7d835eab74f7cc26fa2f45b2d4214ebb8f4890"
+  },
+  {
+    "app": "daedalus",
+    "title": "Legend of Zelda, The - Majora",
+    "source": "Legend of Zelda, The - Majora's Mask (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Legend%20of%20Zelda%2C%20The%20-%20Majora%27s%20Mask%20%28USA%29.png",
+    "sha256": "de8ff24693e20dad8d9b891c49b46e1117eb0c7fa90fdc90b72d255630c2839a"
+  },
+  {
+    "app": "daedalus",
+    "title": "Mario Kart 64",
+    "source": "Mario Kart 64 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Mario%20Kart%2064%20%28USA%29.png",
+    "sha256": "c6de99137340869eaa86200ab8209b161c2daad6a7bdd0241d585a3603df22ce"
+  },
+  {
+    "app": "daedalus",
+    "title": "Banjo-Kazooie",
+    "source": "Banjo-Kazooie (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Banjo-Kazooie%20%28USA%29.png",
+    "sha256": "c21a2793e68dc54558c73abe6b8e742d84de30ec0f46923931f6d406eac9bf8b"
+  },
+  {
+    "app": "daedalus",
+    "title": "Donkey Kong 64",
+    "source": "Donkey Kong 64 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Donkey%20Kong%2064%20%28USA%29.png",
+    "sha256": "3182900247561aba11c8dae1906c12827724cd84960244e32fe0262b2e276121"
+  },
+  {
+    "app": "daedalus",
+    "title": "GoldenEye 007",
+    "source": "GoldenEye 007 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/GoldenEye%20007%20%28USA%29.png",
+    "sha256": "e3a2cfed3e140e14a738a8ecf5afb12740645ef4d793b2da0b99d3fa21434049"
+  },
+  {
+    "app": "daedalus",
+    "title": "Star Fox 64",
+    "source": "Star Fox 64 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Star%20Fox%2064%20%28USA%29.png",
+    "sha256": "8670bd0fceaad36321753b28f2460d468799b240a5d5dea1fa14c4a4d397f249"
+  },
+  {
+    "app": "daedalus",
+    "title": "Super Smash Bros.",
+    "source": "Super Smash Bros. (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Super%20Smash%20Bros.%20%28USA%29.png",
+    "sha256": "18fb1a8d06df71dd11c749cf4d054bc91dc0d81bcfcf053d640b6eb1c1298fe9"
+  },
+  {
+    "app": "daedalus",
+    "title": "Paper Mario",
+    "source": "Paper Mario (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Paper%20Mario%20%28USA%29.png",
+    "sha256": "7b9b23fb28fac23f571d7297922fcd35fd5c14b440b92d52cb0711a06fac0d2d"
+  },
+  {
+    "app": "daedalus",
+    "title": "Diddy Kong Racing",
+    "source": "Diddy Kong Racing (USA) (En,Fr).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Diddy%20Kong%20Racing%20%28USA%29%20%28En%2CFr%29.png",
+    "sha256": "f01ac90effc8bff63f950f7066432b975142141b9caca725b12a601e4301a7a6"
+  },
+  {
+    "app": "daedalus",
+    "title": "F-Zero X",
+    "source": "F-Zero X (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/F-Zero%20X%20%28USA%29.png",
+    "sha256": "f2c8de2a5ceb2b562b75e88278bc218b6bf594c4db6579f360937a83615f9893"
+  },
+  {
+    "app": "daedalus",
+    "title": "Perfect Dark",
+    "source": "Perfect Dark (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Perfect%20Dark%20%28USA%29.png",
+    "sha256": "76bb556c143d4e7e7316bf73b488d8b0e8bdc3114993d841389fd3d91bbb3426"
+  },
+  {
+    "app": "daedalus",
+    "title": "Yoshi",
+    "source": "Yoshi's Story (USA) (En,Ja).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Yoshi%27s%20Story%20%28USA%29%20%28En%2CJa%29.png",
+    "sha256": "2dcf60add82251d0f60d82aaa58b9194c9bb451d78619e1bc6278e19bb1a40bb"
+  },
+  {
+    "app": "daedalus",
+    "title": "Pokemon Snap",
+    "source": "Pokemon Snap (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Boxarts/Pokemon%20Snap%20%28USA%29.png",
+    "sha256": "17ca1f3c511fceaa80dcff17be39fd364b7d00b88a14e8a812c51f519d832c74"
+  },
+  {
+    "app": "picodrive",
+    "title": "Sonic the Hedgehog",
+    "source": "Sonic The Hedgehog (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Sonic%20The%20Hedgehog%20%28USA%29.png",
+    "sha256": "6fb5e8f86532044471761ffebc9e557764ea7c2354b8c11d859d1665372ffd40"
+  },
+  {
+    "app": "picodrive",
+    "title": "Sonic the Hedgehog 2",
+    "source": "Sonic The Hedgehog 2 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Sonic%20The%20Hedgehog%202%20%28USA%29.png",
+    "sha256": "00551991d5fbb78c824e4a3f97f11060a6d2123e89e78afe6a75bf954bd82649"
+  },
+  {
+    "app": "picodrive",
+    "title": "Sonic the Hedgehog 3",
+    "source": "Sonic The Hedgehog 3 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Sonic%20The%20Hedgehog%203%20%28USA%29.png",
+    "sha256": "42887dfe6069dfe71cca677d1894b4bfefc27c37d3a701531ab0c418b2de6b9f"
+  },
+  {
+    "app": "picodrive",
+    "title": "Streets of Rage 2",
+    "source": "Streets of Rage 2 (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Streets%20of%20Rage%202%20%28USA%29.png",
+    "sha256": "393034ba5b05e851decad54748b57997732097ea584c770a7f558b9fba2723ff"
+  },
+  {
+    "app": "picodrive",
+    "title": "Gunstar Heroes",
+    "source": "Gunstar Heroes (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Gunstar%20Heroes%20%28USA%29.png",
+    "sha256": "74ce0af2572dc5ab5c50ecf8330511575964861adfd0107137b7be31acca00c3"
+  },
+  {
+    "app": "picodrive",
+    "title": "Shinobi III",
+    "source": "Shinobi III - Return of the Ninja Master (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Shinobi%20III%20-%20Return%20of%20the%20Ninja%20Master%20%28USA%29.png",
+    "sha256": "4e260d9aa1aafb4f795f5ab8ef840c080fff7c84cb3798325589911068b1370b"
+  },
+  {
+    "app": "picodrive",
+    "title": "Phantasy Star IV",
+    "source": "Phantasy Star IV (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Phantasy%20Star%20IV%20%28USA%29.png",
+    "sha256": "ee58dbe30c29c8065c912755c7899fb748490010ade71da14601713549a23340"
+  },
+  {
+    "app": "picodrive",
+    "title": "Castlevania - Bloodlines",
+    "source": "Castlevania - Bloodlines (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Castlevania%20-%20Bloodlines%20%28USA%29.png",
+    "sha256": "de9cb99455a367c95cc69abce91d235d44008dda855867db9dc3e096a0a64222"
+  },
+  {
+    "app": "picodrive",
+    "title": "Contra - Hard Corps",
+    "source": "Contra - Hard Corps (USA) (Genesis Mini).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Contra%20-%20Hard%20Corps%20%28USA%29%20%28Genesis%20Mini%29.png",
+    "sha256": "a8d72ef6238cb2084213def5848465f91e3ad22d38dce75e80ff60481a6f449b"
+  },
+  {
+    "app": "picodrive",
+    "title": "Comix Zone",
+    "source": "Comix Zone (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Comix%20Zone%20%28USA%29.png",
+    "sha256": "29e6c7fb4322b54fe8dac96a355e0c05eb5798a1fac5593f7339d61c881b83f8"
+  },
+  {
+    "app": "picodrive",
+    "title": "Earthworm Jim",
+    "source": "Earthworm Jim (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Earthworm%20Jim%20%28USA%29.png",
+    "sha256": "20c36032facab18a07923ba5d616e3747e29a86c143477e4838510e3a3733307"
+  },
+  {
+    "app": "picodrive",
+    "title": "Ecco the Dolphin",
+    "source": "Ecco the Dolphin (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Ecco%20the%20Dolphin%20%28USA%29.png",
+    "sha256": "f94fc4ab3e9734cef35514b7b91caf59022d12ce29cbd2216817b4748aecc7f5"
+  },
+  {
+    "app": "picodrive",
+    "title": "Shining Force II",
+    "source": "Shining Force II (USA).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Shining%20Force%20II%20%28USA%29.png",
+    "sha256": "d622c736de71dbd18c85ac835029fafbbfc89bc448eb4ec13d69794d65f576fd"
+  },
+  {
+    "app": "picodrive",
+    "title": "Golden Axe",
+    "source": "Golden Axe (World).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Golden%20Axe%20%28World%29.png",
+    "sha256": "f3cfaa2ecc3479d10cfa5a404eafcbb2db852a2fef268a6c6628565f0b8f0dbd"
+  },
+  {
+    "app": "picodrive",
+    "title": "Mortal Kombat II",
+    "source": "Mortal Kombat II (World).png",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sega_-_Mega_Drive_-_Genesis/master/Named_Boxarts/Mortal%20Kombat%20II%20%28World%29.png",
+    "sha256": "3582dbcbac0289bd2c14eb346f183760f88646cbab7d268c3b40e39dac4e15f3"
+  }
+]

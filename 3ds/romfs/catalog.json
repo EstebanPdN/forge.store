@@ -2635,7 +2635,8 @@
         ],
         "fx": "leaves",
         "logo": "assets/community/dk64/logo.webp",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/dk64/background.webp"
       },
       "sourceUrl": "https://github.com/oneup03/Donkey-Kong-64-3D",
       "verifiedAt": "2026-11-12",
@@ -2768,7 +2769,8 @@
         ],
         "fx": "leaves",
         "logo": "assets/community/banjo/logo.webp",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/banjo/background.webp"
       },
       "sourceUrl": "https://github.com/oneup03/BanjoRecomp3D",
       "verifiedAt": "2026-11-12",
@@ -2900,7 +2902,8 @@
           "#da6778"
         ],
         "fx": "sparkles",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/goemon/background.webp"
       },
       "sourceUrl": "https://github.com/oneup03/Goemon64Recomp3D",
       "verifiedAt": "2026-11-12",
@@ -3019,7 +3022,8 @@
         ],
         "fx": "speed",
         "logo": "assets/community/mkwii/logo.webp",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/mkwii/background.webp"
       },
       "sourceUrl": "https://github.com/Epic0522/MarioKartWii-3DS-Redux",
       "verifiedAt": "2026-11-12",
@@ -3586,7 +3590,7 @@
         "fx": "pixels",
         "logo": "assets/community/snes9x/logo.webp",
         "cardIcon": true,
-        "bg": "assets/community/snes9x/shot-3-top.webp",
+        "bg": "assets/community/snes9x/background.webp",
         "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/matbo87/snes9x_3ds",
@@ -3980,7 +3984,7 @@
         ],
         "fx": "sparkles",
         "cardIcon": true,
-        "bg": "assets/community/psx3d/shot-3-top.webp",
+        "bg": "assets/community/psx3d/background.webp",
         "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/BreadChaser/PSX3D",
@@ -4075,7 +4079,9 @@
           "#3787de"
         ],
         "fx": "speed",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/picodrive/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/bubble2k16/picodrive_3ds",
       "verifiedAt": "2026-11-12",
@@ -4380,7 +4386,8 @@
       "verifiedAt": "2026-11-12",
       "origin": {
         "platform": "3DS"
-      }
+      },
+      "pixelIcon": false
     },
     {
       "id": "nimbus",
@@ -4509,7 +4516,8 @@
       "stars": 280,
       "origin": {
         "platform": "3DS"
-      }
+      },
+      "pixelIcon": false
     },
     {
       "id": "3dsdl",
@@ -4826,7 +4834,8 @@
       "stars": 193,
       "origin": {
         "platform": "3DS"
-      }
+      },
+      "pixelIcon": false
     },
     {
       "id": "anemone",
@@ -4971,7 +4980,9 @@
           "#e4b44f"
         ],
         "fx": "sparkles",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/wumiibo/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/hax0kartik/wumiibo",
       "verifiedAt": "2026-11-12",
@@ -5286,7 +5297,9 @@
           "#dccb79"
         ],
         "fx": "petals",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/artic/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/azahar-emu/ArticSetupTool",
       "verifiedAt": "2026-11-12",
@@ -5544,7 +5557,8 @@
         ],
         "fx": "embers",
         "logo": "assets/community/butterscotch/logo.webp",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/butterscotch/background.webp"
       },
       "verifiedAt": "2026-11-12",
       "stars": 75,

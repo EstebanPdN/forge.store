@@ -68,7 +68,15 @@ static void read_thread(void *ctx){
     ReaderRequest *r=ctx;char url[320];snprintf(url,sizeof url,"https://api.github.com/%s",r->path);
     const char *accept=r->raw?"application/vnd.github.raw+json":"application/vnd.github+json";
     bool refresh=r->refresh_stale&&!http_cache_fresh(url,accept,r->ttl);
-    r->body=http_cache_get(url,accept,READER_LIMIT,refresh,reader_cancelled,r,&r->length,r->error,sizeof r->error);
+    // Unbundled READMEs do not need GitHub's rate-limited metadata API.
+    // HEAD follows the repository's default branch, including master/custom names.
+    size_t n=strlen(r->path);
+    if(r->raw&&!strncmp(r->path,"repos/",6)&&n>13&&!strcmp(r->path+n-7,"/readme")&&!http_cache_bundled(url,accept)) {
+        char raw[384];snprintf(raw,sizeof raw,"https://raw.githubusercontent.com/%.*s/HEAD/README.md",(int)n-13,r->path+6);
+        r->body=http_cache_get(raw,"text/plain",READER_LIMIT,false,reader_cancelled,r,&r->length,r->error,sizeof r->error);
+    }
+    if(!r->body&&!reader_cancelled(r))
+        r->body=http_cache_get(url,accept,READER_LIMIT,refresh,reader_cancelled,r,&r->length,r->error,sizeof r->error);
     __atomic_store_n(&r->ready,true,__ATOMIC_RELEASE);
 }
 bool reader_slot_busy(int slot) { return slot >= 0 && slot < READER_SLOTS && requests[slot].thread; }

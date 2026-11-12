@@ -1,8 +1,28 @@
 # Verification record
 
-Publication candidate: **2026.11.12.5**, native C implementation plus web V2. This is a development
+Publication candidate: **2026.11.12.6**, native C implementation. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## Native artwork and README priority — 2026.11.12.6
+
+- Reviewed 17 application banners on both emulator screens: five new community-game backgrounds,
+  five 15-cover emulator grids, RetroArch, Checkpoint, Nimbus, Anemone, Artic, FourthTube and Wumiibo.
+  White fallback titles have a one-pixel black outline; Home retains X on a rectangular GitHub button.
+- Old 3DS emulator, public non-debug binary, fresh isolated SD. Dusk Light's bundled README and
+  prepared logo render locally; its complete reader request set reports 372 ms in this run.
+- An uncached Universal-DB repository (`0rientd/2048-port-3ds`) displays 103 document nodes while
+  its image is still pending. Optional metadata remains independent; no reader error at capture.
+- Production worker fixtures pass raw-first loading, bundled-first loading, API fallback,
+  deadline cancellation and error clearing with ASan/UBSan. Network tests pass the stale valid
+  SD README override case, 23 updater scenarios, cache/retry cases and concurrent-reader TSan.
+  Catalog production tests pass 297 assertions with ASan/UBSan. Both emulator runs report zero
+  audio underruns, and match the packaged 3DSX plus the checked native source fingerprints.
+- No physical-console validation is claimed. Unavailable repositories or missing READMEs cannot
+  be made available by this change; dynamic GitHub metadata can still be rate-limited.
+
+[Build and capture fingerprints](verification/native-art-reader.json) accompany the public package.
+The web prototype is no longer an active validation target.
 
 ## Default music gain — 2026.11.12.5
 

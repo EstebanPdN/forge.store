@@ -53,6 +53,7 @@ python3 3ds/tests/run-install-integrity.py
 python3 3ds/tests/run-forge-mode.py
 python3 3ds/tests/run-reader-image.py
 python3 3ds/tests/run-store-network.py
+python3 3ds/tests/run-reader-priority.py
 python3 3ds/tests/run-audio-gain.py
 python3 3ds/tests/run-music-stream.py
 python3 3ds/tests/run-texture-stream.py

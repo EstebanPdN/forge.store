@@ -85,10 +85,17 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/anemone/background.svg",
+      "bytes": 412,
+      "sha256": "4b87a8cf094bee6975938d71f4c8a694cba68138ba29768cf77a7d671563565d",
+      "source_context": "Original minimal vector artwork for forge.store",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/anemone/background.webp",
-      "bytes": 10190,
-      "sha256": "d728ffaebbd59ee47cd79b733c7906d62b049be1666f1aa757cd80aea2979255",
-      "source_context": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/anemone3ds/theme-list.png",
+      "bytes": 5832,
+      "sha256": "1ed9a8c3fa77db6a844121864796b2a66175ca9c9f4dc5c448261c987709b5f5",
+      "source_context": "Original minimal vector artwork; companion background.svg",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -106,10 +113,31 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/artic/background.svg",
+      "bytes": 282,
+      "sha256": "254bad58e7dd24fc70f8a572d27da6083165420ed81b08eb8564aa93073f52d6",
+      "source_context": "Original minimal vector artwork for forge.store",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/artic/background.webp",
+      "bytes": 1834,
+      "sha256": "c78a9daa7cefef62f1d51fa2784a8b44de090fd96ed53ec03f387934e8988f8c",
+      "source_context": "Original minimal vector artwork; companion background.svg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/artic/icon.webp",
       "bytes": 8448,
       "sha256": "2087eb3e0e357c366ec94eaa9eaa18e2bf6f973f6bacbdc27a4d8f798886cea4",
       "source_context": "https://raw.githubusercontent.com/azahar-emu/ArticSetupTool/main/images/logo_small.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/banjo/background.webp",
+      "bytes": 23988,
+      "sha256": "fc41bfac5b0f5d415bb39fbdf52394cfaffd26fe3d4513a3859019044e6a37b9",
+      "source_context": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Snaps/Banjo-Kazooie%20%28USA%29.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -124,6 +152,13 @@
       "bytes": 48626,
       "sha256": "0def63a0f8ce8310580ba17ae5c6b17193f55d3ab426964206f7d4abd51f6fa0",
       "source_context": "https://raw.githubusercontent.com/oneup03/BanjoRecomp3D/main/assets/Logo.svg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/butterscotch/background.webp",
+      "bytes": 10580,
+      "sha256": "e75e7d8304faf9097524df0bd8d32ad5e7709d230f180e9004b92ae929259713",
+      "source_context": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/391540/ss_b9018c41cea2bdfb150609bedfca99b16a5af02a.1920x1080.jpg?t=1757349115",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -149,9 +184,16 @@
     },
     {
       "path": "assets/community/checkpoint/icon.webp",
-      "bytes": 972,
-      "sha256": "8619d43ec07cbc4dcfe13976866ac8731200420174ea366e2e581f36a55682a4",
-      "source_context": "https://raw.githubusercontent.com/BernardoGiordano/Checkpoint/master/3ds/assets/icon.png",
+      "bytes": 2842,
+      "sha256": "876f635c657c6e42b93a815e96805be81c37c37f3d293b271dba8b95181fc180",
+      "source_context": "https://raw.githubusercontent.com/BernardoGiordano/Checkpoint/master/switch/icon.jpg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/cover-sources.json",
+      "bytes": 26533,
+      "sha256": "fea28dfb46eecfcd16af90b592b72fad1f1548c2dff35081e8bf1d1b7c55281d",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -170,9 +212,9 @@
     },
     {
       "path": "assets/community/daedalus/background.webp",
-      "bytes": 48062,
-      "sha256": "830d7ef4c1dff5740b2bb80e29da8d1aaebb07b59008156a3e9d388690017f3e",
-      "source_context": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/daedalusx64-3ds/super-mario-64.png",
+      "bytes": 79462,
+      "sha256": "d3941c93f5a2d9002db891b9d87b5f6dd89847adbb2ee60a5d2d92de45d0b7e9",
+      "source_context": "https://github.com/libretro-thumbnails",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -184,9 +226,16 @@
     },
     {
       "path": "assets/community/daedalus/logo.webp",
-      "bytes": 3060,
-      "sha256": "d359dc3461c1eda6834b31367ecf01468c33d195f5249f2ad54336bbf424037f",
-      "source_context": "https://raw.githubusercontent.com/masterfeizz/DaedalusX64-3DS/master/Data/Resources/logo.png",
+      "bytes": 108840,
+      "sha256": "b0bee95edbb04e1bf02803fc15cd894051723b7a9718fab94601b0a05b61a22b",
+      "source_context": "AI-assisted restoration of the existing DaedalusX64 wordmark; docs/ART-DIRECTION.md",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/dk64/background.webp",
+      "bytes": 25860,
+      "sha256": "5bdb7ef5a73eb895056b989a027da38f6b937d4b3c14580fc0fbc6953a4e228e",
+      "source_context": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Snaps/Donkey%20Kong%2064%20%28USA%29.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -218,24 +267,45 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/fourthtube/background.svg",
+      "bytes": 141,
+      "sha256": "af6751f57196f501e2bad6faa916fa8f28245c90bbdc55e5f64a0ef8af49e497",
+      "source_context": "Original minimal vector artwork for forge.store",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/fourthtube/background.webp",
-      "bytes": 38368,
-      "sha256": "bb409e208e6db6e4b3637a9490db0641330039ed6eeddd28d4b6bd2e1b6c6529",
-      "source_context": "https://raw.githubusercontent.com/windows-server-2003/ThirdTube/main/images/0.jpg",
+      "bytes": 60,
+      "sha256": "9e15a913c61dbe031c0a387d0dbb54173722d81cce6bd3c88b346605919d6483",
+      "source_context": "Original minimal vector artwork; companion background.svg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/fourthtube/icon.svg",
+      "bytes": 352,
+      "sha256": "5d7a3c5d3f6cd61717003447c01d62ed0f8197a70ac76afd7ff595c404a08110",
+      "source_context": "Vector recreation of the existing FourthTube artwork; companion SVG source",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/community/fourthtube/icon.webp",
-      "bytes": 480,
-      "sha256": "83c67b21cfdc61fc13495e7a2f9f69a60a7a1efb2a07d89b34fabc6356eeac68",
-      "source_context": "https://raw.githubusercontent.com/erievs/FourthTube/main/resource/icon.png",
+      "bytes": 4800,
+      "sha256": "413ed70519913bcd337917b08665f090dd80728727cc8493d6f73cd7f9973dbd",
+      "source_context": "Vector recreation of the existing FourthTube artwork; companion SVG source",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/fourthtube/logo.svg",
+      "bytes": 471,
+      "sha256": "1c32ef426efce587cdbaa85ac2e0082d579e81ae21f7d573ea1bd13a0053fd51",
+      "source_context": "Vector recreation of the existing FourthTube artwork; companion SVG source",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/community/fourthtube/logo.webp",
-      "bytes": 6612,
-      "sha256": "8919f2db0532f2587b673312eb5f693b3c570707a73b29dad54e37df1df6bd15",
-      "source_context": "https://raw.githubusercontent.com/erievs/FourthTube/main/resource/banner_legacy.png",
+      "bytes": 9084,
+      "sha256": "3ded40c2cca9bf06f6719f84d81739896598840e5c81f99cab07456fd33562b7",
+      "source_context": "Vector recreation of the existing FourthTube artwork; companion SVG source",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -302,6 +372,13 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/goemon/background.webp",
+      "bytes": 18812,
+      "sha256": "36671de85e057558aff67fc29f579e0990245337b2162562626cc0251987afec",
+      "source_context": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Snaps/Mystical%20Ninja%20Starring%20Goemon%20%28USA%29.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/goemon/icon.webp",
       "bytes": 49528,
       "sha256": "6e5b3d001b043f01587246e15b3968643f7b77afb2f0ceea61e22a0a2b67cfd1",
@@ -317,9 +394,9 @@
     },
     {
       "path": "assets/community/mgba/background.webp",
-      "bytes": 74658,
-      "sha256": "a9523a4cd73a79fde9935b0ddf5e027955c8b5cb9a6ea71b2ca492e3e42ec359",
-      "source_context": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/mgba/scale-aspect-ratio.png",
+      "bytes": 78204,
+      "sha256": "57a3e16fe675c0525bfea4569fecb2aa3a0f6897a03b7aefeb3565fc33ccdc7f",
+      "source_context": "https://github.com/libretro-thumbnails",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -327,6 +404,13 @@
       "bytes": 34924,
       "sha256": "bbc87a80c7625ea72393b6cd65dc42cca0b1f37fd07020e341aaec23d9a149a7",
       "source_context": "https://raw.githubusercontent.com/mgba-emu/mgba/master/src/platform/switch/icon.jpg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/mkwii/background.webp",
+      "bytes": 49286,
+      "sha256": "509893120c5ff747e6634fd10b07ba5f868d294a77b1aad8080271b7f07fb781",
+      "source_context": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Wii/master/Named_Snaps/Mario%20Kart%20Wii%20%28USA%29.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -344,17 +428,24 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/nimbus/background.svg",
+      "bytes": 257,
+      "sha256": "86d7d38f13b66b4d1a948998117ce1d3eab58b775699355b49f694dcaa9fff24",
+      "source_context": "Original minimal vector artwork for forge.store",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/nimbus/background.webp",
-      "bytes": 8594,
-      "sha256": "930a5d245710294a4f099a87494e87eebcd6b49b3c75f56e7dfd0fe6723020fe",
-      "source_context": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/nimbus/pretendo.png",
+      "bytes": 1892,
+      "sha256": "40057808e4f360cb7e052c14a3fbcbceccf3892d462d45c575a5e30ab99658a4",
+      "source_context": "Original minimal vector artwork; companion background.svg",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/community/nimbus/icon.webp",
-      "bytes": 602,
-      "sha256": "775ebc8bf7e0b0f060149e819e7f55ca2796b355519b82f9868c91e90d628044",
-      "source_context": "https://raw.githubusercontent.com/PretendoNetwork/nimbus/main/app/meta/icon.png",
+      "bytes": 4588,
+      "sha256": "5e16b4cc5f5c704fb95c85ffab7bdc13f15b7ba92a7508e38312134c1c40f45d",
+      "source_context": "https://raw.githubusercontent.com/PretendoNetwork/website/HEAD/src/public/assets/images/icons/android-chrome-384x384.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -372,10 +463,24 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/picodrive/background.webp",
+      "bytes": 80470,
+      "sha256": "c7025c58866234e08991bd94ed1ca22ed81357bf2fa5229422dfce1fe58ab6e4",
+      "source_context": "https://github.com/libretro-thumbnails",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/picodrive/icon.webp",
       "bytes": 1510,
       "sha256": "f2cefc643d7d7e4c00feac614405b3ef372a8e0671ced475ec2fe368445d5313",
       "source_context": "https://raw.githubusercontent.com/bubble2k16/emus3ds/master/src/cores/picodrive/assets/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/psx3d/background.webp",
+      "bytes": 65870,
+      "sha256": "5caba300f1aac3d70ff2eeb7b1bc652d7cba4e644348716fa614977202b5b98a",
+      "source_context": "https://github.com/libretro-thumbnails",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -485,9 +590,9 @@
     },
     {
       "path": "assets/community/retroarch/background.webp",
-      "bytes": 23178,
-      "sha256": "057b4718d4a2291ad41d9bea28233f502c524721d6c84465756a27ed8383adb8",
-      "source_context": "https://raw.githubusercontent.com/libretro/RetroArch/master/docs/rgui-main-menu.jpg",
+      "bytes": 5208,
+      "sha256": "201106fbffa8df4638ac8afd5188deeba9f1871672c1f244e2365507bde5d56e",
+      "source_context": "https://raw.githubusercontent.com/libretro/retroarch-assets/master/wallpapers/bichromatic%20pads/1440x900/MENU%20.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -495,6 +600,13 @@
       "bytes": 3590,
       "sha256": "02446ea5bc98477b2be46456c2f0fdc264453fb6d9737dcda2534a4cfb919fdf",
       "source_context": "https://raw.githubusercontent.com/libretro/RetroArch/master/media/ico_src/icon.svg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/background.webp",
+      "bytes": 71284,
+      "sha256": "d66ba71ed346eb933c7e9a2dc0029565a5206ce3fd3f0e6f698ec66aa00a1fe8",
+      "source_context": "https://github.com/libretro-thumbnails",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -555,8 +667,8 @@
     },
     {
       "path": "assets/community/sources.json",
-      "bytes": 28636,
-      "sha256": "871b4e0a0aef4a6bc29e3c4f75ed9b8369c772ce12a5d632fa58f5230a82ee76",
+      "bytes": 32355,
+      "sha256": "23ebca4c62d83397dc3675e25bad92d3d3c2878b64f0f015c143d24dad97e9c6",
       "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -649,6 +761,20 @@
       "bytes": 14964,
       "sha256": "880d73d73c43a66b995db7d114e922b887efb6b8e09fbadf6879cc16fbde3262",
       "source_context": "https://raw.githubusercontent.com/Universal-Team/Universal-Updater/master/resources/2d-banner.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/wumiibo/background.svg",
+      "bytes": 321,
+      "sha256": "14ec9ea9d2f0902e43acfab232882fd098e55587e67f6c7fc101c0efdc1e29bf",
+      "source_context": "Original minimal vector artwork for forge.store",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/wumiibo/background.webp",
+      "bytes": 4186,
+      "sha256": "51bb47681bde127360c26e19e143c492b44a6233e80f0eaf4dac0dcd0d3120b6",
+      "source_context": "Original minimal vector artwork; companion background.svg",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {

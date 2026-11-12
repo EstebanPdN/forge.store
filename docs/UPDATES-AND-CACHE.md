@@ -69,7 +69,7 @@ the bundled response immediately; a failed refresh falls back to the last usable
 The background pass revalidates metadata, while catalog synchronization owns release refreshes
 and keeps pinned multi-file packages on their reviewed version.
 
-Foreground pages use available local data immediately, regardless of age.
+My repository README pages always use the bundled snapshot, ignoring SD copies and background refreshes. They change only with a store update. Their prepared artwork is included locally; missing raw images from my repositories fail immediately instead of waiting for the network. Other foreground pages use available local data immediately, regardless of age.
 Background metadata freshness is six hours, commits one day, and READMEs/images seven days.
 Bundled timestamps also count as fresh, avoiding a first-launch request burst. Background validation uses
 `If-None-Match` or `If-Modified-Since`; a 304 updates freshness without replacing the body.
@@ -174,3 +174,9 @@ curated public repository, including forge.store. This prevents a future catalog
 from silently losing its offline page. A repository without a public URL cannot have a
 bundled GitHub page. The prepared profile uses a native layout of my public terminal card,
 with live repository/follower counts and compact support links.
+
+Unbundled native README requests try the public raw `HEAD/README.md` endpoint first,
+then GitHub’s README resolver for nonstandard filenames. They start before optional
+metadata requests; the text and images have independent worker lifetimes. The API may
+still withhold stars/releases when rate-limited, and repositories without a README
+cannot provide one. Highlighted repositories retain their bundled baseline.

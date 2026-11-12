@@ -69,7 +69,7 @@ curl_global_cleanup();return 0;}
  bundled+=r'''
 int main(int argc,char**argv){
  http_cache_init();curl_global_init(CURL_GLOBAL_DEFAULT);char error[128];size_t size;
- const char *url="https://fixture/cache/bundle";
+ const char *url=argc>3?argv[3]:"https://fixture/cache/bundle";
  assert(http_cache_bundled(url,"*/*"));
  char *body=http_cache_get(url,"*/*",1024,atoi(argv[1]),NULL,NULL,&size,error,sizeof error);
  assert(body&&size==strlen(argv[2])&&!strcmp(body,argv[2]));free(body);
@@ -90,6 +90,16 @@ int main(int argc,char**argv){
  disk.write_bytes(b'broken SD cache');check_bundle('offline',0,'bundled payload',0)
  bundle.write_bytes(packed[:-1]+bytes([packed[-1]^1]));check_bundle('fresh',0,'cached payload',1)
  print('PASS: bundled pages require no HTTP; newer SD wins; corrupt SD/ROMFS and offline refresh recover.')
+ owned='https://api.github.com/repos/EstebanPdN/dusklight-3ds/readme'
+ owned_key=hashlib.sha256((owned+'*/*').encode()).hexdigest()
+ (p/'romfs:/reader-data'/owned_key).write_bytes(packed)
+ old=b'old incompatible SD snapshot'
+ (p/'sdmc:/3ds/forge-store/http-v1'/owned_key).write_bytes(struct.pack('<4sQII',b'FGH2',int(time.time()),len(old),zlib.crc32(old))+old)
+ for refresh in (0,1):
+  state.update(case='offline',calls=0)
+  subprocess.run([str(p/'bundled'),str(refresh),'bundled payload',owned],cwd=p,env=env,check=True)
+  assert state['calls']==0
+ print('PASS: owned README ignores stale SD and refresh requests; zero network calls.')
  concurrency=(root/'source/http_cache.c').read_text().replace('#include "network.h"','#include "platform.h"')
  concurrency+=r'''
 static void *cache_reader(void *unused){

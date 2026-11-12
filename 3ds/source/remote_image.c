@@ -300,6 +300,10 @@ static int ri_find(const char *url){return ri_find_variant(url,0,0);}
 static bool ri_cancelled(void *ctx){return ri_stopping();}
 static bool ri_download(const char *url,RIPixels *out){
     if(reader_image_load(url,&out->rgba,&out->w,&out->h)) return true;
+    // Owned repository artwork is shipped with the application. Never stall a
+    // page trying to repair a missing local asset over the network.
+    const char *owned="https://raw.githubusercontent.com/EstebanPdN/";
+    if(!strncmp(url,owned,strlen(owned))) return false;
     size_t bytes=0;char error[128];
     // Foreground accepts a verified disk hit immediately. Only the prefetch
     // worker performs conditional network refreshes, never the visible image.

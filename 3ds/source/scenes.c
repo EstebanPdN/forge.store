@@ -956,12 +956,16 @@ static void banner_draw(App *a, float al, float dx) {
     if(a->universal||a->logo.i<0){
         if(a->mid.i>=0 && !a->universal) {
             float h=text_wrap_h_family(a->title,28,800,FONT_BRAND,216);
+            // One native pixel of outline keeps white type readable over artwork.
+            for(int oy=-1;oy<=1;oy++)for(int ox=-1;ox<=1;ox++)if(ox||oy)
+                text_wrap_family(a->title,22+EYE*3+dx+ox,92-h/2+oy,28,800,FONT_BRAND,C(0,al),216);
             text_wrap_family(a->title,22+EYE*3+dx,92-h/2,28,800,FONT_BRAND,C(0xffffff,al),216);
         } else {
         float ty=76,tx=200+EYE*3+dx;
         float size=30;
         while(size>16&&text_ex_w(a->title,size,800,FONT_BRAND,-1.2f)>376)size--;
-        text_ex(a->title,tx,ty+3,size,800,FONT_BRAND,-1.2f,C(0,.35f*al),AL_CENTER);
+        for(int oy=-1;oy<=1;oy++)for(int ox=-1;ox<=1;ox++)if(ox||oy)
+            text_ex(a->title,tx+ox,ty+oy,size,800,FONT_BRAND,-1.2f,C(0,al),AL_CENTER);
         text_ex(a->title,tx,ty,size,800,FONT_BRAND,-1.2f,C(0xffffff,al),AL_CENTER);
         }
     }
@@ -1130,7 +1134,7 @@ static void home_bottom(float sa) {
     const char *labels[] = {T("home.search"),T("home.downloads"),T("home.sd"),T("home.settings"),NULL};
     const char *icons[] = {"search","download","sd","settings","github"};
     for (int i=0;i<4;i++) button(xs[i],208+dy,ws[i],28,labels[i],icons[i],NULL,BTN_SURFACE,ta);
-    button_round(288,208+dy,28,28,NULL,"github",NULL,BTN_SURFACE,ta);
+    button(288,208+dy,28,28,NULL,"github",NULL,BTN_SURFACE,ta);
     draw_badge("X",305,226+dy,ta);
     if (scenes_downloading()) circle(150,211+dy,3,C(FORGE,ta));
 }

@@ -197,6 +197,14 @@ char *http_cache_get(const char *url, const char *accept, size_t limit, bool ref
         *error = 0;
     if (!url || strncmp(url, "https://", 8) || !accept || !limit)
         return NULL;
+    // My README snapshot changes with the store, never with an older SD cache
+    // or a background request. Its image URLs must match the bundled artwork.
+    const char *owned="https://api.github.com/repos/EstebanPdN/";
+    size_t url_len=strlen(url);
+    if(!strncmp(url,owned,strlen(owned)) && url_len>=7 && !strcmp(url+url_len-7,"/readme")) {
+        char bundled[256];bundled_path(url,accept,bundled,sizeof bundled);
+        return reader_cache_load(bundled,UINT64_MAX-1,UINT64_MAX,limit,length);
+    }
     char path[256], meta[272];
     http_cache_path(url, accept, path, sizeof path);
     snprintf(meta, sizeof meta, "%s.meta", path);

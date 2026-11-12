@@ -88,28 +88,6 @@
     "output": "assets/community/picodrive/icon.webp"
   },
   {
-    "app": "checkpoint",
-    "kind": "icon",
-    "url": "https://raw.githubusercontent.com/BernardoGiordano/Checkpoint/master/3ds/assets/icon.png",
-    "sha256": "a189f3c8388231e97992817a8024de278590a728da7e6a6d1345436fea6e5089",
-    "size": [
-      48,
-      48
-    ],
-    "output": "assets/community/checkpoint/icon.webp"
-  },
-  {
-    "app": "nimbus",
-    "kind": "icon",
-    "url": "https://raw.githubusercontent.com/PretendoNetwork/nimbus/main/app/meta/icon.png",
-    "sha256": "9c5fef163c948ee479645aa12b99fa2adcfaac1aefd7fa52ce5db92d6010e2cb",
-    "size": [
-      48,
-      48
-    ],
-    "output": "assets/community/nimbus/icon.webp"
-  },
-  {
     "app": "universal",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/Universal-Team/Universal-Updater/master/app/icon.png",
@@ -119,17 +97,6 @@
       48
     ],
     "output": "assets/community/universal/icon.webp"
-  },
-  {
-    "app": "fourthtube",
-    "kind": "icon",
-    "url": "https://raw.githubusercontent.com/erievs/FourthTube/main/resource/icon.png",
-    "sha256": "a685f514f8afa48e2d410ef15cb27a950ad25560883a5bcff0ae6331a0cde312",
-    "size": [
-      48,
-      48
-    ],
-    "output": "assets/community/fourthtube/icon.webp"
   },
   {
     "app": "anemone",
@@ -473,13 +440,6 @@
     "output": "assets/community/3dsdl/logo.webp"
   },
   {
-    "app": "daedalus",
-    "kind": "logo",
-    "url": "https://raw.githubusercontent.com/masterfeizz/DaedalusX64-3DS/master/Data/Resources/logo.png",
-    "sha256": "9425f0e448261e268cc5dcfbefe72d29a4c30699d0db2aa6be284b99374f5cdd",
-    "output": "assets/community/daedalus/logo.webp"
-  },
-  {
     "app": "mk64",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/EstebanPdN/mario-kart-64-3ds/main/platform/desktop/extractor/assets/icon.png",
@@ -680,17 +640,6 @@
     "output": "assets/community/universal/logo.webp"
   },
   {
-    "app": "fourthtube",
-    "kind": "logo",
-    "url": "https://raw.githubusercontent.com/erievs/FourthTube/main/resource/banner_legacy.png",
-    "sha256": "9118d5d114f5e64447f25c584a5e5ca06cf06910cc266f74d54dc68fba1b846c",
-    "size": [
-      256,
-      128
-    ],
-    "output": "assets/community/fourthtube/logo.webp"
-  },
-  {
     "app": "starhaven",
     "kind": "banner",
     "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/cia/banner.png",
@@ -751,42 +700,6 @@
     "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
   },
   {
-    "app": "daedalus",
-    "kind": "background",
-    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/daedalusx64-3ds/super-mario-64.png",
-    "sha256": "57810f5e253d812e7caa995427ebbcafb83c5a511cbea7c49b74498bbbc5c040",
-    "size": [
-      400,
-      480
-    ],
-    "output": "assets/community/daedalus/background.webp",
-    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
-  },
-  {
-    "app": "mgba",
-    "kind": "background",
-    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/mgba/scale-aspect-ratio.png",
-    "sha256": "3c3b9a638f0e542d2394775b3fe1fcd5674ffae3e6cdb72b71b0cc6194dd824b",
-    "size": [
-      400,
-      480
-    ],
-    "output": "assets/community/mgba/background.webp",
-    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
-  },
-  {
-    "app": "retroarch",
-    "kind": "background",
-    "url": "https://raw.githubusercontent.com/libretro/RetroArch/master/docs/rgui-main-menu.jpg",
-    "sha256": "fd2f8cc0cb108f3d7665c5d64d539451025f4e9f304db73deb7b14a5d90312ec",
-    "size": [
-      713,
-      534
-    ],
-    "output": "assets/community/retroarch/background.webp",
-    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
-  },
-  {
     "app": "checkpoint",
     "kind": "background",
     "url": "https://i.imgur.com/EaY1vRB.jpeg",
@@ -796,18 +709,6 @@
       720
     ],
     "output": "assets/community/checkpoint/background.webp",
-    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
-  },
-  {
-    "app": "nimbus",
-    "kind": "background",
-    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/nimbus/pretendo.png",
-    "sha256": "272561b599750eb2e8715d8de2bcaafb5e60dd5593c4167f1063c697addb36ca",
-    "size": [
-      400,
-      480
-    ],
-    "output": "assets/community/nimbus/background.webp",
     "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
   },
   {
@@ -835,30 +736,6 @@
     "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
   },
   {
-    "app": "fourthtube",
-    "kind": "background",
-    "url": "https://raw.githubusercontent.com/windows-server-2003/ThirdTube/main/images/0.jpg",
-    "sha256": "9fd4c4bc57925d7bc23a6f6428b3d041c5d1510f9d23310963b768b7b187a539",
-    "size": [
-      800,
-      960
-    ],
-    "output": "assets/community/fourthtube/background.webp",
-    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
-  },
-  {
-    "app": "anemone",
-    "kind": "background",
-    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/anemone3ds/theme-list.png",
-    "sha256": "6b4184aa74d2d48052db161de014cfb050464ecacfc58175655ec7983e822dc4",
-    "size": [
-      400,
-      480
-    ],
-    "output": "assets/community/anemone/background.webp",
-    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
-  },
-  {
     "app": "fbi",
     "kind": "background",
     "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/fbi/main-menu.png",
@@ -881,5 +758,199 @@
     ],
     "output": "assets/community/ftpd/background.webp",
     "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "dk64",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Snaps/Donkey%20Kong%2064%20%28USA%29.png",
+    "sha256": "af77b316be6bda0f3bd1bdce32888cb70107400118803e7efc3454702a507c55",
+    "output": "assets/community/dk64/background.webp",
+    "note": "Representative original-game screenshot; included locally."
+  },
+  {
+    "app": "banjo",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Snaps/Banjo-Kazooie%20%28USA%29.png",
+    "sha256": "224709cfded87812408e9dd3fe79f6fc8e989c7f205830637a10e7e7f492918a",
+    "output": "assets/community/banjo/background.webp",
+    "note": "Representative original-game screenshot; included locally."
+  },
+  {
+    "app": "goemon",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Nintendo_64/master/Named_Snaps/Mystical%20Ninja%20Starring%20Goemon%20%28USA%29.png",
+    "sha256": "199f071704bf953e0d25a597c8aa813e49f6ef10525555e6c0bc3631b26b6433",
+    "output": "assets/community/goemon/background.webp",
+    "note": "Representative original-game screenshot; included locally."
+  },
+  {
+    "app": "mkwii",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Nintendo_-_Wii/master/Named_Snaps/Mario%20Kart%20Wii%20%28USA%29.png",
+    "sha256": "cd44bf802dcfa9a38121924082f38454edf05b974ebc7e0af8d3d0e76b11d342",
+    "output": "assets/community/mkwii/background.webp",
+    "note": "Representative original-game screenshot; included locally."
+  },
+  {
+    "app": "butterscotch",
+    "kind": "background",
+    "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/391540/ss_b9018c41cea2bdfb150609bedfca99b16a5af02a.1920x1080.jpg?t=1757349115",
+    "sha256": "5d9dcc85fe9091334da6f23b0f968e9fa152023ac0c0894e109c1938703930a0",
+    "output": "assets/community/butterscotch/background.webp",
+    "note": "Representative original-game screenshot; included locally."
+  },
+  {
+    "app": "snes9x",
+    "kind": "background",
+    "url": "https://github.com/libretro-thumbnails",
+    "output": "assets/community/snes9x/background.webp",
+    "note": "15 distinct original game covers; exact titles, URLs and SHA-256 in cover-sources.json. Built by tools/prepare-cover-backgrounds.py."
+  },
+  {
+    "app": "psx3d",
+    "kind": "background",
+    "url": "https://github.com/libretro-thumbnails",
+    "output": "assets/community/psx3d/background.webp",
+    "note": "15 distinct original game covers; exact titles, URLs and SHA-256 in cover-sources.json. Built by tools/prepare-cover-backgrounds.py."
+  },
+  {
+    "app": "mgba",
+    "kind": "background",
+    "url": "https://github.com/libretro-thumbnails",
+    "output": "assets/community/mgba/background.webp",
+    "note": "15 distinct original game covers; exact titles, URLs and SHA-256 in cover-sources.json. Built by tools/prepare-cover-backgrounds.py."
+  },
+  {
+    "app": "daedalus",
+    "kind": "background",
+    "url": "https://github.com/libretro-thumbnails",
+    "output": "assets/community/daedalus/background.webp",
+    "note": "15 distinct original game covers; exact titles, URLs and SHA-256 in cover-sources.json. Built by tools/prepare-cover-backgrounds.py."
+  },
+  {
+    "app": "picodrive",
+    "kind": "background",
+    "url": "https://github.com/libretro-thumbnails",
+    "output": "assets/community/picodrive/background.webp",
+    "note": "15 distinct original game covers; exact titles, URLs and SHA-256 in cover-sources.json. Built by tools/prepare-cover-backgrounds.py."
+  },
+  {
+    "app": "checkpoint",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/BernardoGiordano/Checkpoint/master/switch/icon.jpg",
+    "output": "assets/community/checkpoint/icon.webp",
+    "sha256": "12f32385806c3e74d9ff390025339ad6ff9d91662c9777a9021a888364dee613",
+    "note": "Official high-resolution artwork, sampled once for the native icon atlas."
+  },
+  {
+    "app": "nimbus",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/PretendoNetwork/website/HEAD/src/public/assets/images/icons/android-chrome-384x384.png",
+    "output": "assets/community/nimbus/icon.webp",
+    "sha256": "5b656471025c35f696c3470976474054ae3ffae05ad6403e0039772c7e339dee",
+    "note": "Official high-resolution artwork, sampled once for the native icon atlas."
+  },
+  {
+    "app": "nimbus",
+    "kind": "background",
+    "url": "Original minimal vector artwork; companion background.svg",
+    "output": "assets/community/nimbus/background.webp",
+    "note": "Flat colors and subtle geometric shapes; no generated photography."
+  },
+  {
+    "app": "anemone",
+    "kind": "background",
+    "url": "Original minimal vector artwork; companion background.svg",
+    "output": "assets/community/anemone/background.webp",
+    "note": "Flat colors and subtle geometric shapes; no generated photography."
+  },
+  {
+    "app": "artic",
+    "kind": "background",
+    "url": "Original minimal vector artwork; companion background.svg",
+    "output": "assets/community/artic/background.webp",
+    "note": "Flat colors and subtle geometric shapes; no generated photography."
+  },
+  {
+    "app": "fourthtube",
+    "kind": "background",
+    "url": "Original minimal vector artwork; companion background.svg",
+    "output": "assets/community/fourthtube/background.webp",
+    "note": "Flat colors and subtle geometric shapes; no generated photography."
+  },
+  {
+    "app": "wumiibo",
+    "kind": "background",
+    "url": "Original minimal vector artwork; companion background.svg",
+    "output": "assets/community/wumiibo/background.webp",
+    "note": "Flat colors and subtle geometric shapes; no generated photography."
+  },
+  {
+    "app": "retroarch",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/libretro/retroarch-assets/master/wallpapers/bichromatic%20pads/1440x900/MENU%20.png",
+    "output": "assets/community/retroarch/background.webp",
+    "note": "Official bichromatic-pads wallpaper, resized for the banner. CC-BY-4.0; credit libretro/retroarch-assets contributors.",
+    "sha256": "bdf02f2041c48a39fa289d325c60b28fee1b0b13835b9dd434cdf159bfd59882"
+  },
+  {
+    "app": "daedalus",
+    "kind": "logo",
+    "url": "AI-assisted restoration of the existing DaedalusX64 wordmark; docs/ART-DIRECTION.md",
+    "output": "assets/community/daedalus/logo.webp"
+  },
+  {
+    "app": "fourthtube",
+    "kind": "logo",
+    "url": "Vector recreation of the existing FourthTube artwork; companion SVG source",
+    "output": "assets/community/fourthtube/logo.svg"
+  },
+  {
+    "app": "fourthtube",
+    "kind": "logo",
+    "url": "Vector recreation of the existing FourthTube artwork; companion SVG source",
+    "output": "assets/community/fourthtube/logo.webp"
+  },
+  {
+    "app": "fourthtube",
+    "kind": "icon",
+    "url": "Vector recreation of the existing FourthTube artwork; companion SVG source",
+    "output": "assets/community/fourthtube/icon.svg"
+  },
+  {
+    "app": "fourthtube",
+    "kind": "icon",
+    "url": "Vector recreation of the existing FourthTube artwork; companion SVG source",
+    "output": "assets/community/fourthtube/icon.webp"
+  },
+  {
+    "app": "nimbus",
+    "kind": "background-source",
+    "url": "Original minimal vector artwork for forge.store",
+    "output": "assets/community/nimbus/background.svg"
+  },
+  {
+    "app": "anemone",
+    "kind": "background-source",
+    "url": "Original minimal vector artwork for forge.store",
+    "output": "assets/community/anemone/background.svg"
+  },
+  {
+    "app": "artic",
+    "kind": "background-source",
+    "url": "Original minimal vector artwork for forge.store",
+    "output": "assets/community/artic/background.svg"
+  },
+  {
+    "app": "fourthtube",
+    "kind": "background-source",
+    "url": "Original minimal vector artwork for forge.store",
+    "output": "assets/community/fourthtube/background.svg"
+  },
+  {
+    "app": "wumiibo",
+    "kind": "background-source",
+    "url": "Original minimal vector artwork for forge.store",
+    "output": "assets/community/wumiibo/background.svg"
   }
 ]

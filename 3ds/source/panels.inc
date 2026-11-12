@@ -882,7 +882,7 @@ static unsigned gh_load_ms;
 static void gh_begin(const char *name, bool user) {
     gh_started=osGetTime();gh_load_ms=0;
     gh_user=user; gh_tab=gh_focus=0;gh_link=-1;gh_scroll=0;gh_loading=true;gh_dirty=true;
-    snprintf(gh_name,sizeof gh_name,"%s",name?name:"");snprintf(gh_branch,sizeof gh_branch,"main"); gh_error[0]=0;
+    snprintf(gh_name,sizeof gh_name,"%s",name?name:"");snprintf(gh_branch,sizeof gh_branch,"HEAD"); gh_error[0]=0;
     memset(&gh_nav,0,sizeof gh_nav);
     for(int i=0;i<4;i++){ reader_cancel_slot(i);gh_discard[i]=true;gh_requested[i]=false;gh_done[i]=user&&i==3; }
     for(int i=0;i<3;i++){free(gh_docs[i]);gh_docs[i]=NULL;}
@@ -903,7 +903,8 @@ static void gh_poll(void) {
         for(int i=0;i<4;i++)if(!gh_done[i]){reader_cancel_slot(i);gh_done[i]=true;}
         snprintf(gh_error,sizeof gh_error,"%s",T("gh.error"));gh_loading=false;gh_dirty=true;return;
     }
-    for(int i=0;i<4;i++) {
+    for(int order=0;order<4;order++) {
+        int i=gh_user?order:(order==0?1:order==1?0:order);
         char error[160];char *data=reader_take_slot(i,error,sizeof error);
         if(gh_discard[i]) {free(data);if(!reader_slot_busy(i)) gh_discard[i]=false;else continue;data=NULL;}
         if(data && gh_requested[i]) {

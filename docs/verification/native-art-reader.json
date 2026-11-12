@@ -1,0 +1,52 @@
+{
+  "version": "2026.11.12.6",
+  "files": {
+    "forge-store.cia": {
+      "bytes": 49165248,
+      "sha256": "2c7ae67d0b43c43aa9f15274b836c2610198424fd86378abe37c60c3a77837bd"
+    },
+    "forge-store.3dsx": {
+      "bytes": 49704020,
+      "sha256": "2cd4c1e0e31b7e91d00a678bb430664cbd2e980aa8cdd4fb2166bf08b54e637d"
+    }
+  },
+  "hardware_tested": false,
+  "model": "Old 3DS emulator",
+  "readme": {
+    "owned_local_request_set_ms": 372,
+    "universal_document_nodes": 103,
+    "universal_images_pending": true
+  },
+  "host": [
+    "reader priority ASan/UBSan",
+    "network 23 updater scenarios, cache concurrency TSan",
+    "catalog 297 assertions ASan/UBSan"
+  ],
+  "captures": {
+    "native-art-reader-6": {
+      "dusk-images": "cd57fd768609a78265d3c06ece00e81d527ac22a2dce8cde7854ea6077e77fa1",
+      "dusk": "f8544db17ef1659000c90817e6262459a2326970229d4e253b3768d22bab2d88",
+      "home": "4c26de1e170fc9dd745d0527b438c4742863f62c18f0ae217d96acb537f03fff",
+      "universal-readme": "c69a6774d160b4f8513377e18713f99e6f99bf59cf65c9af948f624c26c3f245"
+    },
+    "native-art-review-6": {
+      "anemone": "3c543cef2895157db3035f734ed8c7e319d32701f181946585e7e92f998296e3",
+      "artic": "8f44357abf2c93c815d364de45f32347a329d0ae037de291c8c81547567c5d24",
+      "banjo": "3bc21daa08ef2d4df88c167370a5a01256caa39f91c314ba370de25d55ee77e5",
+      "butterscotch": "175ef3894bb436ba0d90b59563cbe109013e3400e98a97575e379b93818bd085",
+      "checkpoint": "0292eea3081ab0760893bfd060c213ea3ee1d7799a72ef90d6fe32a3efac41d3",
+      "daedalus": "0fb7c5528c1087a6b0e3acb2f52bd3d54f2b48431fa3887adb1de9c1dc03b204",
+      "dk64": "92d6ca3e6aa997ef669d2898432f721d360c5cf690fea2d18a7a831ce5052057",
+      "fourth": "97d6fdacf287258d0834cb91712ab619086d806cf0e93c0aff80d6ed2d61596a",
+      "goemon": "6b5760625bdf8dc069f11ce6067a41a8df3efabad31d16aba1ae5a7e10d97cf8",
+      "mgba": "0115d707437b96193bfa8130adfa3fcf0001104bc7850cde8d0ffcb0924ea585",
+      "mkwii": "16ee043216f2559b1a832dfaaeef6d429ec55a3b1163b5bbc96025acb6b58851",
+      "nimbus": "6811b2dcba84ae88de2897dcd3b86250648ded1cdbb135b21b018510010ec8f1",
+      "pico": "0d1ecc5f14f1125ad0c3053801d9038a39e2c623ddf2642649b33c8c7ea3efcd",
+      "psx": "cf220c861ed1fc281d5806bb17f0fe219b2dd85ede3e9a12929317a420618661",
+      "retro": "9eaee63bd88fc8983901a71d327e445f028d024ccb69632a2d3cd73e86f12921",
+      "snes": "ee51f22c67c43189539a90f3d073d5342067c1e2ead7e195ccb483f2ab78f63e",
+      "wumiibo": "d0c7ff34f12957a891271f4bada4035f07e5755dbbd8c08598c9b0bf9e8edfbd"
+    }
+  }
+}

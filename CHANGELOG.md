@@ -1,5 +1,15 @@
 # Changelog
 
+## Readable artwork and local-first GitHub — 2026.11.12.6
+
+- Include original-game screenshot backgrounds for Banjo-Kazooie, Donkey Kong 64, Mystical Ninja, Mario Kart Wii and Undertale through Butterscotch.
+- Pin my README pages to the bundled snapshot, ignoring stale SD copies and network refreshes. My raw repository artwork never falls back to an Internet download.
+
+- Add 15 distinct game covers to each SNES, PlayStation, GBA, N64 and Mega Drive backdrop; preserve Red Viper Color and use an official bichromatic RetroArch wallpaper.
+- Refresh utility backgrounds and high-resolution Checkpoint/Pretendo/FourthTube icons. Restore the Daedalus wordmark and outline white banner text at native pixel size.
+- Read unbundled READMEs directly without requiring GitHub API metadata; prioritize native README requests before optional metadata.
+- Match the Home GitHub button to the rectangular toolbar, retaining X; keep circular detail buttons.
+
 ## Louder default music — 2026.11.12.5
 
 - Double the music gain in the native app and web reference, including restoration after video.
