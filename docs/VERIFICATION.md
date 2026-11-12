@@ -1,8 +1,17 @@
 # Verification record
 
-Publication candidate: **2026.11.12.7**, native C implementation. This is a development
+Publication candidate: **2026.11.12.8**, native C implementation. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## Native 3D HOME banner — 2026.11.12.8
+
+The public CIA now includes the animated CGFX medallion and three-second welcome audio
+from the native HOME banner work, alongside all 2026.11.12.7 store changes.
+The production build verifies the embedded banner byte-for-byte and its ExeFS hashes.
+Ten banner tests and 27 installer scenario groups pass (host AM services mocked).
+HOME animation has not been validated on physical hardware or in emulator HOME;
+launching the 3DSX does not test the CIA HOME banner. See [HOME banner](HOME-BANNER.md).
 
 ## Emulator artwork clarity — 2026.11.12.7
 

@@ -88,6 +88,9 @@ is opt-in via `FORGE_DUMP_URL`; the distributed build must leave it unset.
 
 ## Asset regeneration
 
+The native HOME Menu model, resource budgets and checks are documented in
+[HOME banner](HOME-BANNER.md). Ordinary builds use the checked-in CGFX/WAV.
+
 - Exact Inter fonts: `3ds/tools/render-fonts.py`, `render-fonts.mjs` and `FONTS-V2.md`.
 - Home icons: `render-home-icons.py`; Universal: `pack-universal-art.py`.
 - Native previews: `pack-video.py` → review output → `check-media.py`; see [Media](MEDIA.md).

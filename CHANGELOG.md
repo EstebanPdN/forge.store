@@ -1,5 +1,9 @@
 # Changelog
 
+## Native 3D HOME banner — 2026.11.12.8
+
+- Package the animated 3D Forge medallion and three-second welcome sound in the HOME Menu banner, together with all previous store fixes and emulator artwork improvements.
+
 ## Emulator artwork clarity — 2026.11.12.7
 
 - Restore the illustrated RetroArch background selected by me.

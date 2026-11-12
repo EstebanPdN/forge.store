@@ -1,0 +1,56 @@
+#!/usr/bin/env python3
+"""Exercise the same serialized-resource gate used by build.sh, including corruptions."""
+import importlib.util, struct, unittest, wave
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[2]
+spec=importlib.util.spec_from_file_location('gate',ROOT/'3ds/tools/home_banner_validate.py');gate=importlib.util.module_from_spec(spec);spec.loader.exec_module(gate)
+class BannerTests(unittest.TestCase):
+    @classmethod
+    def setUpClass(c):
+        c.bnr=(ROOT/'3ds/build/banner.bnr').read_bytes()
+        c.model,c.audio=gate.unpack_banner(c.bnr)
+    def test_packaged_resource(self):
+        r=gate.inspect(self.model);self.assertEqual(r['meshes'],6)
+        self.assertEqual(r['skeletal_animations'][0]['frames'],360)
+        self.assertEqual(sum(t['bytes'] for t in gate.textures(self.model)),163840)
+        self.assertEqual(gate.audio_info(self.audio)[0]['seconds'],3)
+    def test_pcm_roundtrip(self):
+        with wave.open(str(ROOT/'3ds/meta/banner.wav')) as w:frames=w.readframes(w.getnframes())
+        _,channels=gate.audio_info(self.audio)
+        for i in range(2):self.assertEqual(channels[i],b''.join(frames[j:j+2] for j in range(i*2,len(frames),4)))
+    def test_truncation_and_oversize(self):
+        for bad in (self.model[:-1],self.model+b'\0'*524288):
+            with self.assertRaises(AssertionError):gate.inspect(bad)
+    def test_unresolved_bone(self):
+        b=bytearray(self.model);p=b.find(b'\0\0\0\x01SOBJ');struct.pack_into('<i',b,p+112,0)
+        with self.assertRaises(AssertionError):gate.inspect(b)
+    def test_bad_dictionary(self):
+        b=bytearray(self.model);p=b.find(b'DICT');struct.pack_into('<H',b,p+16,65535)
+        with self.assertRaises(AssertionError):gate.inspect(b)
+    def test_forbidden_texture(self):
+        b=bytearray(self.model);p=b.find(b'\x11\0\0\x20TXOB');struct.pack_into('<I',b,p+52,0)
+        with self.assertRaises(AssertionError):gate.textures(b)
+    def test_audio_limits(self):
+        for offset,value in ((0x4c,48000),(0x54,96001),(0x5c,1)):
+            b=bytearray(self.audio);struct.pack_into('<I',b,offset,value)
+            with self.assertRaises(AssertionError):gate.audio_info(b)
+    def test_invalid_animation_scale(self):
+        b=bytearray(self.model)
+        pointer=lambda p:p+struct.unpack_from('<i',b,p)[0]
+        anim=b.find(b'CANM');table=pointer(anim+28);member=pointer(table+40)
+        curve=pointer(member+20);segment=pointer(curve+20)
+        struct.pack_into('<f',b,segment+24,-1.)
+        with self.assertRaises(AssertionError):gate.inspect(b)
+    def test_oval_alpha_precision(self):
+        b=self.model
+        for p in range(0,len(b)-60,4):
+            if b[p:p+8]==b'\x11\0\0\x20TXOB' and struct.unpack_from('<I',b,p+52)[0]==5:
+                image=p+56+struct.unpack_from('<i',b,p+56)[0]
+                size,rel=struct.unpack_from('<Ii',b,image+8);start=image+12+rel
+                alpha=b[start:start+size:2]
+                self.assertGreater(len(set(alpha)),128)
+                self.assertEqual((min(alpha),max(alpha)),(0,255));return
+        self.fail('LA8 oval missing')
+    def test_cia_matches(self):
+        gate.verify_cia(ROOT/'3ds/build/forge-store.cia',self.bnr)
+if __name__=='__main__':unittest.main()

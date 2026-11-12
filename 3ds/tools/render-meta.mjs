@@ -1,4 +1,4 @@
-// HOME Menu art for the CIA: 48x48 icon and the 256x128 banner, drawn with the
+// Legacy flat reference art (the active CIA uses make-home-banner.py / banner.cgfx): 48x48 icon and the 256x128 banner, drawn with the
 // prototype's fonts and colours. The banner sound is the intro's welcome chime.
 // Needs the prototype server running (tools/serve.py on :8642).
 // Usage: node 3ds/tools/render-meta.mjs <out-dir>
@@ -53,5 +53,5 @@ await render(
 await browser.close();
 
 // Banner sound: the welcome chime, 3 s max, mono 16-bit (bannertool's limits).
-execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', 'assets/audio/intro-welcome.mp3', '-t', '2.9', '-ac', '1', '-ar', '32000', '-c:a', 'pcm_s16le', `${OUT}/banner.wav`]);
+execFileSync('ffmpeg', ['-v', 'error', '-y', '-i', 'assets/audio/intro-welcome.mp3', '-t', '2.9', '-ac', '1', '-ar', '32000', '-c:a', 'pcm_s16le', `${OUT}/banner-flat-reference.wav`]);
 console.log('meta ->', OUT);

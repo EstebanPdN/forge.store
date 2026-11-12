@@ -1,7 +1,7 @@
 #!/bin/zsh
 # Builds the native 3DS store without make (the project path has spaces):
 #   3ds/build/forge-store.elf / .smdh / .3dsx (romfs inside) and forge-store.cia
-# The romfs comes from 3ds/tools/pack.py; HOME Menu art from 3ds/tools/render-meta.mjs.
+# RomFS comes from tools/pack.py; native HOME art from tools/make-home-banner.py.
 # Usage: 3ds/build.sh [--pack]   (--pack rebuilds 3ds/romfs first)
 set -e
 D="${0:A:h}"
@@ -14,6 +14,7 @@ OUT="$D/build"
 OBJ="$OUT/obj"
 mkdir -p "$OBJ"
 cd "$D"
+python3 "$D/tools/home_banner_validate.py" meta/banner.cgfx > "$OUT/home-banner-model.json"
 if [[ $1 == --pack ]]; then
   tools/.venv/bin/python -I tools/pack.py "$P"
 fi
@@ -60,10 +61,11 @@ for o in $OBJS; do [[ -f "$o" ]] || { echo "missing $o"; exit 1; }; done
 "$T/smdhtool" --create "forge.store" "Ports for Nintendo 3DS" "Esteban's Forge" meta/icon.png "$OUT/forge-store.smdh"
 "$T/3dsxtool" "$OUT/forge-store.elf" "$OUT/forge-store.3dsx" --smdh="$OUT/forge-store.smdh" --romfs="$OUT/romfs"
 # CIA for the HOME Menu (banner sound: the intro's welcome chime)
-"$T/bannertool" makebanner -i meta/banner.png -a meta/banner.wav -o "$OUT/banner.bnr" >/dev/null
+"$T/bannertool" makebanner -ci meta/banner.cgfx -a meta/banner.wav -o "$OUT/banner.bnr" >/dev/null
 "$T/bannertool" makesmdh -s "forge.store" -l "forge.store · ports for Nintendo 3DS" -p "Esteban's Forge" \
   -i meta/icon.png -o "$OUT/icon.icn" >/dev/null
 (cd "$D" && "$T/makerom" -f cia -o "$OUT/forge-store.cia" -elf "$OUT/forge-store.elf" -rsf forge-store.rsf \
   -icon "$OUT/icon.icn" -banner "$OUT/banner.bnr" -target t)
+python3 "$D/tools/home_banner_validate.py" "$OUT/banner.bnr" --cia "$OUT/forge-store.cia" > "$OUT/home-banner-package.json"
 python3 "$D/tools/build-manifest.py"
 ls -la "$OUT/forge-store.3dsx" "$OUT/forge-store.cia"
