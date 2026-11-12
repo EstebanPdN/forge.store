@@ -5,13 +5,16 @@ English wordmark and subtitle, and an oval background that fades from 35% of its
 radius to its transparent edge. `3ds/meta/banner.png` is the previous flat reference.
 The application screens and runtime code are unchanged.
 
-Version 2026.11.12.12 adds an identity `MedallionFacing` parent using YAxial billboarding
-to isolate the child from HOME scene rotation. This remains a hardware test candidate.
+On hardware, every version that kept the medallion's position on its rotating bone
+(2026.11.12.9 to .12) orbited the whole logo: HOME turned it about the bone's origin. The
+position now lives on a static `MedallionPivot` parent (no billboard, no animation) and the
+rotating `Medallion` bone has zero translation and no position curve, so its turn has a
+single possible centre: the medallion's own. The validator rejects any other layout.
 
-The medallion geometry is centered at its own local origin, with a fixed node position.
-It uses the welcome screen's 5.2-second ±24° Y rotation and cubic-bezier(.42,0,.58,1)
-easing, sampled at 60 Hz. There is no animated translation compensation, vertical bob
-or scale change. HOME rendering on physical hardware still needs confirmation.
+The medallion geometry is centered at its own local origin. It uses the welcome screen's
+5.2-second ±24° Y rotation and cubic-bezier(.42,0,.58,1) easing, sampled at 60 Hz. There
+is no vertical bob or scale change. HOME rendering on physical hardware still needs
+confirmation; the standalone test application in `3ds/banner-test/` exists for that.
 
 The complete composition is uniformly enlarged by 5% about its center. The wordmark
 baseline is raised 12 texture pixels to separate its descenders from the subtitle.

@@ -96,14 +96,15 @@ def main():
         for i in range(N):a0=i*2;b=((i+1)%N)*2;idx.extend([a0,b,a0+1,b,b+1,a0+1])
         return primitive([transform(p) for p in ps],ns,None,idx,m,local=True)
     coin=node('Medallion',[disc(3.25,.43,face),ring(3.65,.26,3.25,.43,rim),ring(3.65,-.26,3.65,.26,edge),disc(3.65,-.26,edge,True)])
-    g['nodes'][coin]['translation']=[-8.61,1,.735]
-    # Cancel HOME's scene rotation before applying the local medallion transform.
+    # HOME turned the medallion about its bone's origin even with the position on that
+    # bone (it orbited the whole logo). The animated bone now has no translation at all:
+    # a static parent places it, so the turn has only one possible centre.
     anchor=len(g['nodes'])
-    g['nodes'].append(dict(name='MedallionFacing',children=[coin]))
+    g['nodes'].append(dict(name='MedallionPivot',translation=[-8.61,1,.735],children=[coin]))
     g['scenes'][0]['nodes'].remove(coin)
     g['scenes'][0]['nodes'].append(anchor)
     # Rotate the rigid coin about its own center, without vertical bob or scale squash.
-    times=[i/60 for i in range(313)];rotations=[];positions=[]
+    times=[i/60 for i in range(313)];rotations=[]
     for t in times:
         phase=(t/5.2)%1
         x=phase*2 if phase<.5 else (phase-.5)*2
@@ -116,8 +117,7 @@ def main():
         pose=eased if phase<.5 else 1-eased
         yaw=math.radians(-24+48*pose)
         rotations.append((0,math.sin(yaw/2),0,math.cos(yaw/2)))
-        positions.append((-8.61,1,.735))
-    g['animations']=[dict(name='COMMON',samplers=[dict(input=access(times,'SCALAR'),output=access(rotations,'VEC4'),interpolation='LINEAR'),dict(input=access(times,'SCALAR'),output=access(positions,'VEC3'),interpolation='LINEAR')],channels=[dict(sampler=0,target=dict(node=coin,path='rotation')),dict(sampler=1,target=dict(node=coin,path='translation'))])]
+    g['animations']=[dict(name='COMMON',samplers=[dict(input=access(times,'SCALAR'),output=access(rotations,'VEC4'),interpolation='LINEAR')],channels=[dict(sampler=0,target=dict(node=coin,path='rotation'))])]
     g['cameras']=[dict(type='perspective',perspective=dict(aspectRatio=400/240,yfov=math.pi/6,znear=26.5,zfar=1000))]
     g['nodes'].append(dict(name='BannerCamera',camera=0,translation=[0,1,44.786]));g['scenes'][0]['nodes'].append(len(g['nodes'])-1)
     g['buffers']=[dict(uri='banner.bin',byteLength=len(buf))];(out/'banner.bin').write_bytes(buf);(out/'banner.gltf').write_text(json.dumps(g))
@@ -127,7 +127,7 @@ def main():
     from cgfx.mtob import ColorFloat,FragmentLightingFlags,MTOBFlag,ConstantColorSource
     native=c.convert_gltf(gltflib.GLTF.load(str(out/'banner.gltf'),load_file_resources=True));model=native.data.models['COMMON']
     model.skeleton.bones.dict.regenerate()
-    model.skeleton.bones['MedallionFacing'].billboard_mode=BillboardMode.YAxial
+    model.skeleton.bones['MedallionPivot'].billboard_mode=BillboardMode.Off
     for mesh in model.meshes.data.contents:
         shape=model.shapes.data.contents[mesh.shape_index];sets=shape.primitive_sets.data.contents
         assert len(sets)==1 and sets[0].skinning_mode==0

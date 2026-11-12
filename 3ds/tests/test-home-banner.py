@@ -40,13 +40,19 @@ class BannerTests(unittest.TestCase):
         self.assertTrue(r['medallion_billboard_off'])
         self.assertEqual(r['skeletal_animations'][0]['rotation_tracks'],3)
 
-    def test_reject_vertical_bob(self):
+    def test_reject_tilt_and_moving_pivot(self):
         b=bytearray(self.model)
         pointer=lambda p:p+struct.unpack_from('<i',b,p)[0]
         anim=b.find(b'CANM');table=pointer(anim+28);member=pointer(table+40)
-        curve=pointer(member+52);segment=pointer(curve+20)
+        # Slot 3 is the X rotation: any tilt besides the lateral turn is rejected.
+        curve=pointer(member+32);segment=pointer(curve+20)
         struct.pack_into('<f',b,segment+32,.1)
         with self.assertRaises(AssertionError):gate.inspect(b)
+        # The turning bone must not carry the medallion's position.
+        b=bytearray(self.model);at=b.find(b'Medallion\0')
+        self.assertGreater(at,0)
+        with self.assertRaises(AssertionError):
+            gate.inspect(bytes(b).replace(b'MedallionPivot\0',b'MedallionPivoX\0'))
 
     def test_oval_alpha_precision(self):
         b=self.model

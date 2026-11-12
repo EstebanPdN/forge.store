@@ -1,7 +1,7 @@
 {
   "title_id": "000400000F0F5F00",
-  "bytes": 523200,
-  "sha256": "fe2f7f69ca135f9609bed32920c3729c476374c890733accbe548681efb112b6",
-  "banner_sha256": "6879aa232af6949d0f541fd8c7ed22522b30d579f71d9bf8ee06f7d62b855a14",
+  "bytes": 520128,
+  "sha256": "395089012dd31dbee48a169a8397f4ccbc1fd61e4de9fc5def00dd27af5b1833",
+  "banner_sha256": "bc36f8a3491828b5faf8c1f7f872ab1ffce1d8e66a41075ff16d07a80ace53d3",
   "hardware_verified": false
 }

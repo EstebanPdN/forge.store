@@ -130,9 +130,10 @@ def animations(data):
                     if slot != 4: assert all(v == 0 for v in values), 'rotation must be lateral'
                 if slot == 7: assert all(v == 1 for v in values), 'vertical bob forbidden'
             if members[-1] == 'Medallion':
-                yaw = tracks[4]; xs = tracks[6]; zs = tracks[8]
-                assert len(yaw) == len(xs) == len(zs) and min(yaw) < -.4 and max(yaw) > .4, 'missing lateral swing'
-                assert all(abs(x+8.61)<1e-5 for x in xs) and all(abs(z-.735)<1e-5 for z in zs), 'translation must remain fixed'
+                yaw = tracks[4]
+                assert min(yaw) < -.4 and max(yaw) > .4, 'missing lateral swing'
+                # The turning bone never moves: no position curve at all (rest position is zero).
+                assert all(slot not in tracks for slot in (6, 7, 8)), 'medallion position must not be animated'
         result.append(dict(frames=duration, members=members, curves=curve_count, scales_positive=True, rotation_tracks=rotation_tracks))
     return result
 
@@ -162,8 +163,10 @@ def inspect(data):
                 continue
             assert p+216 <= len(data), 'bone bounds'
             bones[key.decode()] = dict(mode=u32(p+212), trs=struct.unpack_from('<9f', data, p+32), parent=name(p+16+struct.unpack_from('<i',data,p+16)[0]) if struct.unpack_from('<i',data,p+16)[0] else '')
-    assert bones.get('MedallionFacing',{}).get('mode') == 5, 'missing HOME-facing anchor'
-    assert bones.get('Medallion',{}).get('parent') == 'MedallionFacing', 'medallion must inherit facing anchor'
+    pivot = bones.get('MedallionPivot', {})
+    assert pivot.get('mode') == 0, 'missing static medallion pivot'
+    assert all(abs(a-b)<1e-5 for a,b in zip(pivot['trs'],(1.,1.,1.,0.,0.,0.,-8.61,1.,.735))), ('pivot carries the position', pivot['trs'])
+    assert bones.get('Medallion',{}).get('parent') == 'MedallionPivot', 'medallion must hang from its pivot'
     meshes = []
     for p in range(0, len(data)-116, 4):
         if data[p:p+8] != b'\0\0\0\x01SOBJ':
@@ -172,7 +175,7 @@ def inspect(data):
         assert target in bones, ('mesh has no resolved bone', target, hex(p))
         b = bones[target]
         assert b['mode'] == (0 if target == 'Medallion' else 5), ('unexpected billboard mode', target, b['mode'])
-        expected=(1.,1.,1.,0.,0.,0.,-8.61,1.,.735) if target=='Medallion' else (1.,1.,1.,0.,0.,0.,0.,0.,0.)
+        expected=(1.,1.,1.,0.,0.,0.,0.,0.,0.)  # the turning bone has no translation
         assert all(abs(a-b)<1e-5 for a,b in zip(b['trs'],expected)), ('unexpected rest transform',target,b['trs'])
         meshes.append(target)
     assert meshes, 'no meshes'
