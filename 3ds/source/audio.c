@@ -182,7 +182,7 @@ static Clip *load(const char *name) {
 static float vol_applied[2 + N_SFX];  // gain + 1 last sent to each channel (0 = none yet)
 static void set_vol(int ch, float v) {
     float mix[12] = {0};
-    mix[0] = mix[1] = clampf(v, 0, 1);
+    mix[0] = mix[1] = clampf(v * 2, 0, 1);
     if (mix[0] == vol_applied[ch] - 1) return;  // unchanged: leave the channel alone
     vol_applied[ch] = mix[0] + 1;
     ndspChnSetMix(ch, mix);

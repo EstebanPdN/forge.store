@@ -29,7 +29,7 @@ MONO = [ROOT / 'assets/fonts/space-mono' / f for f in ['SpaceMono-Regular.ttf','
 DM = [ROOT / 'assets/fonts' / f for f in ['468d56b6b25b05b70190.woff2', '219b02c7d8884817d3d6.woff2']]
 DEFAULT_FALLBACK = ['/System/Library/Fonts/ヒラギノ角ゴシック W3.ttc', '/System/Library/Fonts/Hiragino Sans GB.ttc', '/System/Library/Fonts/Apple Symbols.ttf', '/System/Library/Fonts/Apple Color Emoji.ttc', '/System/Library/Fonts/ArialHB.ttc']
 FALLBACK = [Path(p) for p in os.environ.get('FORGE_FALLBACK_FONTS', ':'.join(DEFAULT_FALLBACK)).split(':') if p and Path(p).exists()]
-SOURCES = [GEN / 'font-strings.json', ROOT / 'catalog/forge-store.json', ROOT / '3ds/romfs/universal.json']
+SOURCES = [ROOT / '3ds/romfs/strings.json', ROOT / 'catalog/forge-store.json', ROOT / '3ds/romfs/universal.json']
 SOURCES += sorted((ROOT / '3ds/source').glob('*.c')) + sorted((ROOT / '3ds/source').glob('*.h')) + sorted((ROOT / '3ds/source').glob('*.inc'))
 chars = set(chr(i) for i in range(32, 127)) | set('\u00a0\ufffd')
 
@@ -143,6 +143,10 @@ for family, size, weight, cps in styles:
 
 # Exact existing SVG strokes, rasterized locally. Include all source names, not an old subset.
 icons = json.loads((GEN / 'font-ui-icons.json').read_text())
+# Read the maintained Settings silhouette instead of a stale generated snapshot.
+import re
+icon_source=(ROOT/'src/js/core/icons.js').read_text()
+icons['settings']=re.search(r"settings:\s*'([^']+)'",icon_source)[1]
 icons['starFill'] = icons['star']
 out['icons'] = list(icons)
 for size in [8,9,10,11,12,13,14,16,18,20,26]:

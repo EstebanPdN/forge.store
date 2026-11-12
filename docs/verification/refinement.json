@@ -1,0 +1,207 @@
+{
+  "date": "2026-11-11",
+  "store_build": 2026111201,
+  "files": {
+    "forge-store.cia": {
+      "bytes": 44671936,
+      "sha256": "09a8430876994194a0ac9ed37cc3e27f6da13c4bac4ce96d255df83821bfd372"
+    },
+    "forge-store.3dsx": {
+      "bytes": 45223312,
+      "sha256": "a4e938f32632ef29f01c06d42d095915eaa04a998a5dfabcd4f44255ae7cbf09"
+    }
+  },
+  "host": {
+    "updater_scenarios": 20,
+    "updater_services": "AM mocked",
+    "sanitizers": [
+      "ASan",
+      "UBSan",
+      "TSan"
+    ],
+    "http_cache_scenarios": 5,
+    "concurrent_cache_requests": 24,
+    "font_glyphs": 48675,
+    "text_pairs": 1343072,
+    "text_strings": 1379540,
+    "wrapped_lines": 234836,
+    "installer_scenarios": 22
+  },
+  "emulator": {
+    "model": "Old 3DS",
+    "public_debug_disabled": true,
+    "executable_sha256": "a4e938f32632ef29f01c06d42d095915eaa04a998a5dfabcd4f44255ae7cbf09",
+    "source_sha256": {
+      "source/audio.c": "71287746ebd98e7f70422962e7f9566e05e23c05e8ddb920c14f71e716614e39",
+      "source/audio.h": "1f6e74bfabbe12c83c579ee8a591a3d3ad762ed411f7ad4fcbe2aedd68e0fb09",
+      "source/catalog.c": "c89ef3f72fce0c491e10d451cc9bea9579d3fe0fd6870439f12bc2f926e0982b",
+      "source/catalog.h": "2b9b96f9012675562f3308f0d0e828af17891090970d46ede8c5a9d746636f42",
+      "source/catalog_sync.c": "8a6dfb0f1cdaf6e943bcdee524433743270e941ff1b722b8b56340ffb2cf50ca",
+      "source/catalog_sync.h": "29459fbf835b2c46b1ac8f3aac4fcf77f39dc7fab28ceb324307270161869672",
+      "source/common.h": "87a37f99b953f91885cba83b6234a72c93678fbf017a06f9e2d4fd99f044c4cd",
+      "source/debug_dump.c": "8b23f5241eefa102feb016b249d2954206bb2864e61a9aaed14889fee8c17994",
+      "source/debug_dump.h": "8e941b6786689d8fd997f2683a73e38cea58a00adb6b4de5a71357c9b2f3a933",
+      "source/dsp_dump.c": "5c5feb562eb7e0a65bd65e47993c3a6aec45e5e6856fc48529f879b6ae97f65e",
+      "source/dsp_dump.h": "c995587e7d617cce6d1bfa6e7f9a32e074a993487cbfeec9e9371d97c7eadec8",
+      "source/file_view.c": "9f9bcf5ed8a8ed2dba71b9745dde084db1a85afecc5794012eef6ad025f357fa",
+      "source/file_view.h": "142cf1fabd2af9d9036ca2934535564e79d8939efcf2ea9a94da93e7111bb907",
+      "source/fx.c": "605b20c63d8d06f1c6d78be15b276534b5a8991021621534003d1efa92c2e181",
+      "source/fx.h": "41a286fdd230adea3b6efbc6f1432142e3de44998f9e1a60efde244f5cc0497c",
+      "source/gfx.c": "1162792d907d2a66d092563b5b65da3b0c44ecf37ac686cc27621d98aa27c4f1",
+      "source/gfx.h": "8f8bf97bd03cb4d44361a30df0b54e0a042a69ac5789a10f68ba317ce77379c9",
+      "source/gh_flow.c": "bc63423fee4b55ec83578910b0d925acdc267fd8fccf1017681b3de11f42bc06",
+      "source/gh_flow.h": "c6847d9d2e1150443d23f1cecc19f8d35bb0616a4538170cf8c37bf092dd3649",
+      "source/gh_markup.c": "b06d40de7d5c9708ea08ac4d4e322b615cc695d6ceb7fe2cec27b86c25cf3fff",
+      "source/gh_markup.h": "cea98c07b5d5e3805a1326f5d53f1a4734b9575fb075c5013fc71fcb544b1e3d",
+      "source/gh_releases.c": "6fa7d95fda1f017f0a6c55944325d0c81f7dab9477c38de5ef114878a2bb328d",
+      "source/gh_releases.h": "b99c7784528e560ae493fa5e151656c4d7cb605a379e067fe73ec57575c80bfe",
+      "source/gh_table_layout.c": "6bed48298e4ac7757e426d604ec12052b824a72247f517abab1a8c7e18fccda4",
+      "source/gh_table_layout.h": "f308c9dbcdebac160a23397cafdcc86af8313ee1041f0020377d66df85af7c6a",
+      "source/gh_tables.c": "142e4e32f81ce0bd4ed7707305225c07b812f45af2ad79a1939afe1227b81f8c",
+      "source/gh_tables.h": "e7966f80df33cc9bdd920299f46716998c3bc5a52f382dae75d59608606bbeeb",
+      "source/github_prefetch.c": "cb1dc675c1a3d43eb0caeb1f13b8ae1408a9f8348bd16d82ff69eb43bc352817",
+      "source/github_prefetch.h": "680e689933237cf083723aba59c5544e2d6b8f16322e58e83576d932271f5e3c",
+      "source/hbl_launch.c": "c60424579ed3ee19bfa1617ca6a4c59561bf13b9280aa33475f91742d0d45939",
+      "source/hbl_launch.h": "7c46405e2e96eefee78e2341f65cf1a1b9102bdcee8672296a762e89e5c86b06",
+      "source/http_cache.c": "c7f00fbeb3d4de174fdead098edaaa909eba57e90c5997be1a96b287260d1e19",
+      "source/http_cache.h": "b0ac2b78178ebfb99577d51d2a16464aac1cd8557b5c5a254ed99929f930e4a9",
+      "source/image_round.c": "73878002971755f1ae9f15c42974314c3399f282f3dc5b584a1944f9e3dbd7ab",
+      "source/image_round.h": "86c3d588bccac3851cfe83f1ca1b1a23fbb775de77afa3c3c1b93f93c4c4fa10",
+      "source/install.c": "d94f09ac3b7f161f6f94262751e06a9248ff27e684958959b189bed0af2d8571",
+      "source/install.h": "c4713345e4a515f8e24d9f728c0ecbb59261526eadbe908937fd798c2991a311",
+      "source/install_plan.c": "b39ff49a1eebe812e73b285d41416d45995848389d588948ddd7c77b98c20261",
+      "source/install_plan.h": "b95cef70aed6e246ae69ea97360a873c8f7a46c23c05ff5c768c4174768375b0",
+      "source/live_release.c": "379831b4b5c3ed5f9a6a288e1745497fc33a792e4e8dd47c523cb40d2766944d",
+      "source/live_release.h": "6505981226b6cf28594e86121c4dcb67547d216fd8396b1d1871368b54d719b2",
+      "source/main.c": "c1131813ddb8a91a716841d357c3530720417c443bfe1865701d1a879fb10155",
+      "source/media.c": "5bdc8105062f25fd9359e537b8646005867cb1dd8650033d4a240ddbbd84a82b",
+      "source/media.h": "e95a4a9e30ef66beab6d70fdd7b11316793632b5b5fc05a5a84096353f6fc7e4",
+      "source/network.c": "7d8c693222d596ba89277a3981962f2af7b234e9c7986f94075d499d4126869d",
+      "source/network.h": "0d2df051e04ebf5f72b817622d8dee2726c28291fd048c7f2068f772f1b384df",
+      "source/panels.inc": "b0ae6097a81de334b2bec207abd04c354d5843611e35fa5f6ac07b73d60ca304",
+      "source/reader_cache.c": "6751d691c34e723dc24b6a7d5cb50bb577425fc23b6fe1585635969a9d3d0bae",
+      "source/reader_cache.h": "3316979343cc71b1e6e94a40356319ce62984b9cb6e867cbb1fc313a84716e66",
+      "source/remote_image.c": "750453b67664296d036f91dac15c6086d425c850417c57e2edacf3d74815cb3e",
+      "source/remote_image.h": "9ca93c5848ed351bd74b936c924106c22fa221bc79fe3e6848c162cae59d6d20",
+      "source/rom_find.c": "5ec637933cf129e4d83080c1a828d2ef84677e9c0fdcbdd80caf1aeb9e4da28e",
+      "source/rom_find.h": "b365312615dbfb24af6a30085709dc9a7f7a93fa72d3049985f86a2cc9750df7",
+      "source/scenes.c": "89481ad266226aab1f31eaa15c352295324d0cfa60981a478df94e5433509c07",
+      "source/scenes.h": "0718d85b37c1a9137f3ccad4826badad6bff10f0da238db160282b9daef12ea1",
+      "source/sd_usage.c": "546e020a18071bf5ea6e31fedea8c7267d96e62f2b64203158dad26d6e4dcb94",
+      "source/sd_usage.h": "8757e3b3afbb761b13c046f4c82fa80816969d6117240f07451b580e045c76df",
+      "source/store_update.c": "5d4c27391a982c8f34427441715a33d7fbc2058eecf92b8709814853b1572b79",
+      "source/store_update.h": "c2c2a78aca5674aa8740e2f3b391e9b4c07f039c4b7dcbfc620ed6a9653f2808",
+      "source/store_update_policy.h": "f0bf0dc2b76c10e2aafd6b6b84e7688382d580c362eb7f73cfe04ee3051c209d",
+      "source/store_version.h": "65b29594f02959c2cd17d4b2dcd4310f9c334e0dd71bda15ff364224f4c92c77",
+      "source/universal_convert.c": "5471a9b73fc3dff7831a7beb8ff8e75b20a7d928fcd41164f4e114fbe53f14c0",
+      "source/universal_convert.h": "68d29a6d59d066637ba90b03ebd6fbd582d728e4b973a4812934ff0c105249c3",
+      "source/universal_sync.c": "7e2c7eb8faea2b53c3799ec18449aacf56156bd00761336710b6b720764779b6",
+      "source/universal_sync.h": "1696c3f924e31363c64239117976c7bfbf10028936168a70f7ecf8a4e3d0c437",
+      "source/vendor/nanosvg.h": "e34fd5d084be106cea972d19ce5d27fd96d17ba89f8d06bdceee058420c8b2b0",
+      "source/vendor/nanosvgrast.h": "79a9c5f4db19debf9f3a648a1589e96d92854f245a5cb4f3d823f263785234d8",
+      "source/vendor/remote_svg.c": "03034bb2872fffd8706b82842385d292990487ceee8213275b9eead7e801c499",
+      "source/vendor/remote_svg.h": "d70460ae99b34bb08574e95fff42cdb8a829c3e8a28065ad562ed339716c9aaa",
+      "source/vendor/remote_svg_font.inc": "7dc57c83ef332da55033161c85f810db0cef5cb51d0c6a19826aedc356a8287c",
+      "source/vendor/remote_svg_sans_font.inc": "c95e0aa4ba3b0d5cd905400b8607186db70b9b91e90de9c30f73f1e73e06d98a",
+      "source/video.c": "eece996ba725e8c1fab8b4db8d7764f023acfaa3e0bea41f98ae5e409a62a3a7",
+      "source/video.h": "00bb8de5c38278f8535e0d605153072b1713fd9bd62eb42d0231be1c7b92010f"
+    },
+    "video_cache": "explicitly seeded with 7 verified public resources",
+    "http_cache": "public response cache seeded; on-demand missing images fetched",
+    "script": "15:schecking;90:schecked;420:vhome;460:b82,0;580:shome;600:vvideo-trailer;680:strailer;700:vdetail-shots;780:sshots;800:t294,180;808:stransition;890:snext;910:t294,180;1000:scastle;1020:vgithub-readme;1820:sreadme;1840:vhome;1930:shome-return;1950:vgithub-readme;2040:sreadme-cached;2060:vgithub-profile;2370:sprofile;2390:vlight;2410:vhome;2520:shome-light;2540:vvideo;2660:svideo;2680:t235,110;2810:splaying;2840:q",
+    "completed": true,
+    "music_underruns_max": 0,
+    "captures": {
+      "castle": "c53985d719a245964b06003e602bb75083adf874c83b97be7c94f2d4b8f29f5c",
+      "checked": "a07082687c1f378fa31e1d9dabe431ffeffb1ef10027f04382627da5ea6bdb85",
+      "checking": "3fd534f9afbef8b783778744581b2d733ae9aafe8a7a2566d48fa5770998150e",
+      "home-light": "b44947708f2ac8eb17882d17ef4baa88585831da52d8dd663c83847c2f16f553",
+      "home-return": "aa468d32d1c1a74b9b192c885b54cd889313644fe16031509fc7ec134ef8ba61",
+      "home": "c2012b0606a4cde2507b863ca0a8812e23d0d87db883bc9ccc1a64c6038146e7",
+      "next": "6c76d6bb6e53f2a64072db004e93ed6a28a21db4d76cebe3b2671bf5f76d3d9b",
+      "playing": "761827279d95675692fee36934bd910e8924c9998aeef06d64f3c96baf504936",
+      "profile": "2788130f0b834683f1c771f6cc8756a31499476c7e9b1c2307dc576f8a614bbb",
+      "readme-cached": "ca5ebf4deebe10b66f6f51f66f29f058bd6642a94fc7c236e4ed519dc3a4969d",
+      "readme": "39a4b282f848b0d31213add782ff844e909ac63fabcbaaf8b37b758076e94602",
+      "shots": "602974e65e622e356c8f4ced4b6a36eb41f4b1741e285f5e72dbce80da9e8338",
+      "trailer": "b206e615020c0fbd31e0f4bc2e33b03a260cc8722a3cfaa9f63119036a0a666d",
+      "transition": "8d1784f2e0c68d44491a108e9c67cb7874728bafc670746a6c3796f7a8f4522d",
+      "video": "db80bfef13fb393053b33216a3785434c1beae54f4f04b7dd6fbaf6eb3a6e9f7"
+    }
+  },
+  "visual_comparison": [
+    {
+      "scenario": "trailer",
+      "screen": "bottom",
+      "unaligned_unmasked": true,
+      "within_rgb16_percent": 84.22,
+      "exact_percent": 20.28,
+      "mae": 9.51
+    },
+    {
+      "scenario": "castle",
+      "screen": "bottom",
+      "unaligned_unmasked": true,
+      "within_rgb16_percent": 79.33,
+      "exact_percent": 17.02,
+      "mae": 11.71
+    }
+  ],
+  "resources": [
+    {
+      "id": "alttp/trailer",
+      "bytes": 5941159,
+      "sha256": "b8865ea4d1ca2d1df179c7eec3c377d6d3d6de54014a0495aff971cad1c99e86",
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/alttp-trailer.fvid",
+      "verified": true
+    },
+    {
+      "id": "alttp/light-world",
+      "bytes": 711836,
+      "sha256": "7b59424a20307d04e9fb70481220d9887558d6f8f0a35e83157e910a8f1ab030",
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/alttp-light-world.fvid",
+      "verified": true
+    },
+    {
+      "id": "minish/minish-woods",
+      "bytes": 931111,
+      "sha256": "83d0df6f311a4618d3f0ce7a8005d55a95f647850dcb2d4d2c8202d564176640",
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/minish-minish-woods.fvid",
+      "verified": true
+    },
+    {
+      "id": "mk64/trailer",
+      "bytes": 5931857,
+      "sha256": "b5c881b5750c7c3a9fe7fc8432879ea7005ce8e560a46e0533ab66ecdeace613",
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/mk64-trailer.fvid",
+      "verified": true
+    },
+    {
+      "id": "mk64/luigi-raceway",
+      "bytes": 1188789,
+      "sha256": "9648ebd25225811e3d78e5b47207236d8cb0ef96ac05ab3d3fba959df3880c49",
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/mk64-luigi-raceway.fvid",
+      "verified": true
+    },
+    {
+      "id": "doom/forest",
+      "bytes": 657894,
+      "sha256": "2f1de1e3e8ab75ba74bb7aecbb8c752ae153d3efe272c54a31d6c15e3a172a01",
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/doom-forest.fvid",
+      "verified": true
+    },
+    {
+      "id": "starwing/corneria",
+      "bytes": 682303,
+      "sha256": "157ec7c9a8318ad3d44f4f5c1d5f2571a8e03999094a6a02bb0a26d258a9fb23",
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/5ddbec7da3de7f6d2e417b2e8de612cfc7dcb9e3/assets/store-resources/starwing-corneria.fvid",
+      "verified": true
+    }
+  ],
+  "hardware_validation": false,
+  "limits": [
+    "Only two whole-screen visual comparisons; not global parity.",
+    "Self-update AM services mocked; real install/restart qualification pending.",
+    "Emulator timings do not establish physical-console performance."
+  ]
+}

@@ -14,6 +14,7 @@
 #include "rom_find.h"
 #include "universal_sync.h"
 #include "remote_image.h"
+#include "github_prefetch.h"
 #include "sd_usage.h"
 #include "file_view.h"
 #include <dirent.h>
@@ -94,6 +95,7 @@ static void draw_bg(bool top, float a) {
     float d = fmodf(NOW * 7 / 18.0f, 7); // the site's slow dot drift
     draw_img(sheet_img(s, 0), -7 + d, -7 + d, 1, 1, a);
 }
+void scenes_draw_background(bool top){draw_bg(top,1);}
 
 static void glass(float x, float y, float w, float h, float r, float a) {
     rrect(x, y, w, h, r, C(TH.glass, TH.glass_a * a));
@@ -467,6 +469,8 @@ static void intro_start(float delay) {
     intro_t0 = NOW + delay;
     intro_leaving = picker = picked = welcome_played = false;
 }
+
+void scenes_intro_restart(float delay){intro_start(delay);}
 
 static void intro_go(void) {
     if (intro_leaving || NOW - intro_t0 < 1.1f)
@@ -919,7 +923,8 @@ static void banner_draw(App *a, float al, float dx) {
 
 static void home_card(App *a, float al, float dy) {
     float x=8+EYE*1.2f,y=164+dy,w=384;
-    glass(x,y,w,68,12,al);
+    rrect(x,y,w,68,12,C(TH.glass,.9f*al));
+    rrect_outline(x,y,w,68,12,1,C(TH.line,TH.line_a*al));
     icon_at(a,x+8,y+14,40,1,al);
     text_fit(a->title,x+57,y+8,14,212,C(TH.ink,al));
     char sub[160],by[96],stars[24];
@@ -1271,6 +1276,9 @@ static void play_video(void) {
     }
 }
 
+enum { GALLERY_X=168, GALLERY_W=142, GALLERY_PREVIEW_W=148, GALLERY_NAV_Y=167, GALLERY_NAV_W=32 };
+static float gallery_play_y=125;
+
 static void detail_update(void) {
     detail_plan_update();
     if (video_wanted) {
@@ -1324,7 +1332,7 @@ static void detail_update(void) {
         if(IN.touch_up&&!IN.dragged){if(touched)video_ui_show(true);else video_ui_show(!video_ui_on);}
         return;
     }
-    if (!test_freeze_media && NOW - shot_t > 4.8f && shot_i >= 0 && dapp->shots > 1) {
+    if (!test_freeze_media && dtab != 1 && NOW - shot_t > 4.8f && shot_i >= 0 && dapp->shots > 1) {
         shot_prev=shot_i; shot_i=(shot_i+1)%dapp->shots; shot_t=NOW;
     }
     dscroll = lerpf(dscroll, dscroll_target, 1 - powf(.0005f, DT));
@@ -1432,13 +1440,13 @@ static void detail_update(void) {
                 shot_t = NOW;
                 sfx("move");
             }
-        if (shot_i < 0 && (IN.down & KEY_A || hit(195,125,60,28) || hit(10,82,176,110))) {
+        if (shot_i < 0 && (IN.down & KEY_A || hit(GALLERY_X,gallery_play_y,GALLERY_W,28) || hit(10,81,GALLERY_PREVIEW_W,111))) {
             play_video();
             return;
         }
-        if (hit(196,186,30,14))
+        if (hit(GALLERY_X,GALLERY_NAV_Y,GALLERY_NAV_W,28))
             detail_next_shot(-1);
-        if (hit(230,186,30,14))
+        if (hit(310-GALLERY_NAV_W,GALLERY_NAV_Y,GALLERY_NAV_W,28))
             detail_next_shot(1);
     }
     if(dtab==2) {
@@ -1561,42 +1569,34 @@ static void detail_top_overlay(float sa) {
     }
 }
 
+// Both screens use the same 340 ms gallery transition, including video posters.
+static C2D_Image gallery_image(int index,bool bottom,bool *ok) {
+    if(index>=0) {
+        if(bottom&&!dapp->shot_bottom[index]){*ok=false;return (C2D_Image){0};}
+        return shot_img(index,bottom,ok);
+    }
+    json_t *v=json_array_get(json_object_get(dapp->j,"videos"),index+nvideo);
+    Sheet *sheet=bottom&&json_is_string(json_object_get(v,"bottom"))?&video_bottom_posters:&video_posters;
+    *ok=sheet_ok(sheet);return sheet_img(sheet,index+nvideo);
+}
 static void detail_top(float sa) {
     if (video_active()) {
-        rect(0, 0, 400, 240, C(0, sa));
-        if (sheet_ok(&video_posters))
-            draw_img(sheet_img(&video_posters, shot_i + nvideo), 0, 0, 1, 1, sa);
+        rect(0,0,400,240,C(0,sa));
+        if(sheet_ok(&video_posters))draw_img(sheet_img(&video_posters,shot_i+nvideo),0,0,1,1,sa);
         video_draw(false,0,0,400,240,sa);
         if(video_overlay_alpha>.002f)detail_top_overlay(sa*video_overlay_alpha);
         return;
     }
-    float in = ease_out(span(NOW, trans_t, .56f));
-    float zoom = trans_phase == 2 ? lerpf(1.08f, 1, in) : 1;
-    bool any = false;
-    if (dapp->shots && shot_i >= 0) {
-        bool ok;
-        C2D_Image cur = shot_img(shot_i, false, &ok);
-        float p = test_freeze_media?1:ease_out(span(NOW, shot_t, .8f));
-        if (ok) {
-            any = true;
-            float drift = test_freeze_media?1:1 + .07f * (1 - ease_out(span(NOW, shot_t, 6.5f)));
-            float s = drift * zoom;
-            if (shot_prev >= 0 && p < 1) {
-                bool ok2;
-                C2D_Image prev = shot_img(shot_prev, false, &ok2);
-                if (ok2)
-                    draw_img(prev, 200 - 200 * s, 120 - 120 * s, s, s, sa);
-            }
-            draw_img(cur, 200 - 200 * s + EYE * -2, 120 - 120 * s, s, s, sa * (shot_prev >= 0 ? p : 1));
-        }
-    }
-    if (shot_i < 0 && sheet_ok(&video_posters)) {
-        draw_img(sheet_img(&video_posters, shot_i + nvideo), 0, 0, 1, 1, sa);
-        any = true;
-        draw_icon("play", 200, 105, 26, C(0xffffff, sa));
-    }
-    if (!any)
-        banner_draw(dapp, sa, 0);
+    bool ok=false;C2D_Image cur=gallery_image(shot_i,false,&ok);
+    float p=ease_inout(span(NOW,shot_t,.34f));
+    if(ok){
+        // Pixel-aligned in the gallery; retain the slow background drift on other tabs.
+        float drift=dtab==1||test_freeze_media?1:1+.07f*(1-ease_out(span(NOW,shot_t,6.5f)));
+        bool previous=false;
+        if(shot_prev!=shot_i&&p<1){C2D_Image old=gallery_image(shot_prev,false,&previous);if(previous)draw_img(old,0,0,1,1,sa);}
+        draw_img(cur,200-200*drift,120-120*drift,drift,drift,sa*(previous?p:1));
+        if(shot_i<0)draw_icon("play",200,105,26,C(0xffffff,sa));
+    }else banner_draw(dapp,sa,0);
     detail_top_overlay(sa);
 }
 
@@ -1716,41 +1716,44 @@ static float detail_shots(float y, float a) {
             draw_icon("play", x + 23, y + 17, 12, C(0xffffff, a));
     }
     y += 42;
-    bool ok;
-    C2D_Image im;
-    if (shot_i < 0) {
-        bool bottom = json_is_string(json_object_get(selected_video(), "bottom"));
-        Sheet *posters = bottom ? &video_bottom_posters : &video_posters;
-        im = sheet_img(posters, shot_i + nvideo);
-        ok = sheet_ok(posters);
-    } else
-        im = shot_img(shot_i, dapp->shot_bottom[shot_i], &ok);
-    float preview_h=shot_i<0&&!json_is_string(json_object_get(selected_video(),"bottom"))?99:132;
-    rrect(10, y, 176, preview_h, 8, C(0, .85f * a));
-    if (ok && (shot_i < 0 || dapp->shot_bottom[shot_i]))
-        { float scale=fminf(176.f/im.subtex->width,preview_h/im.subtex->height);
-          draw_img(im,10+(176-im.subtex->width*scale)/2,y+(preview_h-im.subtex->height*scale)/2,scale,scale,a); }
-    else
-        draw_icon("eye", 98, y + 66, 20, C(TH.ink_faint, a));
-    char cap[128];
-    json_t *m = shot_i < 0 ? selected_video() : json_array_get(json_object_get(dapp->j, "shots"), shot_i);
-    if (shot_i < 0)
-        snprintf(cap, sizeof cap, "%s", LJ(json_object_get(m, "title")));
-    else
-        snprintf(cap, sizeof cap, "%d/%d · %s", selected + 1, total, LJ(json_object_get(m, "caption")));
-    text_wrap_style(cap, 195, y, 10,900, C(TH.ink, a), 115);
-    if (shot_i >= 0)
-        text_wrap_style(T("detail.shotHint"), 195, y + 18, 10,600, C(TH.ink_faint, a), 115);
-    if(shot_i<0) {
-        double duration=json_number_value(json_object_get(m,"duration"));
-        if(duration>0){char time[24];snprintf(time,sizeof time,"%d:%02d",(int)duration/60,(int)duration%60);chip(195,y+20,time,"clock",C(TH.ink_soft,1),C(TH.surface2,1),a);}
-        button(195,y+44,60,28,T("video.play"),"play",NULL,BTN_PRIMARY,a);
-        circle(98,y+preview_h/2,17,C(0,.45f*a));ring(98,y+preview_h/2,18,2,0,2*M_PI,C(0xffffff,.9f*a));draw_icon("play",99,y+preview_h/2,15,C(0xffffff,a));
+    bool ok;C2D_Image im=gallery_image(shot_i,true,&ok);
+    float preview_h=shot_i<0&&!json_is_string(json_object_get(selected_video(),"bottom"))?83:111;
+    rrect(10,y,GALLERY_PREVIEW_W,preview_h,8,C(0,.85f*a));
+    float phase=ease_inout(span(NOW,shot_t,.34f));
+    bool previous=false;
+    if(shot_prev!=shot_i&&phase<1){
+        C2D_Image old=gallery_image(shot_prev,true,&previous);
+        if(previous){float scale=fminf((float)GALLERY_PREVIEW_W/old.subtex->width,preview_h/old.subtex->height);draw_img(old,10+(GALLERY_PREVIEW_W-old.subtex->width*scale)/2,y+(preview_h-old.subtex->height*scale)/2,scale,scale,a);}
     }
-
-    draw_icon("back",211,y+110, 11, C(TH.ink_soft, a));
-    draw_icon("next",245,y+110, 11, C(TH.ink_soft, a));
-    return 173;
+    if(ok){
+        float scale=fminf((float)GALLERY_PREVIEW_W/im.subtex->width,preview_h/im.subtex->height);
+        draw_img(im,10+(GALLERY_PREVIEW_W-im.subtex->width*scale)/2,y+(preview_h-im.subtex->height*scale)/2,scale,scale,a*(previous?phase:1));
+    }else draw_icon("eye",84,y+preview_h/2,20,C(TH.ink_faint,a));
+    json_t *m = shot_i < 0 ? selected_video() : json_array_get(json_object_get(dapp->j, "shots"), shot_i);
+    const char *caption=LJ(json_object_get(m,shot_i<0?"title":"caption"));
+    float title_h;
+    if(shot_i<0) {
+        char duration[24];int seconds=(int)json_number_value(json_object_get(m,"duration"));
+        snprintf(duration,sizeof duration,"%d:%02d",seconds/60,seconds%60);
+        float dw=text_style_w(duration,9,600,0);
+        title_h=text_wrap_style(caption,GALLERY_X,y,10,900,C(TH.ink,a),GALLERY_W-dw-10);
+        text_style(duration,310,y+1,9,600,0,C(TH.ink_faint,a),AL_RIGHT);
+    } else title_h=text_wrap_style(caption,GALLERY_X,y,10,900,C(TH.ink,a),GALLERY_W);
+    float body_y=y+title_h+4;
+    if (shot_i >= 0) {
+        const char *hint=T("detail.shotHint");
+        float size=text_wrap_h_style(hint,10,600,GALLERY_W)<=GALLERY_NAV_Y-body_y-4?10:9;
+        text_wrap_style(hint,GALLERY_X,body_y,size,600,C(TH.ink_faint,a),GALLERY_W);
+    } else {
+        gallery_play_y=body_y;
+        button(GALLERY_X,gallery_play_y,GALLERY_W,28,T("video.play"),"play",NULL,BTN_PRIMARY,a);
+        circle(84,y+preview_h/2,17,C(0,.45f*a));ring(84,y+preview_h/2,18,2,0,2*M_PI,C(0xffffff,.9f*a));draw_icon("play",85,y+preview_h/2,15,C(0xffffff,a));
+    }
+    button(GALLERY_X,GALLERY_NAV_Y,GALLERY_NAV_W,28,NULL,"back",NULL,BTN_SURFACE,a);
+    button(310-GALLERY_NAV_W,GALLERY_NAV_Y,GALLERY_NAV_W,28,NULL,"next",NULL,BTN_SURFACE,a);
+    char count[24];snprintf(count,sizeof count,"%d / %d",selected+1,total);
+    text_style(count,GALLERY_X+GALLERY_W/2,GALLERY_NAV_Y+7,10,600,0,C(TH.ink_soft,a),AL_CENTER);
+    return 159;
 }
 
 static float detail_requirement_card(json_t *req,float x,float y,float w,float a){
@@ -2962,6 +2965,8 @@ void scenes_update(void) {
     }
     if(scene==SC_SD||scene==SC_DOWNLOADS)sys_refresh();
     if(scene!=SC_GITHUB&&!S.universal)remote_image_trim();
+    if(media_started)github_prefetch_start();
+    github_prefetch_pause(scene==SC_GITHUB||install_active()!=NULL||video_active());
     bool catalog_changed=false;
     if(!test_freeze_media&&media_started){catalog_changed=catalog_sync_pump();catalog_changed|=universal_sync_pump(scene==SC_HOME||scene==SC_SEARCH||scene==SC_SETTINGS);}
     if(catalog_changed){
@@ -3303,6 +3308,8 @@ void scenes_test_view(const char *name) {
         fx_set(dapp->fx);memset(&detail_nav,0,sizeof detail_nav);return;
     }
 }
+bool scenes_reader_active(void){return scene==SC_GITHUB;}
+
 void scenes_test_log(FILE *file){
     if(!file)return;
     for(unsigned i=0;i<media_count();i++){MediaItem m;if(media_item(i,&m))fprintf(file,"media item=%s/%s state=%d bytes=%u/%u attempts=%u error=%s\n",m.appid,m.id,m.state,m.received,m.total,m.attempts,m.error);}

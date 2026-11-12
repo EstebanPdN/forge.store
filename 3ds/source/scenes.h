@@ -7,6 +7,8 @@ extern float EYE;  // stereo offset scale for the eye being drawn (0 = mono)
 
 /** Loads the backgrounds; the intro begins `intro_delay` seconds later. */
 void scenes_init(float intro_delay);
+void scenes_intro_restart(float delay);
+void scenes_draw_background(bool top);
 void scenes_update(void);
 void scenes_exit(void);
 void scenes_draw_top(void);
@@ -21,6 +23,7 @@ bool scenes_wants_exit(void);
 float scenes_exit_fade(void);
 /** An installation or the store's resource package is downloading (status bar icon). */
 bool scenes_downloading(void);
+bool scenes_reader_active(void);
 /** Shutdown: ask the scenes' workers to stop (no waiting), before scenes_exit collects them. */
 void scenes_stop(void);
 

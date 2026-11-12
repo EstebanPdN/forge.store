@@ -308,3 +308,24 @@
 
 /* Flex centres the visible numeral/capital box instead of the font's line leading. */
 .screen .sb-clock, .screen .sb-pct { text-box: trim-both cap alphabetic; }
+
+/* Home overlays keep a little of the banner visible. */
+.screen .sb-pill, .home-card { background: rgba(255,255,255,.90); }
+[data-theme="dark"] .screen .sb-pill, [data-theme="dark"] .home-card { background: rgba(38,40,44,.90); }
+
+.dt-shot-view { gap: 10px; }
+.dt-shot-bottom { width: 148px; height: 111px; }
+.dt-shot-bottom.wide { height: 83px; }
+.dt-shot-side { position: relative; min-height: 114px; padding-bottom: 32px; }
+.dt-media-heading { display: flex; align-items: baseline; gap: 6px; }
+.dt-media-heading .dt-shot-caption { flex: 1; }
+.dt-media-duration { flex: none; color: var(--ink-faint); font-size: 9px; }
+.dt-playbtn { width: 100%; justify-content: center; margin-top: 0; }
+.dt-media-nav { position: absolute; top: 86px; left: 0; right: 0; display: flex; align-items: center; justify-content: space-between; font-size: 10px; }
+.dt-media-nav .ui-btn { width: 32px; height: 28px; padding: 0; justify-content: center; border-radius: 8px; }
+.dt-media-nav svg { width: 12px; height: 12px; }
+.dt-shot { transition: opacity 340ms ease-in-out; }
+.scene-top.gallery:not(.playing) .dt-head,
+.scene-top.gallery:not(.playing) .dt-shade { opacity: 0; pointer-events: none; }
+.scene-top.gallery:not(.playing) .dt-counter { top: 8px; }
+.scene-top.gallery .dt-shot.on { animation: none; }

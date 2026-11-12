@@ -67,6 +67,8 @@ export default {
   'detail.no': 'Nein',
   'detail.experimental': 'Experimentell',
   'detail.noShots': 'Noch keine Screenshots.',
+  'detail.previousMedia': 'Vorheriges Bild oder Video',
+  'detail.nextMedia': 'Nächstes Bild oder Video',
   'detail.shotHint': 'Der obere Bildschirm liegt oben; das ist der untere Bildschirm, genau wie auf der Konsole.',
   'video.play': 'Abspielen',
   'video.trailerHint': 'Wird auf dem oberen Bildschirm mit Ton abgespielt.',

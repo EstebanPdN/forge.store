@@ -47,6 +47,7 @@ CommonCrypto, so the full queue suite is macOS-specific.
 python3 tools/check-repository.py
 python3 3ds/tests/catalog-host.py
 python3 3ds/tests/run-install-integrity.py
+python3 3ds/tests/run-store-network.py
 python3 3ds/tools/check-file-view.py
 3ds/tools/.venv/bin/python -I 3ds/tools/check-media.py
 3ds/tools/.venv/bin/python -I 3ds/tests/run-video-test.py --all
@@ -87,3 +88,6 @@ is opt-in via `FORGE_DUMP_URL`; the distributed build must leave it unset.
 
 Before publishing a build, return to `FORGE_DEBUG=0`, rebuild, run repository checks and use
 `tools/package-build.py` to copy exactly the reviewed binaries and hashes into `builds/3ds/`.
+Increase `STORE_BUILD` in `3ds/source/store_version.h` for each published update. Packaging
+also writes the compact `update.json` used by the automatic startup check. Publish it together
+with both binaries and the full manifest; see [Updates and cache](UPDATES-AND-CACHE.md).

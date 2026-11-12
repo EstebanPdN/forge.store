@@ -784,7 +784,8 @@ bool video_start(const char *file) {
         ndspChnSetFormat(VCH, NDSP_FORMAT_MONO_PCM16);
         ndspChnSetRate(VCH, st.audio ? st.rate : LEGACY_RATE);
         ndspChnSetInterp(VCH, NDSP_INTERP_LINEAR);
-        float mix[12] = {S.volume, S.volume};
+        float gain=clampf(S.volume*2,0,1);
+        float mix[12] = {gain, gain};
         ndspChnSetMix(VCH, mix);
     }
     music_duck(st.audio && !muted);
@@ -923,7 +924,8 @@ void video_update(void) {
         return;
     }
     if (active && audio_available()) {
-        float mix[12] = {muted ? 0 : S.volume, muted ? 0 : S.volume};
+        float gain=muted?0:clampf(S.volume*2,0,1);
+        float mix[12] = {gain, gain};
         ndspChnSetMix(VCH, mix);
     }
     if (!active || (paused && !seeking))

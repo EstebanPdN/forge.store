@@ -67,6 +67,8 @@ export default {
   'detail.no': 'Non',
   'detail.experimental': 'Expérimental',
   'detail.noShots': 'Pas encore de captures d\'écran.',
+  'detail.previousMedia': 'Image ou vidéo précédente',
+  'detail.nextMedia': 'Image ou vidéo suivante',
   'detail.shotHint': 'L\'écran du haut est au-dessus ; voici l\'écran du bas, exactement comme sur la console.',
   'video.play': 'Lire',
   'video.trailerHint': 'Lecture sur l\'écran du haut, avec le son.',

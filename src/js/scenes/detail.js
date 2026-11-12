@@ -18,6 +18,10 @@ const OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
 export class DetailScene extends Scene {
   static section = 'detail';
 
+  showStatusbar() {
+    return this.playing ? !!this.videoUI : this.tab !== 'shots';
+  }
+
   build() {
     this.item = this.params.app;
     this.tab = this.params.tab || 'info';
@@ -126,7 +130,7 @@ export class DetailScene extends Scene {
   restartCarousel() {
     clearInterval(this.carousel);
     const shots = this.mediaList?.filter((m) => m.type === 'shot').length || 0;
-    if (shots < 2) return;
+    if (shots < 2 || this.tab === 'shots') return;
     this.carousel = setInterval(() => {
       if (this.playing || this.mediaList[this.mediaIndex].type === 'video') return;
       let i = this.mediaIndex;
@@ -293,7 +297,7 @@ export class DetailScene extends Scene {
     p.bottomVideo?.pause();
     this.top.classList.remove('playing', 'ui');
     this.audio.duck(false);
-    if (this.app.scene === this) this.app.statusbar.show(true);
+    if (this.app.scene === this) this.app.statusbar.show(this.showStatusbar());
     const el = this.playerEl;
     this.playerEl = null;
     if (quiet) el.remove();
@@ -332,9 +336,12 @@ export class DetailScene extends Scene {
     this.renderTab();
     this.renderAction();
     revealTabContent(this.content.firstChild, dir);
+    this.app.syncChrome();
+    this.restartCarousel();
   }
 
   renderTab(keepScroll = false) {
+    this.top.classList.toggle('gallery', this.tab === 'shots');
     const y = this.scroller.y;
     const build = { info: () => this.infoTab(), shots: () => this.shotsTab(), install: () => this.installTab(), news: () => this.newsTab() }[this.tab];
     this.content.replaceChildren(build());
@@ -428,18 +435,21 @@ export class DetailScene extends Scene {
         h('div.dt-shot-bottom' + (m.bottom ? '' : '.wide'), preview, h('button.dt-shot-play', { type: 'button', on: { click: () => this.startVideo(m) } }, icon('play'))),
         h(
           'div.dt-shot-side',
-          h('div.dt-shot-caption', L(m.title)),
-          h('div.dt-video-meta', h('span.chip', icon('clock'), fmtTime(m.duration))),
+          h('div.dt-media-heading', h('div.dt-shot-caption', L(m.title)), h('span.dt-media-duration', fmtTime(m.duration))),
           h('button.ui-btn.primary.dt-playbtn', { type: 'button', on: { click: () => this.startVideo(m) } }, icon('play'), h('span', t('video.play'))),
         ),
       );
     } else {
       this.shotView.replaceChildren(
         h('div.dt-shot-bottom', m.bottom ? h('img', { src: m.bottom, alt: '' }) : h('div.dt-shot-none', icon('eye'))),
-        h('div.dt-shot-side', h('div.dt-shot-caption', `${this.mediaIndex + 1}/${this.mediaList.length} · ${L(m.caption)}`), h('p.faint', t('detail.shotHint'))),
+        h('div.dt-shot-side', h('div.dt-shot-caption', L(m.caption)), h('p.faint', t('detail.shotHint'))),
       );
     }
-    animate(this.shotView.firstChild, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 300, fill: 'none' });
+    this.shotView.querySelector('.dt-shot-side').append(h('div.dt-media-nav',
+      h('button.ui-btn.surface', { type: 'button', 'aria-label': t('detail.previousMedia'), on: { click: () => this.showMedia((this.mediaIndex + this.mediaList.length - 1) % this.mediaList.length, true) } }, icon('back')),
+      h('span', `${this.mediaIndex + 1} / ${this.mediaList.length}`),
+      h('button.ui-btn.surface', { type: 'button', 'aria-label': t('detail.nextMedia'), on: { click: () => this.showMedia((this.mediaIndex + 1) % this.mediaList.length, true) } }, icon('next'))));
+    animate(this.shotView.firstChild, [{ opacity: 0, transform: 'scale(.96)' }, { opacity: 1, transform: 'none' }], { duration: 340, fill: 'none' });
   }
 
   // Install -------------------------------------------------------------------

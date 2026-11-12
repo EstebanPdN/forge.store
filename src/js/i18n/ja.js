@@ -67,6 +67,8 @@ export default {
   'detail.no': 'いいえ',
   'detail.experimental': '試験版',
   'detail.noShots': 'スクリーンショットはまだありません。',
+  'detail.previousMedia': '前の画像・動画',
+  'detail.nextMedia': '次の画像・動画',
   'detail.shotHint': '上画面は上にあります。これは下画面で、本体と同じ表示です。',
   'video.play': '再生',
   'video.trailerHint': '上画面で音声つきで再生します。',

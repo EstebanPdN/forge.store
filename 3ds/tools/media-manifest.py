@@ -9,7 +9,7 @@ import hashlib
 import json
 ROOT = Path(__file__).resolve().parents[2]
 MEDIA = ROOT / 'assets/store-resources'
-REPO = 'EstebanPdN/forje.store'
+REPO = 'EstebanPdN/forge.store'
 
 def generate():
     report = json.loads((MEDIA / 'report.json').read_text())

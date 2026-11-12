@@ -13,7 +13,7 @@ The set contains 6,010 frame records and **16,044,949 bytes**, down from 100,523
 in the original MJPEG/PCM set (84.0% smaller). Trailers are under 6 MB each and split-screen
 clips under 1.2 MB. Browser MP4 previews remain in their existing per-port asset folders.
 
-`hosting.json` pins native resources to a Git commit in **EstebanPdN/forje.store**.
+`hosting.json` pins native resources to a Git commit in **EstebanPdN/forge.store**.
 `media-manifest.py` verifies the reviewed files and writes both the public manifest and
 `3ds/romfs/media.json`. URLs are anonymous HTTPS raw-file links. There are no resource
 releases and no dependency on a game's latest release ordering.

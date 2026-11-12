@@ -3,6 +3,9 @@
 #include "../tests/install-host.h"
 #else
 #include "install.h"
+#ifndef FORGE_INSTALL_HOST_TEST
+#include "http_cache.h"
+#endif
 #include "network.h"
 #include "dsp_dump.h"
 #endif
@@ -1087,6 +1090,9 @@ static void worker_main(void *arg) {
 
 // ---- public -------------------------------------------------------------------------------------
 void install_init(void) {
+#ifndef FORGE_INSTALL_HOST_TEST
+    http_cache_init();
+#endif
     amInit();
     soc_buf = memalign(0x1000, SOC_SIZE);
     net_ok = soc_buf && R_SUCCEEDED(socInit(soc_buf, SOC_SIZE));

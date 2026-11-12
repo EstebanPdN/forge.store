@@ -18,6 +18,7 @@
 #ifndef REMOTE_IMAGE_HOST_TEST
 #include "gfx.h"
 #include "network.h"
+#include "http_cache.h"
 #include <sys/stat.h>
 #include <time.h>
 #endif
@@ -248,7 +249,7 @@ static bool ri_decode(const unsigned char *data, size_t size, RIPixels *out) {
 #define RI_GPU_SLOTS 24
 #define RI_GPU_BYTES (1024u * 1024u)
 #define RI_DISK_SLOTS 16
-#define RI_RETRY_MS 30000u
+#define RI_RETRY_MS 3000u
 
 typedef enum { RI_EMPTY, RI_QUEUED, RI_WORKING, RI_READY, RI_FAILED } RIState;
 typedef struct {
@@ -295,77 +296,11 @@ static int ri_find_variant(const char *url,int side,int radius) {
     return -1;
 }
 static int ri_find(const char *url){return ri_find_variant(url,0,0);}
-// Fixed 16-file direct-mapped disk cache: full URL + CRC validate hash collisions
-// and interrupted writes. Old entries are replaced, never an unbounded directory.
-static void ri_cache_path(const char *url, char *path, size_t n) {
-    uint32_t hash = 2166136261u;
-    for (const unsigned char *p = (const unsigned char *)url; *p; p++) hash = (hash ^ *p) * 16777619u;
-    snprintf(path, n, DATA_DIR "/images-v2/%02u.rgba", (unsigned)(hash % RI_DISK_SLOTS));
-}
-static bool ri_cache_read(const char *url, RIPixels *out) {
-    char path[128], key[RI_URL]; uint32_t h[7];
-    ri_cache_path(url, path, sizeof path);
-    FILE *f = fopen(path, "rb"); if (!f) return false;
-    bool ok = false;
-    if (fread(h, sizeof h, 1, f) != 1 || h[0] != 0x31494d52 || !h[1] || h[1] > RI_WIDTH ||
-        !h[2] || h[2] > RI_HEIGHT || (uint32_t)time(NULL) < h[6] || (uint32_t)time(NULL) - h[6] > 86400u || h[3] != strlen(url) || h[3] >= sizeof key || h[4] != h[1]*h[2]*4) goto done;
-    if (fread(key, 1, h[3], f) != h[3] || memcmp(key, url, h[3])) goto done;
-    out->rgba = malloc(h[4]); if (!out->rgba) goto done;
-    if (fread(out->rgba, 1, h[4], f) != h[4] || fgetc(f) != EOF || crc32(0, out->rgba, h[4]) != h[5]) goto done;
-    out->w = h[1]; out->h = h[2]; ok = true;
-done:
-    fclose(f);
-    if (!ok) { free(out->rgba); memset(out, 0, sizeof *out); }
-    return ok;
-}
-static void ri_cache_write(const char *url, const RIPixels *p) {
-    if (ri_stopping()) return;
-    mkdir(DATA_DIR "/images-v2", 0777);
-    char path[128], tmp[144]; ri_cache_path(url, path, sizeof path);
-    snprintf(tmp, sizeof tmp, "%s.tmp", path);
-    uint32_t bytes = p->w * p->h * 4;
-    uint32_t h[] = {0x31494d52, p->w, p->h, (uint32_t)strlen(url), bytes, crc32(0, p->rgba, bytes), (uint32_t)time(NULL)};
-    FILE *f = fopen(tmp, "wb"); if (!f) return;
-    bool ok = fwrite(h, sizeof h, 1, f) == 1 && fwrite(url, 1, h[3], f) == h[3] && fwrite(p->rgba, 1, bytes, f) == bytes;
-    if (fclose(f)) ok = false;
-    if (ok && !ri_stopping()) { if (rename(tmp, path)) remove(tmp); }
-    else remove(tmp);
-}
-typedef struct { unsigned char *data; size_t length; } RIDownload;
-static size_t ri_receive(char *ptr, size_t size, size_t count, void *ctx) {
-    RIDownload *d = ctx;
-    if (ri_stopping() || (size && count > SIZE_MAX / size)) return 0;
-    size_t n = size * count;
-    if (n > RI_PAYLOAD - d->length) return 0;
-    if (!d->data) { d->data = malloc(RI_PAYLOAD + 1); if (!d->data) return 0; }
-    memcpy(d->data + d->length, ptr, n); d->length += n; d->data[d->length] = 0;
-    return n;
-}
-static int ri_progress(void *ctx, curl_off_t total, curl_off_t now, curl_off_t utotal, curl_off_t unow) {
-    (void)ctx; (void)now; (void)utotal; (void)unow;
-    return ri_stopping() || total > RI_PAYLOAD;
-}
-static bool ri_download(const char *url, RIPixels *out) {
-    CURL *c = curl_easy_init(); if (!c) return false;
-    RIDownload d = {0};
-    network_options(c);
-    curl_easy_setopt(c, CURLOPT_URL, url);
-    curl_easy_setopt(c, CURLOPT_NOSIGNAL, 1L);
-    curl_easy_setopt(c, CURLOPT_CONNECTTIMEOUT, 10L);
-    curl_easy_setopt(c, CURLOPT_TIMEOUT, 25L);
-    curl_easy_setopt(c, CURLOPT_LOW_SPEED_LIMIT, 512L);
-    curl_easy_setopt(c, CURLOPT_LOW_SPEED_TIME, 10L);
-    curl_easy_setopt(c, CURLOPT_MAXFILESIZE_LARGE, (curl_off_t)RI_PAYLOAD);
-    curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, ri_receive);
-    curl_easy_setopt(c, CURLOPT_WRITEDATA, &d);
-    curl_easy_setopt(c, CURLOPT_XFERINFOFUNCTION, ri_progress);
-    curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
-    curl_easy_setopt(c, CURLOPT_ACCEPT_ENCODING, "");
-    CURLcode rc = curl_easy_perform(c);
-    long status = 0; curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &status);
-    curl_easy_cleanup(c);
-    bool ok = !ri_stopping() && rc == CURLE_OK && status >= 200 && status < 300 && ri_decode(d.data, d.length, out);
-    free(d.data); return ok;
+static bool ri_cancelled(void *ctx){return ri_stopping();}
+static bool ri_download(const char *url,RIPixels *out){
+    size_t bytes=0;char error[128];bool refresh=!http_cache_fresh(url,"*/*",86400);
+    char *data=http_cache_get(url,"*/*",RI_PAYLOAD,refresh,ri_cancelled,NULL,&bytes,error,sizeof error);
+    bool ok=data&&!ri_stopping()&&ri_decode((unsigned char*)data,bytes,out);if(data&&!ok&&!ri_stopping())http_cache_invalidate(url,"*/*");free(data);return ok;
 }
 static void ri_worker(void *unused) {
     (void)unused;
@@ -374,11 +309,7 @@ static void ri_worker(void *unused) {
         if (ri_stopping()) break;
         if (__atomic_load_n(&ri_job_state, __ATOMIC_ACQUIRE) != 1) continue;
         bg_wait();
-        ri_job.ok = ri_cache_read(ri_job.url, &ri_job.pixels);
-        if (!ri_job.ok) {
-            ri_job.ok = ri_download(ri_job.url, &ri_job.pixels);
-            if (ri_job.ok) ri_cache_write(ri_job.url, &ri_job.pixels);
-        }
+        ri_job.ok = ri_download(ri_job.url, &ri_job.pixels);
         // Disk cache retains the unmodified source, shared by all shape variants.
         if(ri_job.ok&&ri_job.round_side){
             unsigned char *rounded=image_round_rgba(ri_job.pixels.rgba,ri_job.pixels.w,ri_job.pixels.h,ri_job.round_side,ri_job.round_radius);
@@ -414,7 +345,7 @@ static bool ri_request_variant(const char *url,int side,int radius) {
     }
     RIEntry *e = &ri_entries[i]; e->touched = ++ri_clock;
     if (e->state == RI_READY && e->gpu < 0) e->state = RI_QUEUED;
-    if (e->state == RI_FAILED && e->tries < 2 && osGetTime() >= e->retry_at) e->state = RI_QUEUED;
+    if (e->state == RI_FAILED && e->tries < 4 && osGetTime() >= e->retry_at) e->state = RI_QUEUED;
     if (!ri_start()) { e->state = RI_FAILED; return false; }
     return true;
 }
@@ -445,7 +376,12 @@ static int ri_oldest_gpu(void) {
     return oldest;
 }
 void remote_image_trim(void){
-    for(int i=0;i<RI_GPU_SLOTS;i++)ri_evict(i);
+    // Keep a small warm set of avatars/badges when leaving the reader. Large
+    // screenshots are released for the video player; returning to GitHub need
+    // not decode every small SVG again. The retained budget is at most 128 KiB.
+    for(int i=0;i<RI_GPU_SLOTS;i++)
+        if(ri_gpu[i].live&&ri_gpu[i].bytes>32768)ri_evict(i);
+    while(ri_gpu_bytes>128*1024){int old=ri_oldest_gpu();if(old<0)break;ri_evict(old);}
     for(int i=0;i<RI_ENTRIES;i++)if(ri_entries[i].state==RI_QUEUED)ri_entries[i].state=RI_READY;
 }
 static bool ri_upload(int entry, const RIPixels *p) {

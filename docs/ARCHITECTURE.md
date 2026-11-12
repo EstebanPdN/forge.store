@@ -26,8 +26,7 @@ other local projects and the one-time rendering environment.
 
 - `main.c` initializes services, owns the frame loop, input, APT lifecycle, status bar and test commands.
 - `scenes.c` owns navigation, shared tabs, introduction, Home and detail views. `panels.inc`
-  holds the Downloads, SD and Settings views in that same translation unit;
-  the GitHub reader is currently in `scenes.c`.
+  holds Downloads, SD, Settings and the GitHub reader in that same translation unit.
 - `gfx.c`, `fx.c` draw pre-rasterized fonts/images, geometric UI and banner effects.
 - `audio.c` owns NDSP channels, streamed store music and UI sounds. Video uses channel 10.
 - `media.c` owns the resource queue, manifest, cache verification, retries and cleanup.
@@ -35,7 +34,12 @@ other local projects and the one-time rendering environment.
 - `install.c`, `catalog.c`, `live_release.c`, `catalog_sync.c` handle install transactions,
   installed state, release metadata and curated refreshes.
 - `universal_convert.c`, `universal_sync.c` convert and refresh Universal-DB.
-- `network.c`, `reader_cache.c`, `gh_markup.c`, `remote_image.c` fetch, cache and render bounded GitHub content.
+- `store_update.c`, `store_update_policy.h`, `store_version.h` own the bounded startup check,
+  build selection, verified self-update and restart request.
+- `network.c`, `http_cache.c`, `reader_cache.c` fetch and persist bounded responses;
+  `github_prefetch.c` validates common public pages/images while the store is idle.
+- `gh_markup.c`, `gh_flow.c`, `gh_tables.c`, `gh_releases.c`, `remote_image.c` parse, lay out
+  and render the bounded GitHub document/image subset.
 - `file_view.c`, `sd_usage.c`, `rom_find.c` perform filesystem queries away from drawing.
 - `hbl_launch.c`, `dsp_dump.c`, `debug_dump.c` isolate platform-specific handoff and diagnostics.
 
@@ -46,8 +50,10 @@ exactly zero**: the 3DS kernel can return a positive timeout code.
 ## Runtime flow
 
 1. Load bundled settings/catalog/art and initialize services, graphics and audio.
-2. Present the introduction/theme choice and bring Home into view.
-3. Once Home is usable, start one persistent media worker. The UI keeps pumping queues and input.
+2. Check for store updates with a five-second UI deadline. A verified newer build downloads,
+   installs and requests restart; a current/unavailable result fades into the introduction.
+3. Present the introduction/theme choice and bring Home into view. Start one persistent media
+   worker and the low-priority GitHub prefetch pass once Home is usable. Keep pumping queues and input.
 4. Verify each cached video or download to a private `.part` path, hash it and rename atomically.
 5. Downloads aggregates all media items into one Store resources row. Each verified item can
    play independently while the rest continues.
@@ -58,6 +64,7 @@ exactly zero**: the 3DS kernel can return a positive timeout code.
 
 HOME/sleep handling is implemented, but the emulator cannot establish that physical HOME,
 SD failures or suspend/resume behave correctly on every console. See Verification.
+The update, cache and publication contracts are described in [Updates and cache](UPDATES-AND-CACHE.md).
 
 ## Web boundaries
 

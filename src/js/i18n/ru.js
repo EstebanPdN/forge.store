@@ -67,6 +67,8 @@ export default {
   'detail.no': 'Нет',
   'detail.experimental': 'Экспериментальная',
   'detail.noShots': 'Скриншотов пока нет.',
+  'detail.previousMedia': 'Предыдущее изображение или видео',
+  'detail.nextMedia': 'Следующее изображение или видео',
   'detail.shotHint': 'Верхний экран выше; это нижний экран, как на консоли.',
   'video.play': 'Играть',
   'video.trailerHint': 'Воспроизводится на верхнем экране, со звуком.',

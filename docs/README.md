@@ -7,6 +7,7 @@
 | [Building](BUILDING.md) | Toolchain, normal build, tests and asset generation |
 | [Architecture](ARCHITECTURE.md) | Source layout, ownership and lifecycle |
 | [Media](MEDIA.md) | Compressed format, download package and publication |
+| [Updates and cache](UPDATES-AND-CACHE.md) | Automatic startup updates, GitHub prefetch and cache contracts |
 | [Verification](VERIFICATION.md) | Current evidence and hardware limitations |
 | [Asset credits](ASSET-CREDITS.md) | Provenance and rights information |
 | [Third-party notices](legal/THIRD_PARTY_NOTICES.md) | Bundled and linked dependencies |

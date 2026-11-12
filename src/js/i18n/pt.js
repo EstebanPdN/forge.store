@@ -67,6 +67,8 @@ export default {
   'detail.no': 'Não',
   'detail.experimental': 'Experimental',
   'detail.noShots': 'Ainda sem capturas de tela.',
+  'detail.previousMedia': 'Imagem ou vídeo anterior',
+  'detail.nextMedia': 'Imagem ou vídeo seguinte',
   'detail.shotHint': 'A tela superior fica acima; esta é a tela inferior, exatamente como no console.',
   'video.play': 'Reproduzir',
   'video.trailerHint': 'Reproduz na tela superior, com som.',

@@ -838,6 +838,9 @@ static void gh_begin(const char *name, bool user) {
     json_decref(gh_meta);json_decref(gh_repos);json_decref(gh_releases);json_decref(gh_commits);
     gh_meta=gh_repos=gh_releases=gh_commits=NULL;
     gh_document_free(&gh_document); gh_header_h=38; gh_height=60;
+    gh_flow_reset(&gh_flow);memset(&gh_tables,0,sizeof gh_tables);
+    memset(gh_release_h,0,sizeof gh_release_h);memset(gh_run_count,0,sizeof gh_run_count);
+    gh_fact_count=gh_topic_count=0;gh_reflow=true;
 }
 static void open_github(const char *name, bool user) {
     if(scene!=SC_GITHUB){gh_parent=scene;gh_return.have=false;}
@@ -882,7 +885,8 @@ static void gh_poll(void) {
                 else if(i==2)snprintf(path,sizeof path,"repos/%s/releases?per_page=12",gh_name);
                 else snprintf(path,sizeof path,"repos/%s/commits?per_page=10",gh_name);
             }
-            gh_requested[i]=reader_request_slot(i,path,raw);
+            int active=0;for(int k=0;k<4;k++)active+=reader_slot_busy(k);
+            if(active<2)gh_requested[i]=reader_request_slot(i,path,raw);
         }
     }
     gh_loading=false;for(int i=0;i<4;i++)if(!gh_done[i])gh_loading=true;
@@ -1054,13 +1058,18 @@ static void github_update(void) {
     if(hit(214,209,100,24)){char url[192];snprintf(url,sizeof url,"https://github.com/%s",gh_name);gh_open_url(url);}
     gh_scroll=clampf(gh_scroll,0,fmaxf(0,gh_height-206));
     const char *avatar=gh_user?jstr(gh_meta,"avatar_url"):jstr(json_object_get(gh_meta,"owner"),"avatar_url");
+    // Requests are prioritized by recency: the first visible images and avatar
+    // should arrive before a large showcase farther down the document.
+    for(int i=gh_document.count-1;i>=0;i--)if(gh_document.nodes[i].kind==GH_IMAGE&&gh_y[i]+gh_h[i]>gh_scroll&&gh_y[i]<gh_scroll+206)remote_image_request(gh_document.nodes[i].url);
     if(*avatar&&gh_scroll<gh_header_h)remote_image_request_rounded(avatar,gh_user?46:34,gh_user?23:9);
-    for(int i=0;i<gh_document.count;i++)if(gh_document.nodes[i].kind==GH_IMAGE&&gh_y[i]+gh_h[i]>gh_scroll&&gh_y[i]<gh_scroll+206)remote_image_request(gh_document.nodes[i].url);
     if(!gh_user&&gh_tab==2){int count=json_array_size(gh_commits);if(count>10)count=10;for(int i=0;i<count;i++)if(gh_commit_y[i]+37>gh_scroll&&gh_commit_y[i]<gh_scroll+206)remote_image_request_rounded(jstr(json_object_get(json_array_get(gh_commits,i),"author"),"avatar_url"),16,8);}
 }
 static void github_top(float a) {
     draw_bg(true,a);scissor(400,0,34,400,206);
-    float y=36-gh_scroll;glass(12,y,376,gh_header_h,12,a);
+    char stats[160];
+    float y=36-gh_scroll;
+    if(y+gh_header_h>34){
+    glass(12,y,376,gh_header_h,12,a);
     const char *avatar=gh_user?jstr(gh_meta,"avatar_url"):jstr(json_object_get(gh_meta,"owner"),"avatar_url");
     float av=gh_user?46:34,tx=21+av+9;
     if(gh_user)circle(21+av*.5f,y+8+av*.5f,av*.5f+2,C(TH.surface,a));
@@ -1070,12 +1079,12 @@ static void github_top(float a) {
     else text_style(title,tx,y+8,12,900,0,C(TH.ink,a),AL_LEFT);
     if(gh_user&&*jstr(gh_meta,"name")){char login[176];snprintf(login,sizeof login," @%s",jstr(gh_meta,"login"));text(login,tx+text_style_w(title,12,900,0),y+8,12,C(TH.ink_soft,a),AL_LEFT);}
     text_wrap(gh_user?jstr(gh_meta,"bio"):jstr(gh_meta,"description"),tx,y+26,11,C(TH.ink_soft,a),388-tx-9);
-    char stats[160];
     if(gh_user)snprintf(stats,sizeof stats,"%lld %s · %lld %s",json_integer_value(json_object_get(gh_meta,"followers")),T("gh.followers"),json_integer_value(json_object_get(gh_meta,"public_repos")),T("gh.repos"));
     if(gh_meta&&gh_user)text_style(stats,tx,y+30,10,800,0,C(TH.ink_soft,a),AL_LEFT);
     else if(gh_meta){const char *keys[]={"stargazers_count","forks_count","subscribers_count","open_issues_count"};const char *icons[]={"star","people","eye","warn"};float sx=tx,sy=y+gh_header_h-19;
         for(int k=0;k<4;k++){snprintf(stats,sizeof stats,"%lld",json_integer_value(json_object_get(gh_meta,keys[k])));draw_icon(icons[k],sx+4.5f,sy+7,9,C(TH.ink_soft,a));text_style(stats,sx+11,sy,10,800,0,C(TH.ink_soft,a),AL_LEFT);sx+=11+text_style_w(stats,10,800,0)+9;}
         if(*jstr(gh_meta,"language")){circle(sx+3,sy+7,3,C(FORGE,a));text_style(jstr(gh_meta,"language"),sx+8,sy,10,800,0,C(TH.ink_soft,a),AL_LEFT);}
+    }
     }
     a=tabs_content(&gh_nav,a);
     if(gh_tab==2&&gh_meta){

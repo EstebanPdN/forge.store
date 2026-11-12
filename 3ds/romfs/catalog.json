@@ -8,10 +8,10 @@
     "subtitle": { "es": "Tienda de ports para Nintendo 3DS", "en": "Nintendo 3DS port store" },
     "revision": 2,
     "updated": "2026-11-11",
-    "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/main/catalog/forge-store.json",
+    "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/catalog/forge-store.json",
     "site": "https://estebanpdn.github.io/",
     "sources": [
-      { "id": "forge", "title": "Esteban's Forge", "type": "forge-store", "url": "https://raw.githubusercontent.com/EstebanPdN/forje.store/main/catalog/forge-store.json", "enabled": true },
+      { "id": "forge", "title": "Esteban's Forge", "type": "forge-store", "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/catalog/forge-store.json", "enabled": true },
       {
         "id": "universal-db",
         "title": "Universal-DB",

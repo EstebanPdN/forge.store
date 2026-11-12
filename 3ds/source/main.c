@@ -19,6 +19,8 @@
 #include "universal_sync.h"
 #include "dsp_dump.h"
 #include "debug_dump.h"
+#include "store_update.h"
+#include "github_prefetch.h"
 
 #define BOOT_FADE 0.7f  // black -> background, before the intro starts
 
@@ -191,7 +193,7 @@ static void statusbar_draw(void) {
     float secw=ceilf(text_style_w(sec,15,400,FONT_BRAND));
     float bx=37, divx=bx+brand+4, sx=divx+5;
     float lw=fminf(sx+secw+12-8, 240);
-    rrect(8,y,lw,SB_H,SB_H/2,rgb(TH.glass,TH.glass_a*a));
+    rrect(8,y,lw,SB_H,SB_H/2,rgb(TH.glass,0.9f*a));
     draw_img(ui_img("sb-emblem"),13,y+3,1,1,a);
     float ty=cy-line_h(15)/2, base=ty+text_base(15,750,FONT_BRAND);
     text_style("forge.",bx,ty,15,750,FONT_BRAND,ink,AL_LEFT);
@@ -206,7 +208,7 @@ static void statusbar_draw(void) {
     float rw=11+(dl?13+9:0)+16+9+cw+11+pw+5+24+10;
     float rx=TOP_W-8-rw, tx=rx+11;
     float rcy=y+SB_RIGHT_H/2.0f;
-    rrect(rx,y,rw,SB_RIGHT_H,SB_RIGHT_H/2.0f,rgb(TH.glass,TH.glass_a*a));
+    rrect(rx,y,rw,SB_RIGHT_H,SB_RIGHT_H/2.0f,rgb(TH.glass,0.9f*a));
     float dy=text_ink_top(sys.clock,rcy,SB_DIGITS,600,FONT_UI);
     if(dl){ draw_icon("download",tx+6.5f,cy,13,rgb(FORGE,a)); tx+=13+9; }
     wifi_draw(tx,cy-6,sys.wifi,a); tx+=16+9;
@@ -244,6 +246,7 @@ static void perf_frame(float real_dt, float cpu_ms) {
         fprintf(test_log, "t=%5.1f fps=%4.1f cpu=%4.1fms peak=%4.1fms gpu_peak=%4.1fms late=%d linear_free=%luKB\n", NOW, perf.fps, perf.cpu,
                 perf.cpu_peak, perf.gpu_peak, perf.late, linearSpaceFree() / 1024);
         audio_log(test_log);
+        fprintf(test_log,"store update state=%d progress=%.3f\n",store_update_state(),store_update_progress());
         if (media_busy()) fprintf(test_log, "media phase=%s bytes=%u/%u\n", media_verifying() ? "verify" : "download", media_received(), media_total());
         if (video_active()) fprintf(test_log, "video time=%.3f paused=%d muted=%d\n", video_time(), video_paused(), video_muted());
         fflush(test_log);
@@ -455,6 +458,38 @@ static void save_shot(const char *name, const u8 *top, const u8 *bot) {
     free(buf);
 }
 
+// Startup gate owns the screens until a bounded update check has finished.
+static bool update_gate=true;
+static float update_settled=-1, intro_epoch;
+static StoreUpdateState update_seen=(StoreUpdateState)-1;
+static void update_screen(bool top) {
+    scenes_draw_background(top);
+    if(top){C2D_Image emblem=ui_img("sb-emblem");float k=24.f/emblem.subtex->width;draw_img(emblem,188,66,k,k,1);}
+    if(!top){text_style("forge.store",160,110,18,750,FONT_BRAND,rgb(TH.ink,.8f),AL_CENTER);return;}
+    StoreUpdateState state=store_update_state();
+    bool working=state==UPDATE_CHECKING||state==UPDATE_DOWNLOADING||state==UPDATE_INSTALLING;
+    if(working)ring(200,78,20,2.5f,NOW*3,NOW*3+4.6f,rgb(FORGE,1));
+    else {circle(200,78,22,rgb(state==UPDATE_CURRENT||state==UPDATE_DONE?MINT:AMBER,.15f));draw_icon(state==UPDATE_CURRENT||state==UPDATE_DONE?"check":"warn",200,78,22,rgb(state==UPDATE_CURRENT||state==UPDATE_DONE?MINT:AMBER,1));}
+    const char *keys[]={"update.checking","update.current","update.offline","update.downloading","update.installing","update.done","update.failed"};
+    const char *label=T(keys[state]);
+    float h=text_wrap_h_style(label,14,700,360);
+    // Wrapped and centered as a block; short localized states remain one line.
+    if(h<=line_h(14))text_style(label,200,116,14,700,0,rgb(TH.ink,1),AL_CENTER);
+    else text_wrap_style(label,20,116,14,700,rgb(TH.ink,1),360);
+    if(state==UPDATE_DOWNLOADING||state==UPDATE_INSTALLING){float p=clampf(store_update_progress(),0,1);rrect(60,166,280,5,2.5f,rgb(TH.surface3,1));rrect(60,166,fmaxf(1,280*p),5,2.5f,rgb(FORGE,1));char percent[20];snprintf(percent,sizeof percent,"%d %%",(int)(p*100));text(percent,200,181,11,rgb(TH.ink_soft,1),AL_CENTER);}
+}
+static void update_boot(void){
+    store_update_poll();
+    StoreUpdateState state=store_update_state();
+    if(state!=update_seen){update_seen=state;sfx(state==UPDATE_CURRENT||state==UPDATE_DONE?"complete":state==UPDATE_DOWNLOADING?"download":"page");}
+    bool terminal=state==UPDATE_CURRENT||state==UPDATE_OFFLINE||state==UPDATE_DONE||state==UPDATE_FAILED;
+    if(!terminal)return;
+    if(update_settled<0)update_settled=fmaxf(NOW,.8f);
+    if(NOW<update_settled+1.15f)return;
+    if(state==UPDATE_DONE){store_update_restart();quit_req=true;return;}
+    update_gate=false;intro_epoch=NOW;scenes_intro_restart(BOOT_FADE);
+}
+
 static void render(void) {
     float slider = osGet3DSliderState();
     text_frame();
@@ -464,16 +499,15 @@ static void render(void) {
         C2D_SceneBegin(t);
         // Positive depth pops out of the screen: the left image moves right.
         EYE = slider > 0 ? (eye ? -slider : slider) : 0;
-        scenes_draw_top();
-        statusbar_draw();
-        toasts_draw();
+        if(update_gate)update_screen(true);
+        else {scenes_draw_top();statusbar_draw();toasts_draw();}
         if (show_perf) perf_draw();
         if (cover > 0) rect(0, 0, TOP_W, SCR_H, C2D_Color32f(0, 0, 0, cover));
     }
     EYE = 0;
     C2D_TargetClear(bottom, C2D_Color32(0, 0, 0, 255));
     C2D_SceneBegin(bottom);
-    scenes_draw_bottom();
+    if(update_gate)update_screen(false);else scenes_draw_bottom();
     if (cover > 0) rect(0, 0, BOT_W, SCR_H, C2D_Color32f(0, 0, 0, cover));
     u8 *ft = NULL, *fb = NULL;
     if (shot_name[0]) {
@@ -541,6 +575,7 @@ int main(int argc, char **argv) {
     audio_load_rest();
     install_init();
     scenes_init(BOOT_FADE);
+    store_update_start(argc>0?argv[0]:NULL);
     catalog_request_banners();  // banners decode in the background while the intro plays
     status_refresh();
     hidSetRepeatParameters(20, 5);
@@ -588,14 +623,14 @@ int main(int argc, char **argv) {
         audio_update();
         video_pump();
         media_pump();
-        media_set_paused(install_active()!=NULL);
-        scenes_update();
+        media_set_paused(install_active()!=NULL||scenes_reader_active());
+        if(update_gate)update_boot();else scenes_update();
         if (IN.touching) IN.last_x = IN.tx, IN.last_y = IN.ty;
         toasts_update();
         status_refresh();
         float want = scenes_statusbar() ? 1 : 0;
         sb_a = clampf(sb_a + (want - sb_a) * (1 - powf(.0005f, DT)), 0, 1);
-        cover = fmaxf(1 - ease_inout(span(NOW, 0, BOOT_FADE)), scenes_exit_fade());
+        cover = update_gate ? (update_settled<0?1-ease_inout(span(NOW,0,.3f)):ease_inout(span(NOW,update_settled+.75f,.4f))) : fmaxf(1-ease_inout(span(NOW,intro_epoch,BOOT_FADE)),scenes_exit_fade());
 
         // FrameBegin now precedes updates, so citro3d includes both update and drawing.
         debug_beat("render");
@@ -612,8 +647,10 @@ int main(int argc, char **argv) {
     // may wait for the GPU or for a worker without a limit ("Closing software..." forever).
     BG_HOLD = false;
     debug_exit_trace(NULL);
-    EXIT_DEADLINE_MS = osGetTime() + (install_active() ? 15000 : 3000);
+    EXIT_DEADLINE_MS = osGetTime() + (install_active() || store_update_state()==UPDATE_INSTALLING ? 15000 : 3000);
     // First everyone is told to stop, so the workers wind down at the same time...
+    github_prefetch_stop();
+    store_update_stop();
     media_shutdown();
     universal_sync_stop();
     remote_image_stop();
@@ -630,6 +667,8 @@ int main(int argc, char **argv) {
     debug_exit_trace("media");
     scenes_exit();
     debug_exit_trace("scenes");
+    github_prefetch_exit();
+    store_update_exit();
     install_exit();
     debug_exit_trace("install");
     saves_flush();

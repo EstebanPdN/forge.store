@@ -36,21 +36,23 @@ launch and sustained audio/video performance still need confirmation.
 
 This project was developed with the help of [OpenAI Codex](https://openai.com/codex/) and [Claude Code](https://claude.com/product/claude-code). Learn more about the development process [here](AI_DEVELOPMENT.md).
 
-The repository is named **`forje.store`**. The application’s established name, SD directory,
-title ID and product code remain **forge.store** for compatibility.
-
 ## Download and installation
 
 | Format | Download | Where it goes |
 | --- | --- | --- |
-| CIA | [forge-store.cia](https://raw.githubusercontent.com/EstebanPdN/forje.store/main/builds/3ds/forge-store.cia) | Install with FBI to the HOME Menu. |
-| 3DSX | [forge-store.3dsx](https://raw.githubusercontent.com/EstebanPdN/forje.store/main/builds/3ds/forge-store.3dsx) | Copy to `/3ds/forge-store/` and open in Homebrew Launcher. |
+| CIA | [forge-store.cia](https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.cia) | Install with FBI to the HOME Menu. |
+| 3DSX | [forge-store.3dsx](https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.3dsx) | Copy to `/3ds/forge-store/` and open in Homebrew Launcher. |
 | Integrity | [SHA256SUMS](builds/3ds/SHA256SUMS) · [build manifest](builds/3ds/manifest.json) | Verify the downloaded file before installing. |
 
 On first entering the store, the app automatically downloads the **16.04 MB Store resources
 package** in the background. Downloads shows one package with combined progress. Each video
 becomes playable after its own file passes SHA-256 verification; navigation remains available.
 No account or token is needed. See [Installation](docs/INSTALLING.md) for controls and cache management.
+
+Every launch checks for a store update before the introduction. Newer builds download and
+install automatically; an unavailable check continues to the store. This build enables that
+updater, so older installations need one manual update first. Public GitHub pages and common
+images are also cached and refreshed in the background. See [Updates and cache](docs/UPDATES-AND-CACHE.md).
 
 Game installations are separate from this package. Some ports require files supplied by the
 player; no ROMs, game data archives, DSP firmware, saves or memory dumps are included here.
@@ -108,13 +110,14 @@ for dependencies, asset generation and test commands.
 - [Documentation index](docs/README.md) — installation, architecture, media and maintenance.
 - [Architecture](docs/ARCHITECTURE.md) — module ownership, data flow and thread lifetimes.
 - [Media pipeline](docs/MEDIA.md) — HandBrake encoding, format, download contract and verification.
+- [Updates and cache](docs/UPDATES-AND-CACHE.md) — startup updates, incremental GitHub requests and prefetch.
 - [Verification](docs/VERIFICATION.md) — what was tested and what still needs hardware.
 - [Asset credits](docs/ASSET-CREDITS.md) · [Third-party notices](docs/legal/THIRD_PARTY_NOTICES.md).
 - [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md).
 
 ## Community and bug reports
 
-Use [GitHub Issues](https://github.com/EstebanPdN/forje.store/issues) or
+Use [GitHub Issues](https://github.com/EstebanPdN/forge.store/issues) or
 [join Discord](https://discord.gg/BjbzfRYpV). Include the build hash, console model,
 CIA/3DSX format and steps to reproduce. Do not attach RAM/VRAM dumps, tokens, ROMs or
 personal SD contents to a public report.

@@ -4,6 +4,44 @@ Publication candidate: **2026-11-11**, native C implementation plus web V2. This
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
 
+## Gallery, startup and cache refinement
+
+The current build includes the gallery corrections, 90% Home/status opacity, Settings gear,
+increased audio mix, automatic startup updates and shared GitHub cache/prefetch. Its evidence
+is recorded separately in [refinement.json](verification/refinement.json).
+
+- The public CIA and 3DSX compile with devkitARM GCC 16.1.0. The existing SDK `crtn.o`
+  GNU-stack linker warning remains; no new source compilation warning was reported.
+- Twenty production-source updater scenarios passed ASan/UBSan, including malformed metadata,
+  deadlines, invalid size/hash, incomplete downloads, wrong title IDs, AM short writes/finalize
+  failures and valid CIA/3DSX paths. AM operations are mocked; this is not physical self-update evidence.
+- HTTP cache tests passed reset retry, zero-network reuse, conditional 304, changed-body and
+  offline fallback cases. Four concurrent readers/writers made 24 requests under TSan without
+  a reported race. Freshness timestamps, not SD filesystem modification times, drive expiry.
+- Regenerated fonts passed all 48,675 glyph/pixel checks. The production text harness passed
+  1,343,072 pair/phase cases, 1,379,540 strings and 234,836 wrapped lines under ASan/UBSan.
+- The unchanged installer transaction harness passed 22 scenario groups; GitHub markup/flow,
+  table/release layout and raster decoder checks also passed during this refinement.
+- An isolated Old 3DS profile ran the packaged public executable through startup, Home in
+  both themes, trailer controls, gallery transitions, Castle of Hyrule, GitHub profile/README,
+  return from Home with cached badges, and dual-screen playback. Fifteen captures retain the
+  exact executable/source hashes. The script completed normally; sampled music counters
+  remained at zero underruns. Videos were explicitly seeded with the seven verified resources.
+- A preceding New 3DS candidate completed the GitHub cache/navigation run. It exposed the
+  loss of decoded small images on return, which the final candidate fixes with a 128 KiB warm
+  cache. Earlier candidate screenshots do not substitute for final-build evidence.
+- Code Atlas checked the web gallery at native screen size. Unaligned, unmasked comparisons
+  of the whole lower screen measured 84.22% of trailer pixels and 79.33% of Castle pixels within
+  RGB tolerance 16/255. Exact matches were 20.28% and 17.02%; these are two scenarios, not a
+  global parity score. Text rasterization, strip layout and live download-size metadata differ.
+- All seven resource URLs under the corrected repository name were downloaded anonymously
+  and matched their complete SHA-256 hashes and combined 16,044,949-byte size.
+
+The startup rendering regression was reproduced with the new startup-only drawing path and
+disappeared after reusing the shared scene background renderer. Final Home captures show the
+correct text colours, rounded corners and badges while retaining 90% opacity. The precise
+low-level GPU cause is not established; the evidence supports the shared-renderer correction.
+
 ## Automated checks run for this candidate
 
 | Area | Result | Scope |
@@ -72,7 +110,7 @@ explicit limitations; they are not silently treated as successful.
 
 ## Publication verification
 
-The public repository is `EstebanPdN/forje.store`; no release was created. All seven pinned
+The public repository is `EstebanPdN/forge.store`; no release was created. All seven pinned
 raw resource URLs were downloaded over anonymous HTTPS and matched the manifest's complete
 SHA-256 hashes and sizes (16,044,949 bytes total). A clean `git archive` checkout also built
 the native CIA and 3DSX using the included RomFS, without local intermediate assets.

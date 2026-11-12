@@ -1,5 +1,6 @@
 #include "network.h"
 #include "reader_cache.h"
+#include "http_cache.h"
 #include <mbedtls/x509.h>
 #include <time.h>
 #include <sys/stat.h>
@@ -61,82 +62,13 @@ typedef struct {
 } ReaderRequest;
 static ReaderRequest requests[READER_SLOTS];
 static bool request_cancelled(ReaderRequest *r) { return __atomic_load_n(&r->cancel, __ATOMIC_ACQUIRE); }
-static size_t receive(char *ptr, size_t size, size_t count, void *ctx) {
-    ReaderRequest *r = ctx;
-    if (size && count > SIZE_MAX / size) return 0;
-    size_t n = size * count;
-    if (request_cancelled(r)) return 0;
-    if (n > READER_LIMIT - r->length) { r->limited = true; return 0; }
-    if (r->length + n + 1 > r->capacity) {
-        size_t cap = r->capacity ? r->capacity * 2 : 16384;
-        if (cap < r->length + n + 1) cap = r->length + n + 1;
-        if (cap > READER_LIMIT + 1) cap = READER_LIMIT + 1;
-        char *p = realloc(r->body, cap);
-        if (!p) return 0;
-        r->body = p; r->capacity = cap;
-    }
-    memcpy(r->body + r->length, ptr, n);
-    r->length += n; r->body[r->length] = 0;
-    return n;
-}
-static size_t read_header(char *ptr, size_t size, size_t count, void *ctx) {
-    ReaderRequest *r = ctx; size_t n = size * count;
-    const char key[] = "x-ratelimit-reset:";
-    if (n > sizeof key - 1 && !strncasecmp(ptr, key, sizeof key - 1)) {
-        char value[32]; size_t len = n - (sizeof key - 1);
-        if (len >= sizeof value) len = sizeof value - 1;
-        memcpy(value, ptr + sizeof key - 1, len); value[len] = 0;
-        r->reset = strtoll(value, NULL, 10);
-    }
-    return n;
-}
-static int cancelled(void *p, curl_off_t a, curl_off_t b, curl_off_t c, curl_off_t d) { return request_cancelled(p); }
-static void read_thread(void *ctx) {
-    ReaderRequest *r = ctx;
-    char url[320], cache[192], err[CURL_ERROR_SIZE] = {0};
-    unsigned char digest[32]; char hash[65];
-    mbedtls_sha256_ret((const unsigned char *)r->path, strlen(r->path), digest, 0);
-    for (int i = 0; i < 32; i++) snprintf(hash + i * 2, 3, "%02x", digest[i]);
-    snprintf(cache, sizeof cache, DATA_DIR "/gh-%s-%d.cache", hash, r->raw);
-    time_t now = time(NULL);
-    // ctrulib's SD stat does not supply st_mtime. Keep TTL inside the file.
-    r->body=reader_cache_load(cache,(uint64_t)now,r->ttl,READER_LIMIT,&r->length);
-    if(r->body){r->capacity=r->length+1;goto done;}
-    snprintf(url, sizeof url, "https://api.github.com/%s", r->path);
-    CURL *c = curl_easy_init();
-    if (c) {
-        network_options(c);
-        curl_easy_setopt(c, CURLOPT_URL, url);
-        struct curl_slist *headers = NULL;
-        headers = curl_slist_append(headers, r->raw ? "Accept: application/vnd.github.raw+json" : "Accept: application/vnd.github+json");
-        curl_easy_setopt(c, CURLOPT_HTTPHEADER, headers);
-        curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, receive);
-        curl_easy_setopt(c, CURLOPT_WRITEDATA, r);
-        curl_easy_setopt(c, CURLOPT_HEADERFUNCTION, read_header);
-        curl_easy_setopt(c, CURLOPT_HEADERDATA, r);
-        curl_easy_setopt(c, CURLOPT_ERRORBUFFER, err);
-        curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
-        curl_easy_setopt(c, CURLOPT_XFERINFOFUNCTION, cancelled);
-        curl_easy_setopt(c, CURLOPT_XFERINFODATA, r);
-        CURLcode result = curl_easy_perform(c);
-        long code = 0; curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &code);
-        if (result != CURLE_OK) {
-            network_error(r->error, sizeof r->error, err[0] ? err : curl_easy_strerror(result));
-            if(r->limited)snprintf(r->error,sizeof r->error,"%s",T("native.readerLimit"));
-            if(code==404)snprintf(r->error,sizeof r->error,"%s",T("native.gh404"));
-            if (code == 403 || code == 429) {
-                struct tm reset; gmtime_r(&r->reset, &reset);
-                char when[32]; strftime(when, sizeof when, "%H:%M UTC", &reset);
-                snprintf(r->error, sizeof r->error, "GitHub rate limit. Retry %s.", r->reset ? when : "later");
-            }
-            free(r->body); r->body = NULL; r->length = r->capacity = 0;
-        } else if (r->body && !request_cancelled(r)) {
-            reader_cache_save(cache,(uint64_t)now,r->body,r->length,READER_LIMIT);
-        }
-        curl_slist_free_all(headers); curl_easy_cleanup(c);
-    }else snprintf(r->error,sizeof r->error,"%s",T("native.networkInit"));
-done:
-    __atomic_store_n(&r->ready, true, __ATOMIC_RELEASE);
+static bool reader_cancelled(void *ctx){return request_cancelled(ctx);}
+static void read_thread(void *ctx){
+    ReaderRequest *r=ctx;char url[320];snprintf(url,sizeof url,"https://api.github.com/%s",r->path);
+    const char *accept=r->raw?"application/vnd.github.raw+json":"application/vnd.github+json";
+    bool refresh=!http_cache_fresh(url,accept,r->ttl);
+    r->body=http_cache_get(url,accept,READER_LIMIT,refresh,reader_cancelled,r,&r->length,r->error,sizeof r->error);
+    __atomic_store_n(&r->ready,true,__ATOMIC_RELEASE);
 }
 bool reader_slot_busy(int slot) { return slot >= 0 && slot < READER_SLOTS && requests[slot].thread; }
 bool reader_request_slot_ttl(int slot, const char *path, bool raw,u32 ttl) {
