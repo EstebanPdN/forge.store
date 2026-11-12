@@ -1,8 +1,15 @@
 # Verification record
 
-Publication candidate: **2026.11.12.11**, native C implementation. This is a development
+Publication candidate: **2026.11.12.12**, native C implementation. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## HOME facing anchor candidate — 2026.11.12.12
+
+Physical-console feedback confirms that version 11 still orbits. This candidate adds an
+identity YAxial parent above the local medallion. The serialized-resource validator checks
+that hierarchy. Compilation and eleven banner checks pass; actual HOME propagation and
+movement are not verified. Publication supplies a test candidate, not a confirmed fix.
 
 ## HOME local pivot — 2026.11.12.11
 

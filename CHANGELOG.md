@@ -1,5 +1,9 @@
 # Changelog
 
+## HOME facing anchor candidate — 2026.11.12.12
+
+- Separate the medallion’s local wobble from HOME scene rotation with a camera-facing parent. This candidate passes resource checks; physical HOME behavior remains unverified.
+
 ## HOME medallion pivot — 2026.11.12.11
 
 - Center the medallion geometry on its own pivot with a constant position. Match the welcome screen’s 5.2-second ±24° ease-in-out wobble.

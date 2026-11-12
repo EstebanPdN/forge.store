@@ -97,6 +97,11 @@ def main():
         return primitive([transform(p) for p in ps],ns,None,idx,m,local=True)
     coin=node('Medallion',[disc(3.25,.43,face),ring(3.65,.26,3.25,.43,rim),ring(3.65,-.26,3.65,.26,edge),disc(3.65,-.26,edge,True)])
     g['nodes'][coin]['translation']=[-8.61,1,.735]
+    # Cancel HOME's scene rotation before applying the local medallion transform.
+    anchor=len(g['nodes'])
+    g['nodes'].append(dict(name='MedallionFacing',children=[coin]))
+    g['scenes'][0]['nodes'].remove(coin)
+    g['scenes'][0]['nodes'].append(anchor)
     # Rotate the rigid coin about its own center, without vertical bob or scale squash.
     times=[i/60 for i in range(313)];rotations=[];positions=[]
     for t in times:
@@ -122,6 +127,7 @@ def main():
     from cgfx.mtob import ColorFloat,FragmentLightingFlags,MTOBFlag,ConstantColorSource
     native=c.convert_gltf(gltflib.GLTF.load(str(out/'banner.gltf'),load_file_resources=True));model=native.data.models['COMMON']
     model.skeleton.bones.dict.regenerate()
+    model.skeleton.bones['MedallionFacing'].billboard_mode=BillboardMode.YAxial
     for mesh in model.meshes.data.contents:
         shape=model.shapes.data.contents[mesh.shape_index];sets=shape.primitive_sets.data.contents
         assert len(sets)==1 and sets[0].skinning_mode==0

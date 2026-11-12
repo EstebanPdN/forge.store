@@ -5,6 +5,9 @@ English wordmark and subtitle, and an oval background that fades from 35% of its
 radius to its transparent edge. `3ds/meta/banner.png` is the previous flat reference.
 The application screens and runtime code are unchanged.
 
+Version 2026.11.12.12 adds an identity `MedallionFacing` parent using YAxial billboarding
+to isolate the child from HOME scene rotation. This remains a hardware test candidate.
+
 The medallion geometry is centered at its own local origin, with a fixed node position.
 It uses the welcome screen's 5.2-second ±24° Y rotation and cubic-bezier(.42,0,.58,1)
 easing, sampled at 60 Hz. There is no animated translation compensation, vertical bob

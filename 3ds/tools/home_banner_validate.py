@@ -161,7 +161,9 @@ def inspect(data):
             if own_name != key.decode():
                 continue
             assert p+216 <= len(data), 'bone bounds'
-            bones[key.decode()] = dict(mode=u32(p+212), trs=struct.unpack_from('<9f', data, p+32))
+            bones[key.decode()] = dict(mode=u32(p+212), trs=struct.unpack_from('<9f', data, p+32), parent=name(p+16+struct.unpack_from('<i',data,p+16)[0]) if struct.unpack_from('<i',data,p+16)[0] else '')
+    assert bones.get('MedallionFacing',{}).get('mode') == 5, 'missing HOME-facing anchor'
+    assert bones.get('Medallion',{}).get('parent') == 'MedallionFacing', 'medallion must inherit facing anchor'
     meshes = []
     for p in range(0, len(data)-116, 4):
         if data[p:p+8] != b'\0\0\0\x01SOBJ':
