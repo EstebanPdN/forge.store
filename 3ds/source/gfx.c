@@ -221,7 +221,7 @@ typedef struct __attribute__((packed)) {
     u8 w, h;
     s8 ox, oy;
     u16 adv;  // 1/64 px
-    u8 page, pad;
+    u8 page, ink_insets; // left/right low-coverage fringe; two 4-bit insets
 } Glyph;
 
 typedef struct {
@@ -230,6 +230,8 @@ typedef struct {
     float size, ascent, descent;
     u32 first, count;
     int line, base;  // line box height and baseline, whole pixels
+    float mono_advance;
+    int mono_cell;
     s32 ascii[96];
 } Style;
 
@@ -317,14 +319,28 @@ static bool fonts_load(void) {
     }
     glyphs = malloc(head.nglyphs * sizeof(Glyph));
     if (!glyphs || fread(glyphs, sizeof(Glyph), head.nglyphs, f) != head.nglyphs) goto done;
-    for (u32 g = 0; g < head.nglyphs; g++) if (glyphs[g].page >= head.npages) goto done;
+    for (u32 g = 0; g < head.nglyphs; g++) {
+        const Glyph *v = &glyphs[g];
+        if (v->page >= head.npages || (v->w && (v->ink_insets & 15) + (v->ink_insets >> 4) >= v->w)) goto done;
+    }
     for (int i = 0; i < head.nstyles; i++) {
         Style *st = &styles[i];
+        int left = 0, right = 0;
+        st->mono_advance = 0;
         for (u32 g = st->first; g < st->first + st->count; g++) {
             if (g > st->first && glyphs[g-1].cp >= glyphs[g].cp) goto done;
-            if (st->kind == 0 && glyphs[g].cp >= 32 && glyphs[g].cp < 128)
+            if (st->kind == 0 && glyphs[g].cp >= 32 && glyphs[g].cp < 128) {
                 st->ascii[glyphs[g].cp - 32] = (s32)g;
+                const Glyph *v = &glyphs[g];
+                if (v->cp == '0') st->mono_advance = v->adv / 64.f;
+                if (v->w) {
+                    int l = v->ox + (v->ink_insets & 15), r = v->ox + v->w - (v->ink_insets >> 4);
+                    if (l < left) left = l;
+                    if (r > right) right = r;
+                }
+            }
         }
+        st->mono_cell = (int)fmaxf(ceilf(st->mono_advance), right - left + 1);
     }
     u16 nicons = 0;
     if (fread(&nicons, 2, 1, f) != 1 || nicons > 64) goto done;
@@ -380,8 +396,13 @@ static const Glyph *glyph_exact(const Style *st, u32 cp) {
 }
 
 /* The same fallback must determine width, wrapping, alignment and drawn ink. */
+static const Style *font_style(float size, int weight, int family);
 static const Glyph *glyph(const Style *st, u32 cp) {
     const Glyph *g = glyph_exact(st, cp);
+    // DM Sans has a small brand subset. Section names still need Japanese/Cyrillic
+    // coverage from the existing UI atlas, aligned to the same baseline.
+    if (!g && st->family == FONT_BRAND)
+        g = glyph_exact(font_style(st->size,st->weight,FONT_UI),cp);
     if (!g) g = glyph_exact(st, 0xfffd);
     if (!g) g = glyph_exact(st, '?');
     return g;
@@ -421,10 +442,46 @@ static float kern(const Style*st,u32 a,u32 b){
     return l<kern_count[si]&&kerning[si][l].left==a&&kerning[si][l].right==b?kerning[si][l].delta/64.f:0;
 }
 
-/** Width of [s, end) in a style; draws it too when `t` is given (x, y = whole pixels).
- *  `spacing` is CSS letter-spacing in px. */
-static float run_sp(const Style *st, const char *s, const char *end, int x, int y, const C2D_ImageTint *t, float spacing) {
-    float pen = 0;u32 previous=0;
+typedef struct {
+    float pen;
+    int right, extent, word_gap;
+    u32 previous;
+    bool ink;
+} TextCursor;
+
+/** Shared placement for draw, measurement and wrapping. The 32/255 coverage bounds
+ * ignore only the faint antialias fringe; the original glyph pixels are untouched. */
+static int text_step(const Style *st, TextCursor *c, u32 cp, const Glyph *g, float spacing, bool pixel_gap) {
+    float pos = c->pen + kern(st,c->previous,cp);
+    int origin = (int)floorf(pos + .5f);
+    if (pixel_gap && g->w && g->adv && c->ink) {
+        int need = c->right + (c->word_gap ? c->word_gap : 1) - g->ox - (g->ink_insets & 15);
+        if (origin < need) pos += need - origin, origin = need;
+    }
+    if (g->w) {
+        int right = origin + g->ox + g->w - (g->ink_insets >> 4);
+        if (!c->ink || right > c->right) c->right = right;
+        int extent = origin + g->ox + g->w;
+        if (extent > c->extent) c->extent = extent;
+        c->ink = true;
+        c->word_gap = 0;
+    }
+    float advance = adv(g);
+    if (pixel_gap && (cp == ' ' || cp == 0xa0)) {
+        c->word_gap = (int)ceilf(st->size * .3f);
+        advance = fmaxf(advance,c->word_gap);
+    }
+    if (pixel_gap && st->family == FONT_MONO && advance && st->mono_advance > 0)
+        advance = ceilf((advance - .01f) / st->mono_advance) * st->mono_cell;
+    c->pen = pos + advance + spacing;
+    c->previous = cp;
+    return origin;
+}
+
+static float text_extent(const TextCursor *c) { return fmaxf(c->pen, c->extent); }
+
+static float run_sp_mode(const Style *st, const char *s, const char *end, int x, int y, const C2D_ImageTint *t, float spacing, bool pixel_gap) {
+    TextCursor c = {0};
     while (s < end && *s) {
         u32 cp;
         s += utf8(s, &cp);
@@ -432,11 +489,15 @@ static float run_sp(const Style *st, const char *s, const char *end, int x, int 
         if (cp == '\r' || cp == 0x200d || (cp >= 0xfe00 && cp <= 0xfe0f)) continue;
         const Glyph *g = glyph(st, cp);
         if (!g) continue;
-        pen+=kern(st,previous,cp);previous=cp;
-        if (t && g->w) draw_glyph(g, x + (int)floorf(pen + 0.5f) + g->ox, y + st->base + g->oy, 1, t);
-        pen += adv(g) + spacing;
+        int origin = text_step(st,&c,cp,g,spacing,pixel_gap);
+        if (t && g->w) draw_glyph(g,x+origin+g->ox,y+st->base+g->oy,1,t);
     }
-    return pen;
+    return pixel_gap ? fmaxf(c.pen, c.extent + spacing) : c.pen;
+}
+
+/** Width of [s, end); drawing and measuring use exactly the same pixel clearance. */
+static float run_sp(const Style *st, const char *s, const char *end, int x, int y, const C2D_ImageTint *t, float spacing) {
+    return run_sp_mode(st,s,end,x,y,t,spacing,true);
 }
 
 static float run(const Style *st, const char *s, const char *end, int x, int y, const C2D_ImageTint *t) { return run_sp(st, s, end, x, y, t, 0); }
@@ -462,6 +523,17 @@ float text_ex_w(const char *s, float size, int weight, int family, float spacing
 
 float text_style(const char *s, float x, float y, float size, int weight, int family, u32 color, int align) {
     return text_ex(s, x, y, size, weight, family, 0, color, align);
+}
+
+// The separately approved status numerals retain their existing font metrics and positions.
+float text_status_w(const char *s, float size) {
+    return s ? run_sp_mode(font_style(size,600,FONT_UI),s,s+strlen(s),0,0,NULL,0,false) : 0;
+}
+void text_status(const char *s, float x, float y, float size, u32 color) {
+    if (!s || !(color >> 24)) return;
+    C2D_ImageTint tint;
+    C2D_PlainImageTint(&tint,color,1);
+    run_sp_mode(font_style(size,600,FONT_UI),s,s+strlen(s),px(x),px(y),&tint,0,false);
 }
 
 float text(const char *s, float x, float y, float size, u32 color, int align) { return text_style(s, x, y, size, FONT_WEIGHT_BODY, FONT_UI, color, align); }
@@ -507,6 +579,23 @@ float text_caps(const char *s, float x, float y, float size, float spacing, u32 
     C2D_PlainImageTint(&t, color, 1.0f);
     run_sp(st, up, end, px(x), px(y), &t, spacing);
     return st->line;
+}
+
+void text_caps_fit(const char *s,float x,float y,float size,float spacing,u32 color,float width) {
+    char up[160];upper_utf8(up,sizeof up,s?s:"");
+    size_t n=strlen(up);
+    if(text_ex_w(up,size,900,FONT_UI,spacing)>width) {
+        for(;;) {
+            if(n+4<=sizeof up) {
+                memcpy(up+n,"…",4);
+                if(text_ex_w(up,size,900,FONT_UI,spacing)<=width)break;
+            }
+            if(!n){up[0]=0;break;}
+            do{n--;}while(n&&((unsigned char)up[n]&0xc0)==0x80);
+            up[n]=0;
+        }
+    }
+    text_ex(up,x,y,size,900,FONT_UI,spacing,color,AL_LEFT);
 }
 float text_style_w(const char *s, float size, int weight, int family) { return s ? run(font_style(size, weight, family), s, s + strlen(s), 0, 0, NULL) : 0; }
 void text_dyn(const char *s, float x, float y, float size, u32 color, int align) { text_style(s, x, y, size, FONT_WEIGHT_BODY, FONT_UI, color, align); }
@@ -579,39 +668,44 @@ static WEntry *wrap_get(const char *s, const Style *st, float width) {
             e->begin = realloc(e->begin, cap * sizeof(size_t));                      \
             e->end = realloc(e->end, cap * sizeof(size_t));                          \
         }                                                               \
-        e->begin[e->lines] = (size_t)(b), e->end[e->lines++] = (size_t)(en); \
+        size_t begin_ = (size_t)(b), end_ = (size_t)(en);                 \
+        while (end_ > begin_ && s[end_-1] == ' ') end_--;                 \
+        e->begin[e->lines] = begin_, e->end[e->lines++] = end_;            \
     } while (0)
     size_t start = 0;
     int space = -1;
-    float x = 0, after = 0;u32 previous=0;
+    TextCursor cursor = {0};
     for (size_t i = 0; i < len;) {
         u32 cp;
         int n = utf8(s + i, &cp);
         if (cp == '\n') {
             PUSH(start, i);
-            start = i + n, x = after = 0, space = -1;previous=0;
+            start = i + n, space = -1;
+            cursor = (TextCursor){0};
             i += n;
             continue;
         }
         if (cp == '\r' || cp == 0x200d || (cp >= 0xfe00 && cp <= 0xfe0f)) { i += n; continue; }
         const Glyph *g = glyph(st, cp);
-        float adjustment=kern(st,previous,cp);
-        float gw = (g ? adv(g) : 0)+adjustment;previous=cp;
+        TextCursor next = cursor;
+        if (g) text_step(st,&next,cp,g,0,true);
         if (cp == ' ') {
-            space = (int)i, after = 0, x += gw, i += n;
+            space = (int)i, cursor = next, i += n;
             continue;
         }
-        if (x + gw > width && i > start) {
+        if (text_extent(&next) > width && i > start) {
             if (space > (int)start && cp < 0x2E80) {
                 PUSH(start, space);
-                start = space + 1, x = after;
+                start = space + 1;
             } else {  // CJK or one very long word: break before this glyph
                 PUSH(start, i);
-                start = i, x = 0;gw-=adjustment;
+                start = i;
             }
-            space = -1, after = 0;
+            // Replay the new line from its actual origin: no previous-line kerning/rounding.
+            i = start; space = -1; cursor = (TextCursor){0};
+            continue;
         }
-        x += gw, after += gw, i += n;
+        cursor = next, i += n;
     }
     PUSH(start, len);
 #undef PUSH

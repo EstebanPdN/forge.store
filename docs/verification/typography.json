@@ -1,0 +1,125 @@
+{
+  "date": "2026-11-11",
+  "files": {
+    "forge-store.cia": {
+      "bytes": 44659648,
+      "sha256": "95d7fa82a518dfc7e69f316529fe57b2fd1353177e7d7a22a828c22783685906"
+    },
+    "forge-store.3dsx": {
+      "bytes": 45206500,
+      "sha256": "ae5aabba02f50f35c36c0be5d18125f7d08c6e518bae11096a4376ae02f813b9"
+    }
+  },
+  "debug_dumps": false,
+  "dump_upload": false,
+  "font_assets": {
+    "font_styles": 76,
+    "icon_styles": 11,
+    "glyph_records": 48675,
+    "fonts_bin_sha256": "c43d0c4df274dcc731c5e8631007eed682a47f54b01350738448ce74d9268f85",
+    "visible_coverage_threshold": 32,
+    "minimum_visible_gap_pixels": 1,
+    "atlas_textures_unchanged": true,
+    "atlas_sha256": {
+      "glyphs-0.ftx": "9b20e4fc095926b01ee80e92feb0627e89eec571c8eb6d428cd1ac79c407a9e5",
+      "glyphs-1.ftx": "4a8b18d505fd70350d8e10b647571eac96c1dcf3b4635056743766d5ade5f6de",
+      "glyphs-2.ftx": "b668e4306a4dbb9c7c2b429822837ecc53c62328156eb708c299f4bf376f5041",
+      "glyphs-3.ftx": "7037b35f88ca5968ca6496384ccc2335b3f8fb04b4a66ed673fea54bd810b791"
+    }
+  },
+  "validation": {
+    "sanitizers": [
+      "AddressSanitizer",
+      "UndefinedBehaviorSanitizer"
+    ],
+    "ascii_pair_phase_cases": 1343072,
+    "unique_locale_catalog_strings": 9042,
+    "corpus_ui_roles": 4,
+    "wrapped_lines": 233718,
+    "tab_geometry_assertions": 762,
+    "approved_right_status_metrics_preserved": true,
+    "log_sha256": {
+      "font-check-final.log": "1134645ef554cd058c303c3a5d45b1ff1a39267a28a629d23df445daa4657954",
+      "gfx-text-final.log": "b9790d1c2936d5ffddbe739a1e4f7d5eca3d9062c31e818f7e3fd298b13779e9",
+      "tabs-final.log": "3177c7d6e3bb4cbbe100d4bab5c98a80a2a1b6788ddba20fdd7e9de864cfda45",
+      "build-verified.log": "eee11d121288443223e7dda96a553411346ff5aff4c9f04c85bc30c2bd680da6"
+    }
+  },
+  "emulator_runs": {
+    "typography-final": {
+      "profile": "Old 3DS emulator",
+      "image_sha256": "aacc2af51a383cb3c8c3a0a593b4c2cf1aaecd3d48f42a51d21fa5bcaed29350",
+      "normal_scripted_exit": true,
+      "captures": {
+        "confirm": "c32edb2f0781a8e956ab60177ab0bd8ad30c5081ec862ed47eff3a4043eab983",
+        "detail-info": "89aaeb604e1f752c6bf6944de105534023372dfb3529934f5fc9286a83790abe",
+        "detail-install": "b16980417e4b20b3883e4aa551afc6a389e2ec5487d2f4538bd4f664d79b8feb",
+        "detail-news": "540659bf990be209acd05f3f0d7881c04a5ab7c25d670da56eb1825af4b01130",
+        "detail-shots": "a86e9ff9f76fbf74dfb8569840ad3a8eb8a13a195d2265fd8420577e723005dd",
+        "downloads-mixed": "9d5bad4de08a3e708cbc3c1ddae84f2b32a7e87ddc779725d1774d705387d055",
+        "github-about": "9ac3da332be105b047ef5fa7fc717991877efc9a0a27b7759f70b6f06c80340a",
+        "github-info": "c33e531f5abbb54ee656b6f94c1d9c949203c0df19d3c74b9d6300b0ac54c790",
+        "github-profile": "1e0e4cf83e0b2737e67f109927ed583f6dd44386286a210c0d1eb10691e402dc",
+        "github-readme": "d46cc0869622b3c43aa5c47abb4661c97f850a51fa6519e5efb08a339cb3aa54",
+        "github-releases": "77b9ff81bba0a287f86a4e5ee104d5a132446eeb90eb538194af87bfca32ba65",
+        "github-repos": "2fc1e3da26043a56d5f22d32e8a2eb7da40a895146ccade5fa4cd0200b4dddc8",
+        "home-de": "ab01bd696b8baf8850afd6b8c59b17cb14a439457f6676e177e9a43e9448a593",
+        "home-en": "91bacbd87a0dd0cfb6a5647d9cd312d5edcdd73025ea58a59bc5e7fb8e57df1c",
+        "home-es": "210127087e2b39ea41b46c011daa1a80f86713757fb64c64386eddd8177c0d27",
+        "home-fr": "bf139eb0a5b846eb20e39a8ef25596170c838696beb79258910fc078af912927",
+        "home-it": "09669a7fe0de457e0d1386a95888e26121a14f7cd5fa8ac41db832f103f56188",
+        "home-ja": "75b056695cf24a223a9a6565a0e0f02a33de86149f4bf5ae33765e319173a435",
+        "home-light": "78fcd98d87561bf846484490f8906cc4be5c91a1860fd0c0b41ede8896977e29",
+        "home-pt": "9a3bdbf4671b489ae1b1e7273e2d6ca36320265fc77410ccb0daad61e772903e",
+        "home-ru": "a289b4d095176997fae0837add614131eaaea4b713b5dff638ea8f0804f38c13",
+        "home": "6b99eb3ecee1f71756224adfb720916444ff53f203c2729bfe05d7f5c171fe02",
+        "install-error": "60fa8a523a41e1050e58c20362080f34c4131806c16af74787967775a3937b7c",
+        "install-ja": "3d7790a421fcb31b0226737befa771b7ea62594a08bc54c41b5135c7f8275f45",
+        "install-running": "4dd9b4e43c9f2c3e7dc77709861d00ed8aa1eab51ba95c4b9a775435f1c0402d",
+        "languages": "3630c190845883f41afc6950f6d2cf8e1611299968b653efd4a2b714ce2ba2b7",
+        "sd": "8507421eca542ddb4904ad43be882b9ebc5fa16e871feaac66713529c4b4c045",
+        "search-zelda": "1bdbd290b054b5bcbed8720369d7467d97203383be7deafdc05edad7e5fb3dc0",
+        "settings-light": "383263bd9e38c7c0cd3b12ef03d7a9ffcdcb5f7b0699715178c69a4acff71011",
+        "settings": "e739758905c4cc9a70777dede9ab21808d58585c2bc364dafaa31ea45c5dc35b"
+      }
+    },
+    "typography-verified": {
+      "profile": "Old 3DS emulator",
+      "image_sha256": "ae5aabba02f50f35c36c0be5d18125f7d08c6e518bae11096a4376ae02f813b9",
+      "normal_scripted_exit": true,
+      "captures": {
+        "confirm": "6263e65817ea13756277bfea2e9d9134f873436cf85a6504d1f00b966a4b83c3",
+        "home-light": "d2859857d5f151262864d814bba98d6d52331fd0fd32d23ec1717817bdce56ea",
+        "home": "6056fa6a5adc46d2f797722b60b99396c4ebee98ef461a03989f22bfb7e74b66",
+        "info": "aa5524220039b1163240184eca732ab62eb2fba672df8934881190505bad4a6f",
+        "install-ja": "03d3c75cffc1767302dc9ba2183d357d206a89c471701a04e1a136250b6668b2",
+        "install": "e95330d3d0f89d9764f1c579089bddd0113329dcdb6fc4af3d930161c3a23468",
+        "languages": "1f1681dc0233c41a9b9b985464a2dad1179895278828cbd70f0701cb397208bb",
+        "news": "98e3d628f7a28dcb4451308343608315b3d6e94f36f2a96c9f35a7dd5aad3171",
+        "running": "658b2ec89ab810ece101f254a2abcb565ee297be846acd5b696eb5872c862c66",
+        "settings": "789ce7ad6624f47af0725798b16599577c4b614dfaa29dfe6f6ff275ecaa55f0"
+      }
+    }
+  },
+  "final_focused_run_matches_packaged_3dsx": true,
+  "hardware_validation": false,
+  "readme_audit": {
+    "public_repositories_reviewed": [
+      "forje.store",
+      "zelda-alttp-3ds",
+      "starwing-3ds",
+      "legend-of-doom-3ds",
+      "mario-kart-64-3ds",
+      "zelda-tmc-3ds",
+      "mutiny-3ds",
+      "estebanpdn.github.io",
+      "EstebanPdN",
+      "dusklight-3ds",
+      "sm64ds-3ds"
+    ],
+    "disclosure_reference": "EstebanPdN/starwing-3ds",
+    "repositories_requiring_voice_correction": [
+      "forje.store"
+    ]
+  }
+}

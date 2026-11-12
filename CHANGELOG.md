@@ -13,6 +13,8 @@ Initial source publication in `EstebanPdN/forje.store`, with no GitHub release.
 - Public builds disable memory dumps; compiler flag changes invalidate object caches.
 - Maintained documentation, dependency notices, repository checks and explicit build artifacts.
 - Status numerals and rounded battery centred by their raster bounds; balanced battery spacing.
+- Shared pixel clearance for UI lettering, consistent word gaps, measured wrapping/ellipses,
+  and regular DM Sans section names with a tighter status divider.
 
 Earlier visual work includes shared grey tabs, rounded GitHub avatars/buttons, centered
 status indicators, stationary banner logos, badges above selection, and evenly stepped

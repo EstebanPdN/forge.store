@@ -52,7 +52,9 @@
 .screen .sb-pill.right { flex: none; gap: 6px; }
 .screen .sb-pill img { display: block; flex: 0 0 14px; width: 14px; height: 14px; aspect-ratio: 1; object-fit: contain; border: 0; }
 .screen .sb-brand { flex: none; white-space: nowrap; letter-spacing: 0; }
-.screen .sb-section { min-width: 0; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.screen .sb-section { min-width: 0; font-family: var(--font-brand); font-weight: 400; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.screen .sb-pill:not(.right) { gap: 4px; }
+.screen .sb-section::before { margin-right: 3px; }
 .screen .sb-pill svg { display: block; flex: none; }
 .screen .sb-pill .sb-wifi { width: 16px; height: 14px; }
 .screen .sb-wifi path { stroke-width: 1.6px; }

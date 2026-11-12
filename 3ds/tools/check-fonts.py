@@ -47,12 +47,19 @@ for st,src in zip(styles,source['styles']):
  assert line == src['line'] and size==src['size'] and weight==src['weight']
  last=-1
  for g,s in zip(glyphs[first:first+count],sorted(src['glyphs'],key=lambda v:v['cp'])):
-  cp,x,y,w,h,ox,oy,adv,page,_=g
+  cp,x,y,w,h,ox,oy,adv,page,insets=g
   assert cp>last and cp==s['cp'];last=cp
   assert (w,h,ox,oy,adv)==(s['w'],s['h'],s['ox'],s['oy'],round(s['adv']*64))
   assert page<npages and x+w<=pages[page].shape[1] and y+h<=pages[page].shape[0]
   if w:
    assert pages[page][y:y+h,x:x+w].tobytes()==base64.b64decode(s['a'])
+   columns=np.flatnonzero(np.any(pages[page][y:y+h,x:x+w]>=32,axis=0))
+   expected=0
+   if len(columns):
+    left,right=int(columns[0]),w-1-int(columns[-1])
+    if left<=15 and right<=15:expected=left|(right<<4)
+   assert insets==expected, (cp,insets,expected)
+  else: assert insets==0
  if kind==0:
   lookup[fam,size,weight]=(st,{g[0]:g for g in glyphs[first:first+count]})
   assert 0xfffd in lookup[fam,size,weight][1] and 63 in lookup[fam,size,weight][1]
@@ -64,23 +71,32 @@ for weight in [400,750]: assert (1,10,weight) in lookup
 # Validate the additional production kerning table against every generated pair.
 kern=(GFX/'kerning.bin').read_bytes();magic,n=struct.unpack_from('<4sH',kern);assert magic==b'KRN1' and n==ns
 at=6
+pair_maps={}
 for src in source['styles']:
  count,=struct.unpack_from('<I',kern,at);at+=4
  pairs=[list(struct.unpack_from('<IIh',kern,at+j*10)) for j in range(count)];at+=count*10
  assert pairs==src.get('kerning',[])
+ pair_maps[src['family'],src['size'],src['weight']]={(a,b):v/64 for a,b,v in pairs}
 assert at==len(kern)
 
 # This composes raw packed pixels using the C runtime's per-glyph baseline/advance.
 image=Image.new('RGB',(800,240))
 def draw(text,x,y,size,weight,family,ink):
  st,gs=lookup[family,size,weight]
- baseline=math.floor((st[6]-st[4]-st[5])/2+st[4]+.5);pen=0
+ baseline=math.floor((st[6]-st[4]-st[5])/2+st[4]+.5);pen=0;previous=0;right=None;word_gap=0
+ pairs=pair_maps[family,size,weight]
  for ch in text:
-  g=gs.get(ord(ch),gs[0xfffd]);cp,gx,gy,w,h,ox,oy,advance,page,_=g
+  g=gs.get(ord(ch),gs[0xfffd]);cp,gx,gy,w,h,ox,oy,advance,page,insets=g
+  pen+=pairs.get((previous,ord(ch)),0);origin=math.floor(pen+.5)
   if w:
+   if advance and right is not None:
+    delta=max(0,right+(word_gap or 1)-ox-(insets&15)-origin);pen+=delta;origin+=delta
    mask=Image.fromarray(pages[page][gy:gy+h,gx:gx+w])
-   image.paste(ink,(x+math.floor(pen+.5)+ox,y+baseline+oy),mask)
-  pen+=advance/64
+   image.paste(ink,(x+origin+ox,y+baseline+oy),mask)
+   right=max(right if right is not None else -10000,origin+ox+w-(insets>>4));word_gap=0
+  advance/=64
+  if ch in ' \u00a0':word_gap=math.ceil(size*.3);advance=max(advance,word_gap)
+  pen+=advance;previous=ord(ch)
 samples=[('Inter 500: Body text / 11 px / 15 px',11,500,0),('Settings · Downloads · CIA / 3DSX',10,600,0),('Metadata · 1.2 MB · Nov 10, 2026',9,500,0),('Regular 400 / Medium 500 / Bold 700',10,400,0),('Español: instalación · Français: télécharger',11,500,0),('Deutsch: Herunterladen · Português: aplicação',11,500,0),('Русский: настройки и загрузки',11,500,0),('日本語：設定・ダウンロード',11,500,0),('移除PSP SDL 1.2后端支持',11,500,0),('Detail heading 15 / 18',15,700,0),('forge.store',10,750,1),('Remote replacement: \U0010fffd',10,500,0)]
 for panel,(bg,ink) in enumerate([('#eef2f4','#20353e'),('#26282c','#edf2f4')]):
  image.paste(bg,(panel*400,0,panel*400+400,240))

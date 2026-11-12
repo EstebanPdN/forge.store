@@ -106,14 +106,17 @@ static void fit_label_style(char *out, size_t cap, const char *label, float size
     const char *source=label?label:"";size_t length=strlen(source),take=length<cap?length:cap-1;
     while(take<length&&take&&((unsigned char)source[take]&0xc0)==0x80)take--;
     memmove(out,source,take);out[take]=0;
-    if (text_style_w(out,size,weight,0) <= width) return;
+    if (take == length && text_style_w(out,size,weight,0) <= width) return;
     size_t n = strlen(out);
-    while (n) {
+    for (;;) {
+        if (n + 4 <= cap) {
+            memcpy(out+n,"…",4);
+            if (text_style_w(out,size,weight,0) <= width) return;
+        }
+        if (!n) { out[0]=0; return; }
         do { --n; } while (n && ((unsigned char)out[n] & 0xc0) == 0x80);
-        out[n] = 0;
-        if (text_style_w(out,size,weight,0) + text_style_w("…",size,weight,0) <= width) break;
+        out[n]=0;
     }
-    if (n + 4 <= cap) memcpy(out + n, "…", 4);
 }
 static void fit_label(char*out,size_t cap,const char*label,float size,float width){fit_label_style(out,cap,label,size,size>=12?700:500,width);}
 static void text_fit(const char *s, float x, float y, float size, float width, u32 color) {
@@ -174,6 +177,10 @@ static void button_shape(float x, float y, float w, float h, const char *label, 
 }
 static void button(float x,float y,float w,float h,const char *label,const char *ic,const char *badge,BtnStyle st,float a){button_shape(x,y,w,h,label,ic,badge,st,a,8);}
 static void button_round(float x,float y,float w,float h,const char *label,const char *ic,const char *badge,BtnStyle st,float a){button_shape(x,y,w,h,label,ic,badge,st,a,13);}
+
+// Draw and touch geometry share the space reserved for translated action labels.
+enum { CONFIRM_CANCEL_W=92, CONFIRM_INSTALL_X=114, CONFIRM_INSTALL_W=190,
+       INSTALL_BROWSE_W=211, INSTALL_CANCEL_X=221, INSTALL_CANCEL_W=94 };
 
 static bool hit(float x, float y, float w, float h) {
     return IN.touch_up && !IN.dragged && IN.start_x >= x && IN.start_x < x + w && IN.start_y >= y && IN.start_y < y + h &&
@@ -331,7 +338,11 @@ static void tabs_layout(UiTabs *t, float x, float y, float w, const char *const 
     selected = (int)clampf(selected, 0, count - 1);
     t->x=x; t->y=y; t->w=w; t->count=count;
     float viewport = w - 38, total = 0;
-    for (int i=0;i<count;i++) { t->widths[i] = ceilf(text_style_w(labels[i], 10, 600, 0)) + 2*(t->padding?t->padding:9) + (icons && icons[i] ? 16 : 0); total += t->widths[i]; }
+    for(int i=0;i<count;i++)total+=ceilf(text_style_w(labels[i],10,600,0))+(icons&&icons[i]?16:0);
+    // Keep normal localized labels fully visible before falling back to horizontal scrolling.
+    float padding=clampf(floorf((viewport-6-total)/(2*count)),t->padding?4:6,t->padding?t->padding:9);
+    total=0;
+    for (int i=0;i<count;i++) { t->widths[i] = ceilf(text_style_w(labels[i], 10, 600, 0)) + 2*padding + (icons && icons[i] ? 16 : 0); total += t->widths[i]; }
     int spare = (int)fmaxf(0, viewport - 6 - total);
     total = 3;
     for (int i=0;i<count;i++) { t->widths[i] += spare/count + (i < spare%count); t->positions[i]=total; total+=t->widths[i]; }
@@ -1359,9 +1370,9 @@ static void detail_update(void) {
         }
         if (hit(0,0,6,240))
             close_sheet();
-        if (hit(97,196,207,28))
+        if (hit(CONFIRM_INSTALL_X,196,CONFIRM_INSTALL_W,28))
             start_install();
-        if (hit(16,196,75,28))
+        if (hit(16,196,CONFIRM_CANCEL_W,28))
             close_sheet();
         return;
     }
@@ -1988,8 +1999,8 @@ static void sheet_draw(float a) {
     draw_icon(compatible && !old_experimental?"check":"warn",22,cy+7,10,C(compatible && !old_experimental?TH.mint:AMBER,a));
     text_fit(info,32,cy,10,264,C(TH.ink_soft,a));
     if(!compatible || old_experimental) text_fit(T(!compatible?"confirm.blockedNew":"confirm.expOld"),16,cy+17,10,288,C(AMBER,a));
-    button(16,196+dy,75,28,T("action.cancel"),NULL,"B",BTN_GHOST,a);
-    button(97,196+dy,207,28,T("action.install"),"download","A",BTN_PRIMARY,compatible?a:.4f*a);
+    button(16,196+dy,CONFIRM_CANCEL_W,28,T("action.cancel"),NULL,"B",BTN_GHOST,a);
+    button(CONFIRM_INSTALL_X,196+dy,CONFIRM_INSTALL_W,28,T("action.install"),"download","A",BTN_PRIMARY,compatible?a:.4f*a);
 }
 
 static void detail_bottom(float sa) {
@@ -2206,7 +2217,7 @@ static void install_update(void) {
         return;
     }
     if ((IN.down & KEY_B) || (!running && (IN.down & KEY_A)) ||
-        hit(can_open?74:5,207,running?232:can_open?241:310,28)) {
+        hit(can_open?74:5,207,running?INSTALL_BROWSE_W:can_open?241:310,28)) {
         if (running)
             toast(T("install.background"), FORGE);
         sfx("back");
@@ -2215,7 +2226,7 @@ static void install_update(void) {
         trans_t = NOW;
         return;
     }
-    if (running && ((IN.down & KEY_X) || hit(242,207,73,28)))
+    if (running && ((IN.down & KEY_X) || hit(INSTALL_CANCEL_X,207,INSTALL_CANCEL_W,28)))
         install_cancel(ij);
 }
 
@@ -2326,8 +2337,8 @@ static void install_bottom(float sa) {
     if(extra_h){float ey=202-extra_h;rrect(8,ey,304,extra_h,10,C(TH.surface2,sa));rrect_outline(8,ey,304,extra_h,10,1,C(AMBER,.4f*sa));draw_icon("warn",22,ey+14,10,C(AMBER,sa));text_style(T("install.nextTitle"),31,ey+7,10,800,0,C(AMBER,sa),AL_LEFT);text_wrap_style(next_text,17,ey+24,10,600,C(TH.ink_soft,sa),286);install_check_y=ey+24+text_wrap_h_style(next_text,10,600,286)+5;button(17,install_check_y,82,24,T("detail.simulateCopy"),NULL,NULL,BTN_GHOST,sa);}
     bool running = ij->state == JOB_QUEUED || ij->state == JOB_RUNNING;
     if (running) {
-        button(5,207,232,28,T("action.keepBrowsing"), NULL, "B", BTN_GHOST, sa);
-        button(242,207,73,28,T("action.cancel"), "close", "X", BTN_SURFACE, sa);
+        button(5,207,INSTALL_BROWSE_W,28,T("action.keepBrowsing"), NULL, "B", BTN_GHOST, sa);
+        button(INSTALL_CANCEL_X,207,INSTALL_CANCEL_W,28,T("action.cancel"), "close", "X", BTN_SURFACE, sa);
     } else {
         bool can_open=ij->state==JOB_DONE && !ij->uninstall;
         if(can_open) button(5,207,64,28,T("action.open"),"play",NULL,BTN_GHOST,sa);
@@ -2646,7 +2657,7 @@ static void console_sheet(float a) {
     text_style(sub,49,51,9,800,0,C(TH.ink_faint,a),AL_LEFT);
     const char *regions[] = {"JPN", "USA", "EUR", "AUS", "CHN", "KOR", "TWN"};
     char top_s[40], bot_s[40], apps[8];
-    snprintf(top_s, sizeof top_s, "400×240 · 3D 800×240");
+    snprintf(top_s, sizeof top_s, "400×240 / 800×240");
     snprintf(bot_s, sizeof bot_s, "320×240 %s", T("console.touch"));
     int installed = 0;
     for (int i = 0; i < NAPPS; i++)
@@ -2670,7 +2681,7 @@ static void console_sheet(float a) {
         float x=12+(i%3)*(379.f/3),y=73+(i/3)*33;
         rrect(x, y, 370.f/3, 30, 7, C(TH.glass, TH.glass_a * a));
         rrect_outline(x, y, 370.f/3, 30, 7, 1, C(TH.line, TH.line_a * a));
-        text_caps(T(facts[i][0]), x + 5, y + 2, 9, 0, C(TH.ink_faint, a), AL_LEFT);
+        text_caps_fit(T(facts[i][0]), x + 5, y + 2, 9, 0, C(TH.ink_faint, a), 113.33f);
         text_fit_style(facts[i][1],x+5,y+15,9,800,113.33f,C(TH.ink,a));
     }
     char line[96];
@@ -2864,8 +2875,12 @@ static void settings_bottom(float sa) {
             rrect(lx,ly,lw,32,10,C(TH.surface2,sa));
             rrect_outline(lx,ly,lw,32,10,i==lang_focus?1.5f:1,
                           C(i == lang_focus ? FORGE : TH.line, (i == lang_focus ? 1 : TH.line_a) * sa));
-            text_style(LANG_NAMES[lang],lx+9,ly+8.5f,10,900,0,C(TH.ink,sa),AL_LEFT);
-            text_style(en[lang],lx+lw-26,ly+10,9,800,0,C(TH.ink_faint,sa),AL_RIGHT);
+            char name[96],hint[96];
+            fit_label_style(name,sizeof name,LANG_NAMES[lang],10,900,lw-61);
+            float hint_width=fmaxf(0,lw-41-text_style_w(name,10,900,0));
+            fit_label_style(hint,sizeof hint,en[lang],9,800,hint_width);
+            text_style(name,lx+9,ly+8.5f,10,900,0,C(TH.ink,sa),AL_LEFT);
+            text_style(hint,lx+lw-26,ly+10,9,800,0,C(TH.ink_faint,sa),AL_RIGHT);
             circle(lx+lw-14.5f,ly+16,5.5f,C(lang==S.lang?FORGE:TH.line,(lang==S.lang?1:.32f)*sa));
             circle(lx+lw-14.5f,ly+16,lang==S.lang?2:4,C(TH.surface2,sa));
         }

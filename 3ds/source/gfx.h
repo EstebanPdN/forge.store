@@ -71,12 +71,17 @@ float text(const char *s, float x, float y, float size, u32 color, int align);
 /** Same with an explicit weight and family (FONT_UI Inter, FONT_BRAND DM Sans). */
 float text_style(const char *s, float x, float y, float size, int weight, int family, u32 color, int align);
 float text_style_w(const char *s, float size, int weight, int family);
+/** Fixed status role: Inter 600 numerals with the approved original font metrics. */
+float text_status_w(const char *s, float size);
+void text_status(const char *s, float x, float y, float size, u32 color);
 /** Explicit weight, family and CSS letter-spacing. */
 float text_ex(const char *s, float x, float y, float size, int weight, int family, float spacing, u32 color, int align);
 float text_ex_w(const char *s, float size, int weight, int family, float spacing);
 /** Uppercase eyebrow label: Inter 600 with CSS letter-spacing. */
 float text_caps(const char *s, float x, float y, float size, float spacing, u32 color, int align);
 float text_caps_w(const char *s, float size, float spacing);
+/** Uppercase label contained in width, with a measured UTF-8 ellipsis when needed. */
+void text_caps_fit(const char *s,float x,float y,float size,float spacing,u32 color,float width);
 /** Paragraph wrapped to `width` (Inter 500; native 9/12, 10/14, 11/15 line boxes). Returns its height. */
 float text_wrap(const char *s, float x, float y, float size, u32 color, float width);
 /** Text that changes every frame (numbers, times). */

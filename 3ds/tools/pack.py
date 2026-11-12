@@ -142,7 +142,8 @@ def pack_glyphs():
     fonts.bin (little endian):
       'FNT3' u16 nstyles u16 npages u32 nglyphs
       nstyles * (u8 kind(0 font, 1 icon) u8 family u16 weight f32 size f32 ascent f32 descent f32 line u32 first u32 count)
-      nglyphs * (u32 cp u16 x u16 y u8 w u8 h s8 ox s8 oy u16 adv*64 u8 page u8 pad), sorted by cp per style
+      nglyphs * (u32 cp u16 x u16 y u8 w u8 h s8 ox s8 oy u16 adv*64 u8 page u8 inkInsets), sorted by cp per style
+      inkInsets: low/high nibble = left/right fringe outside coverage >= 32/255.
       u16 nicons, nicons * (u8 len, name)
     """
     d = json.loads((GEN / 'glyphs.json').read_text())
@@ -200,7 +201,15 @@ def pack_glyphs():
         first += n
     for i, (_, g) in enumerate(entries):
         pg, gx, gy = place.get(i, (0, 0, 0))
-        out += struct.pack('<IHHBBbbHBB', g['cp'], gx, gy, g['w'], g['h'], g['ox'], g['oy'], round(g['adv'] * 64), pg, 0)
+        inset = 0
+        if g['w']:
+            alpha = coverage[np.frombuffer(base64.b64decode(g['a']), np.uint8).reshape(g['h'], g['w'])]
+            columns = np.flatnonzero(np.any(alpha >= 32, axis=0))
+            if len(columns):
+                left, right = int(columns[0]), g['w'] - 1 - int(columns[-1])
+                # A conservative fallback keeps unusual faint/oversized glyphs safe.
+                if left <= 15 and right <= 15: inset = left | (right << 4)
+        out += struct.pack('<IHHBBbbHBB', g['cp'], gx, gy, g['w'], g['h'], g['ox'], g['oy'], round(g['adv'] * 64), pg, inset)
     out += struct.pack('<H', len(d['icons']))
     for name in d['icons']:
         b = name.encode()

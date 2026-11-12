@@ -84,7 +84,27 @@ package (16,044,949 bytes), and matched their hashes on the emulator's SD. Scrip
 and shutdown completed in 68.7 seconds. Sampled store-music counters remained at zero
 underruns; this is emulator evidence, not physical-console qualification.
 
-The final packaged binary also completed an Old 3DS emulator run using those downloaded
+The status-bar build also completed an Old 3DS emulator run using those downloaded
 files as its cache, with dark/light status captures and a visible trailer frame after a
-seek to 30 seconds. Its executable hash matches the distributed 3DSX.
+seek to 30 seconds. Its executable hash is preserved with that run's evidence.
 Machine-readable publication evidence is in [publication.json](verification/publication.json).
+
+## Typography refinement
+
+The shared cursor now guarantees a minimum pixel gap between visible glyph bounds, using
+the baked 32/255 coverage insets without changing the glyph textures. Word gaps, integer
+monospaced cells, measurement, wrapping and ellipses use the same placement rules. The right
+status numerals retain their separately approved metrics. DM Sans regular is shared by
+“store” and the section name; missing brand glyphs use the existing UI font fallback.
+
+The production-source ASan/UBSan harness passed **1,343,072 ASCII pair/phase cases** across
+all 76 font styles, and checked **9,042 unique locale/catalog strings** in four UI roles,
+including 233,718 wrapped lines, bounded ellipses and field labels. All 48,675 packed glyph
+records/insets and their atlas pixels passed validation. Shared tab geometry passed 762 checks.
+
+Visual review covered 30 emulator captures: the main panels, installation/error states,
+GitHub views, both themes and Home in all eight languages. Follow-up fixes contain long
+console field labels, keep the Portuguese language hint separate, fit the detail tabs and
+give translated Cancel actions enough space; touch regions use the same updated bounds.
+The final focused capture and binary hashes are recorded in
+[typography.json](verification/typography.json). Physical-console typography review remains pending.

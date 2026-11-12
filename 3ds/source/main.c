@@ -186,22 +186,23 @@ static void statusbar_draw(void) {
     bool dl=scenes_downloading();
 
     // Left pill.
-    float brand=ceilf(text_ex_w("forge.",15,750,FONT_BRAND,-.5f)+text_ex_w("store",15,400,FONT_BRAND,-.5f));
-    float secw=ceilf(text_style_w(sec,13,600,FONT_UI));
-    float bx=37, divx=bx+brand+9, sx=divx+10;
+    float forge_w=ceilf(text_style_w("forge.",15,750,FONT_BRAND));
+    float brand=forge_w+ceilf(text_style_w("store",15,400,FONT_BRAND));
+    float secw=ceilf(text_style_w(sec,15,400,FONT_BRAND));
+    float bx=37, divx=bx+brand+4, sx=divx+5;
     float lw=fminf(sx+secw+12-8, 240);
     rrect(8,y,lw,SB_H,SB_H/2,rgb(TH.glass,TH.glass_a*a));
     draw_img(ui_img("sb-emblem"),13,y+3,1,1,a);
     float ty=cy-line_h(15)/2, base=ty+text_base(15,750,FONT_BRAND);
-    text_ex("forge.",bx,ty,15,750,FONT_BRAND,-.5f,ink,AL_LEFT);
-    text_ex("store",bx+text_ex_w("forge.",15,750,FONT_BRAND,-.5f)-.5f,ty,15,400,FONT_BRAND,-.5f,ink,AL_LEFT);
+    text_style("forge.",bx,ty,15,750,FONT_BRAND,ink,AL_LEFT);
+    text_style("store",bx+forge_w,ty,15,400,FONT_BRAND,ink,AL_LEFT);
     rect(divx,cy-6,1,12,rgb(TH.ink,.22f*a));
     scissor(TOP_W,sx,y,8+lw-sx-8,SB_H);
-    text_style(sec,sx,base-text_base(13,600,FONT_UI),13,600,FONT_UI,soft,AL_LEFT);
+    text_style(sec,sx,base-text_base(15,400,FONT_BRAND),15,400,FONT_BRAND,soft,AL_LEFT);
     scissor_off();
 
     // Right pill.
-    float cw=ceilf(text_style_w(sys.clock,SB_DIGITS,600,FONT_UI)), pw=ceilf(text_style_w(pct,SB_DIGITS,600,FONT_UI));
+    float cw=ceilf(text_status_w(sys.clock,SB_DIGITS)), pw=ceilf(text_status_w(pct,SB_DIGITS));
     float rw=11+(dl?13+9:0)+16+9+cw+11+pw+5+24+10;
     float rx=TOP_W-8-rw, tx=rx+11;
     float rcy=y+SB_RIGHT_H/2.0f;
@@ -209,10 +210,10 @@ static void statusbar_draw(void) {
     float dy=text_ink_top(sys.clock,rcy,SB_DIGITS,600,FONT_UI);
     if(dl){ draw_icon("download",tx+6.5f,cy,13,rgb(FORGE,a)); tx+=13+9; }
     wifi_draw(tx,cy-6,sys.wifi,a); tx+=16+9;
-    text_style(sys.clock,tx,dy,SB_DIGITS,600,FONT_UI,ink,AL_LEFT); tx+=cw+11;
+    text_status(sys.clock,tx,dy,SB_DIGITS,ink); tx+=cw+11;
     // Reviewed optical position: 1 px right of the equal-gap position.
     status_battery_draw(tx-2,rcy,sys.pct,sys.charging,a); tx+=24+5;
-    text_style(pct,tx,text_ink_top(pct,rcy,SB_DIGITS,600,FONT_UI),SB_DIGITS,600,FONT_UI,soft,AL_LEFT);
+    text_status(pct,tx,text_ink_top(pct,rcy,SB_DIGITS,600,FONT_UI),SB_DIGITS,soft);
 }
 
 // ---- performance overlay ----------------------------------------------------------------------------

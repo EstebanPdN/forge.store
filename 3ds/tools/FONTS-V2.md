@@ -27,8 +27,10 @@ from the locally distributed DM Sans WOFF2 subsets. Native UI styles include
 9/12, 10/14, 11/15 at weights 400/500/600/700, and 14/18 and 15/18 headings.
 `text`, `text_dyn`, `text_w`, and `text_wrap` default to Inter 500;
 `text_caps` defaults to 900. Styles also include weights 800/900 for the web’s strong roles. Explicit style calls select the exact baked size
-first, then the closest numeric weight. DM Sans 10 px 400/750 covers the status
-wordmark. Letter spacing remains in native pixels.
+first, then the closest numeric weight. DM Sans 15 px 400/750 covers the status
+wordmark; the section uses the same 15 px regular face as “store”. Missing brand
+characters use the existing UI atlas at the matching size, including Japanese section names.
+Letter spacing remains in native pixels.
 
 Coverage includes all locale values, Forge and Universal JSON values, C/H/INC
 sources including panels.inc, and uppercase characters. The non-display
@@ -43,6 +45,18 @@ Malformed UTF-8 advances safely. This remains a per-scalar renderer: no contextu
 shaping, bidirectional layout, or composed emoji sequences. ASCII pairs and adjacent corpus pairs use a sorted KRN1 sidecar; draw, width and wrapping apply the same fractional advances and pair deltas. RAQM preserves fractional advances instead of rounding each scalar. Variation
 selectors and joiners do not add ink or advance. Color emoji are A8 silhouettes.
 
+The common text cursor enforces one pixel of clearance between visible glyph bounds
+after kerning and integer snapping. FNT3's former padding byte stores two 4-bit horizontal
+insets around coverage of at least 32/255: faint antialias fringes do not force excessive
+tracking. Glyph pixels and all four A8 textures remain unchanged. Spaces retain a minimum
+word gap of 0.3 em, and code uses a consistent integer monospaced cell. Zero-advance marks
+remain attached. Drawing, measurement, wrapping and ellipsis fitting use the same metrics.
+The separately approved right-side status numerals deliberately retain their original
+metrics through `text_status`; their layout and vertical centring are unchanged.
+
+Wrapped lines restart their cursor after every break and discard trailing spaces. Ellipses
+are measured together with the retained prefix, including its final pair clearance.
+
 `DRAW_X` and `DRAW_Y` apply once at low-level gfx draw calls (including text,
 shapes, images, rotations) and scissor. Reset both after each translated panel.
 Do not also use C2D_ViewTranslate for those offsets. Raw C2D calls made outside
@@ -51,23 +65,26 @@ gfx.c must apply their own offset or go through a gfx wrapper.
 The home icon generator is separate: see build/gen/icons-44/report.md for its
 working command, source order, checks, renderer limits and catalog integration.
 pack.py's full asset mode now includes the generated icons-44 PNGs. Catalog
-integration is owned elsewhere: add 44 to ICON_PX/ICON_SZ and their loops, or
-load icons-44.ftx as a Sheet and use the Forge App.icon index. Universal art
+integration loads icons-44.ftx as a Sheet and uses the Forge App.icon index. Universal art
 continues through its existing separate sheet path.
 
 Evidence under build/gen:
 - font-report.json: coverage and input hashes.
-- font-pack-report.json: 86 styles, 48,608 records; three 1024×1024 and one 1024×512 A8 pages, 3.5 MiB texture. Includes DM Sans 800 30/30 for Universal wordmarks.
+- font-pack-report.json: 87 styles, 48,675 records; three 1024×1024 and one 1024×512 A8 pages, 3.5 MiB texture. Includes DM Sans 800 30/30 for Universal wordmarks.
 - font-check.json: all packed glyph pixels/metrics/bounds and binary hashes.
 - font-specimen.png: light/dark 1:1 sample composed from the binary atlas.
 - gfx-text-check.log: host ASan/UBSan tests on the actual extracted text code,
   including malformed UTF-8 at a protected page boundary, replacement width/wrap,
-  >64 KiB paragraph offsets, missing atlas, and XY text translation.
+  >64 KiB paragraph offsets, missing atlas, and XY text translation. It also audits all
+  printable ASCII pairs at two cursor phases for every font style, all unique locale/catalog
+  strings, three wrapping widths, measured ellipses and bounded uppercase field labels.
 - gfx-compile.log and gfx-v2.o: isolated devkitARM GCC 16.1.0 compile of gfx.c.
 
-Offline rasterization is not byte-identical to Chromium. Native-size emulator comparisons and builds now exist under `docs/native-v2-parity/`; they report color-tolerant pixel scores and SSIM, with original images and differences. Hardware appearance/performance still requires a physical console. The complete port remains in progress.
+Offline rasterization is not byte-identical to Chromium. Current evidence is recorded in
+[Verification](../../docs/VERIFICATION.md). Hardware appearance/performance still requires
+a physical console. The complete port remains in progress.
 
 Space Mono Regular/Bold 10 px supplies the native monospaced code role. It is an
 OFL font stored under assets/fonts/space-mono with its license; it is not the same
 outline as the web platform's system Menlo fallback. Total A8 texture use stays
-3.5 MiB. The 86 styles include these two additional mono styles.
+3.5 MiB. The 87 styles include these two additional mono styles.
