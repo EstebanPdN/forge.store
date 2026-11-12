@@ -1,5 +1,9 @@
 # Changelog
 
+## HOME medallion pivot — 2026.11.12.11
+
+- Center the medallion geometry on its own pivot with a constant position. Match the welcome screen’s 5.2-second ±24° ease-in-out wobble.
+
 ## HOME banner spacing — 2026.11.12.10
 
 - Raise the wordmark to clear the descender above the subtitle and enlarge the complete banner by 5%, preserving the lateral medallion rotation.

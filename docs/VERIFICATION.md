@@ -1,8 +1,17 @@
 # Verification record
 
-Publication candidate: **2026.11.12.10**, native C implementation. This is a development
+Publication candidate: **2026.11.12.11**, native C implementation. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## HOME local pivot — 2026.11.12.11
+
+Hardware feedback invalidated the previous source-preview assumption: the medallion
+orbited in HOME. Geometry is now centered at its own origin with constant translation,
+removing the animated world-pivot compensation. Timing and easing match `wobble_pose`
+in the native welcome screen: 5.2 seconds, ±24°, cubic-bezier(.42,0,.58,1).
+Serialized-resource checks require fixed position and a closed rotation loop. Physical
+HOME confirmation is still pending; a source preview is not hardware evidence.
 
 ## HOME banner spacing — 2026.11.12.10
 

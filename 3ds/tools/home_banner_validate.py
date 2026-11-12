@@ -128,13 +128,11 @@ def animations(data):
                 if 3 <= slot <= 5:
                     assert members[-1] == 'Medallion' and all(abs(v) <= .5 for v in values), 'unexpected rotation'
                     if slot != 4: assert all(v == 0 for v in values), 'rotation must be lateral'
-                if slot == 7: assert all(v == 0 for v in values), 'vertical bob forbidden'
+                if slot == 7: assert all(v == 1 for v in values), 'vertical bob forbidden'
             if members[-1] == 'Medallion':
                 yaw = tracks[4]; xs = tracks[6]; zs = tracks[8]
                 assert len(yaw) == len(xs) == len(zs) and min(yaw) < -.4 and max(yaw) > .4, 'missing lateral swing'
-                for angle, x, z in zip(yaw, xs, zs):
-                    assert abs(-8.61*math.cos(angle)+.735*math.sin(angle)+x+8.61) < 1e-5, 'coin pivot drifts horizontally'
-                    assert abs(8.61*math.sin(angle)+.735*math.cos(angle)+z-.735) < 1e-5, 'coin pivot drifts in depth'
+                assert all(abs(x+8.61)<1e-5 for x in xs) and all(abs(z-.735)<1e-5 for z in zs), 'translation must remain fixed'
         result.append(dict(frames=duration, members=members, curves=curve_count, scales_positive=True, rotation_tracks=rotation_tracks))
     return result
 
@@ -172,7 +170,8 @@ def inspect(data):
         assert target in bones, ('mesh has no resolved bone', target, hex(p))
         b = bones[target]
         assert b['mode'] == (0 if target == 'Medallion' else 5), ('unexpected billboard mode', target, b['mode'])
-        assert b['trs'] == (1.,1.,1.,0.,0.,0.,0.,0.,0.), ('non-identity rest bone', target, b['trs'])
+        expected=(1.,1.,1.,0.,0.,0.,-8.61,1.,.735) if target=='Medallion' else (1.,1.,1.,0.,0.,0.,0.,0.,0.)
+        assert all(abs(a-b)<1e-5 for a,b in zip(b['trs'],expected)), ('unexpected rest transform',target,b['trs'])
         meshes.append(target)
     assert meshes, 'no meshes'
     return dict(bytes=len(data), sha256=hashlib.sha256(data).hexdigest(),
@@ -180,7 +179,7 @@ def inspect(data):
                 meshes=len(meshes), rendered_bones=sorted(set(meshes)),
                 skeletal_animations=animations(data),
                 all_mesh_links_resolve=True, medallion_billboard_off=True,
-                all_rendered_rest_transforms_identity=True, hardware_tested=False)
+                medallion_local_pivot=True, hardware_tested=False)
 
 
 def unpack_banner(data):

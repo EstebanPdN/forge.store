@@ -1,17 +1,17 @@
 {
-  "store_build": 2026111210,
-  "version": "2026.11.12.10",
+  "store_build": 2026111211,
+  "version": "2026.11.12.11",
   "kind": "development build; no GitHub release",
   "debug_dumps": false,
   "dump_upload": false,
   "files": {
     "forge-store.cia": {
-      "bytes": 49451968,
-      "sha256": "1a6e6e50eacf6b610dbc412d6ed55744e6f08eb643635f3bc6b126ff4b914303"
+      "bytes": 49460160,
+      "sha256": "3496e5c1c6136933c53cf65b4e32bfb689eae1b03e2bb1cc66e57538dfa44599"
     },
     "forge-store.3dsx": {
       "bytes": 49756200,
-      "sha256": "63d8399c13f38bf5328c06c14899c6bbd1db2b27c0a58d11c4e5aaf9481fa7b3"
+      "sha256": "314357c2ca2183aa159cb726cdab7e6a105f8d57129dc2b9f36f7e0df3734d7a"
     }
   },
   "source_sha256": {
@@ -85,7 +85,7 @@
     "3ds/source/store_update.c": "1cb5beced63c563097f981145f3f2aa36fedaef7bec72b91dba8ba23a5dbb994",
     "3ds/source/store_update.h": "21d903df36a53d42315d645ebdd77ed24af6c6c7ae73edbf445ee18ba24b0bdf",
     "3ds/source/store_update_policy.h": "3629c4f11e1cb4b203df0781a32cf4643e913509d51b19a4b315929c6ea9997b",
-    "3ds/source/store_version.h": "314f843d72c21b4e1c298031d02877de6d0a0337f6e1786850218156c2d40f5f",
+    "3ds/source/store_version.h": "fb316ea60943141c4659255f51c0fc91e7d76a9d08a1324993b9dd75e309e42e",
     "3ds/source/texture_stream.inc": "ef13c05a66f9763d2bb4da54d98b4050029641027fe111969bfdbf6d2eb7528d",
     "3ds/source/universal_convert.c": "5471a9b73fc3dff7831a7beb8ff8e75b20a7d928fcd41164f4e114fbe53f14c0",
     "3ds/source/universal_convert.h": "68d29a6d59d066637ba90b03ebd6fbd582d728e4b973a4812934ff0c105249c3",

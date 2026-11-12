@@ -11,7 +11,7 @@ class BannerTests(unittest.TestCase):
         c.model,c.audio=gate.unpack_banner(c.bnr)
     def test_packaged_resource(self):
         r=gate.inspect(self.model);self.assertEqual(r['meshes'],6)
-        self.assertEqual(r['skeletal_animations'][0]['frames'],360)
+        self.assertEqual(r['skeletal_animations'][0]['frames'],312)
         self.assertEqual(sum(t['bytes'] for t in gate.textures(self.model)),229376)
         self.assertEqual(gate.audio_info(self.audio)[0]['seconds'],3)
         self.assertIn((512,128),[(t['width'],t['height']) for t in gate.textures(self.model)])

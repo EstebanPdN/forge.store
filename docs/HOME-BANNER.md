@@ -5,11 +5,10 @@ English wordmark and subtitle, and an oval background that fades from 35% of its
 radius to its transparent edge. `3ds/meta/banner.png` is the previous flat reference.
 The application screens and runtime code are unchanged.
 
-The medallion is a closed, bevelled 48-sided mesh. Its six-second loop rotates
-24 degrees to each side about its own vertical axis. Translation compensates the
-world-space pivot in X/Z; Y remains fixed and scale remains one. The medallion's
-billboarding is disabled so HOME does not cancel its authored rotation. The backdrop
-and lettering retain YAxial billboarding with identity rest transforms.
+The medallion geometry is centered at its own local origin, with a fixed node position.
+It uses the welcome screen's 5.2-second ±24° Y rotation and cubic-bezier(.42,0,.58,1)
+easing, sampled at 60 Hz. There is no animated translation compensation, vertical bob
+or scale change. HOME rendering on physical hardware still needs confirmation.
 
 The complete composition is uniformly enlarged by 5% about its center. The wordmark
 baseline is raised 12 texture pixels to separate its descenders from the subtitle.
@@ -24,9 +23,9 @@ sampling; HOME owns final projection/filtering.
 - Three textures: 128×128 RGB565 logo, 512×128 RGBA4 lettering, 256×128 LA8 oval.
 - Texture payload: 229,376 bytes (224 KiB). LA8 preserves 256 alpha levels for the
   white oval; RGBA8 is not used. The text has a separate baseline and clear gap.
-- CGFX: 264,088 bytes, below the 524,288-byte HOME limit.
-- Animation: one member, six scalar curves, 61 keys per authored track,
-  360 native frames, matching endpoints and strictly positive scales.
+- CGFX: 276,184 bytes, below the 524,288-byte HOME limit.
+- Animation: one member, six scalar curves, 313 keys per authored track,
+  312 native frames, matching endpoints and strictly positive scales.
 - Audio: the original welcome sound, stereo PCM16, 32 kHz, exactly 96,000 samples
   per channel / three seconds, nonlooping, with a half-second fade out.
 

@@ -60,8 +60,8 @@ def main():
         g['materials'].append(dict(name=name,pbrMetallicRoughness=p,alphaMode='BLEND' if alpha else 'OPAQUE',doubleSided=False,extensions={'KHR_materials_unlit':{}}));return len(g['materials'])-1
     paper=mat('Oval',image='oval.png',alpha=True); lettering=mat('Wordmark',image='wordmark.png',alpha=True)
     rim=mat('Porcelain',(1,1,1,1));edge=mat('Edge',(.68,.73,.76,1));face=mat('Logo',image='logo.png')
-    def primitive(p,n,uv,idx,m):
-        p=[(x*1.05,1+(y-1)*1.05,z*1.05) for x,y,z in p]
+    def primitive(p,n,uv,idx,m,local=False):
+        p=[(x*1.05,y*1.05 if local else 1+(y-1)*1.05,z*1.05) for x,y,z in p]
         attrs=dict(POSITION=access(p,'VEC3'),NORMAL=access(n,'VEC3'))
         if uv:attrs['TEXCOORD_0']=access(uv,'VEC2')
         return dict(attributes=attrs,indices=access(idx,'SCALAR',5123),material=m,mode=4)
@@ -74,7 +74,7 @@ def main():
     # Low polygon closed medallion: white bevel, cylindrical edge, back and logo face.
     N=48;cx=-8.2;cy=1.;ang=0.0
     def transform(p):
-        x,y,z=p;return (cx+x*math.cos(ang)+z*math.sin(ang),cy+y,-x*math.sin(ang)+z*math.cos(ang)+.7)
+        x,y,z=p;return (x,y,z)
     def norm(p):
         x,y,z=p;return (x*math.cos(ang)+z*math.sin(ang),y,-x*math.sin(ang)+z*math.cos(ang))
     def disc(r,z,m,back=False):
@@ -84,7 +84,7 @@ def main():
         uv=[(1-u,v) for u,v in uv]
         ids=[]
         for i in range(N):ids.extend([0,(i+1)%N+1,i+1] if back else [0,i+1,(i+1)%N+1])
-        return primitive([transform(p) for p in ps],[norm((0,0,-1 if back else 1))]*len(ps),uv if m==face else None,ids,m)
+        return primitive([transform(p) for p in ps],[norm((0,0,-1 if back else 1))]*len(ps),uv if m==face else None,ids,m,local=True)
     def ring(r0,z0,r1,z1,m):
         ps=[];ns=[];idx=[]
         for i in range(N):
@@ -94,14 +94,24 @@ def main():
             nr=z1-z0;nz=r0-r1;l=math.hypot(nr,nz)
             ns.extend([norm((nr*c/l,nr*s/l,nz/l))]*2)
         for i in range(N):a0=i*2;b=((i+1)%N)*2;idx.extend([a0,b,a0+1,b,b+1,a0+1])
-        return primitive([transform(p) for p in ps],ns,None,idx,m)
+        return primitive([transform(p) for p in ps],ns,None,idx,m,local=True)
     coin=node('Medallion',[disc(3.25,.43,face),ring(3.65,.26,3.25,.43,rim),ring(3.65,-.26,3.65,.26,edge),disc(3.65,-.26,edge,True)])
+    g['nodes'][coin]['translation']=[-8.61,1,.735]
     # Rotate the rigid coin about its own center, without vertical bob or scale squash.
-    times=[i/10 for i in range(61)];rotations=[];positions=[]
+    times=[i/60 for i in range(313)];rotations=[];positions=[]
     for t in times:
-        yaw=math.radians(24)*math.sin(t*math.tau/6)
+        phase=(t/5.2)%1
+        x=phase*2 if phase<.5 else (phase-.5)*2
+        lo,hi=0.,1.
+        for _ in range(32):
+            u=(lo+hi)/2; bx=3*(1-u)**2*u*.42+3*(1-u)*u*u*.58+u**3
+            if bx<x: lo=u
+            else: hi=u
+        u=(lo+hi)/2; eased=3*(1-u)*u*u+u**3
+        pose=eased if phase<.5 else 1-eased
+        yaw=math.radians(-24+48*pose)
         rotations.append((0,math.sin(yaw/2),0,math.cos(yaw/2)))
-        positions.append((1.05*(cx-cx*math.cos(yaw)-.7*math.sin(yaw)),0,1.05*(.7+cx*math.sin(yaw)-.7*math.cos(yaw))))
+        positions.append((-8.61,1,.735))
     g['animations']=[dict(name='COMMON',samplers=[dict(input=access(times,'SCALAR'),output=access(rotations,'VEC4'),interpolation='LINEAR'),dict(input=access(times,'SCALAR'),output=access(positions,'VEC3'),interpolation='LINEAR')],channels=[dict(sampler=0,target=dict(node=coin,path='rotation')),dict(sampler=1,target=dict(node=coin,path='translation'))])]
     g['cameras']=[dict(type='perspective',perspective=dict(aspectRatio=400/240,yfov=math.pi/6,znear=26.5,zfar=1000))]
     g['nodes'].append(dict(name='BannerCamera',camera=0,translation=[0,1,44.786]));g['scenes'][0]['nodes'].append(len(g['nodes'])-1)
@@ -153,6 +163,6 @@ def main():
     subprocess.run(['ffmpeg','-v','error','-y','-i',str(ROOT/'assets/audio/intro-welcome.mp3'),'-af','apad,atrim=duration=3,afade=t=out:st=2.5:d=0.5','-ac','2','-ar','32000','-c:a','pcm_s16le',str(out/'banner.wav')],check=True)
     subprocess.run([str(Path.home()/'devkitpro/tools/bin/bannertool'),'makebanner','-ci',str(out/'banner.cgfx'),'-a',str(out/'banner.wav'),'-o',str(out/'banner.bnr')],check=True,stdout=subprocess.DEVNULL)
     unpacked,audio=unpack_banner((out/'banner.bnr').read_bytes());assert unpacked==data
-    report.update(triangles=triangles,draw_calls=len(model.meshes.data.contents),texture_bytes=texture_bytes,pycgfx_commit=revision,loop_seconds=6,cbmd_roundtrip=True,audio_seconds=3,audio_channels=2,audio_rate=32000,home_menu_tested=False)
+    report.update(triangles=triangles,draw_calls=len(model.meshes.data.contents),texture_bytes=texture_bytes,pycgfx_commit=revision,loop_seconds=5.2,cbmd_roundtrip=True,audio_seconds=3,audio_channels=2,audio_rate=32000,home_menu_tested=False)
     (out/'report.json').write_text(json.dumps(report,indent=2)+'\n');print(json.dumps(report,indent=2))
 if __name__=='__main__':main()
