@@ -1,0 +1,300 @@
+{
+  "format": "FVD2",
+  "tools": {
+    "handbrake": "HandBrake 1.11.2",
+    "ffmpeg": "ffmpeg version 9.0.2 Copyright (c) 2000-2026 the FFmpeg developers"
+  },
+  "total_bytes": 16044949,
+  "files": [
+    {
+      "file": "alttp-trailer.fvid",
+      "key": "alttp/trailer",
+      "bytes": 5941159,
+      "sha256": "b8865ea4d1ca2d1df179c7eec3c377d6d3d6de54014a0495aff971cad1c99e86",
+      "frames": 2733,
+      "fps": 20,
+      "duration": 136.65,
+      "bitrate_kbps": 347.8,
+      "video_kbps": 248.4,
+      "audio_kbps": 96.6,
+      "audio": {
+        "codec": "IMA ADPCM 4-bit",
+        "rate": 24000,
+        "channels": 1
+      },
+      "rate_control": {
+        "mode": "two-pass average bitrate",
+        "handbrake_kbps_at_declared_rate": 25,
+        "target_video_kbps": 250,
+        "cap_bytes": 6000000,
+        "attempts": {
+          "25": 5941159
+        }
+      },
+      "top": {
+        "keyframes": 115,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.188,
+        "duplicate_frames": 254,
+        "psnr_y": 42.837373,
+        "psnr_avg": 43.450772,
+        "psnr_min": 39.959366
+      },
+      "bottom": null
+    },
+    {
+      "file": "alttp-light-world.fvid",
+      "key": "alttp/light-world",
+      "bytes": 711836,
+      "sha256": "7b59424a20307d04e9fb70481220d9887558d6f8f0a35e83157e910a8f1ab030",
+      "frames": 186,
+      "fps": 20,
+      "duration": 9.3,
+      "bitrate_kbps": 612.3,
+      "video_kbps": 604.0,
+      "audio_kbps": 0.0,
+      "audio": null,
+      "rate_control": {
+        "mode": "constant quality",
+        "handbrake_q": 52,
+        "default_q": 52,
+        "cap_bytes": 1200000,
+        "attempts": {
+          "52": 711836
+        }
+      },
+      "top": {
+        "keyframes": 8,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.163,
+        "duplicate_frames": 8,
+        "psnr_y": 41.220243,
+        "psnr_avg": 41.655865,
+        "psnr_min": 40.536313
+      },
+      "bottom": {
+        "keyframes": 8,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.163,
+        "duplicate_frames": 50,
+        "psnr_y": 40.819411,
+        "psnr_avg": 40.446978,
+        "psnr_min": 39.060135
+      }
+    },
+    {
+      "file": "minish-minish-woods.fvid",
+      "key": "minish/minish-woods",
+      "bytes": 931111,
+      "sha256": "83d0df6f311a4618d3f0ce7a8005d55a95f647850dcb2d4d2c8202d564176640",
+      "frames": 240,
+      "fps": 20,
+      "duration": 12.0,
+      "bitrate_kbps": 620.7,
+      "video_kbps": 613.7,
+      "audio_kbps": 0.0,
+      "audio": null,
+      "rate_control": {
+        "mode": "constant quality",
+        "handbrake_q": 52,
+        "default_q": 52,
+        "cap_bytes": 1200000,
+        "attempts": {
+          "52": 931111
+        }
+      },
+      "top": {
+        "keyframes": 10,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.2,
+        "duplicate_frames": 0,
+        "psnr_y": 40.685755,
+        "psnr_avg": 40.409988,
+        "psnr_min": 39.17626
+      },
+      "bottom": {
+        "keyframes": 10,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.2,
+        "duplicate_frames": 39,
+        "psnr_y": 42.595862,
+        "psnr_avg": 42.265443,
+        "psnr_min": 40.929598
+      }
+    },
+    {
+      "file": "mk64-trailer.fvid",
+      "key": "mk64/trailer",
+      "bytes": 5931857,
+      "sha256": "b5c881b5750c7c3a9fe7fc8432879ea7005ce8e560a46e0533ab66ecdeace613",
+      "frames": 2211,
+      "fps": 20,
+      "duration": 110.55,
+      "bitrate_kbps": 429.3,
+      "video_kbps": 329.8,
+      "audio_kbps": 96.6,
+      "audio": {
+        "codec": "IMA ADPCM 4-bit",
+        "rate": 24000,
+        "channels": 1
+      },
+      "rate_control": {
+        "mode": "two-pass average bitrate",
+        "handbrake_kbps_at_declared_rate": 33,
+        "target_video_kbps": 330,
+        "cap_bytes": 6000000,
+        "attempts": {
+          "33": 5931857
+        }
+      },
+      "top": {
+        "keyframes": 89,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.242,
+        "duplicate_frames": 44,
+        "psnr_y": 40.440669,
+        "psnr_avg": 41.129241,
+        "psnr_min": 37.486414
+      },
+      "bottom": null
+    },
+    {
+      "file": "mk64-luigi-raceway.fvid",
+      "key": "mk64/luigi-raceway",
+      "bytes": 1188789,
+      "sha256": "9648ebd25225811e3d78e5b47207236d8cb0ef96ac05ab3d3fba959df3880c49",
+      "frames": 240,
+      "fps": 20,
+      "duration": 12.0,
+      "bitrate_kbps": 792.5,
+      "video_kbps": 785.5,
+      "audio_kbps": 0.0,
+      "audio": null,
+      "rate_control": {
+        "mode": "constant quality",
+        "handbrake_q": 35,
+        "default_q": 52,
+        "cap_bytes": 1200000,
+        "attempts": {
+          "26": 789792,
+          "32": 1028638,
+          "35": 1188789,
+          "36": 1229167,
+          "37": 1265776,
+          "39": 1351189,
+          "52": 2344885
+        }
+      },
+      "top": {
+        "keyframes": 10,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.2,
+        "duplicate_frames": 0,
+        "psnr_y": 37.13703,
+        "psnr_avg": 37.806218,
+        "psnr_min": 36.654401
+      },
+      "bottom": {
+        "keyframes": 10,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.2,
+        "duplicate_frames": 3,
+        "psnr_y": 39.416188,
+        "psnr_avg": 39.776337,
+        "psnr_min": 38.352373
+      }
+    },
+    {
+      "file": "doom-forest.fvid",
+      "key": "doom/forest",
+      "bytes": 657894,
+      "sha256": "2f1de1e3e8ab75ba74bb7aecbb8c752ae153d3efe272c54a31d6c15e3a172a01",
+      "frames": 160,
+      "fps": 20,
+      "duration": 8.0,
+      "bitrate_kbps": 657.9,
+      "video_kbps": 648.6,
+      "audio_kbps": 0.0,
+      "audio": null,
+      "rate_control": {
+        "mode": "constant quality",
+        "handbrake_q": 52,
+        "default_q": 52,
+        "cap_bytes": 1200000,
+        "attempts": {
+          "52": 657894
+        }
+      },
+      "top": {
+        "keyframes": 7,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.143,
+        "duplicate_frames": 2,
+        "psnr_y": 43.496797,
+        "psnr_avg": 42.691329,
+        "psnr_min": 41.499457
+      },
+      "bottom": {
+        "keyframes": 7,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.143,
+        "duplicate_frames": 33,
+        "psnr_y": 41.70937,
+        "psnr_avg": 40.722307,
+        "psnr_min": 40.2803
+      }
+    },
+    {
+      "file": "starwing-corneria.fvid",
+      "key": "starwing/corneria",
+      "bytes": 682303,
+      "sha256": "157ec7c9a8318ad3d44f4f5c1d5f2571a8e03999094a6a02bb0a26d258a9fb23",
+      "frames": 240,
+      "fps": 20,
+      "duration": 12.0,
+      "bitrate_kbps": 454.9,
+      "video_kbps": 447.8,
+      "audio_kbps": 0.0,
+      "audio": null,
+      "rate_control": {
+        "mode": "constant quality",
+        "handbrake_q": 52,
+        "default_q": 52,
+        "cap_bytes": 1200000,
+        "attempts": {
+          "52": 682303
+        }
+      },
+      "top": {
+        "keyframes": 10,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.2,
+        "duplicate_frames": 1,
+        "psnr_y": 43.654142,
+        "psnr_avg": 43.944155,
+        "psnr_min": 41.270446
+      },
+      "bottom": {
+        "keyframes": 10,
+        "max_interval_frames": 25,
+        "max_interval_seconds": 1.25,
+        "mean_interval_seconds": 1.2,
+        "duplicate_frames": 9,
+        "psnr_y": 44.875976,
+        "psnr_avg": 44.714068,
+        "psnr_min": 43.230877
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+* text=auto eol=lf
+*.png binary
+*.webp binary
+*.jpg binary
+*.mp4 binary
+*.mp3 binary
+*.wav binary
+*.pcm binary
+*.fvid binary
+*.ftx binary
+*.bin binary
+*.cia binary
+*.3dsx binary
+*.smdh binary
+*.ttf binary
+*.woff2 binary
+3ds/vendor/** linguist-vendored
+3ds/source/vendor/** linguist-vendored
+src/js/vendor/** linguist-vendored
+3ds/romfs/** linguist-generated
+versions/v1/** linguist-generated

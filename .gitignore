@@ -1,0 +1,44 @@
+# Local state, test runs and private reference material
+.local/
+.cache/
+.DS_Store
+.env
+.env.*
+!.env.example
+*.log
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+# Native intermediate output and old resource encodes
+3ds/build/
+3ds/media/
+3ds/media-next/
+# Large historical captures are retained locally, not distributed as source
+docs/native-v2-parity/
+docs/ui-v2-review/
+# Installed game data, console dumps, private firmware and saves
+*.dmp
+*.sav
+*.srm
+*.sfc
+*.smc
+*.gba
+*.nds
+*.z64
+*.n64
+*.v64
+*.o2r
+*.cdc
+*.elf
+*.o
+*.a
+# Only reviewed distributable builds belong in builds/3ds
+*.cia
+*.3dsx
+!builds/3ds/*.cia
+!builds/3ds/*.3dsx
+# Historical internal handoffs are retained locally
+docs/history/
+docs/UI-V2-REVIEW-2026-11-10.md
+docs/UI-V2-STYLE.md
