@@ -219,8 +219,8 @@
     },
     {
       "path": "assets/community/daedalus/icon.webp",
-      "bytes": 2910,
-      "sha256": "5b527ca907f96b1b5040734572fa31fa46927ff4f9f3aa6ac4926257fd341fbd",
+      "bytes": 17660,
+      "sha256": "baf73924d9282d28c11b3ff110685e98d4ca8dade2adb066e41f9de8785aaaf4",
       "source_context": "https://raw.githubusercontent.com/masterfeizz/DaedalusX64-3DS/master/Source/SysCTR/Resources/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -407,6 +407,13 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/mgba/logo.webp",
+      "bytes": 82766,
+      "sha256": "59ee4b4e636708341224903ff5ca846d0222f2a1d777182be6e95d9bfc9320fc",
+      "source_context": "https://github.com/mgba-emu/mgba",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/mkwii/background.webp",
       "bytes": 49286,
       "sha256": "509893120c5ff747e6634fd10b07ba5f868d294a77b1aad8080271b7f07fb781",
@@ -471,8 +478,8 @@
     },
     {
       "path": "assets/community/picodrive/icon.webp",
-      "bytes": 1510,
-      "sha256": "f2cefc643d7d7e4c00feac614405b3ef372a8e0671ced475ec2fe368445d5313",
+      "bytes": 31698,
+      "sha256": "ef80d26529717f4e5453f6d323485f65552d519d080741ae9d152a7c39caeb89",
       "source_context": "https://raw.githubusercontent.com/bubble2k16/emus3ds/master/src/cores/picodrive/assets/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -485,8 +492,8 @@
     },
     {
       "path": "assets/community/psx3d/icon.webp",
-      "bytes": 4078,
-      "sha256": "51a615b7927b42116e6cac99113667b649b13f4c9b2c4df53491adc16a375f1b",
+      "bytes": 18298,
+      "sha256": "67f238d13cff4e16ecd28e10c59a0fd1403f5bf189170499d3b05ac28f24f4e7",
       "source_context": "https://raw.githubusercontent.com/BreadChaser/PSX3D/main/psx3d/meta/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -590,9 +597,9 @@
     },
     {
       "path": "assets/community/retroarch/background.webp",
-      "bytes": 5208,
-      "sha256": "201106fbffa8df4638ac8afd5188deeba9f1871672c1f244e2365507bde5d56e",
-      "source_context": "https://raw.githubusercontent.com/libretro/retroarch-assets/master/wallpapers/bichromatic%20pads/1440x900/MENU%20.png",
+      "bytes": 106466,
+      "sha256": "90b471251af9a0043f6c74c33936af58a78603018744cf74bf3cabf68d5de575",
+      "source_context": "https://raw.githubusercontent.com/libretro/retroarch-assets/master/branding/retroarch_nologo_bg.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -667,8 +674,8 @@
     },
     {
       "path": "assets/community/sources.json",
-      "bytes": 32355,
-      "sha256": "23ebca4c62d83397dc3675e25bad92d3d3c2878b64f0f015c143d24dad97e9c6",
+      "bytes": 33578,
+      "sha256": "cc570ee15813cb68415809229786e4d4fb6b723ebd3306d5406aea0266fc6181",
       "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },

@@ -1,5 +1,11 @@
 # Changelog
 
+## Emulator artwork clarity — 2026.11.12.7
+
+- Restore the illustrated RetroArch background selected by me.
+- Replace the 48-pixel PSX3D, DaedalusX64 and PicoDrive icon inputs with clean high-resolution restorations, sampled once into the native atlases.
+- Add a separate mGBA wordmark based on the lettering inside its existing handheld icon.
+
 ## Readable artwork and local-first GitHub — 2026.11.12.6
 
 - Include original-game screenshot backgrounds for Banjo-Kazooie, Donkey Kong 64, Mystical Ninja, Mario Kart Wii and Undertale through Butterscotch.

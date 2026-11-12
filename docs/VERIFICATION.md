@@ -1,8 +1,23 @@
 # Verification record
 
-Publication candidate: **2026.11.12.6**, native C implementation. This is a development
+Publication candidate: **2026.11.12.7**, native C implementation. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## Emulator artwork clarity — 2026.11.12.7
+
+- Restored the selected illustrated RetroArch background. PSX3D, DaedalusX64 and PicoDrive
+  use reconstructed 512px source icons; mGBA adds a separate outlined wordmark while retaining
+  its handheld icon. The packers keep the existing native icon and foreground dimensions.
+- Native banner packing and all 37 grid icons pass their generation checks. Catalog production
+  tests pass 297 assertions with ASan/UBSan. Production CIA and 3DSX compile successfully;
+  the existing SDK GNU-stack linker warning remains unchanged.
+- Visually reviewed all five banners and their grid icons using the exact public non-debug
+  3DSX in the Old 3DS emulator with an isolated SD. All five backgrounds and foregrounds
+  were resident at capture; the run exited normally and reported zero music underruns.
+  [Build and capture fingerprints](verification/emulator-icons.json) match the packaged binary
+  and checked native sources.
+- No web deployment or physical-console validation is part of this artwork update.
 
 ## Native artwork and README priority — 2026.11.12.6
 

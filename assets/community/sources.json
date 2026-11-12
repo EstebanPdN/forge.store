@@ -58,34 +58,40 @@
     "app": "daedalus",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/masterfeizz/DaedalusX64-3DS/master/Source/SysCTR/Resources/icon.png",
-    "sha256": "caa7f33cc6c7ab3158e259f31ffe269bcf9dd6db36d724b705f6c9e3e111a951",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/daedalus/icon.webp"
+    "output": "assets/community/daedalus/icon.webp",
+    "originalSourceSha256": "caa7f33cc6c7ab3158e259f31ffe269bcf9dd6db36d724b705f6c9e3e111a951",
+    "sha256": "baf73924d9282d28c11b3ff110685e98d4ca8dade2adb066e41f9de8785aaaf4",
+    "derivation": "AI-assisted restoration of the original 48px icon, built-in image_gen; exact prompt in docs/ART-DIRECTION.md."
   },
   {
     "app": "psx3d",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/BreadChaser/PSX3D/main/psx3d/meta/icon.png",
-    "sha256": "f5edbdc03733d90a9ab81a06cb04067c93cde5c727e31bfa9275ac7d50e37757",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/psx3d/icon.webp"
+    "output": "assets/community/psx3d/icon.webp",
+    "originalSourceSha256": "f5edbdc03733d90a9ab81a06cb04067c93cde5c727e31bfa9275ac7d50e37757",
+    "sha256": "67f238d13cff4e16ecd28e10c59a0fd1403f5bf189170499d3b05ac28f24f4e7",
+    "derivation": "AI-assisted restoration of the original 48px icon, built-in image_gen; exact prompt in docs/ART-DIRECTION.md."
   },
   {
     "app": "picodrive",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/bubble2k16/emus3ds/master/src/cores/picodrive/assets/icon.png",
-    "sha256": "3fad552bd7e7c2c425b83ebb464ba6b61db23c79958b7fad4b34391ba6137887",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/picodrive/icon.webp"
+    "output": "assets/community/picodrive/icon.webp",
+    "originalSourceSha256": "3fad552bd7e7c2c425b83ebb464ba6b61db23c79958b7fad4b34391ba6137887",
+    "sha256": "ef80d26529717f4e5453f6d323485f65552d519d080741ae9d152a7c39caeb89",
+    "derivation": "AI-assisted restoration of the original 48px icon, built-in image_gen; exact prompt in docs/ART-DIRECTION.md."
   },
   {
     "app": "universal",
@@ -888,10 +894,16 @@
   {
     "app": "retroarch",
     "kind": "background",
-    "url": "https://raw.githubusercontent.com/libretro/retroarch-assets/master/wallpapers/bichromatic%20pads/1440x900/MENU%20.png",
+    "url": "https://raw.githubusercontent.com/libretro/retroarch-assets/master/branding/retroarch_nologo_bg.png",
     "output": "assets/community/retroarch/background.webp",
-    "note": "Official bichromatic-pads wallpaper, resized for the banner. CC-BY-4.0; credit libretro/retroarch-assets contributors.",
-    "sha256": "bdf02f2041c48a39fa289d325c60b28fee1b0b13835b9dd434cdf159bfd59882"
+    "note": "Official illustrated retroarch_nologo_bg wallpaper, resized for the banner. CC-BY-4.0; credit libretro/retroarch-assets contributors.",
+    "sha256": "209c50c8fc2608b0c72380e6367576f7bb80acbc81ef53bfe40ee2d998127643",
+    "size": [
+      3655,
+      2053
+    ],
+    "license": "CC-BY-4.0",
+    "credit": "libretro/retroarch-assets contributors"
   },
   {
     "app": "daedalus",
@@ -952,5 +964,17 @@
     "kind": "background-source",
     "url": "Original minimal vector artwork for forge.store",
     "output": "assets/community/wumiibo/background.svg"
+  },
+  {
+    "app": "mgba",
+    "kind": "logo",
+    "url": "https://github.com/mgba-emu/mgba",
+    "output": "assets/community/mgba/logo.webp",
+    "sha256": "59ee4b4e636708341224903ff5ca846d0222f2a1d777182be6e95d9bfc9320fc",
+    "size": [
+      1000,
+      311
+    ],
+    "derivation": "AI-assisted reconstruction of the wordmark inside the existing handheld icon, built-in image_gen; exact prompt in docs/ART-DIRECTION.md."
   }
 ]

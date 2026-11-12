@@ -1,0 +1,27 @@
+{
+  "version": "2026.11.12.7",
+  "files": {
+    "forge-store.cia": {
+      "bytes": 49218496,
+      "sha256": "a368b2a8e9d41de82f052cb68f75fff472706f3ee39646b8ca890ed86a69c2a7"
+    },
+    "forge-store.3dsx": {
+      "bytes": 49756200,
+      "sha256": "2ca749d05ead8fe97a7a38d2bf3fab1d497f28cbc2fe048175a459d5d61698ed"
+    }
+  },
+  "model": "Old 3DS emulator",
+  "hardware_tested": false,
+  "source_fingerprints_match": true,
+  "host": [
+    "catalog production: 297 assertions ASan/UBSan"
+  ],
+  "audio_underruns": 0,
+  "captures": {
+    "daedalus": "40a0dcb388a7884f39eff8403de210ef9f01a835beee6d7963417fc67f7ccafb",
+    "mgba": "68c16bb4db007eaf82ec03f29a7d669fcef762e4f52313ac2cf8ef0ae7131269",
+    "pico": "a9b816424dd126bf4a94447c740636b89214d941ffd850ded9d49c9181d32a7e",
+    "psx": "12741acef88318d98a27f6d6972c21af1620019f8b79b6e9b60e10c6e02901ed",
+    "retro": "bc2632692f3bca6f9d9ee7f396596e87f15ddea01cbb896e848942349a5bbc8e"
+  }
+}

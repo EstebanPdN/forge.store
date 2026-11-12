@@ -3785,7 +3785,8 @@
       "stars": 382,
       "origin": {
         "platform": "N64"
-      }
+      },
+      "pixelIcon": false
     },
     {
       "id": "mgba",
@@ -3812,7 +3813,8 @@
         ],
         "cardIcon": true,
         "bg": "assets/community/mgba/background.webp",
-        "bgPos": "50% 50%"
+        "bgPos": "50% 50%",
+        "logo": "assets/community/mgba/logo.webp"
       },
       "shots": [],
       "tagline": {
@@ -4045,7 +4047,8 @@
       "stars": 23,
       "origin": {
         "platform": "PS1"
-      }
+      },
+      "pixelIcon": false
     },
     {
       "id": "picodrive",
@@ -4180,7 +4183,8 @@
       "stars": 84,
       "origin": {
         "platform": "Mega Drive"
-      }
+      },
+      "pixelIcon": false
     },
     {
       "id": "retroarch",
