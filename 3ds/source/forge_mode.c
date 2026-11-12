@@ -6,8 +6,6 @@
 #else
 #include "common.h"
 #include <mbedtls/gcm.h>
-#include <mbedtls/md.h>
-#include <mbedtls/pkcs5.h>
 #include <mbedtls/sha256.h>
 #endif
 #include "forge_mode.h"
@@ -21,10 +19,12 @@
 static const unsigned char aad[] = "forge.store/private-assets/v1";
 static Thread worker;
 static bool done, restore;
+static u64 derive_ms;
 static char password[65];
 static ForgeModeState state = FORGE_LOCKED, result_state;
 static json_t *manifest, *result_manifest;
 static void wipe(void *data,size_t n) {volatile unsigned char *p=data;while(n--)*p++=0;}
+#include "forge_kdf.h"
 static unsigned get32(const unsigned char *p) {return (unsigned)p[0]|(unsigned)p[1]<<8|(unsigned)p[2]<<16|(unsigned)p[3]<<24;}
 
 static bool valid_manifest(json_t *root) {
@@ -89,10 +89,10 @@ static void unlock_worker(void *unused) {
         if(valid)memcpy(key,saved+36,32);
         wipe(saved,sizeof saved);if(!valid)goto end;
     } else {
-        mbedtls_md_context_t md;mbedtls_md_init(&md);
-        int err=mbedtls_md_setup(&md,mbedtls_md_info_from_type(MBEDTLS_MD_SHA256),1);
-        if(!err)err=mbedtls_pkcs5_pbkdf2_hmac(&md,(unsigned char*)password,strlen(password),blob+8,16,iterations,32,key);
-        mbedtls_md_free(&md);wipe(password,sizeof password);if(err)goto end;
+        u64 started=osGetTime();
+        int err=forge_derive_key((unsigned char*)password,strlen(password),blob+8,iterations,key);
+        derive_ms=osGetTime()-started;
+        wipe(password,sizeof password);if(err)goto end;
     }
     result_manifest=decrypt(blob,length,key);
     if(result_manifest) {
@@ -105,9 +105,9 @@ end:
 }
 static bool begin(bool from_disk) {
     if(worker)return false;
-    restore=from_disk;done=false;state=FORGE_CHECKING;
+    restore=from_disk;done=false;derive_ms=0;state=FORGE_CHECKING;
     s32 priority=0x30;svcGetThreadPriority(&priority,CUR_THREAD_HANDLE);
-    worker=threadCreate(unlock_worker,NULL,48*1024,priority+3,-2,false);
+    worker=threadCreate(unlock_worker,NULL,48*1024,priority+1,-2,false);
     if(!worker){wipe(password,sizeof password);state=FORGE_STORAGE_ERROR;return false;}
     return true;
 }
@@ -122,6 +122,7 @@ bool forge_mode_unlock(const char *code) {
     snprintf(password,sizeof password,"%s",code);return begin(false);
 }
 ForgeModeState forge_mode_state(void){return state;}
+unsigned forge_mode_derivation_ms(void){return state==FORGE_CHECKING?0:(unsigned)derive_ms;}
 bool forge_mode_enabled(void){return state==FORGE_ENABLED&&manifest;}
 json_t *forge_mode_plan(const char *id,json_t *base) {
     if(!json_is_array(base)||!json_array_size(base))return NULL;

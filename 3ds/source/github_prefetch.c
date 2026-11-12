@@ -3,10 +3,11 @@
 #include "catalog.h"
 #include "gh_markup.h"
 #include "reader_image.h"
+#include "reader_cache.h"
 #include <mbedtls/sha256.h>
 static Thread worker;
 static bool stop, paused;
-static char repos[24][160];
+static char repos[128][160];
 static int repo_count;
 static bool interrupted(void *ctx) {
     return __atomic_load_n(&stop, __ATOMIC_ACQUIRE) || __atomic_load_n(&paused, __ATOMIC_ACQUIRE);
@@ -21,7 +22,7 @@ static char *fetch(const char *url, const char *accept, size_t limit) {
         return NULL;
     size_t length;
     char error[160];
-    bool refresh=!http_cache_fresh(url,accept,!strcmp(accept,"*/*")?7*86400:21600);
+    bool refresh=!http_cache_fresh(url,accept,!strcmp(accept,"*/*")||strstr(url,"/readme")?7*86400:strstr(url,"/commits")?86400:21600);
     return http_cache_get(url, accept, limit, refresh, interrupted, NULL, &length, error, sizeof error);
 }
 // Keep only URL digests: 16 KiB instead of reserving 512 KiB of Old 3DS RAM.
@@ -87,7 +88,15 @@ static void run(void *unused) {
                  "application/vnd.github+json", 1024 * 1024);
     free(data);
     readme("EstebanPdN/EstebanPdN", "main");
-    for (int i = 0; i < repo_count && wait_ready(); i++) {
+    // Rotate six repositories per launch; releases have their own catalog queue.
+    // This stays within the anonymous API budget alongside release checks.
+    unsigned cursor=0;size_t cursor_length=0;
+    char *cursor_data=reader_cache_load(DATA_DIR "/github-prefetch.cursor",UINT64_MAX-1,UINT64_MAX,
+                                      sizeof cursor,&cursor_length);
+    if(cursor_data){if(cursor_length==sizeof cursor)memcpy(&cursor,cursor_data,sizeof cursor);free(cursor_data);}
+    int limit=repo_count<6?repo_count:6;
+    for (int step=0;step<limit&&wait_ready();step++) {
+        int i=(cursor+step)%repo_count;
         char url[320];
         snprintf(url, sizeof url, "https://api.github.com/repos/%s", repos[i]);
         data = fetch(url, "application/vnd.github+json", 1024 * 1024);
@@ -103,14 +112,22 @@ static void run(void *unused) {
         data = fetch(url, "application/vnd.github+json", 1024 * 1024);
         free(data);
         if (interrupted(NULL) && !__atomic_load_n(&stop, __ATOMIC_ACQUIRE))
-            i--; // resume interrupted repository
+            step--; // resume interrupted repository
+    }
+    if(!__atomic_load_n(&stop,__ATOMIC_ACQUIRE)&&repo_count){
+        cursor=(cursor+limit)%repo_count;
+        // Reuse the FAT-safe publication path: rename alone cannot replace the
+        // previous cursor on a physical SD card.
+        reader_cache_save(DATA_DIR "/github-prefetch.cursor",(uint64_t)time(NULL),
+                          (const char*)&cursor,sizeof cursor,sizeof cursor);
     }
 }
 void github_prefetch_start(void) {
     if (worker)
         return;
-    for (int i = 0; i < BUILTIN_APPS && repo_count < 24; i++)
-        if (APPS[i].repo && !strncmp(APPS[i].repo, "EstebanPdN/", 11)) {
+    snprintf(repos[repo_count++],sizeof repos[0],"EstebanPdN/forge.store");
+    for (int i = 0; i < BUILTIN_APPS && repo_count < 128; i++)
+        if (APPS[i].repo && *APPS[i].repo) {
             bool duplicate = false;
             for (int k = 0; k < repo_count; k++)
                 if (!strcmp(repos[k], APPS[i].repo))

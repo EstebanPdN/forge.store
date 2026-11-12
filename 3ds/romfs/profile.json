@@ -1,0 +1,82 @@
+{
+  "source": "https://github.com/EstebanPdN/EstebanPdN",
+  "login": "estebanpdn@github",
+  "rows": [
+    {
+      "label": "OS",
+      "value": "macOS, iOS, Linux"
+    },
+    {
+      "label": "Uptime",
+      "value": "24 years, 6 months"
+    },
+    {
+      "label": "Hardware",
+      "value": "MacBook Pro M5 Pro"
+    },
+    {
+      "label": "IDE",
+      "value": "VS Code, Codex"
+    },
+    {
+      "label": "Languages.Programming",
+      "value": "Java, Python, JavaScript, C++"
+    },
+    {
+      "label": "Languages.Computer",
+      "value": "HTML, CSS, JSON"
+    },
+    {
+      "label": "Languages.Real",
+      "value": "English, Spanish, Portuguese"
+    },
+    {
+      "label": "Hobbies.Software",
+      "value": "Videogames, Modding"
+    },
+    {
+      "label": "Hobbies.Hardware",
+      "value": "Music, Retro consoles"
+    },
+    {
+      "label": "Email",
+      "value": "estebanpdn@gmail.com"
+    },
+    {
+      "label": "Discord",
+      "value": "thahylian"
+    },
+    {
+      "label": "Website",
+      "value": "estebanpdn.github.io"
+    },
+    {
+      "label": "Repos",
+      "value": "1,903"
+    },
+    {
+      "label": "Commits",
+      "value": "234"
+    },
+    {
+      "label": "Lines changed",
+      "value": "+6,864,487"
+    }
+  ],
+  "links": [
+    {
+      "label": "Website",
+      "url": "https://estebanpdn.github.io/"
+    },
+    {
+      "label": "Discord",
+      "url": "https://discord.gg/zy8BqH5ss"
+    },
+    {
+      "label": "Patreon",
+      "url": "https://www.patreon.com/c/EstebanPdN"
+    }
+  ],
+  "development": "Most of my projects were developed with the help of OpenAI Codex and Claude Code.",
+  "developmentUrl": "https://github.com/EstebanPdN/EstebanPdN/blob/main/AI_DEVELOPMENT.md"
+}

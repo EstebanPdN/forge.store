@@ -29,6 +29,7 @@ void LightLock_Unlock(LightLock *l);
 void CFGU_GetSystemLanguage(u8 *l);
 void svcGetThreadPriority(s32 *p, int h);
 void svcSleepThread(int64_t ns);
+static inline size_t linearSpaceFree(void){return 16*1024*1024;}
 void *threadCreate(void (*fn)(void *), void *arg, size_t stack, int prio, int affinity, bool detached);
 ''')
     (inc / 'citro3d.h').write_text('#pragma once\ntypedef struct {int unused;} C3D_Tex;\n')

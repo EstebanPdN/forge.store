@@ -1,5 +1,21 @@
 # Changelog
 
+## Home preload and offline reader — 2026.11.12.4
+
+- Warm Forge backgrounds/logos before the intro, retain an LRU working set on Home and
+  prioritize visible/neighbor banners. Replace many small asset reads with one compressed bank.
+- Use the new Minish Cap framing, improve Star Haven/Quake presentation and add gameplay or
+  application backgrounds to 19 community/emulator/utility entries. Remove Lynx3DS and G-Diffuser.
+- Adapt my terminal-style GitHub profile to the top screen and keep Website/Discord/Patreon
+  links on one compact line. Include forge.store and every curated public repository locally.
+- Ship 148 public responses and 209 prepared images for the native reader, plus local web
+  equivalents. Bound uncached loads and rotate background refreshes without blocking pages.
+- Reuse HMAC states during Forge Mode derivation without changing the code, encryption work
+  factor or saved unlock. Yield background transfers while it runs.
+- Add the round Home GitHub button with X and move the console-model label one pixel right.
+- Compress streamed music losslessly with a reversible stereo predictor; preserve the PCM
+  samples, audio gain and buffering. Test exact loop seams, CRC errors and restart.
+
 ## Catalog, loading and Forge Mode — 2026.11.12.3
 
 - Expand the curated catalog to 39 entries with official icons, verified download plans and

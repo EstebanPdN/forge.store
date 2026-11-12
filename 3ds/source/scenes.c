@@ -805,6 +805,8 @@ static void home_select(int i, int dir, bool instant) {
     if (instant)
         cur_x = x, cur_y = y, track_x = page * BOT_W, dot_x = page * 9;
     banner_show(list[i], dir);
+    const int near[]={1,-1,COLS,-COLS,2,-2};
+    for(unsigned k=0;k<sizeof near/sizeof *near;k++){int n=i+near[k];if(n>=0&&n<nlist)app_prefetch_banner(list[n]);}
 }
 
 static void home_enter(bool from_intro) {
@@ -866,8 +868,6 @@ static void home_move(u32 k) {
 
 static void home_update(void) {
     if (bn_prev && bn_prev != bn_cur && NOW - bn_t > .8f) {
-        sheet_free(&bn_prev->bg);
-        sheet_free(&bn_prev->fg);
         bn_prev = NULL;
     }
     // Smooth cursor and page slide (spring-like lerps, frame-rate independent).
@@ -893,7 +893,7 @@ static void home_update(void) {
     if (IN.down & KEY_START)
         open_settings();
     if (IN.down & KEY_X)
-        open_downloads();
+        open_github(json_string_value(json_object_get(json_object_get(CATALOG, "store"), "author")), true);
     if (IN.down & KEY_SELECT)
         open_sd();
     // Touch: tabs, grid, toolbar.
@@ -1129,7 +1129,9 @@ static void home_bottom(float sa) {
     const float xs[] = {4,76,159,204,288}, ws[] = {69,80,42,81,28};
     const char *labels[] = {T("home.search"),T("home.downloads"),T("home.sd"),T("home.settings"),NULL};
     const char *icons[] = {"search","download","sd","settings","github"};
-    for (int i=0;i<5;i++) button(xs[i],208+dy,ws[i],28,labels[i],icons[i],NULL,BTN_SURFACE,ta);
+    for (int i=0;i<4;i++) button(xs[i],208+dy,ws[i],28,labels[i],icons[i],NULL,BTN_SURFACE,ta);
+    button_round(288,208+dy,28,28,NULL,"github",NULL,BTN_SURFACE,ta);
+    draw_badge("X",305,226+dy,ta);
     if (scenes_downloading()) circle(150,211+dy,3,C(FORGE,ta));
 }
 
@@ -2947,7 +2949,7 @@ static void settings_bottom(float sa) {
             for (int k = 0; k < 10; k++)
                 rect(258 + k * 5, base - (4 + k), 3, 4 + k, C(k < lit ? FORGE : TH.surface3, sa));
         } else if(i==SET_CONSOLE&&forge_mode_enabled()) {
-            text_style(v,282,y+17-line_h(10)/2,10,600,0,C(TH.ink_soft,sa),AL_RIGHT);
+            text_style(v,283,y+17-line_h(10)/2,10,600,0,C(TH.ink_soft,sa),AL_RIGHT);
             forge_mode_mark(288,y+7,sa);
         } else if (v[0]) {
             char fitted[48]; fit_label(fitted,sizeof fitted,v,10,94); snprintf(v,sizeof v,"%s",fitted);
@@ -3026,6 +3028,8 @@ void scenes_init(float intro_delay) {
     dsp_view=file_view_watch("sdmc:/3ds/dspfirm.cdc",true);
     requirement_views_rebuild();
     theme_apply();
+    profile_data=json_load_file("romfs:/profile.json",0,NULL);
+    sheet_load_now(&profile_art,"romfs:/gfx/profile.ftx");
     HOME_ICONS.crisp=true;
     sheet_load_now(&HOME_ICONS,"romfs:/gfx/icons-44.ftx");
     sheet_load_now(&BG[(S.dark ? 1 : 0)], S.dark ? "romfs:/gfx/bg-top-dark.ftx" : "romfs:/gfx/bg-top-light.ftx");
@@ -3074,7 +3078,7 @@ void scenes_update(void) {
     if(scene==SC_SD||scene==SC_DOWNLOADS)sys_refresh();
     if(scene!=SC_GITHUB&&!S.universal)remote_image_trim();
     github_prefetch_start();
-    github_prefetch_pause(scene==SC_GITHUB||install_active()!=NULL||video_active());
+    github_prefetch_pause(scene==SC_GITHUB||install_active()!=NULL||video_active()||forge_mode_state()==FORGE_CHECKING);
     bool catalog_changed=false;
     if(!test_freeze_media&&media_started){catalog_changed=catalog_sync_pump();catalog_changed|=universal_sync_pump(scene==SC_HOME||scene==SC_SEARCH||scene==SC_SETTINGS);}
     if(catalog_changed){
@@ -3322,6 +3326,7 @@ void scenes_exit(void) {
     thread_reap(&dsp_thread);
     if (EXIT_ABANDONED) return;  // a worker may still read these
     github_cleanup();
+    sheet_free(&profile_art);json_decref(profile_data);profile_data=NULL;
     free(dl_test_jobs);dl_test_jobs=NULL;
     sheet_free(&HOME_ICONS);sheet_free(&install_backdrop);
     if (sd_stopped) { free(sd_entries); sd_entries = NULL; sd_n = sd_alloc = 0; }
@@ -3344,6 +3349,9 @@ void scenes_test_view(const char *name) {
     video_stop();video_wanted=false;
     trans_phase=0;sheet_on=false;uninstall_on=false;lang_open=false;
     if(!strcmp(name,"home")||!strcmp(name,"home-universal")){scene=SC_HOME;searching=false;for(int i=0;i<NCATS;i++)if(!strcmp(CATS[i].id,!strcmp(name,"home-universal")?"universal":"forge"))cat=i;sel=0;home_enter(false);return;}
+    if(!strncmp(name,"hover:",6)){
+        scene=SC_HOME;home_list();for(int i=0;i<nlist;i++)if(!strcmp(list[i]->id,name+6)){home_select(i,i>=sel?1:-1,false);return;}return;
+    }
     if(!strcmp(name,"search")||!strncmp(name,"search:",7)){open_search();if(name[6]==':'){snprintf(query,sizeof query,"%s",name+7);search_refresh();}scene=SC_SEARCH;trans_phase=0;return;}
     if(!strcmp(name,"downloads")||!strncmp(name,"downloads-",10)){
         dl_test_override=strcmp(name,"downloads")!=0;dl_test_count=0;
@@ -3368,6 +3376,8 @@ void scenes_test_view(const char *name) {
         if(!strcmp(name,"downloads-bottom"))dl_focus=dl_n-1,dl_scroll=fmaxf(0,dl_height-198);
         return;
     }
+    if(!strcmp(name,"forge-bench")){open_secret();scene=SC_SEARCH;trans_phase=0;forge_mode_unlock("performance-fixture-invalid");return;}
+    if(!strncmp(name,"github:",7)){open_github(name+7,false);scene=SC_GITHUB;trans_phase=0;return;}
     if(!strcmp(name,"sd")){open_sd();scene=SC_SD;trans_phase=0;return;}
     if(!strcmp(name,"sd-fixture")){snprintf(sd_dir,sizeof sd_dir,"sdmc:/parity-fixture/");sd_focus=0;sd_restore[0]=0;sd_confirm=sd_delete_job=false;sd_scan();scene=SC_SD;trans_phase=0;return;}
     if(!strcmp(name,"settings")||!strcmp(name,"languages")){open_settings();scene=SC_SETTINGS;trans_phase=0;lang_open=!strcmp(name,"languages");for(int i=0;i<8;i++)if(lang_order[i]==S.lang)lang_focus=i;lang_t=NOW-1;return;}
@@ -3422,6 +3432,7 @@ bool scenes_reader_active(void){return scene==SC_GITHUB;}
 
 void scenes_test_log(FILE *file){
     if(!file)return;
+    fprintf(file,"forge mode state=%d derivation_ms=%u\n",forge_mode_state(),forge_mode_derivation_ms());
     for(unsigned i=0;i<media_count();i++){MediaItem m;if(media_item(i,&m))fprintf(file,"media item=%s/%s state=%d bytes=%u/%u attempts=%u error=%s\n",m.appid,m.id,m.state,m.received,m.total,m.attempts,m.error);}
     fprintf(file,"package state=%d items=%u ready=%u bytes=%llu/%llu\n",PKG.state,PKG.items,PKG.ready,(unsigned long long)PKG.received,(unsigned long long)PKG.bytes);
     fprintf(file,"catalog apps=%d universal=%s\n",NAPPS,universal_sync_status());
@@ -3429,9 +3440,10 @@ void scenes_test_log(FILE *file){
     static const char *kinds[]={"intro","home","detail","install","settings","search","downloads","sd","github"};
     fprintf(file,"view kind=%s scroll=%.3f video_time=%.3f\n",kinds[scene],scene==SC_DETAIL?dscroll:scene==SC_GITHUB?gh_scroll:0,video_time());
     if(scene==SC_DOWNLOADS){fprintf(file,"queue focus=%d scroll=%.3f rows=",dl_focus,dl_scroll);for(int i=0;i<dl_n;i++)if(dl_rows[i].job){Job *j=dl_rows[i].job;fprintf(file,"%s:%d:%d,",j->app->id,j->state,j->warnings);}fprintf(file,"\n");}
-    if(scene==SC_GITHUB){int images=0,resident=0;for(int i=0;i<gh_document.count;i++){GhNode *n=&gh_document.nodes[i];if(n->kind==GH_IMAGE&&gh_y[i]+gh_h[i]>gh_scroll&&gh_y[i]<gh_scroll+206){images++;resident+=remote_image_ready(n->url);}}fprintf(file,"assets visible=%d resident=%d\n",images,resident);}
+    if(scene==SC_GITHUB){int images=0,resident=0;for(int i=0;i<gh_document.count;i++){GhNode *n=&gh_document.nodes[i];if(n->kind==GH_IMAGE&&gh_y[i]+gh_h[i]>gh_scroll&&gh_y[i]<gh_scroll+206){images++;resident+=remote_image_ready(n->url);}}fprintf(file,"assets visible=%d resident=%d reader_ms=%u\n",images,resident,gh_load_ms);}
     fprintf(file,"capture scene=%s id=%s tab=%d media=%d playing=%d paused=%d queued_videos=%u reader_loading=%d reader_nodes=%d reader_error=%s\n",scenes_section(),scene==SC_DETAIL&&dapp?dapp->id:"-",scene==SC_DETAIL?dtab:scene==SC_GITHUB?gh_tab:-1,scene==SC_DETAIL?shot_i:0,video_active(),video_paused(),media_count(),scene==SC_GITHUB&&gh_loading,scene==SC_GITHUB?gh_document.count:0,scene==SC_GITHUB?gh_error:"");
     App *selected=scene==SC_DETAIL?dapp:scene==SC_HOME&&nlist&&sel<nlist?list[sel]:NULL;
+    if(selected)fprintf(file,"banner app=%s bg=%d fg=%d loads=%u/%u decode_ms=%.0f/%.0f bytes=%zu\n",selected->id,selected->bg.state,selected->fg.state,selected->bg.loads,selected->fg.loads,selected->bg.decode_ms,selected->fg.decode_ms,selected->banner_bytes);
     bool exp=scene==SC_DETAIL?sheet_exp:S.experimental,cia=scene==SC_DETAIL?sheet_cia:S.cia;
     json_t *release=selected?app_release(selected,exp):NULL;
     fprintf(file,"state app=%s tag=%s dark=%d lang=%s format=%s channel=%s query=%s sd=%s\n",selected?selected->id:"-",release?jstr(release,"tag"):"-",S.dark,LANGS[S.lang],cia?"cia":"3dsx",exp?"experimental":"stable",secret_mode?"[masked]":query,scene==SC_SD?sd_dir:"-");

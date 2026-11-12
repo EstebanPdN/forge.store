@@ -60,20 +60,25 @@ Old builds that predate this updater need one manual CIA/3DSX installation to ga
 `http_cache.c` stores bounded response bodies under `sdmc:/3ds/forge-store/http-v1/`, keyed by
 SHA-256 of URL and Accept header. Bodies use the existing CRC-checked cache format. Metadata
 retains ETag, Last-Modified and the last successful validation time; a shared lock protects
-publication, invalidation and reads across workers.
+publication and invalidation across workers. Readers open complete files without waiting behind
+cache pruning; FAT replacement preserves the prior file until promotion succeeds.
 
-The CIA also bundles 152 public metadata, README, release and commit responses for
+The CIA also bundles 148 public metadata, README, release and commit responses for
 the curated repositories and profile. Foreground reads use CRC-verified SD data or
 the bundled response immediately; a failed refresh falls back to the last usable copy.
 The background pass revalidates metadata, while catalog synchronization owns release refreshes
 and keeps pinned multi-file packages on their reviewed version.
 
-Fresh foreground requests use disk immediately. The normal GitHub response TTL is one hour;
-catalog callers can request six hours. Image freshness is one day. Background validation uses
+Foreground pages use available local data immediately, regardless of age.
+Background metadata freshness is six hours, commits one day, and READMEs/images seven days.
+Bundled timestamps also count as fresh, avoiding a first-launch request burst. Background validation uses
 `If-None-Match` or `If-Modified-Since`; a 304 updates freshness without replacing the body.
 Only successful, bounded responses are published, and API JSON must parse. A failed image
 decode invalidates that cached payload. A usable prior response remains available during
 network errors.
+
+Uncached foreground reader requests have a six-second deadline; the page has an independent
+eight-second ceiling so a stuck resolver cannot leave its spinner running indefinitely.
 
 Transient connection/reset/partial-transfer errors and HTTP 502/503/504 receive one bounded
 retry. Each attempt has a four-second connection timeout and a twelve-second total timeout.
@@ -83,13 +88,15 @@ The cache is capped at 192 payload files; GitHub JSON is limited to 1 MiB and ea
 ## Prefetch and rendering priority
 
 After the startup update gate, during the introduction, `github_prefetch.c` makes one background pass per launch over the public
-profile and up to 24 curated Forge repositories. It validates metadata, READMEs, commit
+profile and six rotating curated repositories, including community apps, emulators,
+utilities and forge.store. The rotation cursor uses the same CRC-checked, FAT-safe save path
+as cached responses. The bundled baseline covers all of them; Universal-DB stays separate. It validates metadata, READMEs, commit
 summaries, avatars and every image emitted by the bounded README parser, for both themes. Repeated image URLs
 are deduplicated using 32-byte hashes (up to 512 per launch), saving 496 KiB compared
 with retaining full URL buffers. Background metadata freshness is six hours and
 image freshness seven days. This pass allocates no GPU textures and never needs an account or token.
 
-Prefetch yields while the GitHub reader, installer or video player is active. Foreground
+Prefetch yields while the GitHub reader, installer, video player or Forge Mode derivation is active. Foreground
 GitHub metadata uses at most two concurrent request slots; visible image decoding remains
 single-worker. The avatar and first visible document images are prioritized over a large image
 farther down. Downloads from the resource package pause while GitHub is foreground.
@@ -102,7 +109,7 @@ still delay content; retries do not guarantee remote availability.
 
 ## Prepared art and warm galleries
 
-The build includes 225 public README images and avatars, resized to at most 376×240 (avatars to 64×64) and stored as
+The build includes 209 public README images and avatars, resized to at most 376×240 (avatars to 64×64) and stored as
 CRC-checked, zlib-compressed RGBA (`RIM1`). Their original URLs and hashes are recorded in
 `assets/reader-art/manifest.json`. Those exact bundled URLs need no network request or
 PNG/WebP/SVG decode on the console. Other decoded images use an atomic SD cache capped at
@@ -118,3 +125,49 @@ Sparse lower-screen entries retain their original index, fixing missing Mutiny p
 The Old 3DS emulator test observed ready gallery slots on the first sampled frame after B
 from cached video, and the same slots after GitHub. This is a resource-lifetime observation,
 not a measured latency guarantee for physical SD cards.
+
+
+## Home working set and startup
+
+After the update screen fades to black, the native loader warms the Forge banners before
+starting the usual introduction. It continues when ready (minimum 0.5 seconds), with a
+six-second ceiling. It never inserts six seconds of idle time on an already ready device.
+
+`stage-romfs.py` combines the unchanged FTX payloads into one sequential `FBN1` bank
+(less than 8 MiB) held in ordinary RAM. Runtime GPU residency uses an 8 MiB LRU budget,
+protects the current/previous banner, and prefetches nearby entries. Returning to a resident
+banner does not decode or read it again. Visible requests outrank speculative work; one
+decoded sheet at a time waits for upload, with a 384 KiB per-frame upload budget.
+
+Web V2 retains decoded local images in a bounded 128-entry working set, warms Forge before
+the intro and nearby/category images before hover. It also ships prepared reader HTML and
+images, so the local preview does not require GitHub to open a curated page.
+
+## Lossless music and Forge Mode
+
+The ordinary build packages the two music streams as `FPC2` inside gzip. A reversible
+second-difference predictor runs independently on the left/right PCM16 channels; gzip handles
+compression and CRC. The worker reconstructs the original 32 kHz samples before applying the
+existing audio gain. It feeds the same read-ahead ring and DSP buffers. Effects remain PCM.
+The production-source test compares every sample across opening/loop boundaries and restarts,
+and checks truncated streams, CRC failures, empty/missing files and malformed headers.
+
+Forge Mode reuses the SHA-256 states after the HMAC pads instead of hashing those pads for
+every PBKDF2 round. Its 100,000-round envelope, encrypted data and existing persistent unlock
+remain compatible. Background transfers yield during derivation. No code or decrypted link
+is logged or included in the test evidence.
+
+## Updating the bundled reader
+
+Export the committed public snapshot with `python3 3ds/tools/reader-snapshot.py`.
+Use `--refresh owner/repo` for explicitly selected curated repositories, review the local
+snapshot, then run `pack-reader-data.py --snapshot <snapshot.json> --web` and
+`pack-reader-art.py --readmes <readmes.json> --include-community --extra-urls <avatars.json>`.
+The HTML authoring step uses the pinned `markdown-it-py` dependency; image packing needs
+Pillow and Sharp. Neither is needed during an ordinary native build.
+
+The packer and repository checks require metadata, README, releases and commits for every
+curated public repository, including forge.store. This prevents a future catalog addition
+from silently losing its offline page. A repository without a public URL cannot have a
+bundled GitHub page. The prepared profile uses a native layout of my public terminal card,
+with live repository/follower counts and compact support links.

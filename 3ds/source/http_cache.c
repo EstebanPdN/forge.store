@@ -171,9 +171,16 @@ bool http_cache_fresh(const char *url, const char *accept, uint32_t max_age) {
     char path[256], meta[272];
     http_cache_path(url, accept, path, sizeof path);
     snprintf(meta, sizeof meta, "%s.meta", path);
-    LightLock_Lock(&write_lock);
+    // Writers publish with rename; readers never wait behind cache pruning.
     json_t *m = json_load_file(meta, 0, NULL);
-    LightLock_Unlock(&write_lock);
+    if(!m){
+        char bundled[256];bundled_path(url,accept,bundled,sizeof bundled);
+        FILE *f=fopen(bundled,"rb");unsigned char header[12];
+        if(f){bool ok=fread(header,1,12,f)==12&&!memcmp(header,"FGH2",4);fclose(f);
+            if(ok){uint64_t stamp=0;for(int i=11;i>=4;i--)stamp=(stamp<<8)|header[i];
+                time_t now=time(NULL);if(now>0&&(uint64_t)now>=stamp&&(uint64_t)now-stamp<max_age)return true;}
+        }
+    }
     json_t *v = json_object_get(m, "checked");
     time_t now = time(NULL);
     json_int_t checked = json_integer_value(v);
@@ -195,10 +202,8 @@ char *http_cache_get(const char *url, const char *accept, size_t limit, bool ref
     snprintf(meta, sizeof meta, "%s.meta", path);
     time_t now = time(NULL);
     size_t cached_size = 0;
-    LightLock_Lock(&write_lock);
     char *cached = reader_cache_load(path, UINT64_MAX - 1, UINT64_MAX, limit, &cached_size);
     json_t *validators = cached && refresh ? json_load_file(meta, 0, NULL) : NULL;
-    LightLock_Unlock(&write_lock);
     if(!cached) {
         char bundled[256];bundled_path(url,accept,bundled,sizeof bundled);
         cached=reader_cache_load(bundled,UINT64_MAX-1,UINT64_MAX,limit,&cached_size);

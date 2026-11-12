@@ -58,15 +58,16 @@ typedef struct {
     size_t length, capacity;
     bool raw, refresh_stale;
     u32 ttl;
+    u64 deadline;
     time_t reset;
 } ReaderRequest;
 static ReaderRequest requests[READER_SLOTS];
 static bool request_cancelled(ReaderRequest *r) { return __atomic_load_n(&r->cancel, __ATOMIC_ACQUIRE); }
-static bool reader_cancelled(void *ctx){return request_cancelled(ctx);}
+static bool reader_cancelled(void *ctx){ReaderRequest *r=ctx;return request_cancelled(r)||(r->deadline&&osGetTime()>=r->deadline);}
 static void read_thread(void *ctx){
     ReaderRequest *r=ctx;char url[320];snprintf(url,sizeof url,"https://api.github.com/%s",r->path);
     const char *accept=r->raw?"application/vnd.github.raw+json":"application/vnd.github+json";
-    bool refresh=(r->refresh_stale||!http_cache_bundled(url,accept))&&!http_cache_fresh(url,accept,r->ttl);
+    bool refresh=r->refresh_stale&&!http_cache_fresh(url,accept,r->ttl);
     r->body=http_cache_get(url,accept,READER_LIMIT,refresh,reader_cancelled,r,&r->length,r->error,sizeof r->error);
     __atomic_store_n(&r->ready,true,__ATOMIC_RELEASE);
 }
@@ -77,6 +78,7 @@ bool reader_request_slot_ttl(int slot, const char *path, bool raw,u32 ttl) {
     if (r->thread || __atomic_load_n(&r->ready, __ATOMIC_ACQUIRE)) return false;
     free(r->body); memset(r, 0, sizeof *r);
     snprintf(r->path, sizeof r->path, "%s", path); r->raw = raw;r->ttl=ttl?ttl:3600;
+    r->deadline=slot<4?osGetTime()+6000:0;
     r->refresh_stale=slot==4; // Catalog updates must still validate bundled releases.
     s32 p = 0x30; svcGetThreadPriority(&p, CUR_THREAD_HANDLE);
     r->thread = threadCreate(read_thread, r, 48 * 1024, p + 2, -2, false);

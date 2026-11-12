@@ -1,1070 +1,1042 @@
 {
   "format": "FGH2",
-  "captured_at": "2026-11-12T09:34:50.735449+00:00",
+  "captured_at": "2026-11-12T11:10:00Z",
   "responses": [
     {
       "url": "https://api.github.com/repos/AleFunky/gd3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/0b87048d3de569cd09f9dfca29b11b98d4bd66bb94814637ff7b5198fe05017c",
       "bytes": 841,
-      "sha256": "07a8a9f5d6591fd0ad26640ff481e3d5a6332b8fa56c9bb11ea2dc61bc951ae8"
+      "sha256": "4222a3357e2564d6bb34fe2bf7877fadacf829e4bc2cf31d81c5cba97f79717d"
     },
     {
       "url": "https://api.github.com/repos/AleFunky/gd3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/724198647254c21dabc16f3ae12df29465288730eb8adad1de36689465397462",
       "bytes": 4443,
-      "sha256": "4f58f0ae7036ad15083c2131f680e76365182cba2c2d50b24c147dd78a9e7443"
+      "sha256": "b42a3beef85c55d40aae6533f1cf9c1cf54480650231af7b33641a7e246eed45"
     },
     {
       "url": "https://api.github.com/repos/AleFunky/gd3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/7d0cf9045795442f6fb8c6800307cea52ed38b984883a90b45e3aa74d756f5db",
       "bytes": 6097,
-      "sha256": "87b15b69bdedc70e2cbf0850113d6d79c93dc36262d13196e85788b24790d77f"
+      "sha256": "e4e6364cb4daf001c64e6eb3189054cf77c0af32c51cfebd7968e1c1b0f14b62"
     },
     {
       "url": "https://api.github.com/repos/AleFunky/gd3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/ce66c3947bcc5777e63daa7ab6eb99a8a1c60adf5e6d58b16a57d91a3227c88f",
       "bytes": 7541,
-      "sha256": "736194149d5f204bb66cd64f7115bb7b2f11826d649294c2b60e26418333917f"
+      "sha256": "11d119ace95f5bbbdc2c59a4355221126bdb292170a679070e2cb26cd8784abc"
     },
     {
       "url": "https://api.github.com/repos/BernardoGiordano/Checkpoint",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/e5fb41f20fff37b03aa5594a3f5b39d681c0029d6f18edc377888ec80b9c3908",
       "bytes": 960,
-      "sha256": "9cc0aa2400f2a9c9e6c3332cdfc4da223f2ecd4bc46c39dc3be50c520137b47a"
+      "sha256": "ad36ab37a97aac3821ca14c5dd5c0fea13f3caa2b57c3ee71d741ea3d38ca53e"
     },
     {
       "url": "https://api.github.com/repos/BernardoGiordano/Checkpoint/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/6b126dd20534caec594c14a035c87c431fb5f8b2f76dc459b8b45187f5c43997",
       "bytes": 4156,
-      "sha256": "50d50d1eca5aa35bb3d2eb7f89dd195208b2a8e1bcff713a0de397ba39d25cc0"
+      "sha256": "511d88b1b43fbd3efde4614f81714dcfe212a351adf8f12a04a1f97ced5dfd31"
     },
     {
       "url": "https://api.github.com/repos/BernardoGiordano/Checkpoint/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/1a2e54927e32661fae5b64115ab02e23e6b1572fec5a5aa6a88a1243305ef18a",
       "bytes": 12068,
-      "sha256": "7c461458e71fd461772134715f408cfd4cd93a0602ec264f1b6f33f895075f42"
+      "sha256": "dddb034eaebdf9cfe2d9d8ff3654b22a5f534d3d5d97f21f1e40a1f83f9e8a8b"
     },
     {
       "url": "https://api.github.com/repos/BernardoGiordano/Checkpoint/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/c28349f365bc4ee4b45c9f20c564f840f62750feb82240ae143901aa6b1b33c7",
       "bytes": 67932,
-      "sha256": "f466e5c1e2abca2c1c12f52fe1b08a5b3f79f22eaa48ed40cb11daad6b4a89c7"
+      "sha256": "e9ea60aad004470bc6273144d3b2f3484a767fcf48212c52cc90ca7470da8dcd"
     },
     {
       "url": "https://api.github.com/repos/BolgarMaxym97/3ds-recorder",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/5c51043e4a8b348a5024ae3c2fe1daca6d06c9a0925987c1e8bd02d2d668cf13",
       "bytes": 1074,
-      "sha256": "1355af547d1d2637b37412503bc5bb9eb4efc4ebddb06f5061e69a305f9e6eb8"
+      "sha256": "435f3edc46737e8f403f63b27e3df77afcf0bbb819b2c2e194b768a6db18e4dd"
     },
     {
       "url": "https://api.github.com/repos/BolgarMaxym97/3ds-recorder/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/ad908f965075cdc24508803b088fcf91d3497866955675421289930920cd16a4",
       "bytes": 7636,
-      "sha256": "bf30752b9feb59e16102996ea6c2c4263f396078058016b06561709424f70304"
+      "sha256": "65de186062da3ad58ea8f8cd72c0f0832dfed57ed9737d8c0f62452a7e4b43bd"
     },
     {
       "url": "https://api.github.com/repos/BolgarMaxym97/3ds-recorder/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/ef3bba21b36223783ef468173af7c7c5a2b19f4ece425dffa6077798608424a4",
       "bytes": 17732,
-      "sha256": "dd6ebd517030a1910910206e6eb5249d76bb8d42d3bdb0c5933fb4807c6d6350"
+      "sha256": "d96eb54cf0592e606b982406c43eb87707de8f35d081cc1d807e9cfad8e312a8"
     },
     {
       "url": "https://api.github.com/repos/BolgarMaxym97/3ds-recorder/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/b693e6292253987c559b6371fde8bfe78befd8c0b9711275669e7cca55e37c29",
       "bytes": 20010,
-      "sha256": "2e475c8cf388a9161decb62b37b16eb205918308df6559dfa59e4ef9cf2dd4a6"
+      "sha256": "2c24c9976cc0a0ad99453ca9239fa8fcaac4daff7eca1a80a0decf8318205a50"
     },
     {
       "url": "https://api.github.com/repos/BreadChaser/PSX3D",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/f87b85a2ad73a121853b2bb3e172c0ad369c3a313802ddda4ccf539bfdd4e24a",
       "bytes": 936,
-      "sha256": "b6773d248fef57650de82e9a7e42ee2d21c0ead1ca88441733eb6bec398c92a5"
+      "sha256": "452740f5e8e4e4ecc17805b0c9bb5ba7a64311c94cef59d38f4a459869409be3"
     },
     {
       "url": "https://api.github.com/repos/BreadChaser/PSX3D/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/201ac3b2c7545f24194e09417a38d30f3196679d7bc94b0dc8b5b764a86ce28a",
       "bytes": 4297,
-      "sha256": "f6c9d34f6783a024e82623dd16ad6c692cf2fafc4e0c1df6abb79f21a21406c9"
+      "sha256": "1f9b14f0128342a9b877b4001b9cc83b089c71bf7acf10c9e5174afc562c0265"
     },
     {
       "url": "https://api.github.com/repos/BreadChaser/PSX3D/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/9bb3bf5f541de59f41221511b09e2ae544b91dbedc425d6e0596b499544ed110",
       "bytes": 10868,
-      "sha256": "fe5a4186193fb2b1ecdc58e5c992973cdc99780a0ba7e1b3bf6eee9bd728819b"
+      "sha256": "d438cf3cd7b098608ac622b461be38aa18b713d71ed1be94edf5540313bd3329"
     },
     {
       "url": "https://api.github.com/repos/BreadChaser/PSX3D/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/372690e6334dd4e9b53ba6bb8ac6a56264b53639d9ad203578eac4c278b9b94b",
       "bytes": 23018,
-      "sha256": "5a069ddda0206def70a76350c84a08150466882a9c5c4a48f0b83844666df2ea"
+      "sha256": "6295229582cc192e27ed14836eb8b366c5119fbba33c568fdc49bf977b500cf1"
     },
     {
       "url": "https://api.github.com/repos/Epic0522/MarioKartWii-3DS-Redux",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/6b6992bb76fe74c8453ea02524f29eb4cafb99cf8f198d7d637b70e51f3371a1",
       "bytes": 749,
-      "sha256": "55fe28265c9fca5c07da6d91e4d46e96d7c9996b02ff12a4bf16aa7b4ea5b7f3"
+      "sha256": "5a98203da5d4b4ad5e1ba26754f67660d495694015302041263dfaabed27bfa8"
     },
     {
       "url": "https://api.github.com/repos/Epic0522/MarioKartWii-3DS-Redux/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/8476ff40ea1ed89ee3953773d92002be80ae4b79824c92e026f897cc0f427e52",
       "bytes": 2479,
-      "sha256": "2c229c952fe30eb858da9051c674f0e1fc4b2e6043d58e0ed6de188ef284d469"
+      "sha256": "f2f02afc166ace1b67e280499a0501e93bb21b8f65bcf3a2f2026f140232395b"
     },
     {
       "url": "https://api.github.com/repos/Epic0522/MarioKartWii-3DS-Redux/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/d15b3ebcaf61d7050e3c90761108fdd2c1a462907eca1af1c2db90823d8ec66c",
       "bytes": 9971,
-      "sha256": "dd24c78b9b170a2cf681ef53e03454cdf772d3223268721485e38510bf137025"
+      "sha256": "74fcbb6ef5689d405f9721fa6621714c7b67de0fb5a9c5ff79c78cd9a223804b"
     },
     {
       "url": "https://api.github.com/repos/Epic0522/MarioKartWii-3DS-Redux/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/5eee6331ce4723950cf22dd6e0987b3879742787d700f0dcfd5b4114682d57c0",
       "bytes": 2,
-      "sha256": "b3967a8213f0625a049d690f79538b6b83e157718d489ed07eea0dd7530c0486"
+      "sha256": "286e006c64e9521ec94cc532426e8167c410e8e4a2573b10326f6cbba988068e"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/EstebanPdN",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/47c1e938dde0d8734ad1497be02582ef9c7bed6c20111139f5a121484d9cfa4a",
       "bytes": 716,
-      "sha256": "c75680537544193f2cc76fcf10d0c665abc8ef57b49dfc3ef5219af8f92f9d0b"
+      "sha256": "ef67c0a451b98b60ed80227f7eb95a8db36bd3970d55412c4bd31817f1c7a9a7"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/EstebanPdN/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/7eb0140492bd30a9ba66c5152ae7bae914dbde8f89a2562faa31c8af02a9d559",
       "bytes": 3438,
-      "sha256": "daa6621ef49d17372cad9e75b7457c9afdaf29b2f7dac969fd733c7755ac3ba6"
+      "sha256": "1bdc5a1527635833056320346e0190ce4b6b1ccf5ba935bb2528b5fbbd0a8cb7"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/dusklight-3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/49f2a10d99bee3e7594c07bc5f85b1839662ee0237ce8ec678731edda29c162b",
       "bytes": 999,
-      "sha256": "4d3ab8a638b6a71d0ada5e3f3e353b5e1e37e4f7d6ec0573ad010d2c5b3066e1"
+      "sha256": "571f544defd94d54b80d932971db9c18fc4cb0189376afa9c31f3ca701dd93b1"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/dusklight-3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/706d5ff8221502c6603c3e806fa60edcb079cd03debe2a58af33473ac1e57f69",
       "bytes": 4337,
-      "sha256": "d48c28f824e651b8b03f5654addb03942e116cbe4aa662287cc7a5ed61cb3dc2"
+      "sha256": "8f6532b8f77cdae718baa207d6a4471752de40058f135f0db73730fb07d67d52"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/dusklight-3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/bddcf67ac8f187492d53d0c3684a9801fe66d1c3e8db51adaa1983c71461ec5d",
       "bytes": 8506,
-      "sha256": "faf62217c4cf795483cfd8e97c99ed9643eb1f484b29f83abf4c87ff7e1bbee6"
+      "sha256": "fe5932415d4769250aa4667e3dda469537af987c7bf6664d9c8d2e8760be2876"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/dusklight-3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/1ee74aa80e495e1f0f5dc81246f819dc5eb4fdbf8cc682713e05bdd29d29f857",
       "bytes": 2,
-      "sha256": "b3967a8213f0625a049d690f79538b6b83e157718d489ed07eea0dd7530c0486"
+      "sha256": "286e006c64e9521ec94cc532426e8167c410e8e4a2573b10326f6cbba988068e"
+    },
+    {
+      "url": "https://api.github.com/repos/EstebanPdN/forge.store",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/a9fe01a9121ca1d1116179419f90331cc5dd5506d93379eacf7e7c1f12dd247b",
+      "bytes": 5418,
+      "sha256": "0c28c82d60ab53f47a8c8d0e1f4c11c7c596f741c536b312da73f7a9c9ae110c"
+    },
+    {
+      "url": "https://api.github.com/repos/EstebanPdN/forge.store/commits?per_page=10",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/9c9ac0b05d6265ee43ef949eb303f4773927e02b51c08a1ffc23326690ca23d4",
+      "bytes": 30353,
+      "sha256": "51db685bf483b694f311dedadcd610c646267273233b0e62ed61cfd936a251ac"
+    },
+    {
+      "url": "https://api.github.com/repos/EstebanPdN/forge.store/readme",
+      "accept": "application/vnd.github.raw+json",
+      "file": "3ds/romfs/reader-data/99f5b54e35f32e07965f246e5b0f096a33627204aa90d815b4e0b20b5894ee09",
+      "bytes": 7619,
+      "sha256": "c8760b22b3a407788cbda3f1bcf6083263ff7e55875244c1754eaa5fdfa31ef4"
+    },
+    {
+      "url": "https://api.github.com/repos/EstebanPdN/forge.store/releases?per_page=12",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/703b20b6c0bfaf9e729cf49e34a6d3cb2a2018b6c4afdbc83d04adbac974d814",
+      "bytes": 2,
+      "sha256": "286e006c64e9521ec94cc532426e8167c410e8e4a2573b10326f6cbba988068e"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/legend-of-doom-3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/8d6774c4b387f2b62a2aedf0b6a2a2c29d0e298266d8a203768640421bb909b2",
       "bytes": 997,
-      "sha256": "be005ff861023d02c79889934d2df02873fd1bcb9a17fa633d5242f51250c80c"
+      "sha256": "63e56fda9cf181c494e6932de60f22bbe0540911e16c9dc754c5d3624890a026"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/legend-of-doom-3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/42b309ca675ab1b1ed0022b90a5b0ce772befa90ff1a7961e81fe8ca9e043709",
       "bytes": 4251,
-      "sha256": "06d677decf708ec8a841c94ea8e963e3e33b790be71512d8db1fd9ec0c2145fe"
+      "sha256": "4e4a5d0dfd8aeaadbbffda249cb5d4e9b649873a61b88d5d249bd62c28d53202"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/legend-of-doom-3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/c198d70e78387918d9af9ad69540fc71d2146e3120375a806c24b1d99743f7c6",
       "bytes": 11964,
-      "sha256": "41435539d41c5585b34b3133aa06f8db919c3688925cde89890b507007c85777"
+      "sha256": "cd08b095d02da75e6f0a75e13ad6e64ef275797b29274449f5cc9b8b13c5e55c"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/legend-of-doom-3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/eee323d81ef3765ec66c990516b06acd6324eb603cbb42d6d7067dab2ed0b412",
       "bytes": 3003,
-      "sha256": "7def443f43bd3959a809bea83cbe76c28cc2dc18e2644455b9ff637dcf1e78d6"
+      "sha256": "049dcb822b20f9a45155202fc937f395e40de91cecf37dc50b096135220426d4"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/mario-kart-64-3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/1940364330fbdcaa73363c2e41906ff61fa095b3f80ac78c7ae9d53b002a1a3c",
       "bytes": 823,
-      "sha256": "4849797c02e9fc42adf1f00248d63c67160261d0aa0d0c417f5b4ed136973823"
+      "sha256": "f878f97f47a0688fa384ad3102a4217ddd530e247ff9d0ed89362fb11b9b626b"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/mario-kart-64-3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/a8e5045f990ce67fa497c0c1e8f114ef6f9b92c2791782542fb5da043eb83e42",
       "bytes": 4361,
-      "sha256": "721e9a79955085d027246d8796aa7867c0b1baa777887b10c0c59251120b539b"
+      "sha256": "e58a33c3a527251cca74e62064d5e7633942f8a9e7d4c9bac4c9892f5bf85dce"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/mario-kart-64-3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/e63eb5c695ab83b8c128312feab79e98e105b5e57052fd666d96795d3f430817",
       "bytes": 6557,
-      "sha256": "96b486af27453c3aae8f61a8fecdd54c5293a669691a7ee5e601f074c21eed36"
+      "sha256": "cb05db860c51942c53124fd92dc6572d12dca34df3571be45e7595e259250648"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/mario-kart-64-3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/c8003c0aa3747039b38618b56a6c6a4478e89fb77a74d173b8af7f247d1ff11b",
       "bytes": 15178,
-      "sha256": "21424c7e13e2813a222a14d52975c3179e0cf0b84f4ee2ef52bca18d3805bd9d"
+      "sha256": "b669169cb6b492d52065410b0602cfb4349038a2242d26076deef24fe3ff083b"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/mutiny-3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/8b2a300ba516ad66272f79744d7ec96c509f54ee57af933d9eb4f114edcd4e71",
       "bytes": 953,
-      "sha256": "d698ac2e7912ae89d3b2a234788169c237d9d40be7576b4442c10508b058a3ef"
+      "sha256": "4bf0af965c56a298454fc4139375a729361a8e088c5464295098f3a319cdd22a"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/mutiny-3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/71d1afe6cb3eec8c2aea15c35124052537a055c2bb4d80150c6f828463be6ba6",
       "bytes": 1297,
-      "sha256": "88b2f7e4beff53a9c8ee817bb83987f2ffa13a4fa9a7936bf66b73e48b87034e"
+      "sha256": "8408fd4b691c4c53ee632413039f39c9068006f8cd41499013a18d014e2da89d"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/mutiny-3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/7b04557542a1f5f8765cd8372ede0580873ba2085360aa69bda229a90645addd",
       "bytes": 8302,
-      "sha256": "d053a0f9352d7f14a85b4bc5772d95f0587faeef6bc5d60b405202519f6a74f2"
+      "sha256": "c3cbb80b8a6a4010a2133f9bc67a24ca20f4a1707ebeae27b93321b4a467f88f"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/mutiny-3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/8f6b32df4ea6652de8566fb36eef46f2ae201e4baa69e8a6fb8299fa2ff3fe65",
       "bytes": 3226,
-      "sha256": "596a1eb391a1df0d3800c45673e168716cfef9d04e6b793fc03eb069554a41ee"
+      "sha256": "225c3a820a16bdf215a17c11349c8028810e12acf6966375c533547c78005845"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/sm64ds-3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/b557b80061777aaa5a3126a504fc23d61243f6186443b968fb4e408e736f95e1",
       "bytes": 911,
-      "sha256": "83af58992c8f72df66322050d1c71f494c504eff544aa80628ee95f476da397e"
+      "sha256": "9ca9599292822bd64c6dbadc120fcaf7e95e2ce14e01d20e41c19c47a7d9289b"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/sm64ds-3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/edd90193b0edee74525ee3044040df8f37ce6598f27ca4f35d5a973b65ed77e1",
       "bytes": 4124,
-      "sha256": "e72649e58238c9ea62256edfe2f5df3553e7f30cc0c084eb61fe562f4900cac2"
+      "sha256": "d763deb98a542e3c668725fcc623da2890212ab66b034bc69b8798fe35ccfcb3"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/sm64ds-3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/e0c88afac9be15b632fd1d31b8534e15732bd9681ec973fe18cfb29ef63e9bac",
       "bytes": 8758,
-      "sha256": "61caaee76454866f8785ab907acf797cfa89f583853d2f09651bba4ff55f9354"
+      "sha256": "31f4559f690356b62700bf528c1335b9eae75131daa8d2c31e69b4490f3ac1c2"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/sm64ds-3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/220d4ca30c97a5bde5b28f63a4ad4a7fc567385e83792230e5caa6a21bbf8629",
       "bytes": 2,
-      "sha256": "b3967a8213f0625a049d690f79538b6b83e157718d489ed07eea0dd7530c0486"
+      "sha256": "286e006c64e9521ec94cc532426e8167c410e8e4a2573b10326f6cbba988068e"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/starwing-3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/230895fa08bac32abb28cb61e020243f9ef86807411c2cb15a5f56ee400b85d2",
       "bytes": 837,
-      "sha256": "829beec46587b09ce1f43789ded62e8b6a3f40d9e008340ca006120ddf629fa6"
+      "sha256": "531f2344d6d0c2d374adf7eea1b72c06b1e5cc35c56f2c8a88baea7215423062"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/starwing-3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/05f1a5d66651292056759f1dbb4368048ce5d1949ce3bfdafa01a00325fbdf35",
       "bytes": 4850,
-      "sha256": "9927534ee65716d472ccdf2b59d09883fc193aac507419f4c30b86d2b0c35612"
+      "sha256": "fba11f733ca07bcaa494e536c7394184f747221b5e676e11f1043d126dc83fd7"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/starwing-3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/b63119cd2c0288ed13eb853cc05a5b1283bb63c60dc1ca1b5bd61b0020095bd2",
       "bytes": 9351,
-      "sha256": "3475efbea44f42231026a26b8553967a8a6bfaed54e328391d6a9a71c802dc50"
+      "sha256": "15041f2e9154b30ffb9e4c4f183fd2935d5c69dadb31720df9be07bd6360ab1c"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/starwing-3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/1b9266efe87d9bec9e9421c23bd17cb1254a843a9eb9d120c562ea5adb3b0360",
       "bytes": 7404,
-      "sha256": "687b39d5a04d010a5732ae0f7645122b9395418c3bdb638e364a88a442b41b45"
+      "sha256": "a78bf94db8283c5c9c9f5980204d9188528052e8bfdf2f7dfbe87caded9ea193"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/zelda-alttp-3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/99b78337778509d3007bb6f0538cdb9bdc2d36245162829af81ec99adb6217c4",
       "bytes": 804,
-      "sha256": "af997f5f179e01dd5452b3c67698fb2327b66fbdb05f78ef666d36098719119b"
+      "sha256": "dd2ab26916dc4193f00edaa5433c0955a43c65850f31be98d3a19e2b5d00ac1c"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/zelda-alttp-3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/e392bfa783b2d4fc6992e125e07bec35ecfca41d8caa76506a9fd223c73728cd",
       "bytes": 4141,
-      "sha256": "7a1da0e9a5fb446a6dfbda7e74ac18030ed11948cdbad5b1946ce1a15340ec46"
+      "sha256": "311fe14eefb13a74aa5d7f8325e8c54df1245cc887649dc23fce4d25d0ae2dee"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/zelda-alttp-3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/136a36f226534f7b1f5b024c5fec3a49880327fb147149b2050e0f203d0247d4",
       "bytes": 11175,
-      "sha256": "a7bda42de32414023c8a103e2d2bb319c84de94f778cec094f28ab44d4ae63fb"
+      "sha256": "96ef7e05e2e27868c5c1f8e6aa9e584b44eccad82e58e623f35f9aec2f60b71e"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/zelda-alttp-3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/07c253f72913533715de25da0a94beb987f757385fd5f05d6f545b47f14664ca",
       "bytes": 23447,
-      "sha256": "98dc71f7c7c4bb91f8805420b365617163b6f3668048539203bd7a140bf4acc5"
+      "sha256": "6a43eab600125ad589607757096039926435e567863890cd01b273f6fafacc01"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/zelda-tmc-3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/e2c3a91306aed498d9f2dc028059afd202844f325099ac5177fcc2fb895649bf",
       "bytes": 947,
-      "sha256": "2a456f753244a9dea3e9d7bf27430cbab990da35c6159ff1f76b81545b6e9e47"
+      "sha256": "4b7db272b8c63c18fea61d03f8774b115a24907b0117e5197157d8372e797129"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/zelda-tmc-3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/c826a41ba0e44766aa3a5022ba2089be0045f5df01cab62479552ab707bd2d1f",
       "bytes": 4201,
-      "sha256": "7eb964146577e458c186234c92e9366f806076a7589f819f81f6ec49bdf4f5bc"
+      "sha256": "0dd8d6b4d5f9417d6e0e26fe1f213035f3abe41f30199fe441e9e3ec99c9e4c9"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/zelda-tmc-3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/7bde25a0c7342785649f1a64ab0897ccc73554bde1e0c16e9f03f5987a7eedce",
       "bytes": 12532,
-      "sha256": "e2285997381cdcb740c38f818813a1138fff852d92f436d6437add29862e3503"
+      "sha256": "c1ef9cf0570f7599a52eccd6574ab3268db487b9421ee587542cc7dbb54ae84f"
     },
     {
       "url": "https://api.github.com/repos/EstebanPdN/zelda-tmc-3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/ffa07850ec3110738f138e469a0450b5190606a43ad3eda5134fee1cb860a474",
       "bytes": 15100,
-      "sha256": "2f975e4fdd3bfe5f44068d81ddebb34f3d9b23038f1d0a8f223dcf75ae8bc982"
-    },
-    {
-      "url": "https://api.github.com/repos/PeterWarrington/lynx3ds",
-      "accept": "application/vnd.github+json",
-      "file": "3ds/romfs/reader-data/278579d2f6dfb1701f1581a725f5d32d9f15763da38d1492103ea4ea39a4ae44",
-      "bytes": 796,
-      "sha256": "e908928603df4cde9b1e214df4734885466433cd9f9991b9e7d6f889cb0d3b7c"
-    },
-    {
-      "url": "https://api.github.com/repos/PeterWarrington/lynx3ds/commits?per_page=10",
-      "accept": "application/vnd.github+json",
-      "file": "3ds/romfs/reader-data/d67e21dd25213659b86b6687ffcc017f8b160c44ec7327cc413c1f6e767ed737",
-      "bytes": 4210,
-      "sha256": "fd5fe3f7ffb1dfb390341b0adcc3ae8ca3dd0ba4b9c565decd121859c6240ca0"
-    },
-    {
-      "url": "https://api.github.com/repos/PeterWarrington/lynx3ds/readme",
-      "accept": "application/vnd.github.raw+json",
-      "file": "3ds/romfs/reader-data/0bf8ed65f03d799246b0a7accf13605355129f2ae9e06a78ff461e9cc7940752",
-      "bytes": 1030,
-      "sha256": "585051d758bf725cc9dbe6a7b1b7c4f63f0f1482c53c13c7cfdbba2d7fe5020d"
-    },
-    {
-      "url": "https://api.github.com/repos/PeterWarrington/lynx3ds/releases?per_page=12",
-      "accept": "application/vnd.github+json",
-      "file": "3ds/romfs/reader-data/5aba54c753edc709513af7aae68f0fac4d502a7eb6204e020949c7f14865ca7c",
-      "bytes": 3135,
-      "sha256": "3407f3a89258a46c7ac9040174cd81667858ab589bc224bf39bc2d111fb1c159"
+      "sha256": "8ccda5a3e889a7a9de62cfef3fb9be7c7dec8b602a843af699bc9eca8265c231"
     },
     {
       "url": "https://api.github.com/repos/PretendoNetwork/nimbus",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/111b2c1de35f47341c35673dafc718d36b3f2fb35b55fb973de03a92fbd25408",
       "bytes": 771,
-      "sha256": "109289b3798bc25590100e5128c8cb7ce617655d2aedb60564a89b5b6537feee"
+      "sha256": "af8123fc225b69f4c627bb407660e40ed5947cbdffdc327fd06c3705aaeb40ed"
     },
     {
       "url": "https://api.github.com/repos/PretendoNetwork/nimbus/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/a25f3ac555124c9b32987557305e125e41236a8594493e5d860c18758fba1ba8",
       "bytes": 4564,
-      "sha256": "a8c4869d457cb3b32c696e31ea84987cd5f9e6a9bec00bbb954532a0e7a7f2e0"
+      "sha256": "db395c167932bf0eeaea6f59a0db81117d87d67f366682d5528e862c90dad186"
     },
     {
       "url": "https://api.github.com/repos/PretendoNetwork/nimbus/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/a71aa4ae5165e8e0d559fabef741fe68051e7082ca0a6e3150405593a31fcb93",
       "bytes": 2899,
-      "sha256": "041fb5061d8d1c87f7ecb7e5e8c61bc8d5f44255cfa8aebe2879b64169adaa0e"
+      "sha256": "0b3b2332fecde326b26eb701e052c4ddce59468d37681ddeff746d53df0c2af0"
     },
     {
       "url": "https://api.github.com/repos/PretendoNetwork/nimbus/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/670abe915cbec848a6cc43d47b936ecadd3896117ad5be374179fb69c1f38783",
       "bytes": 23886,
-      "sha256": "34c4296011a38e092907f303cf642c0246d9888b5576650b37b1e53306bb34df"
+      "sha256": "258942a242bebf5715eff9e0d4f84007919ada891a49aaa87287c8d87c846262"
     },
     {
       "url": "https://api.github.com/repos/SecondaryLifer/StarHaven",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/0774d088e1c8dfacc4a9f459ac14342b11ce6fe5cfc38cf312230bd65c737792",
       "bytes": 750,
-      "sha256": "bf3f70fb264661abb2c0f94d01696fc1f382f136e9d96c60e7b77ea13067b277"
+      "sha256": "994b444536f0ce8e038cbd68f6e8762acaf7ec055d15046d8bfea77a2b96f090"
     },
     {
       "url": "https://api.github.com/repos/SecondaryLifer/StarHaven/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/dce845f3f97f11dae533d67b1fb5018c09c12f80f1ec97f2d30d7aa9123cb803",
       "bytes": 5415,
-      "sha256": "dacb9f29844f77c9b0cd759809b118b5b3e06b76daaee2fe691cbfb10909e0b3"
+      "sha256": "4b3224e5264689580966a0a8b44e31cab4fa311c8aaef698fc244e0cd229bd13"
     },
     {
       "url": "https://api.github.com/repos/SecondaryLifer/StarHaven/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/f97bb58821aa23bd02e67f1884b3697b07cecb472074740a2c3ba069f261e990",
       "bytes": 6246,
-      "sha256": "99b485f5407cc0807a64bed9fbbe450295417450ef5db4af70a519f00d6146b1"
+      "sha256": "4bbb1bd655872f760be8793e0bb2b07c1bb5b02403451acbad7752992a31a1dc"
     },
     {
       "url": "https://api.github.com/repos/SecondaryLifer/StarHaven/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/10455456c8b54b48bf73be066399cb0e508d0b6c2967a58f9187c463a51746cf",
       "bytes": 35286,
-      "sha256": "a93afb2e3baaa4f936ece7669ec5e58c149a21971a899df3bb551f511b6edad4"
+      "sha256": "7ceaaa0d20ec5a35979e6e0bb66d6223ad6072c7a5e9613bd9f6727b1eb1f7ff"
     },
     {
       "url": "https://api.github.com/repos/Steveice10/FBI",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/01e2da79ba13e0cea7291d9e57f3966d696729fef77fac5c357247799e9e1c95",
       "bytes": 761,
-      "sha256": "6ef59916471c239c3d7622631c7632a348be73cfe9ea9f774ba01d2072feab4c"
+      "sha256": "b16af5eb85e5ed3a21c6e1729d51920b5aa51716233b63ba292b327001c76007"
     },
     {
       "url": "https://api.github.com/repos/Steveice10/FBI/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/74fca81ba36e7ab2108eb1a3eb43ed8e56e00f27f4bd071b0286d4fb8990dfe3",
       "bytes": 3006,
-      "sha256": "fcb00025eab92fed425ab69c2756e1c28843512790980e7ed0ac988ac534f258"
+      "sha256": "ca31c221dc830abecbbf267ae62c516c0b8e02e19c154f4e8c10bbb145cd2f61"
     },
     {
       "url": "https://api.github.com/repos/Steveice10/FBI/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/34909528f6a7d7a96442b73e735202158be2f1eb4d90a111fd41d4c32248f7e2",
       "bytes": 1553,
-      "sha256": "ab72b7a1c86065d2b3db7f515ad6d665f9e4f388919cb09d1373d1803eb4b4a0"
+      "sha256": "de6244125d4fc6a6fbd8667747cf0a6e943eaa68a1a7d216487ef1ece6317e84"
     },
     {
       "url": "https://api.github.com/repos/Steveice10/FBI/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/a54528960a1ae533c139d8143d8f22d57eb506ce0ed94b67bbd0c84130f83f1a",
       "bytes": 913,
-      "sha256": "31a5e10422040017b3bd6d355bf7cb496db22b9109197667eba6f4855fbc0253"
+      "sha256": "5e0979260ae517fa17f258ba1c32bf218bdc8241937c74f684d8718b9d2e91c7"
     },
     {
       "url": "https://api.github.com/repos/Universal-Team/Universal-Updater",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/9fd0ee5c9471a8579d65d18018fab26c62f221bf9705a111e4b3d72bfea3c5cb",
       "bytes": 969,
-      "sha256": "b7ed9a221cfc183da009e70541ce745392c353e5598e83d1da938e7f7d58117c"
+      "sha256": "fba95363e9c444ca0618a19ffb936abd462609f2482668916a6c3945b107a195"
     },
     {
       "url": "https://api.github.com/repos/Universal-Team/Universal-Updater/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/e6b059ca602c1e2143690d24dacc7562dfe37ee2e63da7ba3ef48cf30433932f",
       "bytes": 6988,
-      "sha256": "3f89775e910ed233db6a94c22c6c3054a4331a84f8e17120f6c40e4c0051a663"
+      "sha256": "535e2f843c0e2bb66f81902b1d8c9443b823c72f57404aa86d4280359c2cde67"
     },
     {
       "url": "https://api.github.com/repos/Universal-Team/Universal-Updater/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/c8e381b636306129a40b101eb044b583e49f48b1323758873855d05a6cf6403e",
       "bytes": 6741,
-      "sha256": "e810586cc464e4ae57bcec581513df4d620cab4faa263b25e63519c1680d5c9a"
+      "sha256": "2ae06f6ce19f79fc9794f24fe477ac90b4e48d4b38feea8982038385f663e95d"
     },
     {
       "url": "https://api.github.com/repos/Universal-Team/Universal-Updater/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/94c843cec199fe3815f543b86f196912be1580d312743e38388608b463f55bdc",
       "bytes": 26721,
-      "sha256": "bd6d90dc93529d6e96fe52af79cd533a8e80828add01a75bb694aa366d280bf6"
+      "sha256": "20c057f09f96dabe02fb1d1feca882a2cc19f49251d032020bb960c3034c6572"
     },
     {
       "url": "https://api.github.com/repos/XProger/OpenLara",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/1af0bdda85d70acb051dff65167a85e2d40f88140a961617be1d4f8e7570f9fe",
       "bytes": 864,
-      "sha256": "f0ddb5e0e1bae11972c42ae76f586fa4e09b5fb6cd8f1e6127d70c6372e57b1d"
+      "sha256": "e1b5d851bbc455aa6f2ebf8ca81a73a247c2330436f1389b5af7de898904697f"
     },
     {
       "url": "https://api.github.com/repos/XProger/OpenLara/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/0945c7361fe84bc2aa03d93c45ca95fe92f51ee73c20d0dc765dcc7da9dcf60c",
       "bytes": 7452,
-      "sha256": "aa5a4737e3b777bc7729aad21efa6a3bd866a330135bb551c9dba9002a248680"
+      "sha256": "ad0515937b32c0a3d68260259804e27260a8c3624d6c0af129ad54eb9d9cc1b9"
     },
     {
       "url": "https://api.github.com/repos/XProger/OpenLara/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/bf3c0d5cda317ecb79a07e6dde5917bad764e61a7500cd09820eec1f2b727ce0",
       "bytes": 1418,
-      "sha256": "86c428f53b23816dbbb6df8bdfdde85bb31501db8f086f18831071a8e779297b"
+      "sha256": "2e94482529030c61a348e5bf291d2615be10cccac56c96096ed6fe67f01176b4"
     },
     {
       "url": "https://api.github.com/repos/XProger/OpenLara/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/634aad4377a0946b19441cdca3ce47558b229baa652bcae1be449de60cfbfc19",
       "bytes": 11109,
-      "sha256": "9f01b8370d8fb71c5a6ffa6b9bd8a96f74adf0d152d8625511793738b0f91170"
+      "sha256": "a242d69ecafbb88450d214df8e210cb3d9aea94725a8647021ca22f3419dbd57"
     },
     {
       "url": "https://api.github.com/repos/ankushKun/3dsDL",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/5ef833b430081634c0c3414d559236bd007b2f7bb6eb16c27c7a64736c38ed7c",
       "bytes": 904,
-      "sha256": "be076c47a06e18a7c4c24ba649444faa5b459a885a19ea36f550e17fddd047f8"
+      "sha256": "a44d7417f16aeeb311296b922f6d5f13655334d596016459f4e2fc05993739c5"
     },
     {
       "url": "https://api.github.com/repos/ankushKun/3dsDL/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/2ee91a9107164f58b445d86798de93238c1011520272438f8717b78d771fbdd2",
       "bytes": 11359,
-      "sha256": "e214084b562b13378893d64a081c927f9dcc4e3aaa1a6b5c817e9f471f5c50ba"
+      "sha256": "3cb12613c8780c7ba8d743437684c95dac7fe86d289d5fffbbdb7444b3478652"
     },
     {
       "url": "https://api.github.com/repos/ankushKun/3dsDL/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/60f0af9ad354b724202e18893beb69db00cb747fdeb2d282297455ae719a3f7b",
       "bytes": 6684,
-      "sha256": "546fdbe68b7049dc9ffa0a71d2099996a579407d6644e219c10141b294151181"
+      "sha256": "607bd66e663ac0f901277c2f3b4e49d8df8301711c5c9b29fa253195ba578f12"
     },
     {
       "url": "https://api.github.com/repos/ankushKun/3dsDL/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/69786fd9b2a7f5c31aa74b499ffb4f6cd4d4959b696c14611999a88b5f683328",
       "bytes": 30232,
-      "sha256": "c22166af813812c851461b1f72db9b6195faee0abae1ec855fc029282877ee45"
+      "sha256": "b9b807c64d278c128fd6f8a0a498d6ff7ef1c00a205edafec69ec57ec5cbf3fe"
     },
     {
       "url": "https://api.github.com/repos/astronautlevel2/Anemone3DS",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/24fdb55604fb862c5a227d051ac4f4d709a18bddd94c0187c9e30fe65c815b61",
       "bytes": 872,
-      "sha256": "c289ddaf38d5b3e0ef3c694a48cd54a6eb9c5e97edb48606d405eea07b4c3522"
+      "sha256": "c89ffd4fc3b78cca4cb191133d8d33214103b418c8abc0404da64fd66a197d7b"
     },
     {
       "url": "https://api.github.com/repos/astronautlevel2/Anemone3DS/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/43bd9767591767f0a04817bc840a1e7b881cdc5278fe31074f7de25ad8e07c5e",
       "bytes": 4713,
-      "sha256": "727666ad020fc6cbad93534ca50d1b4fa121e1f19635021674c163bc55150386"
+      "sha256": "48088a771bc0e234663aeaed616234c320a02b8174e3c31370bb1064b1c37168"
     },
     {
       "url": "https://api.github.com/repos/astronautlevel2/Anemone3DS/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/abc9ac2c9376b6a518c8b51f5a0512847f1e19fdee78fbabaeb67c811e2384f8",
       "bytes": 3630,
-      "sha256": "171e74a51144eb9e53df63c112a79122d57f9cf43ffb29db8d55ce0dac44bbc6"
+      "sha256": "9b9b3d0b7128d8a09097c3e6babbbe50f71a2268d09094813f78183065c9e6c3"
     },
     {
       "url": "https://api.github.com/repos/astronautlevel2/Anemone3DS/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/2bbc39916f2f14efe91101f6f0a433c1ef433eb73a23d5252f7ebebdb23af0dd",
       "bytes": 39978,
-      "sha256": "9cbe673791415395801de374d0cd82018cebda07d55bc5ad7b54dae3d09682fa"
+      "sha256": "5dbe83a98b1977157a8351409d672a3cf4f784c6cc8a79ff001d489dcef61654"
     },
     {
       "url": "https://api.github.com/repos/azahar-emu/ArticSetupTool",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/f39cea6833e3932a8fbb9a53bb86edb7a0cd6d15a59a8f0f1dd0ee29e801733b",
       "bytes": 798,
-      "sha256": "df944d8357c4e7bd2fbe0579ef75cc90d941da4a2890a9e9f5a973358fae2e8a"
+      "sha256": "2504219e5893f5a5ddaf1a4d4590bf00466f6f3e65111bb5a65adda1f8c40ef1"
     },
     {
       "url": "https://api.github.com/repos/azahar-emu/ArticSetupTool/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/9994ef61e1245dc8a78657f674ba8d79b5c7b1a868755ba8cf88021de2f31355",
       "bytes": 4084,
-      "sha256": "c43c8b7ba097806ce71b0f7d97ee69f8df9c7ce1f97261054c18eaaddebd403e"
+      "sha256": "76c518fc5bc9184e3c5da4049a1b17aeba53713ac7a209c790dcd9eae41c6aec"
     },
     {
       "url": "https://api.github.com/repos/azahar-emu/ArticSetupTool/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/db30581443dfcaf02207494fecf20794c9d8e5a1b563b0f9db689e00c3ef32b5",
       "bytes": 1020,
-      "sha256": "b7353a3fec2753adb41de8bb25cd83fecb7e23946079f8a2a12773170f0761ab"
+      "sha256": "02cb3c3b56fc8abe093a4f3ffdb66173fb5c487875ef8f1ab2f626f350de703c"
     },
     {
       "url": "https://api.github.com/repos/azahar-emu/ArticSetupTool/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/04bbb38634b5fbafa73aa046fca962a6fb7d9cb0738f78f7f6edba6937faac6a",
       "bytes": 3371,
-      "sha256": "f70e26b22db938d0a33b022eb64a3187aa73c80440046866e0be8aa5fb094517"
+      "sha256": "1be35142429b88f2129db7ae2e992773fd6ade25edc3e76d88bbfebb4901c42b"
     },
     {
       "url": "https://api.github.com/repos/bubble2k16/picodrive_3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/bca24c5ee8c53ea4e4bc1fea8473e667005211ccd2fb31ec0d8f35b85e5fb61f",
       "bytes": 647,
-      "sha256": "0d41475d6929864eb6249c5b76f8089d5e4d62b7b8a48f8e5432b4db923ac51c"
+      "sha256": "4d5eee83d08bf18dc5247e793f40f1c2182ebdd7da7ad1084c08e32355e27998"
     },
     {
       "url": "https://api.github.com/repos/bubble2k16/picodrive_3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/7b010d2697f3d14605fc6f06a8479cef834f77fe5180ee29091c3965b3cd35b1",
       "bytes": 537,
-      "sha256": "4f751ca58ae06c9ab835f895f2af442899fbcc16fb8220e93dbfd51de24c3e18"
+      "sha256": "80aeb92eee1a74b4ad1060d648092b217f49807de97cabaac7b58473e048d3d0"
     },
     {
       "url": "https://api.github.com/repos/bubble2k16/picodrive_3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/2c126a417a6ffcc2c0858f614ddb904304fd014dc836905cf7a60d99c23d2b4a",
       "bytes": 196,
-      "sha256": "8ec62241f4439165f3eda2e8540e5d8e52f6395dc3b31a79ae00e99f3be0fae3"
+      "sha256": "abbb5349caa0111f0090df07f9d48dce72b7215cce3ef483ca3649ac222e9c59"
     },
     {
       "url": "https://api.github.com/repos/bubble2k16/picodrive_3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/7357263228c5ae0892dcb76728a72b5842313def680c7ce2c38b95cfef946fc7",
       "bytes": 5236,
-      "sha256": "1641c496d8f6686f1c5bfe471153160e6e81cd9987f0551b9f863a800c7b625a"
-    },
-    {
-      "url": "https://api.github.com/repos/cruxxxxxx/gdx-3ds",
-      "accept": "application/vnd.github+json",
-      "file": "3ds/romfs/reader-data/968fa2c5c9b1c5cf215ebcec6cf2c944416c328849a59402fc1b78510ef26237",
-      "bytes": 887,
-      "sha256": "e44f246c8d845f075a0f27a6715f434f78be9179d82b81ae0f8172c208730ac5"
-    },
-    {
-      "url": "https://api.github.com/repos/cruxxxxxx/gdx-3ds/commits?per_page=10",
-      "accept": "application/vnd.github+json",
-      "file": "3ds/romfs/reader-data/d18cb22a7e09e131996cd9f6f1f4cf130294d8e0f7058c3123a0c7359fc2fa5e",
-      "bytes": 9974,
-      "sha256": "7dbea2fc3eebecf78ca211f4aa8d769b264e5c6ed1db229f613827f31cfbf344"
-    },
-    {
-      "url": "https://api.github.com/repos/cruxxxxxx/gdx-3ds/readme",
-      "accept": "application/vnd.github.raw+json",
-      "file": "3ds/romfs/reader-data/8af1daa1f1f19247864cab2a4a1bc3a5d78bc75e14f7a8cf7dc637d456ea734b",
-      "bytes": 25028,
-      "sha256": "bc1b37c4d192d1dbbf68c1f9fd5ebf3a4c645aded83cc66eab34623e53a3f73a"
-    },
-    {
-      "url": "https://api.github.com/repos/cruxxxxxx/gdx-3ds/releases?per_page=12",
-      "accept": "application/vnd.github+json",
-      "file": "3ds/romfs/reader-data/f3c38f7b22445ac57263a6afd3d30cad0df10c2a4d1eb5fa9be975beb25bc515",
-      "bytes": 28496,
-      "sha256": "d9a2d954520a24df8ee3a1b9fe3cbbfddd101c383ed43bbff5b2f761205ddd5d"
+      "sha256": "c810cd95951f71f7ab461c2b7589bff9ee620a3b4a25149d6e11ec475b70e2ee"
     },
     {
       "url": "https://api.github.com/repos/efimandreev0/Butterscotch",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/dcd2f960923d831dff1cb81b13a1c92b48e924a7bc45b03abb2bce99f0ab01d1",
       "bytes": 900,
-      "sha256": "8382e865d43855f260da8bc4a70110325833bfc4040866c2fc73e6278dfd6dd2"
+      "sha256": "efe4d77f512318c6108806b17420a4148734f7fdaec8bf3c8c72d41ac695d8c2"
     },
     {
       "url": "https://api.github.com/repos/efimandreev0/Butterscotch/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/495f5fecdc3c0757640fe15f252074daee6bd7e16855c88905205a0bb8a47a04",
       "bytes": 4229,
-      "sha256": "48101e73858db162798e043607cb083ec77d7020104da00d60e8337e75fb09f7"
+      "sha256": "7716570d5df85a4f08400e34f76beb03ab38a876c8093ebad0a5ba9e386420ea"
     },
     {
       "url": "https://api.github.com/repos/efimandreev0/Butterscotch/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/75d595cddb3a26c2a5f7343d77ab68d3d7596d109c892b99b584d584cc59dbb3",
       "bytes": 3686,
-      "sha256": "f083aa66cdb776403b982547346a3dd69f3ba53daeb682f8aae29698a752f0ee"
+      "sha256": "a82ff29808e797a46f8c508d4442d16723d90786a73ec83328ee1855ac37c147"
     },
     {
       "url": "https://api.github.com/repos/efimandreev0/Butterscotch/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/59e0106dca9ab9f119710e327b7b57ca9219e2811c38bc8ff8563ba242b05520",
       "bytes": 8654,
-      "sha256": "71b721a13f47a47cc473fa702387090c3197191002160b3ea919e3efd6e54253"
+      "sha256": "1ffa661712051e27ca177fb1b3beb48816aae3ad483fef852e61e97f16fd68e8"
     },
     {
       "url": "https://api.github.com/repos/erievs/FourthTube",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/e4e3f09518f894fff418029a47e325555baa1619004f5748b591e9f3a6ae52da",
       "bytes": 848,
-      "sha256": "199d7171595f7e076dc0d20859bd54045d9f480513b337b1d197d8e0d2ccabd7"
+      "sha256": "34a27dbe84bfabc9cf0f521cfb5920ecd189ad740ae0c4d33edfbbdf792463f6"
     },
     {
       "url": "https://api.github.com/repos/erievs/FourthTube/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/067a256b4b69beebcc6b38d00ad57fea1090a75523d02b5a5121aabc187ba2c8",
       "bytes": 4758,
-      "sha256": "3295ee3f17c306e7cf6966189e3f316989d29c2f202dc105e6b2ad0dfcf03fc2"
+      "sha256": "3af0667485f51d375268c4b33c88697564e6958993d4a341339b54d51ee4ddde"
     },
     {
       "url": "https://api.github.com/repos/erievs/FourthTube/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/37061db6213d7fed2f240302e87921ce46241a5df27aea4a02ba2ef4d6ebcae9",
       "bytes": 8301,
-      "sha256": "37b669985d5f54b0e6cb5849a3c2eeddbd719000a5fee1e8aa773e16ea697f6a"
+      "sha256": "fad661dabb456262d7bc64b172176eae09a041a835202e88410973555f354014"
     },
     {
       "url": "https://api.github.com/repos/erievs/FourthTube/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/13327d8b759464b70a7a475f6eb1e9067dad966273b348d4c4517794ca2faa76",
       "bytes": 17577,
-      "sha256": "6afecd5e3b0d956ccf44973b6322b1d1a7da712b35a915da17d3f266950f9716"
+      "sha256": "604a6fc01596e31a494d3eb5a5000d20b96a30f19e002bf32ea777f8fdc16a28"
     },
     {
       "url": "https://api.github.com/repos/hax0kartik/wumiibo",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/d474760b6409f5bbd4fe869ab65b352d5c970132f4d9512dbc5a6718513bf554",
       "bytes": 812,
-      "sha256": "b9843b9ff16a1c67eada8033d7ca8b328e40e67201af7ec1c1a65c8e374a7e5f"
+      "sha256": "8285524068bb5b0736664abc7dade03fa3e86ccfdcbaf775dfe7bd47e9e9f42f"
     },
     {
       "url": "https://api.github.com/repos/hax0kartik/wumiibo/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/0c1c660f3f8499f80f5b1577a99aa41525393860a050bf6ff2670bcf4b5bd008",
       "bytes": 4186,
-      "sha256": "203412defd17a6da4b12c0845bc0ce0ae49d1c1a3423c9cc701428844309152a"
+      "sha256": "55158fdf1a9f0a810293c1090b1081d170a56d1503201860f532372508574c2a"
     },
     {
       "url": "https://api.github.com/repos/hax0kartik/wumiibo/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/482abcdc2e69acb5962455ee6a30bf21d15dd3cd2a04c5c99d39926c843917d3",
       "bytes": 2134,
-      "sha256": "186424af514dbefcc0ae55a1a95cdfe8a617c630a3c73efd9ea6769d4dbdac4e"
+      "sha256": "b4f4950d3530e3c5c1c6806685b921d4cbf3ae9e4e0951ffc848f3a56d4ec3cb"
     },
     {
       "url": "https://api.github.com/repos/hax0kartik/wumiibo/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/98b27e6bd9b7abe3278d7326658edcf7c4617cfeda40f10e02a098ce4a6cf0d5",
       "bytes": 12996,
-      "sha256": "8443c4e4f571ae8cfa09f067c0035cea594379162e80ef055964f599a4c47285"
+      "sha256": "7f0215959231ecdf4fb8066da234769c78cfc3999a34b808b66a17b848a69c74"
     },
     {
       "url": "https://api.github.com/repos/libretro/RetroArch",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/df42a02af2975abd71b5d30ec49582c4a5071940e56395b45992218abcc3d25f",
       "bytes": 882,
-      "sha256": "677673c1c2cec7138894714988b0a5ae2bd4b4369c5b86f3ffca07da7b946d20"
+      "sha256": "13c554ccb3d3cac3ef8d5fa5bf8925f08657ecfc9d628ee1c26b6a1a4e715576"
     },
     {
       "url": "https://api.github.com/repos/libretro/RetroArch/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/1d577123eec0229ebf4e3af658ce227ca86f2136c34864476140b5d2d8138892",
       "bytes": 13005,
-      "sha256": "b54c2a4c921a8a2f6915948c9a42f26bbe2eb1fae358a9b0b20fcbe3cb5e457a"
+      "sha256": "98c8ff66efef43d1773fd294fcbc07eea067e278efe0a171973ac4d99d92a004"
     },
     {
       "url": "https://api.github.com/repos/libretro/RetroArch/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/f9bf99d08bb36b9f6acfbf2f89e167f5786b92b787265dbec4c17fdfcfd1175b",
       "bytes": 12476,
-      "sha256": "2475b2fd9c537f47989031c0f732a9416e39e78f71055705420770831476e8d0"
+      "sha256": "19f07ab30fc66a6422499773851ac2444015269347218bcafe03d8d1e58f2ed4"
     },
     {
       "url": "https://api.github.com/repos/libretro/RetroArch/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/84e50fced3a555974e95d22ee1226e6cad1faea5ae4c7e8474644a583f9102e8",
       "bytes": 4579,
-      "sha256": "defa299ce144ff6dcf8e13bc70500fce5b5db93b015898229ab4cc365200752e"
+      "sha256": "6864c4213c71b7dc11250d10266043197a91e986c5edef7a93c841374a7f8894"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/DaedalusX64-3DS",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/438734becb25efb8a6511d34e50b4d7c6cab24f155bae62acfeb7c21ed7edd18",
       "bytes": 825,
-      "sha256": "2cb4aada4da58b50f15cce03c696169c723e340716d1d7aa9318f2a92f862578"
+      "sha256": "ae716efc49d37d6af11ac858bc1d6f187ec3b6d0f8e8ede15636ac5a82e1643b"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/DaedalusX64-3DS/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/b3ddbdd5d71a819f4ffe3507689c5133fe275e95633be5382980efd59a0a9adb",
       "bytes": 4196,
-      "sha256": "9e4d42d32c1d24bcdb8ee6fb3f579991d2d3f88aae2affccd7e566b2962431b4"
+      "sha256": "127ee1298f11ed88be9fceecfd9651b1bbfdebe343357e830048709491fc7014"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/DaedalusX64-3DS/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/768b6184d3b23cff93fe06fb37e7d1dbd930ed3cc06dcc2f9900146eaf210408",
       "bytes": 1026,
-      "sha256": "83bf45d2b2fa2b921ac7111f2e65067c6d0775f13478ecf23a462f7bf7ccd0ba"
+      "sha256": "5341b3567240461135518f7313d8ba16e86bdb15f4d2a2cdd6d6640e69b34066"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/DaedalusX64-3DS/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/23efc652bdb95bec8580759c4da418c3deddbc2f1b8c07ead5872e6889754c4b",
       "bytes": 3787,
-      "sha256": "a38e00d8cca89ca4ccf1260487161b8ec7823f290a4d0f940102a49b01a5b3ba"
+      "sha256": "128f506b7339d6296029ef8ea237a65ea7d26e114cd69959c05b676fc94dbeb2"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/Xash3DS",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/b2f54d56e5d58ccd1e42f61be06ecc8613e73eac90e2f38ce2b2f58820d1355c",
       "bytes": 798,
-      "sha256": "d5096621c0062b779d803c7c7c2f79f66a30d0ee9a8dc7527e1d94608378b827"
+      "sha256": "5fb57c477aaad7731e4cf0d8277d1e472b60be3b3fc60ec41eb5b4fad2eaa8ae"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/Xash3DS/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/37d7a5a420191415fcb3d140d9c004e8898961cc1070839e8707aac1949a91b3",
       "bytes": 4568,
-      "sha256": "3752b66dc618f979046b0598a969a87cf798242682ed2cd4e42603f2d281ecd1"
+      "sha256": "eb6078b597a30e511cedb6d2331426373aefdb179a45ce364f79bffcc627e199"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/Xash3DS/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/a3664bafd518da31e2c2866b3006c8c33b947fd8d0bedeaae51483ef8264c267",
       "bytes": 1473,
-      "sha256": "cf7216c4f9f613b36e01ab556335ec15edf21d6ffeb92d1fe9ba8bf61d3c2448"
+      "sha256": "3801868703605bf7000e79758ff7a57d852f39c8d68ee6181aee940dcd3ab49e"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/Xash3DS/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/38bae55a804fd50faf0d0474964cb55c5792bafabd37ba2bd73727978984378d",
       "bytes": 3195,
-      "sha256": "8da77c60c4d1c66ac263b1a89338968a82ab57048da6c780e6c191314c265e81"
+      "sha256": "205ea6695bff09a44e6e228bcfc209eae58f1400bf3a286d579b88f4714b2619"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/ctrQuake",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/badfadab3f79748e2e42508f614719520785f9b396be35aa6602bf467b4688ee",
       "bytes": 672,
-      "sha256": "80767ce99ea58f13e7d16f537fd07b27867e8407d298d6dc7ddba29b7e3f4bc8"
+      "sha256": "2edf2761dd3cc2993d08d8e2577152608344411ed7bc6d7c946d819f002b5041"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/ctrQuake/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/8f4c6b781ea664fd5545a87e5b0917172c926308416a95644c9ee6e6e100d557",
       "bytes": 4189,
-      "sha256": "4406285c84cb9ce2334638098d87ed6a686e2f6767cb17cc9710f623fa653cad"
+      "sha256": "0e212a41dbc95b5f0bcc4c70b494d7888ef44d6243953ad5132af0e98f8cc2f4"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/ctrQuake/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/77e07d8d9681868278829b353fbd3b2e7467753e53431c4cde7af1021add0028",
       "bytes": 1304,
-      "sha256": "52afa9c58242f51ca17a8a96e1dee384fe33fe739dda2b87e67fc296e5fe2cf2"
+      "sha256": "5482aaee5fe5617899287852e047673be83f7663fb2ea1fa1bcb3bbe07f79d1e"
     },
     {
       "url": "https://api.github.com/repos/masterfeizz/ctrQuake/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/7c7e151542b8c146de9b1c4a42511415d91c69217429ab093aa785491e2cdaed",
       "bytes": 6515,
-      "sha256": "ba3fb036f22d89f0ba5275abc0470c33b9c8788eaace5321eb33fc9f4717b5be"
+      "sha256": "bb7135d75c1bdddd3b7e229a6ac2d32c3a71d5ce068334e44f86edab80b3b537"
     },
     {
       "url": "https://api.github.com/repos/matbo87/snes9x_3ds",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/7930d77cbde1f1f1b83256c29a935d967fbed6b105a9fa9d9737a4e54c7a951d",
       "bytes": 711,
-      "sha256": "9d6481fba1d86a08498193734def941dbfcf2f65fae46e32d7855ad92f3b8239"
+      "sha256": "e4f37b297c0af06db063c8da35ddec2d5305069fe694a514c21877c11eee583a"
     },
     {
       "url": "https://api.github.com/repos/matbo87/snes9x_3ds/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/9a566e22b576709848f1835c36b87e36dc159578ffa78e72726441745b6955d4",
       "bytes": 5141,
-      "sha256": "54e913df40b37bf80662ee76f8d9970ee267bf4950b3ecc9750ecf9c25da9bc5"
+      "sha256": "eae95297737a40b06e200c6bd18de1881882cadd5ead7b1febee47964bb5405c"
     },
     {
       "url": "https://api.github.com/repos/matbo87/snes9x_3ds/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/e2f43cd1fd2f9c7d58476cf61a67752df26587c655d675ffdd1a31df67202b95",
       "bytes": 10549,
-      "sha256": "bed1011c0d9a464beba7f07274d86a7dd272ee5ece68c0642046dffe4d2cd76d"
+      "sha256": "b639f1802989bec0573d52ecd3a164eb2c7f55abfd16a4688f322585cf801a0f"
     },
     {
       "url": "https://api.github.com/repos/matbo87/snes9x_3ds/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/8b531b822eafe0146953b937a2f749a3a7a1edb148cb72febbf2a4b2d77121b4",
       "bytes": 19770,
-      "sha256": "463d394bca3390f9d27bbe6cff00c3fc06018c1b2c7567613c18513384691b54"
+      "sha256": "436c5b487ec395e3dca4acd9fce4a18bfd17902cabe950086f84ecf1b1e670c6"
     },
     {
       "url": "https://api.github.com/repos/mgba-emu/mgba",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/2c8fde397aec80b8605fc944ba59ff9b6e00c72bc39391aab9ff6d82df62cb2e",
       "bytes": 971,
-      "sha256": "2e76e44a2f5f9efbb32b3196ecdff575c244ae2d316288e36b4b5525bff63b15"
+      "sha256": "0cfd324df4ad58d001e126b77e2e385d3ab10ab4c507a27cd2db896cd90980bd"
     },
     {
       "url": "https://api.github.com/repos/mgba-emu/mgba/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/d70e28b081eb7b6b5c1924dfef7276e32b20c2efb0a1b0eb9831bdd29653e17b",
       "bytes": 4106,
-      "sha256": "543e4ef515afa941a5b9d7b3807f6a28aa89401b8a66097fb8fa5a5c59cf2535"
+      "sha256": "c128b6b3959120b00921fd465e0adbeeb0b36ae782537cb5580c4737e499928e"
     },
     {
       "url": "https://api.github.com/repos/mgba-emu/mgba/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/8cbbbc16eaa991943184e37a936cfd1e28e5d55c5cc992b61cfa3d6f9d03401b",
       "bytes": 12571,
-      "sha256": "9fc05a6d05095b45c341337e958fa8a9aabe58f3222ffaca1856ae0e5a84d7e8"
+      "sha256": "252177cd3fbabc618f3d23815f5924ae78ef42eb2ba469d0d9f1f54b90cdc03d"
     },
     {
       "url": "https://api.github.com/repos/mgba-emu/mgba/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/c7b256b57a014f926467a60f73b0f127b88f19d445621455c0c682ddd68d1b31",
       "bytes": 46198,
-      "sha256": "f1692b048e7bbf633e0bd18f513f7e99510652cb953d9d557905aef25155f3b4"
+      "sha256": "36061a48ce72f259ae2347ec971d4512cc85cc37e76424066ed3512715d12d00"
     },
     {
       "url": "https://api.github.com/repos/mtheall/ftpd",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/6a7000c227186038de0d7e033fb3108a9970b880bc1d1758dab3567ae0c8f9e3",
       "bytes": 758,
-      "sha256": "15f9428c3cd0336dbf423ef7e15cc8ad65683d712cb3a1f1b8f4738e6bed5802"
+      "sha256": "587c24df627dbe9047e1902a4de3941c3e83ade582cc8dd74218039b6f0ae36d"
     },
     {
       "url": "https://api.github.com/repos/mtheall/ftpd/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/5b802f127488dd5b49a15c50fbf451f1b78cdb1e391d987b84b3c79ef15a2c89",
       "bytes": 4170,
-      "sha256": "a47ba0567b30afbf9f87437bc6531d4ab994eb006aa7147e1c5730a615b78b13"
+      "sha256": "9c3f92a791747a4d62e15e5d2ccba79976db72d72e52dd4a7223a2911e5fa4fd"
     },
     {
       "url": "https://api.github.com/repos/mtheall/ftpd/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/cbb086ecb5768ff81056ee45ebc987f29dc64150c10a5b54cc42e24517413862",
       "bytes": 3757,
-      "sha256": "184538fa1b976ba1d81888351afff508e47fa124f7625eba56d13df28b386441"
+      "sha256": "0f474560b2143d212510a186e8cb8d05836f37d0014782d0df8d421c62655b06"
     },
     {
       "url": "https://api.github.com/repos/mtheall/ftpd/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/73f022db8c7f5cdd096b38f8629f2e998bd640f2ba35b17500e6aa0871dc58cd",
       "bytes": 17255,
-      "sha256": "818e52ce1a05611d0da6f3ae587eb5a834b6509dd3515d4b9cbeb7b3a9784532"
+      "sha256": "2f1ed495fdbfe5f78b00ff651c5fa4e6b06199325b791cd42786702333851637"
     },
     {
       "url": "https://api.github.com/repos/oneup03/BanjoRecomp3D",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/fd18bef4a19aa65c632ce44350c6922841408ebead0739bff436a7508b6c952b",
       "bytes": 823,
-      "sha256": "d801ca93016f4263b6ae421c6a1c423557a9c29aadba36cc4a8d144180fb4559"
+      "sha256": "eda9cb033aad132f38fa12d5c5167dc34eecc72088b4ae5e12519f446e13b326"
     },
     {
       "url": "https://api.github.com/repos/oneup03/BanjoRecomp3D/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/708dd71e05bfb7d001aa2eeea033e99363aff4c92796617add2746a8c6b74abf",
       "bytes": 8186,
-      "sha256": "d542a211c69dd35d69e2d0bca0078e40db5ccf7bc90abf588fabd6317e6c2b24"
+      "sha256": "3060594a258c2a6512a153af59a22b9cd7d27d3b7a337abbac4d8d5a7f3a96d3"
     },
     {
       "url": "https://api.github.com/repos/oneup03/BanjoRecomp3D/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/cc88a00596a2ee98598ec2747966113a3b0ed18dd1a9af0b447666ec930bf71a",
       "bytes": 10649,
-      "sha256": "ddeb1585324bd37cb06eb4e589aab1a91638d4cae7be2c8723f61cf9f3e44719"
+      "sha256": "77f230562e3d316287c952b27f0e7a9ae8966b5b7f22e5149721918d2ef49c9a"
     },
     {
       "url": "https://api.github.com/repos/oneup03/BanjoRecomp3D/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/b12dc655846fbc040531633430b11ca5a22a5bbdae609c01a892107af734de23",
       "bytes": 3736,
-      "sha256": "c60448ae2f4c105d8bacb261da89ef77f98f356217b22a1b9bb8770304be90c0"
+      "sha256": "11af77e647620d19f03abf01269df925cf87317102ebc9d80d5f6292a612d3ac"
     },
     {
       "url": "https://api.github.com/repos/oneup03/Donkey-Kong-64-3D",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/4896ac925ae7178e11420a1b85732f91713a4eb8feb0973e3dc7f7e557518ac1",
       "bytes": 767,
-      "sha256": "e8266142a462c063f08f7ebb63b24d3fe302798fa7b03f69e5f30ab09ba06d78"
+      "sha256": "5fc43821a164ad9f4e4bfd4ef9d69729ba08bc0cbe5f0041682a559a3b6613ba"
     },
     {
       "url": "https://api.github.com/repos/oneup03/Donkey-Kong-64-3D/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/501a9ffae3784e1dd817ac1ca8c6b1555ea67dcc96ca59956e5d4da3e3c64984",
       "bytes": 7406,
-      "sha256": "98ac32e22753af1e8638ac143bde2b725c432aed577580a20787479a1909eac8"
+      "sha256": "8f884a7d966278eafc7593348255f08699bcfc6ba85f12455c9b6d045874df98"
     },
     {
       "url": "https://api.github.com/repos/oneup03/Donkey-Kong-64-3D/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/92cef6495cde1e22e9f7d6df582d6a959aac7a22a6fa8eea9941420ae0c8ac5e",
       "bytes": 8894,
-      "sha256": "49b1f646c2e464ae08d0dc21c6d8fa973bbcfddd95d64911b8f87a4877b928fe"
+      "sha256": "55b27d7605b9de01e045e9d61626080a217226edaebcb5e0c1a7fd5bb6cc7a0c"
     },
     {
       "url": "https://api.github.com/repos/oneup03/Donkey-Kong-64-3D/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/5100a3d52b8555f6fc079dc6d6dc6687b776eb2505c36afa68a2a26165736569",
       "bytes": 2884,
-      "sha256": "3aabb0a7ea9223bb010c02a9925199764e676da741839d07d63c6a7e300aa93c"
+      "sha256": "60e60418a82ec3fa1bddccb59cd9a0114ce515fb7148a311eec87d6f8f1fbdaa"
     },
     {
       "url": "https://api.github.com/repos/oneup03/Goemon64Recomp3D",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/4791b4373e016e46af5cbe3701f2e8246dd1ad997f2da9b626c35e3de02a9fa1",
       "bytes": 850,
-      "sha256": "dba2436f206faa399832210dc94142e22098fba354369299529800528103693c"
+      "sha256": "59d1e972bbcbecd9faa3a3059d3e44774a86a35e045d194fb931b4470a313f5b"
     },
     {
       "url": "https://api.github.com/repos/oneup03/Goemon64Recomp3D/commits?per_page=10",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/f220d6cec9cff4144f7c230e3e9a400c68cfb144a8c650c123a4fdc3df2e7f73",
       "bytes": 10990,
-      "sha256": "1c654082639c12420b612591e53ee57d0725571b0297ddb61c5818a20c620abf"
+      "sha256": "8de6aa5bb59423cc044e69cb7a3267ac4f15529526fbe86ca3f3ee5533aba178"
     },
     {
       "url": "https://api.github.com/repos/oneup03/Goemon64Recomp3D/readme",
       "accept": "application/vnd.github.raw+json",
       "file": "3ds/romfs/reader-data/f221232dd9bd060914e8c0393c2be6f6975841f0b63a6391018798f05252cbf8",
       "bytes": 10548,
-      "sha256": "3eefbb8397b2bc9e51189a8319ab3a4f179e7db5b859a553a3dda884b2338699"
+      "sha256": "a81f5a1388cea2e8c8153526fcf9d4b12044415bc2d7f9ef0ed81f982f1a1844"
     },
     {
       "url": "https://api.github.com/repos/oneup03/Goemon64Recomp3D/releases?per_page=12",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/c9e28a157325d3f5298693980fb0eb73692c8b8aae9a69181a395048284a74b4",
       "bytes": 2938,
-      "sha256": "37ecde367e626602991fc133c30ce508215a1b2efc742150dc5f570f6422f522"
+      "sha256": "9f608554404e0f833be74e9d2acf35815c3580f6b1771085c5d9128a27f1bfdb"
     },
     {
       "url": "https://api.github.com/users/EstebanPdN",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/aad825574623522212fb485a96cde7613205e546f85baafdfe9181b4af5a33d9",
       "bytes": 325,
-      "sha256": "576cac1f161dff44c91d3ec8afd4099dc86d95e7f894413370a723fd5dc26fbe"
+      "sha256": "7805c5862c12ab2ac9e2506388f9926ed2330bd0415915651f56e2e0e8f94fa2"
     },
     {
       "url": "https://api.github.com/users/EstebanPdN/repos?sort=pushed&per_page=40",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/121618ca8ca7e011e638b6d7b641125944cf81f3c992cf2ba6f70f982312558f",
       "bytes": 3872,
-      "sha256": "b2147853f3e24e5c1740738a52648ee1bfe7886f757c0d5bdae61ebc52d1f3c3"
+      "sha256": "58efb8ece9d70b0a45ade7f40f4f5dd2e7dcdd04b2859dc338261782f9793bac"
     }
   ]
 }

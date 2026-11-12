@@ -1,0 +1,200 @@
+{
+  "version": "2026.11.12.4",
+  "store_build": 2026111204,
+  "public_binaries": {
+    "forge-store.cia": {
+      "bytes": 48657344,
+      "sha256": "fd3a39052286bb9c773f548557f9e1aef21c6a4effffe39c908b28fcfe65dc7b"
+    },
+    "forge-store.3dsx": {
+      "bytes": 49195376,
+      "sha256": "09be598c48ad83caef481b885029b14a1b2cbead8f3faf66538024172360d200"
+    }
+  },
+  "package": {
+    "previous_cia_bytes": 54399936,
+    "cia_bytes_saved": 5742592,
+    "music_original_bytes": 14760960,
+    "music_lossless_bytes": 6989447
+  },
+  "catalog": {
+    "curated": 37,
+    "backgrounds_with_game_or_app_art": 29,
+    "public_repositories_bundled": 36,
+    "reader_responses": 148,
+    "prepared_images": 209
+  },
+  "host": {
+    "catalog_asan_ubsan_assertions": 297,
+    "install_integrity_scenario_groups": 27,
+    "am_services": "mocked",
+    "updater_scenarios": 23,
+    "reader_bundle_crc_and_hash_checks": 148,
+    "image_bundle_checks": 209,
+    "texture_stream": "production FTX/bank validation, priority, cancellation, reacquire, overflow and shutdown; ASan/UBSan + TSan",
+    "music_stream": "byte-identical PCM across opening, two loops, restart; malformed headers, CRC, truncation and missing files; ASan/UBSan",
+    "fat_cache": "replacement and failed-promotion restore; ASan/UBSan",
+    "forge_mode": "independent PBKDF2 vectors and authenticated envelope compatibility; ASan/UBSan"
+  },
+  "web": {
+    "offline_repository_endpoints": 144,
+    "offline_profile": true,
+    "mapped_local_images": 209,
+    "offline_errors": []
+  },
+  "emulator": [
+    {
+      "run": "performance-published-old",
+      "model": "Old 3DS",
+      "executable_sha256": "09be598c48ad83caef481b885029b14a1b2cbead8f3faf66538024172360d200",
+      "native_source_matches_package": true,
+      "video_cache_seeded": true,
+      "github_response_cache_seeded": false,
+      "normal_exit": true,
+      "preload_ms": 953,
+      "preload_ready": true,
+      "music_underruns": [
+        0
+      ],
+      "capture_instrumented_late_frames": 29,
+      "samples": {
+        "alttp-first": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=alttp bg=3 fg=3 loads=1/1 decode_ms=402/13 bytes=524288"
+        },
+        "minish-first": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=minish bg=3 fg=3 loads=1/1 decode_ms=24/13 bytes=524288"
+        },
+        "minish": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=minish bg=3 fg=3 loads=1/1 decode_ms=24/13 bytes=524288"
+        },
+        "mutiny-first": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=mutiny bg=3 fg=3 loads=1/1 decode_ms=13/12 bytes=524288"
+        },
+        "alttp-return": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=alttp bg=3 fg=3 loads=1/1 decode_ms=402/13 bytes=524288"
+        },
+        "profile": {
+          "forge_derivation_ms": 0,
+          "assets": "assets visible=0 resident=0 reader_ms=651"
+        },
+        "store": {
+          "forge_derivation_ms": 0,
+          "assets": "assets visible=0 resident=0 reader_ms=173"
+        },
+        "readme": {
+          "forge_derivation_ms": 0,
+          "assets": "assets visible=5 resident=5 reader_ms=137"
+        },
+        "video": {
+          "forge_derivation_ms": 0,
+          "gallery": "gallery app=alttp thumbs=1 fullscreen=0 slots=0:1/1,1:1/1,5:1/1,",
+          "banner": "banner app=alttp bg=3 fg=3 loads=1/1 decode_ms=402/13 bytes=524288"
+        },
+        "return-2": {
+          "forge_derivation_ms": 0,
+          "gallery": "gallery app=alttp thumbs=1 fullscreen=0 slots=0:1/1,1:1/1,5:1/1,",
+          "banner": "banner app=alttp bg=3 fg=3 loads=1/1 decode_ms=402/13 bytes=524288"
+        },
+        "full": {
+          "forge_derivation_ms": 0,
+          "gallery": "gallery app=alttp thumbs=1 fullscreen=1 slots=0:1/1,1:1/1,5:1/1,",
+          "banner": "banner app=alttp bg=3 fg=3 loads=1/1 decode_ms=402/13 bytes=524288"
+        },
+        "gallery-return": {
+          "forge_derivation_ms": 0,
+          "gallery": "gallery app=alttp thumbs=1 fullscreen=0 slots=0:1/1,1:1/1,5:1/1,",
+          "banner": "banner app=alttp bg=3 fg=3 loads=1/1 decode_ms=402/13 bytes=524288"
+        },
+        "mutiny-full": {
+          "forge_derivation_ms": 0,
+          "gallery": "gallery app=mutiny thumbs=1 fullscreen=1 slots=0:1/1,1:1/1,4:1/1,",
+          "banner": "banner app=mutiny bg=3 fg=3 loads=1/1 decode_ms=13/12 bytes=524288"
+        },
+        "mutiny-return": {
+          "forge_derivation_ms": 0,
+          "gallery": "gallery app=mutiny thumbs=1 fullscreen=0 slots=0:1/1,1:1/1,4:1/1,",
+          "banner": "banner app=mutiny bg=3 fg=3 loads=1/1 decode_ms=13/12 bytes=524288"
+        },
+        "forge": {
+          "forge_derivation_ms": 5216,
+          "gallery": "gallery app=mutiny thumbs=1 fullscreen=0 slots=0:1/1,1:1/1,4:1/1,"
+        }
+      },
+      "captures": {
+        "alttp-first.png": "4291c988fc13d9014c5943f198859f39e94b1ad657fd44a14290d2983bd3c218",
+        "alttp-return.png": "4eab8f8f4a415a42907954d6c02dd4d350a937063e3e5af732fa240feb96265f",
+        "forge.png": "2e106557315b7199c88738a6af199ad1b53236a6c8e52c872b641576dc7143a0",
+        "full.png": "6d2b78f2d5ad356bbf85201ce2007612d5e4ae9e0553f4b07601f84a6876fdb2",
+        "gallery-return.png": "73c61dd8d3e073b3568ae6db3273f3269cf3fb5572e4650db22eee9e1c451ebf",
+        "minish-first.png": "0c92bc965ae1ac9bf31c7ad794b811ee7ca783efb8bbfdfb9aefb2c8b5bd6f0d",
+        "minish.png": "5d0cad1475b7356393eba429a5aad49507e6dc71eefda4e2d93a300764609113",
+        "mutiny-first.png": "c6ea4dc0033c86ed9f9c436063e8ff3797ba51310d0181cdacad0dba71af86b1",
+        "mutiny-full.png": "bbfdf67614e5a0763e40f6412a166fde7271e35788e7668873791cab1c3fc92e",
+        "mutiny-return.png": "250e699bf13f6f29be8b66523ef44750f5ceda8403f75e090e48e7496fee26cc",
+        "profile.png": "867645f83be423fcb8777d495bfe12c5ee2fd18d3d3abdd53e0760cbd4e75635",
+        "readme.png": "dd4799b7826a9dcaa97f696babc5d3a28a6af5414d334c5af1864bf6871eebf0",
+        "return-2.png": "e524af5c7187fefda974948ed52d8fc01df50188ef08cacc79a2c79f9cbbbb01",
+        "store.png": "de0313ed9c0b153a48183ff1dd3e2edef3b86c34a63972ed3e99f855ebbcc7eb",
+        "video.png": "7e0720de0ccc05e66a365f12df88fdc06bb6f13f6f0ae332d0f4fd72a45b1094"
+      }
+    },
+    {
+      "run": "performance-published-new",
+      "model": "New 3DS",
+      "executable_sha256": "09be598c48ad83caef481b885029b14a1b2cbead8f3faf66538024172360d200",
+      "native_source_matches_package": true,
+      "video_cache_seeded": false,
+      "github_response_cache_seeded": false,
+      "normal_exit": true,
+      "preload_ms": 953,
+      "preload_ready": true,
+      "music_underruns": [
+        0
+      ],
+      "capture_instrumented_late_frames": 14,
+      "samples": {
+        "minish-light": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=minish bg=3 fg=3 loads=1/1 decode_ms=24/13 bytes=524288"
+        },
+        "settings-light": {
+          "forge_derivation_ms": 0
+        },
+        "settings-dark": {
+          "forge_derivation_ms": 0
+        },
+        "starhaven": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=starhaven bg=3 fg=3 loads=1/1 decode_ms=28/12 bytes=524288"
+        },
+        "quake": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=ctrquake bg=3 fg=3 loads=1/1 decode_ms=31/15 bytes=524288"
+        },
+        "store": {
+          "forge_derivation_ms": 0,
+          "assets": "assets visible=0 resident=0 reader_ms=323"
+        },
+        "home": {
+          "forge_derivation_ms": 0,
+          "banner": "banner app=alttp bg=3 fg=3 loads=1/1 decode_ms=402/13 bytes=524288"
+        }
+      },
+      "captures": {
+        "home.png": "79861b1f9c4ff4eccea67d9b14c28c14674a2c1600be048ce3c7dcf825bc5f37",
+        "minish-light.png": "a82f7c17045987a13da385c8924e328230bfb2f02edb2ecb95ca09a1f8e70cb8",
+        "quake.png": "2fa6bf8d98536199f9a0f4eff4fd19586d0eca7f40fdfe2ac7e0da4c294f70a7",
+        "settings-dark.png": "d5bd2caccfb856a06c70f3f341bedf9ba57eade8f7354b3585a5d89156bf966c",
+        "settings-light.png": "786a28aaf70231cf1a73dd2ea68f6efb3c458374495441cd8cbd20941fddfdb4",
+        "starhaven.png": "4d103ebe9da76b8624ffa97a78cb55ccccbba3b89ed5d94593b453d6b92ec8b5",
+        "store.png": "fa1fbad762b91145273b4afb3d9617a2bd3d859c25e12de326d40813667b71f7"
+      }
+    }
+  ],
+  "physical_console": "Not tested in this session. Emulator residency and elapsed times are not physical-SD latency guarantees."
+}

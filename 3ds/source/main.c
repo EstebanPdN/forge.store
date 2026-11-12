@@ -465,7 +465,8 @@ static void save_shot(const char *name, const u8 *top, const u8 *bot) {
 }
 
 // Startup UI owns the screens until checking, confirmation or installation ends.
-static bool update_gate=true;
+static bool update_gate=true, preload_gate;
+static u64 preload_started;
 static float update_settled=-1, update_changed, update_gate_started, intro_epoch;
 static int update_focus=1, update_fixture=-1;
 static StoreUpdateState update_seen=(StoreUpdateState)-1;
@@ -574,7 +575,8 @@ static void update_boot(void){
     if(update_settled<0)update_settled=NOW;
     if(NOW<update_settled+1.5f)return;
     if(state==UPDATE_DONE){if(update_fixture<0)store_update_restart();quit_req=true;return;}
-    update_gate=false;intro_epoch=NOW;scenes_intro_restart(BOOT_FADE);
+    update_gate=false;preload_gate=true;preload_started=osGetTime();
+    catalog_request_banners();
 }
 static float update_cover(void){
     if(update_seen==UPDATE_DECLINED)return ease_inout(span(NOW,update_changed,.4f));
@@ -592,14 +594,14 @@ static void render(void) {
         // Positive depth pops out of the screen: the left image moves right.
         EYE = slider > 0 ? (eye ? -slider : slider) : 0;
         if(update_gate)update_screen(true);
-        else {scenes_draw_top();statusbar_draw();toasts_draw();}
+        else if(!preload_gate){scenes_draw_top();statusbar_draw();toasts_draw();}
         if (show_perf) perf_draw();
         if (cover > 0) rect(0, 0, TOP_W, SCR_H, C2D_Color32f(0, 0, 0, cover));
     }
     EYE = 0;
     C2D_TargetClear(bottom, C2D_Color32(0, 0, 0, 255));
     C2D_SceneBegin(bottom);
-    if(update_gate)update_screen(false);else scenes_draw_bottom();
+    if(update_gate)update_screen(false);else if(!preload_gate)scenes_draw_bottom();
     if (cover > 0) rect(0, 0, BOT_W, SCR_H, C2D_Color32f(0, 0, 0, cover));
     u8 *ft = NULL, *fb = NULL;
     if (shot_name[0]) {
@@ -669,7 +671,7 @@ int main(int argc, char **argv) {
     forge_mode_init();
     scenes_init(BOOT_FADE);
     store_update_start(argc>0?argv[0]:NULL);
-    catalog_request_banners();  // banners decode in the background while the intro plays
+    // Home art warms after the update gate, before the logo/intro.
     status_refresh();
     hidSetRepeatParameters(20, 5);
     boot_ms = (svcGetSystemTick() - t_boot) / (float)CPU_TICKS_PER_MSEC;
@@ -716,14 +718,22 @@ int main(int argc, char **argv) {
         audio_update();
         video_pump();
         media_pump();
-        media_set_paused(install_active()!=NULL||scenes_reader_active());
-        if(update_gate)update_boot();else scenes_update();
+        media_set_paused(install_active()!=NULL||scenes_reader_active()||forge_mode_state()==FORGE_CHECKING);
+        if(update_gate)update_boot();
+        else if(preload_gate){
+            forge_mode_pump();
+            u64 elapsed=osGetTime()-preload_started;
+            if((elapsed>=500&&catalog_banners_ready())||elapsed>=6000){
+                preload_gate=false;intro_epoch=NOW;scenes_intro_restart(BOOT_FADE);
+                if(test_log)fprintf(test_log,"preload %llu ms ready=%d linear_free=%luKB\n",(unsigned long long)elapsed,catalog_banners_ready(),linearSpaceFree()/1024);
+            }
+        }else scenes_update();
         if (IN.touching) IN.last_x = IN.tx, IN.last_y = IN.ty;
         toasts_update();
         status_refresh();
         float want = scenes_statusbar() ? 1 : 0;
         sb_a = clampf(sb_a + (want - sb_a) * (1 - powf(.0005f, DT)), 0, 1);
-        cover = update_gate ? update_cover() : fmaxf(1-ease_inout(span(NOW,intro_epoch,BOOT_FADE)),scenes_exit_fade());
+        cover = preload_gate ? 1 : update_gate ? update_cover() : fmaxf(1-ease_inout(span(NOW,intro_epoch,BOOT_FADE)),scenes_exit_fade());
 
         // FrameBegin now precedes updates, so citro3d includes both update and drawing.
         debug_beat("render");

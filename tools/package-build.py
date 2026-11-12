@@ -7,7 +7,7 @@ source=ROOT/'3ds/build'; dest=ROOT/'builds/3ds'
 flags=(source/'compile-config.txt').read_text()
 if '-DFORGE_DEBUG=0' not in flags or 'FORGE_DUMP_URL' in flags:
     raise SystemExit('Rebuild with FORGE_DEBUG=0 and without FORGE_DUMP_URL before packaging')
-watched=sorted([* (ROOT/'3ds/source').rglob('*.c'),*(ROOT/'3ds/source').rglob('*.h'),*(ROOT/'3ds/source').rglob('*.inc'),ROOT/'3ds/build.sh'])
+watched=sorted([* (ROOT/'3ds/source').rglob('*.c'),*(ROOT/'3ds/source').rglob('*.h'),*(ROOT/'3ds/source').rglob('*.inc'),ROOT/'3ds/build.sh',ROOT/'3ds/forge-store.rsf',ROOT/'3ds/tools/stage-romfs.py',ROOT/'3ds/tools/music-pack.py'])
 oldest=min((source/n).stat().st_mtime for n in ['forge-store.cia','forge-store.3dsx'])
 if any(p.stat().st_mtime>oldest for p in watched):raise SystemExit('Source changed after compilation; rebuild')
 dest.mkdir(parents=True,exist_ok=True)

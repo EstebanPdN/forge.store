@@ -27,8 +27,10 @@ other local projects and the one-time rendering environment.
 - `main.c` initializes services, owns the frame loop, input, APT lifecycle, status bar and test commands.
 - `scenes.c` owns navigation, shared tabs, introduction, Home and detail views. `panels.inc`
   holds Downloads, SD, Settings and the GitHub reader in that same translation unit.
+- `texture_stream.inc` owns bounded FTX decode/upload handoff and the compressed banner bank.
 - `gfx.c`, `fx.c` draw pre-rasterized fonts/images, geometric UI and banner effects.
-- `audio.c` owns NDSP channels, streamed store music and UI sounds. Video uses channel 10.
+- `audio.c` owns NDSP channels, streamed store music and UI sounds. `music_stream.h` decodes
+  lossless FPC2 into the existing read-ahead ring. Video uses channel 10.
 - `media.c` owns the resource queue, manifest, cache verification, retries and cleanup.
 - `reader_image.c` owns prepared README rasters and their bounded decoded SD cache.
 - `forge_mode.c` authenticates encrypted personal-resource metadata off the rendering thread.
@@ -55,7 +57,8 @@ exactly zero**: the 3DS kernel can return a positive timeout code.
 2. Check for store updates with a five-second UI deadline. A verified newer build waits for
    confirmation, then downloads, installs and requests restart. Rejecting it fades to black
    and exits; a current/unavailable result fades into the introduction. The choice has no timeout.
-3. Present the introduction/theme choice and bring Home into view. Start one persistent media
+3. Warm Forge banners behind black for up to six seconds, finishing early when ready.
+   Present the introduction/theme choice and bring Home into view. Start one persistent media
    worker once Home is usable; low-priority GitHub prefetch begins during the introduction,
    after the update gate. Keep pumping queues and input.
 4. Verify each cached video or download to a private `.part` path, hash it and rename atomically.

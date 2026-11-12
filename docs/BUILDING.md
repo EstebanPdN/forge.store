@@ -25,7 +25,9 @@ zsh 3ds/build.sh
 ```
 
 Outputs: `3ds/build/forge-store.cia`, `.3dsx`, `.elf`, `.smdh`, a linker map and `manifest.json`.
-Every build rechecks the media manifest. Public builds use `FORGE_DEBUG=0` by default.
+Every build rechecks the media manifest. `stage-romfs.py` creates a disposable
+`3ds/build/romfs` containing the sequential banner bank and lossless music streams; the
+checked-in RomFS inputs remain unchanged. Public builds use `FORGE_DEBUG=0` by default.
 Changing compiler/debug flags invalidates cached objects. Do not share a changing executable
 with an active emulator: the runner copies an immutable execution image before launch.
 
@@ -52,6 +54,9 @@ python3 3ds/tests/run-forge-mode.py
 python3 3ds/tests/run-reader-image.py
 python3 3ds/tests/run-store-network.py
 python3 3ds/tests/run-audio-gain.py
+python3 3ds/tests/run-music-stream.py
+python3 3ds/tests/run-texture-stream.py
+python3 3ds/tests/run-reader-cache-fs.py
 python3 3ds/tests/run-update-icon.py
 python3 3ds/tools/check-file-view.py
 3ds/tools/.venv/bin/python -I 3ds/tools/check-media.py

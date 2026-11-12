@@ -5,8 +5,9 @@ import { h, animate, wait, clamp } from '../core/dom.js';
 import { t, L, fmtSize, fmtStars } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { Banner } from '../ui/banner.js';
+import { warmBanners } from '../core/banner-cache.js';
 import { originLabel } from '../core/catalog.js';
-import { appIcon, statusChip } from '../ui/components.js';
+import { appIcon, statusChip, glyph } from '../ui/components.js';
 import { TabBar, revealTabContent } from '../ui/navigation.js';
 
 const COLS = 5;
@@ -99,6 +100,7 @@ export class HomeScene extends Scene {
   // --- grid -----------------------------------------------------------------
   renderGrid(dir = 0) {
     const list = this.list;
+    warmBanners(list.slice(0, PER_PAGE));
     this.gridApps = list;
     this.cells = [];
     const pages = [];
@@ -171,6 +173,7 @@ export class HomeScene extends Scene {
     if (pos.page !== this.page) this.goPage(pos.page);
     if (!changed) return;
     const app = list[index];
+    warmBanners([app, list[index+1], list[index-1], list[index+5], list[index-5]]);
     this.renderCard(app);
     clearTimeout(this.bannerTimer);
     if (instant) this.banner.show(app, dir);
@@ -369,7 +372,7 @@ export class HomeScene extends Scene {
       tool('home.downloads', 'download', 'X', () => this.openScene('downloads'), active ? h('b.count', String(active)) : null),
       tool('home.sd', 'sd', 'SELECT', () => this.openScene('sd')),
       tool('home.settings', 'settings', 'START', () => this.openScene('settings')),
-      h('button.tool.round', { type: 'button', title: 'GitHub', on: { click: () => this.openProfile() } }, icon('github')),
+      h('button.tool.round', { type: 'button', title: 'GitHub', on: { click: () => this.openProfile() } }, icon('github'), glyph('X')),
     );
   }
 
@@ -410,7 +413,7 @@ export class HomeScene extends Scene {
       case 'Y':
         return this.openScene('search');
       case 'X':
-        return this.openScene('downloads');
+        return this.openProfile();
       case 'SELECT':
         return this.openScene('sd');
       case 'START':

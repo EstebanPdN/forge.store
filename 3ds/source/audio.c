@@ -2,6 +2,7 @@
 // arrangement and music loop stream from RomFS through a few seconds of read-ahead.
 #include "audio.h"
 #include "audio_gain.h"
+#include "music_stream.h"
 
 #define RATE 32000
 #define CH_MUSIC 0
@@ -42,22 +43,18 @@ static bool wanted(void) { return __atomic_load_n(&stream_wanted, __ATOMIC_ACQUI
 static bool exiting(void) { return __atomic_load_n(&stream_exit, __ATOMIC_ACQUIRE); }
 
 static void music_reader(void *unused) {
-    FILE *f = NULL;
-    bool first = true;
+    MusicStream stream = {0};
     u32 gen = 0;
     while (!exiting()) {
         if (!wanted()) {
-            if (f) fclose(f), f = NULL;
+            music_stream_close(&stream);
             svcSleepThread(8000000);
             continue;
         }
         u32 now_gen = __atomic_load_n(&stream_gen, __ATOMIC_ACQUIRE);
-        if (!f || gen != now_gen) {
-            if (f) fclose(f);
-            f = fopen("romfs:/audio/music-start.pcm", "rb");
-            first = true;
+        if (!stream.file || gen != now_gen) {
             gen = now_gen;
-            if (!f) {
+            if (!music_stream_open(&stream,"romfs:/audio/music-start.fpcm.gz","romfs:/audio/music.fpcm.gz")) {
                 __atomic_store_n(&stream_wanted, false, __ATOMIC_RELEASE);
                 continue;
             }
@@ -72,22 +69,8 @@ static void music_reader(void *unused) {
         }
         // This block is invisible to the feeder until ring_head advances.
         u8 *dst = ring + at * MUSIC_BYTES;
-        size_t filled = 0;
-        while (filled < MUSIC_BLOCK) {
-            size_t n = fread(dst + filled * 4, 4, MUSIC_BLOCK - filled, f);
-            filled += n;
-            if (filled == MUSIC_BLOCK) break;
-            if (ferror(f) || (!n && ftell(f) == 0)) break;
-            if (first) {
-                fclose(f);
-                f = fopen("romfs:/audio/music.pcm", "rb");
-                first = false;
-                if (!f) break;
-            } else rewind(f);
-        }
-        if (filled != MUSIC_BLOCK) {
-            if (f) fclose(f);
-            f = NULL;
+        if (!music_stream_read(&stream,dst,MUSIC_BYTES)) {
+            music_stream_close(&stream);
             __atomic_store_n(&stream_wanted, false, __ATOMIC_RELEASE);
             continue;
         }
@@ -96,7 +79,7 @@ static void music_reader(void *unused) {
         if (gen == __atomic_load_n(&stream_gen, __ATOMIC_ACQUIRE)) ring_head++;  // else: restarted meanwhile
         LightLock_Unlock(&ring_lock);
     }
-    if (f) fclose(f);
+    music_stream_close(&stream);
 }
 
 static void music_feeder(void *unused) {

@@ -1,8 +1,43 @@
 # Verification record
 
-Publication candidate: **2026.11.12.3**, native C implementation plus web V2. This is a development
+Publication candidate: **2026.11.12.4**, native C implementation plus web V2. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## Home preload and offline reader — 2026.11.12.4
+
+The [evidence index](verification/home-preload.json) records the exact public executable,
+matching native-source fingerprints, selected measurements and capture hashes. Full local
+logs, private SD fixtures and memory dumps are excluded.
+
+- The CIA is 48,657,344 bytes, down from 54,399,936 (10.6%), while adding local reader
+  content and backgrounds. The music predictor preserves every PCM sample; its two streams
+  shrink from 14,760,960 to 6,989,447 bytes. The host harness verifies opening/loop seams,
+  two loops, restart, CRC/truncation, malformed headers and missing files under ASan/UBSan.
+- Production texture streaming passed bounds, malformed banks, priority promotion,
+  cancellation before/after decode, reacquisition, queue overflow and shutdown under
+  ASan/UBSan and TSan. FAT cache replacement and failed-promotion recovery also passed.
+- Catalog tests passed 297 assertions; installer tests passed 27 scenario groups; the
+  HTTP/updater suite passed 23 scenarios and concurrent cache access under TSan. All 148
+  bundled responses and 209 prepared images passed their bounds, CRC and hash checks.
+- Code Atlas opened all 144 repository endpoints and the profile from local data with
+  API requests blocked. All 209 image URLs resolved to bundled web files. The support
+  links use compact 18-pixel rows. JavaScript syntax and Python compilation passed.
+- On the final Old 3DS emulator run, preloading finished in 953 ms. ALttP, Minish and
+  Mutiny backgrounds/logos were already ready at the first sampled frame after hover;
+  returning to ALttP retained one decode per layer. The forge.store reader completed
+  its local data load in 173 ms, and the ALttP README sample had all five visible images resident.
+- The same executable played the seeded ALttP trailer, retained its gallery on B, opened
+  lower screenshots fullscreen for ALttP and Mutiny, and returned normally. The final New
+  3DS run reviewed light/dark Settings, the Minish framing, Star Haven and Quake backgrounds,
+  and the bundled store page. Both runs exited normally with zero sampled music underruns.
+- Forge Mode retained its 100,000-round derivation and existing encrypted format. Independent
+  host vectors and authenticated-envelope checks passed. The synthetic invalid-code derivation
+  took 5,216 ms in the Old emulator; it is improved but is not instantaneous.
+
+These are emulator observations, not physical-console latency or self-update qualification.
+Capturing frames also introduces stalls, so no zero-jank claim is made. Physical HOME/suspend,
+SD-card speed and real CIA self-update remain unqualified. Earlier build records follow.
 
 ## Catalog, cached content and artwork — 2026.11.12.3
 

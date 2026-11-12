@@ -16,11 +16,11 @@ La aplicación nativa ya está implementada, con validación separada de la web 
 - Caché HTTP compartida y precarga de páginas/imágenes públicas de GitHub, con solicitudes
   condicionales y reintento de fallos transitorios. Contratos en [actualizaciones y caché](UPDATES-AND-CACHE.md).
 
-- Catálogo curado: 39 fichas, con iconos oficiales y 19 nuevas parejas de capturas verificadas.
+- Catálogo curado: 37 fichas, con iconos oficiales y 19 nuevas parejas de capturas verificadas.
   Butterscotch enlaza `efimandreev0/Butterscotch` v1.3 y acredita mi colaboración.
   Red Viper Color aparece en Forge y Emuladores; sigue en desarrollo, sin binario público.
 - Capturas inferiores a pantalla completa, miniaturas independientes y galería conservada
-  al volver del vídeo o GitHub. 225 imágenes públicas y 152 respuestas de GitHub preparadas dentro de RomFS.
+  al volver del vídeo o GitHub. 209 imágenes públicas y 148 respuestas de GitHub preparadas dentro de RomFS.
 - Modo Forge persistente con manifiesto cifrado autenticado e instalación transaccional
   de archivos personales. Forja/martillo pixelados que se transforman en un check.
 
@@ -28,3 +28,11 @@ La aplicación nativa ya está implementada, con validación separada de la web 
   de mayor resolución, seis logos adicionales y transparencia correcta en ambos temas.
 - Fichas con plataformas de origen y estrellas iniciales; progreso desconocido cuando
   no existe un dato publicado. Icono de forja de 18 px y logo de información de 40 px sin sombra.
+
+
+- Inicio con precarga de banners antes de la intro y caché al cambiar de selección en Home.
+- Perfil GitHub nativo, README locales para todo el catálogo recomendado y botones externos
+  compactos. forge.store incluido; actualización de datos en segundo plano sin bloquear la lectura.
+- Minish Cap utiliza el nuevo encuadre aprobado; Lynx3DS y G-Diffuser salen del catálogo curado.
+- Botón GitHub redondo con X en Home y ajuste de un píxel en la etiqueta de consola.
+- Música comprimida sin pérdida, con verificación de identidad muestra por muestra.

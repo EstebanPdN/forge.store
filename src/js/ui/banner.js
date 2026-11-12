@@ -71,6 +71,7 @@ export class Banner {
     if (b.bg) {
       bg.style.backgroundImage = `url("${b.bg}")`;
       bg.style.backgroundPosition = b.bgPos || '50% 50%';
+      if (b.cardIcon) bg.classList.add('gameplay');
       if (b.pixel) bg.classList.add('pixel');
     } else {
       const [c1, c2, c3] = b.gradient || [app.color, app.color, '#000'];
@@ -83,8 +84,8 @@ export class Banner {
     if (b.mid) mid = h('img.bn-mid-img', { src: b.mid, alt: '' });
     else if (!b.bg && !b.logo && typeof app.icon === 'object') {
       mid = h('div.bn-glyph', glyphIcon(app.icon, 132));
-    } else if (!b.bg && typeof app.icon === 'string') {
-      mid = h('img.bn-app-icon', { src: app.icon, alt: '' });
+    } else if ((!b.bg || b.cardIcon) && typeof app.icon === 'string') {
+      mid = h('img.bn-app-icon', { src: b.heroIcon || app.icon, alt: '', style: {background:app.iconBackground || ''} });
       slide.classList.add('has-app-icon');
     }
     if (mid) {

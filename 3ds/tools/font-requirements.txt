@@ -3,3 +3,6 @@ Pillow>=12
 numpy>=2
 fonttools[woff]>=4.60
 CairoSVG>=2.8
+
+# Public README HTML for the bundled web reader.
+markdown-it-py==3.0.0

@@ -39,6 +39,19 @@ def paths(value):
     elif isinstance(value,list):
         for v in value:paths(v)
 paths(cat)
+# Every curated public repository must have offline reader data. Universal-DB is separate.
+reader=json.loads((ROOT/'assets/reader-data/manifest.json').read_text())
+readers={(r['url'],r['accept']) for r in reader['responses']}
+for repo in {a['repo'] for a in cat['apps'] if a.get('repo')}|{'EstebanPdN/forge.store'}:
+    for suffix in ('','/readme','/releases?per_page=12','/commits?per_page=10'):
+        accept='application/vnd.github.raw+json' if suffix=='/readme' else 'application/vnd.github+json'
+        check(('https://api.github.com/repos/'+repo+suffix,accept) in readers,'Missing offline reader data: '+repo+suffix)
+web=json.loads((ROOT/'assets/reader-data/pages.json').read_text())
+for r in reader['responses']:
+    kind='html:' if 'raw+json' in r['accept'] else 'json:'
+    check(kind+r['url'].removeprefix('https://api.github.com') in web['pages'],'Missing bundled web page: '+r['url'])
+for url,path in json.loads((ROOT/'assets/reader-art/urls.json').read_text()).items():
+    check((ROOT/path).is_file(),'Missing bundled web image: '+url)
 media=ROOT/'assets/store-resources'; manifest=json.loads((media/'manifest.json').read_text())
 check(manifest==json.loads((ROOT/'3ds/romfs/media.json').read_text()),'Bundled media manifest differs')
 expected={f"{a['id']}/{v['id']}" for a in cat['apps'] for v in a.get('videos',[])}

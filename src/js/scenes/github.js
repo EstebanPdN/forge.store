@@ -7,8 +7,9 @@ import { t, fmtDate, fmtSize, fmtStars } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { Scroller } from '../ui/components.js';
 import { TabBar, revealTabContent } from '../ui/navigation.js';
-import { github, cleanHTML, RateLimitError } from '../core/ghapi.js';
+import { github, githubImage, cleanHTML, RateLimitError } from '../core/ghapi.js';
 
+const nativeProfile = fetch('assets/reader-data/profile.json').then((r) => r.json()).catch(() => null);
 const REPO_TABS = ['readme', 'releases', 'info'];
 const USER_TABS = ['profile', 'repos', 'about'];
 
@@ -98,6 +99,7 @@ export class GitHubScene extends Scene {
   }
 
   async loadUser() {
+    if (this.user === 'EstebanPdN') this.data.nativeProfile = await nativeProfile;
     try {
       const user = await github.user(this.user);
       if (!user) return this.renderError(t('gh.notFound'));
@@ -116,6 +118,22 @@ export class GitHubScene extends Scene {
   }
 
   // --- rendering ----------------------------------------------------------------
+  nativeProfileView() {
+    const p = this.data.nativeProfile, u = this.data.user;
+    const value = (name) => p.rows.find((r) => r.label === name)?.value || '';
+    const row = (label, name) => h('div.profile-row', h('b', label), h('span', value(name)));
+    const stars = (this.data.repos || []).reduce((sum, r) => sum + r.stargazers_count, 0);
+    return h('div.native-profile',
+      h('div.profile-terminal.glass',
+        h('img.profile-portrait', {src:'assets/reader-data/portrait.png',alt:''}),
+        h('div.profile-system', h('b.profile-prompt',p.login),...['OS','Hardware','IDE'].map((k) => row(k,k)))),
+      h('div.gh-support-row',p.links.map((l) => h('a.gh-support-link',{href:l.url,target:'_blank',rel:'noopener'},l.label))),
+      h('div.profile-details.glass',row('Code','Languages.Programming'),row('Web','Languages.Computer'),row('Languages','Languages.Real'),row('Software','Hobbies.Software'),row('Hardware','Hobbies.Hardware')),
+      h('div.profile-stats',[[u.public_repos,t('gh.repos')],[stars,t('gh.totalStars')],[u.followers,t('gh.followers')]].map(([n,label]) => h('div.glass',h('b',String(n)),h('span',label)))),
+      h('div.profile-contact',h('b.profile-prompt','Contact'),h('p',value('Email')),h('p',value('Discord'))),
+      h('div.profile-development',h('b.profile-prompt','Development'),h('p',p.development),h('a',{href:p.developmentUrl,target:'_blank',rel:'noopener'},'Learn about the development process')));
+  }
+
   userHeader() {
     const u = this.data.user;
     const stats = [
@@ -125,7 +143,7 @@ export class GitHubScene extends Scene {
     ].filter(Boolean);
     return h(
       'div.gh-head.user',
-      h('img.gh-avatar.round', { src: u.avatar_url + '&s=96', alt: '' }),
+      h('img.gh-avatar.round', { src: githubImage(u.avatar_url), alt: '' }),
       h(
         'div.gh-head-text',
         h('div.gh-name', h('b', u.name || u.login), u.name ? h('span.faint', ' @' + u.login) : null),
@@ -206,7 +224,7 @@ export class GitHubScene extends Scene {
     ];
     return h(
       'div.gh-head',
-      h('img.gh-avatar', { src: r.owner.avatar_url + '&s=64', alt: '' }),
+      h('img.gh-avatar', { src: githubImage(r.owner.avatar_url), alt: '' }),
       h(
         'div.gh-head-text',
         h('div.gh-name', h('span.faint', r.owner.login + ' / '), h('b', r.name)),
@@ -242,12 +260,13 @@ export class GitHubScene extends Scene {
       readme: () => this.readmeView(),
       releases: () => this.releasesView(),
       info: () => this.infoView(),
-      profile: () => this.readmeView(),
+      profile: () => this.data.nativeProfile ? this.nativeProfileView() : this.readmeView(),
       repos: () => this.reposView(),
       about: () => this.aboutView(),
     };
     const body = views[this.tab]();
-    this.page.replaceChildren(this.user ? this.userHeader() : this.header(), body);
+    const custom = this.tab === 'profile' && this.data.nativeProfile;
+    this.page.replaceChildren(...(custom ? [body] : [this.user ? this.userHeader() : this.header(), body]));
     if (this.data.limit) this.page.append(h('p.gh-note', icon('clock'), t('gh.partial')));
     if (keep) this.scroller.scrollTo(y, false);
     else {

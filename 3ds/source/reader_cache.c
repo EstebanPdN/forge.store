@@ -25,7 +25,15 @@ bool reader_cache_save(const char *path,uint64_t now,const char *body,size_t len
     char temp[410];snprintf(temp,sizeof temp,"%s.tmp",path);FILE *f=fopen(temp,"wb");if(!f)return false;
     bool ok=fwrite(header,1,sizeof header,f)==sizeof header&&fwrite(body,1,length,f)==length;
     if(fclose(f))ok=false;
-    if(ok)ok=rename(temp,path)==0;
+    if(ok && rename(temp,path)!=0){
+        // libctru/FAT cannot overwrite an existing destination. Retain the old
+        // complete cache until its replacement is ready, then restore on failure.
+        char backup[414];snprintf(backup,sizeof backup,"%s.bak",path);
+        remove(backup);
+        if(rename(path,backup)!=0)ok=false;
+        else if(rename(temp,path)!=0){rename(backup,path);ok=false;}
+        else remove(backup);
+    }
     if(!ok)remove(temp);
     return ok;
 }

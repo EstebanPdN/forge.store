@@ -1,22 +1,25 @@
 // Textures (.ftx sheets), background loading, text cache and shape helpers.
 #pragma once
 #include "common.h"
+#include <stdatomic.h>
 
 #define SHEET_MAX 64
 
 typedef enum { SHEET_EMPTY, SHEET_QUEUED, SHEET_DECODED, SHEET_READY, SHEET_FAILED } SheetState;
 
 typedef struct {
-    volatile SheetState state;
+    _Atomic SheetState state;
     char path[96];
     C3D_Tex tex;
     int count, w, h, fmt;
     Tex3DS_SubTexture sub[SHEET_MAX];
     void *pixels;  // decoded on the loader thread, uploaded on the main thread
-    volatile bool discard;
+    _Atomic bool discard;
     size_t size, copied;  // upload is spread over frames: bytes already in the texture
     bool tex_init;
     bool crisp;  // baked UI pixels: nearest magnification, linear reduction
+    unsigned loads;
+    float decode_ms;
 } Sheet;
 
 void gfx_init(void);
@@ -25,6 +28,8 @@ void gfx_exit(void);
 bool sheet_load_now(Sheet *s, const char *path);
 /** Queues a background load; the sheet becomes READY a few frames later. */
 void sheet_request(Sheet *s, const char *path);
+/** Speculative request, behind all visible work. Does not promote existing work. */
+void sheet_prefetch(Sheet *s, const char *path);
 void sheet_free(Sheet *s);
 static inline bool sheet_ok(const Sheet *s) { return s->state == SHEET_READY; }
 static inline C2D_Image sheet_img(Sheet *s, int i) { return (C2D_Image){&s->tex, &s->sub[i]}; }

@@ -3,6 +3,16 @@
 #include <assert.h>
 static void settle(void){while(!__atomic_load_n(&done,__ATOMIC_ACQUIRE))usleep(1000);forge_mode_pump();}
 int main(void){
+    // Compare the optimized production KDF with OpenSSL, including full work
+    // factor, UTF-8, all-zero salt and the maximum accepted password length.
+    const char *codes[]={"a", "fixture-ñ-3ds", "0123456789012345678901234567890123456789012345678901234567890123"};
+    unsigned rounds[]={1,10000,100000};
+    for(unsigned k=0;k<3;k++){
+        unsigned char salt[16]={0},a[32],b[32];salt[0]=(unsigned char)k;
+        assert(!forge_derive_key((const unsigned char*)codes[k],strlen(codes[k]),salt,rounds[k],a));
+        assert(PKCS5_PBKDF2_HMAC(codes[k],(int)strlen(codes[k]),salt,16,rounds[k],EVP_sha256(),32,b));
+        assert(!memcmp(a,b,32));
+    }
     forge_mode_init();settle();assert(forge_mode_state()==FORGE_LOCKED);
     assert(!forge_mode_unlock(""));assert(forge_mode_unlock("wrong-fixture-code"));assert(!forge_mode_unlock("again"));settle();assert(forge_mode_state()==FORGE_INVALID);
     assert(forge_mode_unlock("host-fixture-only"));settle();assert(forge_mode_enabled());assert(!password[0]);

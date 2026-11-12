@@ -24,7 +24,7 @@ export function glyph(button) {
 
 export function appIcon(app, { size = 48, cls = '' } = {}) {
   const el = h('div.app-icon' + (cls ? '.' + cls : ''), {
-    style: { width: `${size}px`, height: `${size}px`, borderRadius: `${Math.round(size * 0.21)}px` },
+    style: { width: `${size}px`, height: `${size}px`, borderRadius: `${Math.round(size * 0.21)}px`, background: app.iconBackground || '' },
   });
   if (app.status === 'development') el.classList.add('dev');
   if (app.pixelIcon) el.classList.add('pixel');

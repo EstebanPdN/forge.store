@@ -9,5 +9,6 @@ void forge_mode_exit(void);
 bool forge_mode_unlock(const char *code);
 bool forge_mode_enabled(void);
 ForgeModeState forge_mode_state(void);
+unsigned forge_mode_derivation_ms(void); // completed KDF timing, no secret material
 // Main-thread owned snapshot. Never mutates the public catalog or logs URLs.
 json_t *forge_mode_plan(const char *app_id, json_t *base);

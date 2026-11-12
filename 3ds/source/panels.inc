@@ -822,6 +822,7 @@ static GhDocument gh_document;
 static UiTabs gh_nav;
 static struct { bool have; int parent, focus; float scroll; char name[160]; } gh_return;
 static const char *jstr(json_t *o, const char *key) { const char *s = json_string_value(json_object_get(o, key)); return s ? s : ""; }
+#include "github_profile.inc"
 static void append_doc(char **out, const char *s) {
     if (!s) return;
     size_t n = *out ? strlen(*out) : 0;
@@ -876,7 +877,10 @@ static void gh_info_facts(void){
         fmt_size(gh_fact_values[5],sizeof gh_fact_values[5],json_integer_value(json_object_get(gh_meta,"size"))*1024.);
     }
 }
+static u64 gh_started;
+static unsigned gh_load_ms;
 static void gh_begin(const char *name, bool user) {
+    gh_started=osGetTime();gh_load_ms=0;
     gh_user=user; gh_tab=gh_focus=0;gh_link=-1;gh_scroll=0;gh_loading=true;gh_dirty=true;
     snprintf(gh_name,sizeof gh_name,"%s",name?name:"");snprintf(gh_branch,sizeof gh_branch,"main"); gh_error[0]=0;
     memset(&gh_nav,0,sizeof gh_nav);
@@ -895,6 +899,10 @@ static void open_github(const char *name, bool user) {
 }
 static void gh_poll(void) {
     if(!gh_loading) return;
+    if(osGetTime()-gh_started>8000){
+        for(int i=0;i<4;i++)if(!gh_done[i]){reader_cancel_slot(i);gh_done[i]=true;}
+        snprintf(gh_error,sizeof gh_error,"%s",T("gh.error"));gh_loading=false;gh_dirty=true;return;
+    }
     for(int i=0;i<4;i++) {
         char error[160];char *data=reader_take_slot(i,error,sizeof error);
         if(gh_discard[i]) {free(data);if(!reader_slot_busy(i)) gh_discard[i]=false;else continue;data=NULL;}
@@ -937,12 +945,23 @@ static void gh_poll(void) {
         }
     }
     gh_loading=false;for(int i=0;i<4;i++)if(!gh_done[i])gh_loading=true;
+    if(!gh_loading)gh_load_ms=(unsigned)(osGetTime()-gh_started);
 }
 static void gh_tabs_setup(void) {
     const char *labels[]={T(gh_user?"gh.profile":"gh.readme"),T(gh_user?"gh.repos":"gh.releases"),T(gh_user?"gh.about":"gh.info")};
     tabs_layout(&gh_nav,6,36,308,labels,NULL,3,gh_tab);
 }
+// External community/support actions are compact native labels, never huge SVGs.
+static const char *gh_support_label(const GhNode *n){
+    if(!n||n->kind!=GH_IMAGE)return NULL;
+    if(strstr(n->url,"website")||strstr(n->url,"link-website"))return "Website";
+    if(strstr(n->url,"discord"))return "Discord";
+    if(strstr(n->url,"patreon"))return "Patreon";
+    return NULL;
+}
 static void gh_image_size(const GhNode *n,float maxw,float *w,float *h) {
+    const char *label=gh_support_label(n);
+    if(label){*w=text_style_w(label,9,700,0)+20;*h=18;return;}
     int iw=0,ih=0;bool have=remote_image_dimensions(n->url,&iw,&ih);
     bool badge=strstr(n->url,"badge")||strstr(n->url,"shields.io");
     *h=badge?13:have?fminf(240,ih):90;
@@ -951,6 +970,7 @@ static void gh_image_size(const GhNode *n,float maxw,float *w,float *h) {
 }
 static void gh_table_image_size(const GhNode *node,float width,float *w,float *h,void *context){(void)context;gh_image_size((GhNode*)node,width,w,h);}
 static void gh_layout(void) {
+    if(gh_native_profile()){gh_document_free(&gh_document);gh_height=600;gh_header_h=0;gh_dirty=gh_reflow=false;return;}
     if(gh_document_dark!=S.dark)gh_dirty=true;
     if(!gh_dirty&&!gh_reflow)return;
     gh_reflow=false;gh_flow_reset(&gh_flow);memset(&gh_tables,0,sizeof gh_tables);memset(gh_run_count,0,sizeof gh_run_count);
@@ -962,7 +982,7 @@ static void gh_layout(void) {
         gh_document_dark=S.dark;gh_dirty=false;
     }
     const char *description=gh_user?jstr(gh_meta,"bio"):jstr(gh_meta,"description");
-    gh_header_h=gh_meta?fmaxf(gh_user?62:50,52+text_wrap_h(description,11,gh_user?302:314)):38;
+    gh_header_h=gh_meta?fmaxf(gh_user?62:50,(gh_user?57:52)+text_wrap_h(description,11,gh_user?302:314)):38;
     float y=gh_header_h+8;
     if(gh_tab==2&&gh_meta){
         gh_topic_count=0;float tx=12,rowh=0;
@@ -1107,12 +1127,13 @@ static void github_update(void) {
     const char *avatar=gh_user?jstr(gh_meta,"avatar_url"):jstr(json_object_get(gh_meta,"owner"),"avatar_url");
     // Requests are prioritized by recency: the first visible images and avatar
     // should arrive before a large showcase farther down the document.
-    for(int i=gh_document.count-1;i>=0;i--)if(gh_document.nodes[i].kind==GH_IMAGE&&gh_y[i]+gh_h[i]>gh_scroll&&gh_y[i]<gh_scroll+206)remote_image_request(gh_document.nodes[i].url);
+    for(int i=gh_document.count-1;i>=0;i--)if(gh_document.nodes[i].kind==GH_IMAGE&&!gh_support_label(&gh_document.nodes[i])&&gh_y[i]+gh_h[i]>gh_scroll&&gh_y[i]<gh_scroll+206)remote_image_request(gh_document.nodes[i].url);
     if(*avatar&&gh_scroll<gh_header_h)remote_image_request_rounded(avatar,gh_user?46:34,gh_user?23:9);
     if(!gh_user&&gh_tab==2){int count=json_array_size(gh_commits);if(count>10)count=10;for(int i=0;i<count;i++)if(gh_commit_y[i]+37>gh_scroll&&gh_commit_y[i]<gh_scroll+206)remote_image_request_rounded(jstr(json_object_get(json_array_get(gh_commits,i),"author"),"avatar_url"),16,8);}
 }
 static void github_top(float a) {
     draw_bg(true,a);scissor(400,0,34,400,206);
+    if(gh_native_profile()){gh_profile_draw(tabs_content(&gh_nav,a));scissor_off();return;}
     char stats[160];
     float y=36-gh_scroll;
     if(y+gh_header_h>34){
@@ -1127,7 +1148,7 @@ static void github_top(float a) {
     if(gh_user&&*jstr(gh_meta,"name")){char login[176];snprintf(login,sizeof login," @%s",jstr(gh_meta,"login"));text(login,tx+text_style_w(title,12,900,0),y+8,12,C(TH.ink_soft,a),AL_LEFT);}
     text_wrap(gh_user?jstr(gh_meta,"bio"):jstr(gh_meta,"description"),tx,y+26,11,C(TH.ink_soft,a),388-tx-9);
     if(gh_user)snprintf(stats,sizeof stats,"%lld %s · %lld %s",json_integer_value(json_object_get(gh_meta,"followers")),T("gh.followers"),json_integer_value(json_object_get(gh_meta,"public_repos")),T("gh.repos"));
-    if(gh_meta&&gh_user)text_style(stats,tx,y+30,10,800,0,C(TH.ink_soft,a),AL_LEFT);
+    if(gh_meta&&gh_user)text_style(stats,tx,y+gh_header_h-19,10,800,0,C(TH.ink_soft,a),AL_LEFT);
     else if(gh_meta){const char *keys[]={"stargazers_count","forks_count","subscribers_count","open_issues_count"};const char *icons[]={"star","people","eye","warn"};float sx=tx,sy=y+gh_header_h-19;
         for(int k=0;k<4;k++){snprintf(stats,sizeof stats,"%lld",json_integer_value(json_object_get(gh_meta,keys[k])));draw_icon(icons[k],sx+4.5f,sy+7,9,C(TH.ink_soft,a));text_style(stats,sx+11,sy,10,800,0,C(TH.ink_soft,a),AL_LEFT);sx+=11+text_style_w(stats,10,800,0)+9;}
         if(*jstr(gh_meta,"language")){circle(sx+3,sy+7,3,C(FORGE,a));text_style(jstr(gh_meta,"language"),sx+8,sy,10,800,0,C(TH.ink_soft,a),AL_LEFT);}
@@ -1170,7 +1191,11 @@ static void github_top(float a) {
         if(n->kind==GH_RELEASE){json_t *rel=json_array_get(gh_releases,n->level);float x=21;text_style(n->text,x,by+1,10,900,0,C(TH.ink,a),AL_LEFT);x+=text_style_w(n->text,10,900,0)+5;bool pre=json_is_true(json_object_get(rel,"prerelease"));x+=chip(x,by,T(pre?"channel.experimental":"channel.stable"),NULL,C(pre?LAV:MINT,1),C(pre?LAV:MINT,.12f),a)+5;if(n->level==0)chip(x,by,T("detail.latest"),NULL,C(FORGE,1),C(FORGE,.12f),a);char date[48];fmt_date(date,sizeof date,jstr(rel,"published_at"));text_style(date,379,by+2,9,800,0,C(TH.ink_faint,a),AL_RIGHT);}
         else if(n->kind==GH_ASSET){json_t *rel=json_array_get(gh_releases,gh_container[i]),*asset=json_array_get(json_object_get(rel,"assets"),n->level);char size[32];fmt_size(size,sizeof size,json_integer_value(json_object_get(asset,"size")));float x=gh_x[i];rrect(x,by,177.5f,20,6,C(TH.surface2,a));draw_icon(strstr(n->text,".cia")?"cia":"file",x+9.5f,by+10,9,C(TH.ink_soft,a));float sw=text_style_w(size,10,700,0);text_fit_style(n->text,x+17,by+4,9,800,150-sw-4,C(TH.ink,a));text_style(size,x+172.5f,by+3,10,700,0,C(TH.ink_faint,a),AL_RIGHT);}
         else if(n->kind==GH_RELEASE_END)continue;
-        else if(n->kind==GH_IMAGE){int iw=376,ih=90;remote_image_dimensions(n->url,&iw,&ih);float w=fminf(wide,h*iw/fmaxf(1,ih));remote_image_draw(n->url,gh_x[i],by,w,h,a);}
+        else if(n->kind==GH_IMAGE){
+            const char *label=gh_support_label(n);
+            if(label){float w=text_style_w(label,9,700,0)+20;rrect(gh_x[i],by,w,18,9,C(TH.surface2,a));text_style(label,gh_x[i]+10,by+3,9,700,0,C(TH.ink_soft,a),AL_LEFT);}
+            else {int iw=376,ih=90;remote_image_dimensions(n->url,&iw,&ih);float w=fminf(wide,h*iw/fmaxf(1,ih));remote_image_draw(n->url,gh_x[i],by,w,h,a);}
+        }
         else if(n->kind==GH_RULE)rect(12,by+3,376,1,C(TH.line,TH.line_a*a));
         else {
             float x=gh_x[i],w=left+wide-x,size=n->kind==GH_HEADING?(n->level<=2?14:12):n->kind==GH_CODE||n->kind==GH_TABLE?10:11;

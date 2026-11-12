@@ -343,6 +343,7 @@ bool catalog_load(void) {
                 a->needs_data = true;
         }
         json_t *bm = json_object_get(BANNERS, a->id);
+        a->banner_bytes=json_integer_value(json_object_get(bm,"_bytes"));
         layer_from(&a->mid, json_object_get(bm, "mid"));
         layer_from(&a->logo, json_object_get(bm, "logo"));
         json_t *sm = json_object_get(SHOTS, a->id);
@@ -389,21 +390,66 @@ bool catalog_load(void) {
     return true;
 }
 
-void app_request_banner(App *a) {
-    if (!a) return;
+// Retain the complete Forge working set, with room for neighboring curated apps.
+// Reservations include queued sheets, so a burst cannot overcommit GPU memory.
+#define BANNER_BUDGET (8u*1024u*1024u)
+static App *banner_current,*banner_previous,*banner_warm[16];
+static int banner_warm_count;
+static unsigned banner_clock;
+static bool banner_present(App *a){return a->bg.state!=SHEET_EMPTY||a->fg.state!=SHEET_EMPTY;}
+static size_t banner_cost(App *a){return a->banner_bytes?a->banner_bytes:768u*1024u;}
+static size_t banner_usage(void){size_t size=0;for(int i=0;i<NAPPS;i++)if(banner_present(&APPS[i]))size+=banner_cost(&APPS[i]);return size;}
+static void banner_drop(App *a){sheet_free(&a->bg);sheet_free(&a->fg);}
+static void banner_request(App *a,bool visible){
+    if(!a)return;
+    if(visible)a->banner_used=++banner_clock;
+    if(!banner_present(a)){
+        size_t usage=banner_usage(),cost=banner_cost(a);
+        while(usage+cost>BANNER_BUDGET){
+            if(!visible)return;
+            App *old=NULL;
+            for(int i=0;i<NAPPS;i++){
+                App *p=&APPS[i];
+                if(p==a||p==banner_current||p==banner_previous||!banner_present(p)||p->bg.discard||p->fg.discard)continue;
+                if(!old||p->banner_used<old->banner_used)old=p;
+            }
+            if(!old)break;
+            banner_drop(old);usage-=banner_cost(old);
+        }
+    }
     char path[96];
     snprintf(path,sizeof path,"romfs:/gfx/%s/%s%s.ftx",a->universal?"universal":"banner",a->id,a->universal?"":"-bg");
-    sheet_request(&a->bg,path);
-    if (a->mid.i>=0 || a->logo.i>=0) {
+    if(visible)sheet_request(&a->bg,path);else sheet_prefetch(&a->bg,path);
+    if(a->mid.i>=0||a->logo.i>=0){
         snprintf(path,sizeof path,"romfs:/gfx/banner/%s-fg.ftx",a->id);
-        sheet_request(&a->fg,path);
+        if(visible)sheet_request(&a->fg,path);else sheet_prefetch(&a->fg,path);
     }
 }
-void catalog_request_banners(void) { if(BUILTIN_APPS) app_request_banner(&APPS[0]); }
-void catalog_trim_banners(App *current,App *previous) {
-    for(int i=0;i<NAPPS;i++) if(&APPS[i]!=current && &APPS[i]!=previous) {
-        if(APPS[i].bg.state!=SHEET_EMPTY) sheet_free(&APPS[i].bg);
-        if(APPS[i].fg.state!=SHEET_EMPTY) sheet_free(&APPS[i].fg);
+void app_request_banner(App *a){banner_request(a,true);}
+void app_prefetch_banner(App *a){banner_request(a,false);}
+void catalog_request_banners(void){
+    banner_warm_count=catalog_filter("forge",banner_warm,16);
+    for(int i=0;i<banner_warm_count;i++)app_prefetch_banner(banner_warm[i]);
+}
+bool catalog_banners_ready(void){
+    for(int i=0;i<banner_warm_count;i++){
+        App *a=banner_warm[i];
+        if(a->bg.state==SHEET_QUEUED||a->bg.state==SHEET_DECODED||
+           a->fg.state==SHEET_QUEUED||a->fg.state==SHEET_DECODED)return false;
+    }
+    return true;
+}
+void catalog_trim_banners(App *current,App *previous){
+    banner_current=current;banner_previous=previous;
+    // Under memory pressure, shed cold READY entries before other scenes allocate.
+    while(linearSpaceFree()<4u*1024u*1024u){
+        App *old=NULL;
+        for(int i=0;i<NAPPS;i++){
+            App *a=&APPS[i];if(a==current||a==previous||(!sheet_ok(&a->bg)&&!sheet_ok(&a->fg)))continue;
+            if(!old||a->banner_used<old->banner_used)old=a;
+        }
+        if(!old)break;
+        banner_drop(old);
     }
 }
 

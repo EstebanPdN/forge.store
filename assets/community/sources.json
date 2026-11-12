@@ -689,5 +689,197 @@
       128
     ],
     "output": "assets/community/fourthtube/logo.webp"
+  },
+  {
+    "app": "starhaven",
+    "kind": "banner",
+    "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/cia/banner.png",
+    "sha256": "aab9e5e0f43cf55f9514d5be8776e4f47b128e49d3defbe19702ea9328e5b2bd",
+    "size": [
+      256,
+      128
+    ],
+    "output": "assets/community/starhaven/hero.webp",
+    "note": "Official CIA banner: star and wordmark crops, static at native size."
+  },
+  {
+    "app": "xash3ds",
+    "kind": "background",
+    "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/70/0000002354.1920x1080.jpg?t=1745368462",
+    "sha256": "cfb536527a43437c18e182f732eb3890567b9c48c1e139c59d797ca37560a86e",
+    "size": [
+      1024,
+      768
+    ],
+    "output": "assets/community/xash3ds/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "ctrquake",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/sezero/quakespasm/master/Misc/QuakeSpasm_512.png",
+    "sha256": "945b524f516f989901d11e631c4b4533af69c7794d02377bf5697f4b73276d06",
+    "size": [
+      512,
+      512
+    ],
+    "output": "assets/community/ctrquake/icon.webp",
+    "note": "Quake emblem from QuakeSpasm, same original game mark at 512 px."
+  },
+  {
+    "app": "ctrquake",
+    "kind": "background",
+    "url": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2310/ss_b7d9bbc1036fe011e076eb70d57cfc6251863a4c.1920x1080.jpg?t=1786035741",
+    "sha256": "298df9143f56ebfbec4417a32cd81239934e0375f736eeb8365f94dd44905f6a",
+    "size": [
+      1728,
+      1080
+    ],
+    "output": "assets/community/ctrquake/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "openlara",
+    "kind": "background",
+    "url": "https://xproger.info/projects/OpenLara/shots/waterfall.jpg",
+    "sha256": "5717460b057de8327c1c7b198d93b5bf338aa21ad608de80f1607d7f8d1ced1e",
+    "size": [
+      854,
+      480
+    ],
+    "output": "assets/community/openlara/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "daedalus",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/daedalusx64-3ds/super-mario-64.png",
+    "sha256": "57810f5e253d812e7caa995427ebbcafb83c5a511cbea7c49b74498bbbc5c040",
+    "size": [
+      400,
+      480
+    ],
+    "output": "assets/community/daedalus/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "mgba",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/mgba/scale-aspect-ratio.png",
+    "sha256": "3c3b9a638f0e542d2394775b3fe1fcd5674ffae3e6cdb72b71b0cc6194dd824b",
+    "size": [
+      400,
+      480
+    ],
+    "output": "assets/community/mgba/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "retroarch",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/libretro/RetroArch/master/docs/rgui-main-menu.jpg",
+    "sha256": "fd2f8cc0cb108f3d7665c5d64d539451025f4e9f304db73deb7b14a5d90312ec",
+    "size": [
+      713,
+      534
+    ],
+    "output": "assets/community/retroarch/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "checkpoint",
+    "kind": "background",
+    "url": "https://i.imgur.com/EaY1vRB.jpeg",
+    "sha256": "ac1094d81d11f8b8d3d2208b1a6cfd4d5d890d805de04a518dbedf603e22f4cb",
+    "size": [
+      1280,
+      720
+    ],
+    "output": "assets/community/checkpoint/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "nimbus",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/nimbus/pretendo.png",
+    "sha256": "272561b599750eb2e8715d8de2bcaafb5e60dd5593c4167f1063c697addb36ca",
+    "size": [
+      400,
+      480
+    ],
+    "output": "assets/community/nimbus/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "3dsdl",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/downloading-top.webp",
+    "sha256": "a8db88393c379e675d993e57ca5096cb22007663f916a6c4937e25801688c783",
+    "size": [
+      400,
+      240
+    ],
+    "output": "assets/community/3dsdl/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "universal",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/universal-updater/entry-info.png",
+    "sha256": "3ba3d54e97dc80219f67940ffe125356e6b6e7ae099cb6288e643161817618ae",
+    "size": [
+      400,
+      480
+    ],
+    "output": "assets/community/universal/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "fourthtube",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/windows-server-2003/ThirdTube/main/images/0.jpg",
+    "sha256": "9fd4c4bc57925d7bc23a6f6428b3d041c5d1510f9d23310963b768b7b187a539",
+    "size": [
+      800,
+      960
+    ],
+    "output": "assets/community/fourthtube/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "anemone",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/anemone3ds/theme-list.png",
+    "sha256": "6b4184aa74d2d48052db161de014cfb050464ecacfc58175655ec7983e822dc4",
+    "size": [
+      400,
+      480
+    ],
+    "output": "assets/community/anemone/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "fbi",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/fbi/main-menu.png",
+    "sha256": "964e36f55b5be0e0b5985c3ea7baeba0e63c4a8796e4a26e084407764b7ddb4e",
+    "size": [
+      400,
+      480
+    ],
+    "output": "assets/community/fbi/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
+  },
+  {
+    "app": "ftpd",
+    "kind": "background",
+    "url": "https://raw.githubusercontent.com/Universal-Team/db/master/docs/assets/images/screenshots/ftpd/hosting.png",
+    "sha256": "3b68a50d26da300da57a28594b4d280bc134759a35b5d77ec135e4326c7f43b2",
+    "size": [
+      400,
+      480
+    ],
+    "output": "assets/community/ftpd/background.webp",
+    "note": "Gameplay or application screenshot, cropped for the store banner; representative upstream capture."
   }
 ]

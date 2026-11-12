@@ -1,7 +1,7 @@
 // Read-only client for GitHub's public REST API, used by the built-in GitHub viewer.
 // Rendered HTML (README, release notes) comes straight from GitHub; responses are
-// cached for an hour in localStorage because unauthenticated calls are limited to
-// 60 per hour. On 3DS: libcurl + mbedTLS, and the cache lives on the SD card.
+// served from the reviewed bundle or localStorage immediately; stale data refreshes
+// in the background. On 3DS: libcurl + mbedTLS and the persistent SD cache.
 
 // Through the local server's caching proxy when there is one (tools/serve.py).
 export const API = ['localhost', '127.0.0.1'].includes(location.hostname) ? '/gh-api' : 'https://api.github.com';
@@ -15,26 +15,40 @@ export class RateLimitError extends Error {
   }
 }
 
+// Ship a reviewed local baseline. Revalidation never delays opening a page.
+const bundled = fetch('assets/reader-data/pages.json').then((r) => r.ok ? r.json() : null).catch(() => null);
+let bundledImages = {};
+const imageMapReady = fetch('assets/reader-art/urls.json').then((r) => r.json()).then((v) => { bundledImages = v; }).catch(() => {});
+export const githubImage = (url) => bundledImages[url] || bundledImages[url.replace(/&s=\d+$/, '')] || url;
+const refreshing = new Map();
+async function refresh(path, accept, key) {
+  if (refreshing.has(key)) return refreshing.get(key);
+  const request = (async () => {
+    const res = await fetch(API + path, { headers: { Accept: accept }, signal:AbortSignal.timeout(6000) });
+    if (res.status === 403 || res.status === 429) throw new RateLimitError(Number(res.headers.get('x-ratelimit-reset')) * 1000 || Date.now()+HOUR);
+    if (res.status === 404) return null;
+    if (!res.ok) throw new Error(`${res.status} ${path}`);
+    const data = accept.includes('html') && !accept.includes('json') ? await res.text() : await res.json();
+    try { localStorage.setItem(key,JSON.stringify({at:Date.now(),data})); } catch {}
+    return data;
+  })();
+  refreshing.set(key,request);
+  try { return await request; } finally { refreshing.delete(key); }
+}
 async function get(path, accept = 'application/vnd.github+json') {
+  await imageMapReady;
   const key = CACHE + accept.split('.').pop() + path;
-  try {
-    const hit = JSON.parse(localStorage.getItem(key));
-    if (hit && Date.now() - hit.at < HOUR) return hit.data;
-  } catch {}
-  const res = await fetch(API + path, { headers: { Accept: accept } });
-  if (res.status === 403 || res.status === 429) {
-    throw new RateLimitError(Number(res.headers.get('x-ratelimit-reset')) * 1000 || Date.now() + HOUR);
+  const ttl = path.endsWith('/readme') ? 7*24*HOUR : 6*HOUR;
+  let hit;
+  try { hit=JSON.parse(localStorage.getItem(key)); } catch {}
+  if (hit) { if(Date.now()-hit.at>=ttl)refresh(path,accept,key).catch(()=>{}); return hit.data; }
+  const [local] = await Promise.all([bundled,imageMapReady]);
+  const id = (accept.includes('html')&&!accept.includes('json')?'html:':'json:')+path;
+  if (local && Object.hasOwn(local.pages,id)) {
+    if (Date.now()-Date.parse(local.captured_at)>=ttl)refresh(path,accept,key).catch(()=>{});
+    return local.pages[id];
   }
-  if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`${res.status} ${path}`);
-  const data = accept.includes('html') && !accept.includes('json') ? await res.text() : await res.json();
-  try {
-    localStorage.setItem(key, JSON.stringify({ at: Date.now(), data }));
-  } catch {
-    // Storage full: drop old GitHub entries and carry on without caching.
-    Object.keys(localStorage).filter((k) => k.startsWith(CACHE)).forEach((k) => localStorage.removeItem(k));
-  }
-  return data;
+  return refresh(path,accept,key);
 }
 
 export const github = {
@@ -64,6 +78,7 @@ export function cleanHTML(html, repo, branch = 'HEAD') {
     }
   }
   const raw = (src) => {
+    if(src.startsWith("http://"))src="https://"+src.slice(7);
     const blob = src.match(/^https:\/\/github\.com\/([^/]+\/[^/]+)\/blob\/(.+)$/);
     if (blob) return `https://raw.githubusercontent.com/${blob[1]}/${blob[2]}`;
     return /^(https?:|data:)/.test(src) ? src : `https://raw.githubusercontent.com/${repo}/${branch}/${src.replace(/^\.?\//, '')}`;
@@ -98,6 +113,23 @@ export function cleanHTML(html, repo, branch = 'HEAD') {
     a.setAttribute('target', '_blank');
     a.setAttribute('rel', 'noopener');
   }
+  // Use native-size text instead of shrinking large external support SVGs.
+  for (const a of root.querySelectorAll('a')) {
+    const img = a.querySelector('img');
+    if (!img) continue;
+    const src = img.getAttribute('src') || '';
+    const label = /website/i.test(src) ? 'Website' : /discord/i.test(src) ? 'Discord' : /patreon/i.test(src) ? 'Patreon' : null;
+    if (!label) continue;
+    a.replaceChildren(doc.createTextNode(label));
+    a.classList.add('gh-support-link');
+  }
+  for (const block of root.querySelectorAll('p, div')) {
+    const children = [...block.children].filter((el) => el.tagName !== 'BR');
+    if (children.length && children.every((el) => el.classList.contains('gh-support-link'))) {
+      block.classList.add('gh-support-row');
+      block.querySelectorAll('br').forEach((el) => el.remove());
+    }
+  }
   // Rows made only of linked images (website / Discord / Patreon buttons, badges)
   // become one compact line instead of full-size buttons.
   for (const block of root.querySelectorAll('p, div')) {
@@ -111,5 +143,6 @@ export function cleanHTML(html, repo, branch = 'HEAD') {
       block.querySelectorAll('br').forEach((br) => br.remove());
     }
   }
+  for (const img of root.querySelectorAll('img[src]')) img.src=githubImage(img.getAttribute('src'));
   return root;
 }

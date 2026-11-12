@@ -113,6 +113,8 @@ def render_icon(app, glyphs):
     else:
         art = Image.open(io.BytesIO(base64.b64decode(glyphs[app['id']]))).convert('RGBA')
         require(art.size == (n, n), f'Unexpected SVG size for {app["id"]}')
+    if app.get("iconBackground"):
+        tile=Image.new("RGBA",art.size,app["iconBackground"]);tile.alpha_composite(art);art=tile
     px = np.asarray(art).astype(np.float64) / 255
     rgb = px[:, :, :3]
     if app.get('status') == 'development':

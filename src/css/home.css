@@ -587,3 +587,6 @@
     transform: scale(0);
   }
 }
+
+/* Dim the wordmark side of real gameplay backgrounds. */
+.bn-bg.gameplay::before { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, #0005, transparent 70%); }

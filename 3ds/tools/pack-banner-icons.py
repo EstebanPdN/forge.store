@@ -7,7 +7,7 @@ Only generated backgrounds are rebuilt; authored game scenery is preserved.
 from pathlib import Path
 import importlib.util,json,math
 import numpy as np
-from PIL import Image,ImageDraw,ImageChops,ImageFilter
+from PIL import Image,ImageDraw,ImageChops,ImageFilter,ImageOps
 ROOT=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('forge_pack',ROOT/'3ds/tools/pack.py')
 pack=importlib.util.module_from_spec(spec);spec.loader.exec_module(pack)
@@ -19,18 +19,25 @@ def rgb(value):
 
 def background(app):
     """The CSS linear/radial gradients, fading dot grid and lower tint."""
-    w,h=432,272
+    w,h=432,254
     y,x=np.mgrid[0:h,0:w].astype(float);x+=.5;y+=.5
-    c1,c2,c3=map(rgb,app['banner']['gradient'])
-    sx,sy=math.sin(math.radians(160)),-math.cos(math.radians(160))
-    t=np.clip(((x-w/2)*sx+(y-h/2)*sy)/(w*sx+h*sy)+.5,0,1)[...,None]
-    pixels=c2*(1-t)+c1*t
-    radius=np.sqrt(((x-.75*w)/(1.2*w))**2+((y-.15*h)/(.9*h))**2)
-    a=(.4*np.clip(1-radius/.6,0,1))[...,None]
-    pixels=pixels*(1-a)+c3*a
-    distance=np.sqrt(((x%8)-4)**2+((y%8)-4)**2)
-    a=(.16*np.clip((1.1-distance)/.3,0,1)*np.clip(1-y/(.85*h),0,1))[...,None]
-    pixels=pixels*(1-a)+255*a
+    if app['banner'].get('bg'):
+        im=Image.open(ROOT/app['banner']['bg']).convert('RGB')
+        pixels=np.asarray(ImageOps.fit(im,(w,h),Image.Resampling.LANCZOS),dtype=float)
+        # Keep the wordmark readable over busy gameplay, without hiding the art.
+        shade=(.30*np.clip(1-x/(w*.7),0,1))[...,None]
+        pixels=pixels*(1-shade)
+    else:
+        c1,c2,c3=map(rgb,app['banner']['gradient'])
+        sx,sy=math.sin(math.radians(160)),-math.cos(math.radians(160))
+        t=np.clip(((x-w/2)*sx+(y-h/2)*sy)/(w*sx+h*sy)+.5,0,1)[...,None]
+        pixels=c2*(1-t)+c1*t
+        radius=np.sqrt(((x-.75*w)/(1.2*w))**2+((y-.15*h)/(.9*h))**2)
+        a=(.4*np.clip(1-radius/.6,0,1))[...,None]
+        pixels=pixels*(1-a)+c3*a
+        distance=np.sqrt(((x%8)-4)**2+((y%8)-4)**2)
+        a=(.16*np.clip((1.1-distance)/.3,0,1)*np.clip(1-y/(.85*h),0,1))[...,None]
+        pixels=pixels*(1-a)+255*a
     top=(.22*.88*np.clip(1-y/(.22*h),0,1))[...,None]
     bottom=(.88*np.clip((y/h-.45)/.55,0,1))[...,None]
     pixels=pixels*(1-top)
@@ -39,15 +46,15 @@ def background(app):
 
 for app in catalog['apps']:
     banner=app.get('banner',{})
-    if not banner.get('bg') and banner.get('gradient'):
+    if banner.get('cardIcon') or (not banner.get('bg') and banner.get('gradient')) or app['id']=='minish':
         pack.write_sheet(ROOT/f'3ds/romfs/gfx/banner/{app["id"]}-bg.ftx',[background(app)],pack.RGB565)
-    if banner.get('bg') or banner.get('mid') or not isinstance(app.get('icon'),str):continue
+    if (banner.get('bg') and not banner.get('cardIcon')) or banner.get('mid') or not isinstance(app.get('icon'),str):continue
     # Existing authored logos continue to own their entire composition.
     if banner.get('logo') and not banner['logo'].startswith('assets/community/'):continue
-    source=Image.open(ROOT/app['icon']).convert('RGBA')
+    source=Image.open(ROOT/banner.get('heroIcon',app['icon'])).convert('RGBA')
     sampling=Image.Resampling.NEAREST if app.get('pixelIcon') else Image.Resampling.LANCZOS
     image=source.resize((456,456),sampling)
-    tint=tuple(np.uint8(rgb(app.get('color','#333333'))*.32+rgb('#172334')*.68))+(255,)
+    tint=tuple(np.uint8(rgb(app['iconBackground']) if app.get('iconBackground') else rgb(app.get('color','#333333'))*.32+rgb('#172334')*.68))+(255,)
     backing=Image.new('RGBA',image.size,tint);backing.alpha_composite(image);image=backing
     mask=Image.new('L',image.size);ImageDraw.Draw(mask).rounded_rectangle((0,0,455,455),radius=96,fill=255)
     image.putalpha(ImageChops.multiply(image.getchannel('A'),mask))

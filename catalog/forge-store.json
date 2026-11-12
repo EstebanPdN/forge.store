@@ -567,8 +567,8 @@
       "stars": 813,
       "icon": "assets/ports/minish/icon.webp",
       "banner": {
-        "bg": "assets/ports/minish/art.webp",
-        "bgPos": "50% 65%",
+        "bg": "assets/ports/minish/art-home.webp",
+        "bgPos": "50% 50%",
         "logo": "assets/ports/minish/logo.webp",
         "fx": "leaves"
       },
@@ -2427,267 +2427,6 @@
       "install": null
     },
     {
-      "id": "gdiffuser",
-      "title": "G-Diffuser 3DS",
-      "fullTitle": "G-Diffuser 3DS · F-Zero X",
-      "category": "community",
-      "author": "cruxxxxxx",
-      "credits": "G-Diffuser y la decompilación de F-Zero X",
-      "origin": {
-        "platform": "N64",
-        "year": 1998
-      },
-      "color": "#ff6a00",
-      "status": "released",
-      "repo": "cruxxxxxx/gdx-3ds",
-      "stars": 56,
-      "icon": {
-        "glyph": "chevron",
-        "bg": [
-          "#13306b",
-          "#0a1736"
-        ],
-        "fg": "#ff8a1f"
-      },
-      "banner": {
-        "fx": "speed",
-        "gradient": [
-          "#06102a",
-          "#13306b",
-          "#ff6a00"
-        ]
-      },
-      "shots": [],
-      "tagline": {
-        "es": "F-Zero X no oficial para 3DS, con versiones para Old y New 3DS.",
-        "en": "Unofficial F-Zero X for 3DS, with Old and New 3DS builds."
-      },
-      "description": {
-        "es": "Port no oficial de F-Zero X basado en G-Diffuser y la decompilación del juego. Hay compilaciones distintas para Old y New 3DS, con y sin Expansion Kit; la tienda elige la de tu consola. Los datos se extraen de tu ROM con gdx-extract en el PC.",
-        "en": "An unofficial F-Zero X port based on G-Diffuser and the game's decompilation. There are separate Old and New 3DS builds, with and without the Expansion Kit; the store picks the one for your console. Data is extracted from your ROM with gdx-extract on a PC."
-      },
-      "features": {
-        "es": [
-          "Compilaciones para Old y New 3DS",
-          "Variantes con Expansion Kit",
-          "Extractores para Windows, macOS y Linux"
-        ],
-        "en": [
-          "Old and New 3DS builds",
-          "Expansion Kit variants",
-          "Extractors for Windows, macOS and Linux"
-        ]
-      },
-      "compat": {
-        "o3ds": true,
-        "n3ds": true,
-        "stereo": false
-      },
-      "folder": "/3ds/",
-      "releases": {
-        "stable": {
-          "tag": "v1.2.0",
-          "date": "2026-11-04",
-          "assets": {
-            "3dsx": {
-              "name": "G-Diffuser-3DS-N3DS.3dsx",
-              "size": 4764916,
-              "o3ds": {
-                "name": "G-Diffuser-3DS-O3DS.3dsx",
-                "size": 4765140
-              }
-            },
-            "cia": {
-              "name": "G-Diffuser-3DS-N3DS.cia",
-              "size": 2925504,
-              "o3ds": {
-                "name": "G-Diffuser-3DS-O3DS.cia",
-                "size": 2925504
-              }
-            },
-            "sums": {
-              "name": "SHA256SUMS",
-              "size": 1496
-            }
-          },
-          "notes": {
-            "es": [
-              "Compilaciones para Old y New 3DS, con y sin Expansion Kit.",
-              "Extractores gdx-extract para Windows, macOS y Linux."
-            ],
-            "en": [
-              "Old and New 3DS builds, with and without the Expansion Kit.",
-              "gdx-extract extractors for Windows, macOS and Linux."
-            ]
-          }
-        }
-      },
-      "requires": [
-        {
-          "id": "data",
-          "label": {
-            "es": "Datos de F-Zero X extraídos con gdx-extract",
-            "en": "F-Zero X data extracted with gdx-extract"
-          },
-          "path": null,
-          "help": {
-            "es": "Sigue el README del repositorio para colocar los datos.",
-            "en": "Follow the repository README to place the data."
-          },
-          "tool": {
-            "label": {
-              "es": "gdx-extract (PC)",
-              "en": "gdx-extract (PC)"
-            },
-            "url": "https://github.com/cruxxxxxx/gdx-3ds/releases/tag/v1.2.0"
-          }
-        }
-      ],
-      "install": {
-        "3dsx": [
-          {
-            "type": "downloadRelease",
-            "asset": "3dsx",
-            "output": "%3DSX%/G-Diffuser-3DS.3dsx"
-          },
-          {
-            "type": "verifySha256",
-            "file": "%3DSX%/G-Diffuser-3DS.3dsx",
-            "sums": "sums"
-          },
-          {
-            "type": "requireFile",
-            "ref": "data"
-          }
-        ],
-        "cia": [
-          {
-            "type": "downloadRelease",
-            "asset": "cia",
-            "output": "%TMP%/G-Diffuser-3DS.cia"
-          },
-          {
-            "type": "verifySha256",
-            "file": "%TMP%/G-Diffuser-3DS.cia",
-            "sums": "sums"
-          },
-          {
-            "type": "installCia",
-            "file": "%TMP%/G-Diffuser-3DS.cia"
-          },
-          {
-            "type": "deleteFile",
-            "file": "%TMP%/G-Diffuser-3DS.cia"
-          },
-          {
-            "type": "requireFile",
-            "ref": "data"
-          }
-        ]
-      }
-    },
-    {
-      "id": "lynx3ds",
-      "title": "lynx3ds",
-      "category": "tools",
-      "author": "PeterWarrington",
-      "credits": "Basado en el navegador Lynx",
-      "color": "#20b26b",
-      "status": "released",
-      "repo": "PeterWarrington/lynx3ds",
-      "stars": 3,
-      "license": "MIT",
-      "icon": "assets/community/lynx3ds/icon.webp",
-      "banner": {
-        "fx": "pixels",
-        "gradient": [
-          "#06261a",
-          "#0d5a35",
-          "#5fe0a0"
-        ]
-      },
-      "shots": [],
-      "tagline": {
-        "es": "Un navegador web de texto, bonito y rápido.",
-        "en": "A beautiful, fast text-mode web browser."
-      },
-      "description": {
-        "es": "Navegador web en modo texto para 3DS, portado desde Lynx. Ideal para leer README y notas de versión directamente en la consola.",
-        "en": "A text-mode web browser for 3DS, ported from Lynx. Handy for reading READMEs and release notes right on the console."
-      },
-      "features": {
-        "es": [
-          "Navegación en modo texto",
-          "Rápido y ligero",
-          "Versiones 3DSX y CIA"
-        ],
-        "en": [
-          "Text-mode browsing",
-          "Fast and light",
-          "3DSX and CIA builds"
-        ]
-      },
-      "compat": {
-        "o3ds": true,
-        "n3ds": true,
-        "stereo": false
-      },
-      "folder": "/3ds/",
-      "releases": {
-        "stable": {
-          "tag": "2.0.1",
-          "date": "2026-08-06",
-          "assets": {
-            "3dsx": {
-              "name": "lynx3ds.3dsx",
-              "size": 2869320
-            },
-            "cia": {
-              "name": "lynx3ds.cia",
-              "size": 2397120
-            }
-          },
-          "notes": {
-            "es": [
-              "Versión estable más reciente."
-            ],
-            "en": [
-              "Latest stable release."
-            ]
-          }
-        }
-      },
-      "requires": [],
-      "install": {
-        "3dsx": [
-          {
-            "type": "downloadRelease",
-            "asset": "3dsx",
-            "output": "%3DSX%/lynx3ds.3dsx"
-          }
-        ],
-        "cia": [
-          {
-            "type": "downloadRelease",
-            "asset": "cia",
-            "output": "%TMP%/lynx3ds.cia"
-          },
-          {
-            "type": "installCia",
-            "file": "%TMP%/lynx3ds.cia"
-          },
-          {
-            "type": "deleteFile",
-            "file": "%TMP%/lynx3ds.cia"
-          }
-        ]
-      },
-      "origin": {
-        "platform": "PC"
-      },
-      "pixelIcon": false
-    },
-    {
       "id": "starhaven",
       "title": "Star Haven",
       "fullTitle": "Star Haven",
@@ -2709,7 +2448,11 @@
           "#181733",
           "#34336c",
           "#e7b546"
-        ]
+        ],
+        "heroIcon": "assets/community/starhaven/hero.webp",
+        "cardIcon": true,
+        "bg": "assets/community/starhaven/shot-1-top.webp",
+        "bgPos": "50% 50%"
       },
       "shots": [
         {
@@ -2891,7 +2634,8 @@
           "#f5b927"
         ],
         "fx": "leaves",
-        "logo": "assets/community/dk64/logo.webp"
+        "logo": "assets/community/dk64/logo.webp",
+        "cardIcon": true
       },
       "sourceUrl": "https://github.com/oneup03/Donkey-Kong-64-3D",
       "verifiedAt": "2026-11-12",
@@ -3023,7 +2767,8 @@
           "#f0c45a"
         ],
         "fx": "leaves",
-        "logo": "assets/community/banjo/logo.webp"
+        "logo": "assets/community/banjo/logo.webp",
+        "cardIcon": true
       },
       "sourceUrl": "https://github.com/oneup03/BanjoRecomp3D",
       "verifiedAt": "2026-11-12",
@@ -3154,7 +2899,8 @@
           "#354b89",
           "#da6778"
         ],
-        "fx": "sparkles"
+        "fx": "sparkles",
+        "cardIcon": true
       },
       "sourceUrl": "https://github.com/oneup03/Goemon64Recomp3D",
       "verifiedAt": "2026-11-12",
@@ -3272,7 +3018,8 @@
           "#de5657"
         ],
         "fx": "speed",
-        "logo": "assets/community/mkwii/logo.webp"
+        "logo": "assets/community/mkwii/logo.webp",
+        "cardIcon": true
       },
       "sourceUrl": "https://github.com/Epic0522/MarioKartWii-3DS-Redux",
       "verifiedAt": "2026-11-12",
@@ -3341,7 +3088,10 @@
           "#0f7189",
           "#ffe947"
         ],
-        "fx": "pixels"
+        "fx": "pixels",
+        "cardIcon": true,
+        "bg": "assets/community/gd3ds/shot-1-top.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/AleFunky/gd3ds",
       "verifiedAt": "2026-11-12",
@@ -3448,7 +3198,10 @@
           "#5b3218",
           "#e99023"
         ],
-        "fx": "embers"
+        "fx": "embers",
+        "cardIcon": true,
+        "bg": "assets/community/xash3ds/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/masterfeizz/Xash3DS",
       "verifiedAt": "2026-11-12",
@@ -3559,7 +3312,10 @@
           "#1e1713",
           "#4b3123",
           "#ad6840"
-        ]
+        ],
+        "cardIcon": true,
+        "bg": "assets/community/ctrquake/background.webp",
+        "bgPos": "50% 50%"
       },
       "shots": [],
       "tagline": {
@@ -3647,7 +3403,8 @@
         ]
       },
       "sourceUrl": "https://github.com/masterfeizz/ctrQuake",
-      "verifiedAt": "2026-11-12"
+      "verifiedAt": "2026-11-12",
+      "iconBackground": "#d5b88c"
     },
     {
       "id": "openlara",
@@ -3670,7 +3427,10 @@
           "#141e29",
           "#304555",
           "#96b9b1"
-        ]
+        ],
+        "cardIcon": true,
+        "bg": "assets/community/openlara/background.webp",
+        "bgPos": "50% 50%"
       },
       "shots": [],
       "tagline": {
@@ -3824,7 +3584,10 @@
           "#b5a7ed"
         ],
         "fx": "pixels",
-        "logo": "assets/community/snes9x/logo.webp"
+        "logo": "assets/community/snes9x/logo.webp",
+        "cardIcon": true,
+        "bg": "assets/community/snes9x/shot-3-top.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/matbo87/snes9x_3ds",
       "verifiedAt": "2026-11-12",
@@ -3918,7 +3681,10 @@
           "#76c666"
         ],
         "fx": "stars",
-        "logo": "assets/community/daedalus/logo.webp"
+        "logo": "assets/community/daedalus/logo.webp",
+        "cardIcon": true,
+        "bg": "assets/community/daedalus/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/masterfeizz/DaedalusX64-3DS",
       "verifiedAt": "2026-11-12",
@@ -4039,7 +3805,10 @@
           "#1c183e",
           "#453375",
           "#b485e4"
-        ]
+        ],
+        "cardIcon": true,
+        "bg": "assets/community/mgba/background.webp",
+        "bgPos": "50% 50%"
       },
       "shots": [],
       "tagline": {
@@ -4209,7 +3978,10 @@
           "#652b6d",
           "#ec9297"
         ],
-        "fx": "sparkles"
+        "fx": "sparkles",
+        "cardIcon": true,
+        "bg": "assets/community/psx3d/shot-3-top.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/BreadChaser/PSX3D",
       "verifiedAt": "2026-11-12",
@@ -4302,7 +4074,8 @@
           "#163a80",
           "#3787de"
         ],
-        "fx": "speed"
+        "fx": "speed",
+        "cardIcon": true
       },
       "sourceUrl": "https://github.com/bubble2k16/picodrive_3ds",
       "verifiedAt": "2026-11-12",
@@ -4434,7 +4207,10 @@
           "#343c55",
           "#83a0c8"
         ],
-        "fx": "pixels"
+        "fx": "pixels",
+        "cardIcon": true,
+        "bg": "assets/community/retroarch/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/libretro/RetroArch",
       "verifiedAt": "2026-11-12",
@@ -4514,7 +4290,10 @@
           "#101e30",
           "#314d6a",
           "#8fd4ed"
-        ]
+        ],
+        "cardIcon": true,
+        "bg": "assets/community/checkpoint/background.webp",
+        "bgPos": "50% 50%"
       },
       "shots": [],
       "tagline": {
@@ -4634,7 +4413,10 @@
           "#4d3970",
           "#a689ed"
         ],
-        "fx": "petals"
+        "fx": "petals",
+        "cardIcon": true,
+        "bg": "assets/community/nimbus/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/PretendoNetwork/nimbus",
       "verifiedAt": "2026-11-12",
@@ -4786,7 +4568,10 @@
           "#eac251"
         ],
         "fx": "speed",
-        "logo": "assets/community/3dsdl/logo.webp"
+        "logo": "assets/community/3dsdl/logo.webp",
+        "cardIcon": true,
+        "bg": "assets/community/3dsdl/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/ankushKun/3dsDL",
       "verifiedAt": "2026-11-12",
@@ -4881,7 +4666,10 @@
           "#45beec"
         ],
         "fx": "stars",
-        "logo": "assets/community/universal/logo.webp"
+        "logo": "assets/community/universal/logo.webp",
+        "cardIcon": true,
+        "bg": "assets/community/universal/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/Universal-Team/Universal-Updater",
       "verifiedAt": "2026-11-12",
@@ -4975,7 +4763,10 @@
           "#76c68c"
         ],
         "fx": "speed",
-        "logo": "assets/community/fourthtube/logo.webp"
+        "logo": "assets/community/fourthtube/logo.webp",
+        "cardIcon": true,
+        "bg": "assets/community/fourthtube/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/erievs/FourthTube",
       "verifiedAt": "2026-11-12",
@@ -5056,7 +4847,10 @@
           "#2b5476",
           "#82c5f3"
         ],
-        "logo": "assets/community/anemone/logo.webp"
+        "logo": "assets/community/anemone/logo.webp",
+        "cardIcon": true,
+        "bg": "assets/community/anemone/background.webp",
+        "bgPos": "50% 50%"
       },
       "shots": [],
       "tagline": {
@@ -5176,7 +4970,8 @@
           "#2b5b64",
           "#e4b44f"
         ],
-        "fx": "sparkles"
+        "fx": "sparkles",
+        "cardIcon": true
       },
       "sourceUrl": "https://github.com/hax0kartik/wumiibo",
       "verifiedAt": "2026-11-12",
@@ -5244,7 +5039,10 @@
           "#0a1a3a",
           "#163f8a",
           "#5aa2ff"
-        ]
+        ],
+        "cardIcon": true,
+        "bg": "assets/community/fbi/background.webp",
+        "bgPos": "50% 50%"
       },
       "shots": [],
       "tagline": {
@@ -5391,7 +5189,10 @@
           "#eb646c"
         ],
         "fx": "pixels",
-        "logo": "assets/community/recorder/logo.webp"
+        "logo": "assets/community/recorder/logo.webp",
+        "cardIcon": true,
+        "bg": "assets/community/recorder/shot-1-top.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/BolgarMaxym97/3ds-recorder",
       "verifiedAt": "2026-11-12",
@@ -5484,7 +5285,8 @@
           "#56634e",
           "#dccb79"
         ],
-        "fx": "petals"
+        "fx": "petals",
+        "cardIcon": true
       },
       "sourceUrl": "https://github.com/azahar-emu/ArticSetupTool",
       "verifiedAt": "2026-11-12",
@@ -5578,7 +5380,10 @@
           "#124b34",
           "#4dc88c"
         ],
-        "fx": "pixels"
+        "fx": "pixels",
+        "cardIcon": true,
+        "bg": "assets/community/ftpd/background.webp",
+        "bgPos": "50% 50%"
       },
       "sourceUrl": "https://github.com/mtheall/ftpd",
       "verifiedAt": "2026-11-12",
@@ -5738,7 +5543,8 @@
           "#b88b61"
         ],
         "fx": "embers",
-        "logo": "assets/community/butterscotch/logo.webp"
+        "logo": "assets/community/butterscotch/logo.webp",
+        "cardIcon": true
       },
       "verifiedAt": "2026-11-12",
       "stars": 75,

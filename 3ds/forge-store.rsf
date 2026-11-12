@@ -3,7 +3,7 @@ BasicInfo:
   ProductCode             : CTR-H-FRGS
   Logo                    : Homebrew
 RomFs:
-  RootPath                : "romfs"
+  RootPath                : "build/romfs"
 TitleInfo:
   Category                : Application
   UniqueId                : 0xF0F5E

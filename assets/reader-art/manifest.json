@@ -524,6 +524,168 @@
       "source_sha256": "be5688475039c5c810d18dca83b91c0bc209bac9762f1aae163532d42d460a3b"
     },
     {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/auto-update-settings.png",
+      "file": "3ds/romfs/reader-art/eaac81e33f20379209ab355e5d8ddba9ed135ea33307dc4603e2f4b73d534f4a.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 43948,
+      "sha256": "18a39820defa44ada45b115f948a89e996a33bcbe5f12f8b4d46bfd8d5eee007",
+      "source_sha256": "80052c48631f3f0befaf95f6b1bdbe4c96e9b48feb68c6658cf540a685ca9bcd"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/credits.png",
+      "file": "3ds/romfs/reader-art/293b7562b57194c23cb17538e45f8df9040fb95312453540c8c40c698260e7c5.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 44784,
+      "sha256": "d67e779f680b5f9ad4532880932e280ea05acdaf637c911676fcef99eeed15f6",
+      "source_sha256": "99d74c24a18280879d3d15a5e51692171a95e4c379c8745f912d6b1d0339bd26"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/directory-selection.png",
+      "file": "3ds/romfs/reader-art/f87f0af1fad4434019f7d3f1f75b6743f932b04630cbf5b4a06122fdf918baa2.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 9381,
+      "sha256": "a5cea85bfef81c53f08ab014bf8cac7d1d86953e9b85114d781947872fb5c51c",
+      "source_sha256": "8753ad174c3bc0526fdf0dc70a2c5c43dfe917bee0f30aa10b01cb8dd233f4f7"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/directory-settings.png",
+      "file": "3ds/romfs/reader-art/836cdc9877fac2b378d3233ab7ec8ac0f2215bf999eb63f897f769fb4ea3a028.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 44121,
+      "sha256": "a80524f232c52279f35ee2f51c2c4602a3588b6ac205f266059b9d602354d7fe",
+      "source_sha256": "47e0a5ac7f88a41d2ba81db87cad5957943f6111259fbe936dd83cac0c1dd80c"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/download-list.png",
+      "file": "3ds/romfs/reader-art/045a1ff1c9e7592584deee10fc1fd3fc9854c6133c743009dc15b3ae705611f3.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 33292,
+      "sha256": "43f86d2adf3bf512479e55d320a9e23af630b9d729de7913fccb343dcdb5c41e",
+      "source_sha256": "9b94cb6edb5ee12cda555cca3e6255fe6cbf4db996ad3cb7b1b56d84824a6fed"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/entry-info.png",
+      "file": "3ds/romfs/reader-art/86ae3ea6976fb67cd54e6a7db16175d7d124b0946100f9c333b9db048c219a27.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 41343,
+      "sha256": "7362e2c0f8f0761292b4d794de753e2f81d606618b8332bb9db2faf391bfa496",
+      "source_sha256": "3ba3d54e97dc80219f67940ffe125356e6b6e7ae099cb6288e643161817618ae"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/gui-settings.png",
+      "file": "3ds/romfs/reader-art/c1966c76ff77877d4476ebe6a232e298c055f0fd923846f56b55d827bebf4557.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 45059,
+      "sha256": "a0268fc3972686898c065be3bbfef1ddcc9d41a242d644e92de9a4395cacdca3",
+      "source_sha256": "a4130a936ae80dea8e21909107821ee629b0256b179f37623d170b81ed0babb1"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/language-selection.png",
+      "file": "3ds/romfs/reader-art/c8e525957873648be5a45b8c7acc1c2c88207156bb99e0d15c4b62ec48ea4993.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 36280,
+      "sha256": "74bfff6d5fd52a6f51ab89f6adec09b5c640495ec842d05d71c3675c1513174e",
+      "source_sha256": "9ff27e831937176e198b22ed521bbb6660e72c968952b7a5e5ce70393dd9887c"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/list-style.png",
+      "file": "3ds/romfs/reader-art/f7b6f6379c838282c07dcbbcfd97ad50c8e8699a6478b55be2883c443a45f1a4.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 23659,
+      "sha256": "b1321cdfa19e81e85c76a0ec4df605418ff1f190ed467eadf63b6d71f4221398",
+      "source_sha256": "302dbcc219d89aec670240cc71b4827f6310674073c2ede8be07e37412c2b47a"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/mark-menu.png",
+      "file": "3ds/romfs/reader-art/6f75d57dc1cfb8b1f03f197b05dc74e942f83d7c850dbcaca9d7e918ba11f09a.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 37945,
+      "sha256": "2cffae859435cad7ac50d1c65adf7b3051f704fb716b483ed633a58e96e08e0b",
+      "source_sha256": "f010de10acfdfb666cfe4de928088edd067416c196e97df79ae568f53b09903a"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/queue-menu.png",
+      "file": "3ds/romfs/reader-art/7e810feaba5e62abcd919679e63f19bea984ba11abecfe1f791daee503680a71.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 39932,
+      "sha256": "bad07a4c44de06c0996d78c39bc561ad6657787a41b9a02a11df60f3b07d0760",
+      "source_sha256": "12153dfeab52bea6eecb7d9587af3d1dd58b224a45238d3ed53bb226dfa6c814"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/recommended-unistores.png",
+      "file": "3ds/romfs/reader-art/619a840b03e27534e5a11ecf93e07d5d0b232f71ed6ec4b82b8640aebccd0c91.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 20266,
+      "sha256": "ea5ffea73e9d0e657dc7f308d21774e3a72b7b69c5c3dad05b8e969006cda685",
+      "source_sha256": "d152a19fb07e7c074a5b7b86bfb0c9779bbc34158b1e21ffe6db77e68a63503a"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/release-notes.png",
+      "file": "3ds/romfs/reader-art/564e2b23a425d1f350c16ac55281f4b8b7bbac934f68add304af0653df1bedf3.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 23175,
+      "sha256": "807756683f8f82339cf0ea9028b3b546b0d8c51705e36300d5446338b0f84943",
+      "source_sha256": "7e7ceda124d4d87b6bfe4562c93775f314bb736737f224ef8da0de687ba0e6f8"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/screenshot.png",
+      "file": "3ds/romfs/reader-art/5c183b6edf04ad0196d75c06b1c5bbdda372a1f102a7533d1935d0b3a9449600.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 13578,
+      "sha256": "10b8f7ee906c8f1672e7d10ae396b54e2c89419f396516fdc91b500984d6d171",
+      "source_sha256": "b33f030dd37bff45b3256a6bacdfde194ca17046e3f1f0c4923a37641892b798"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/search-menu.png",
+      "file": "3ds/romfs/reader-art/250118046870dda0549715ceaecc9b327aec1f2777ee7681aa4a5baa4d6a2d0e.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 39632,
+      "sha256": "bdb4c825ec85fc16d8bae4f63962e7a0083ff604099fd7caad74ecb2394c8746",
+      "source_sha256": "9e2c38afee739bd7a3a799133ae5604eeb24ca56295428a89965a240bfe3e6f6"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/settings-menu.png",
+      "file": "3ds/romfs/reader-art/f8b8815dfdbb2e0053b8664b96f2af620e4d3cf779dc05010d3bb7d488d988fd.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 38081,
+      "sha256": "d688abdee7f3fce56bf13f615eaeb6d3729348e211d1906c84efe536d0e7aec8",
+      "source_sha256": "ce42ad8d98bd9275b2a156c3f03edf5ad9417be1efc3a5dc9286d52e134f0070"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/sort-menu.png",
+      "file": "3ds/romfs/reader-art/42bff2a03097f605ed553d4259e3f4edab70ae9ff420e2debd7ad44f6cda328b.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 37465,
+      "sha256": "7b1d815984b33904f4b745520e14df832cd236e8febfcd7c581d340c34847fe1",
+      "source_sha256": "9ec64b196a876d20c49977ba2e0a16199f2082246059d1dbd9c866e20bfb2b3a"
+    },
+    {
+      "url": "https://db.universal-team.net/assets/images/screenshots/universal-updater/store-selection.png",
+      "file": "3ds/romfs/reader-art/b03bbadf2f5e1fc09e89765820713e0d01dc320436579f03dc2e51db8a0216e5.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 17593,
+      "sha256": "e145c982b9347dfa222b859fbd6059933280a13724f020a4931677a0b8338696",
+      "source_sha256": "6563559013877edf01d858f87ca8ba7e00930db83abdbc0f96af0cc447af4aee"
+    },
+    {
       "url": "https://github.com/Universal-Team/Universal-Updater/raw/master/resources/2d-banner.png",
       "file": "3ds/romfs/reader-art/b9853e5854f28df9d4048ccd622a6541da787a838c3ee1baa2dfd950e7642e87.rimg",
       "width": 256,
@@ -560,33 +722,6 @@
       "source_sha256": "d301853d31191682c78440014c8cb98ed5f229564309e839a37d18731fb2f764"
     },
     {
-      "url": "https://github.com/user-attachments/assets/393dd4f2-9b91-4563-a09c-ed06b54df2f5",
-      "file": "3ds/romfs/reader-art/6d7a95376d423822d42f2f7453e4bb0ea4de57d911f4b3b2306084f2869d822b.rimg",
-      "width": 201,
-      "height": 240,
-      "bytes": 67279,
-      "sha256": "040837669ce20d99bf2292b3dff9cdbd85e3e56af085dcdcfd56ff9e37f0c3c3",
-      "source_sha256": "37f5747783d24c16ca96d07025a458ab03a280153f9de39871a000d57d812aee"
-    },
-    {
-      "url": "https://github.com/user-attachments/assets/4cf7097d-d768-4379-9afd-becfc9d313b7",
-      "file": "3ds/romfs/reader-art/ff7ac13ed6c09f9a6cb2c4e2773ac97dfb84bada05053247912c8f413f708ce4.rimg",
-      "width": 201,
-      "height": 240,
-      "bytes": 34063,
-      "sha256": "74eec68cec4cd9fad3696faae0fc13b064cb395942fe184d3b83df057b0f3066",
-      "source_sha256": "c02b3b9d2e4e5b722858bf93209fa0cca33debc371acdd6a3c95b849ccff4ca6"
-    },
-    {
-      "url": "https://github.com/user-attachments/assets/89310b45-7776-44df-94cd-24f4c9a2df0e",
-      "file": "3ds/romfs/reader-art/bb571f2a5657176b28eab2b43368b8e4e10f76a3d7e2e5e6e410fd196f3dd074.rimg",
-      "width": 164,
-      "height": 164,
-      "bytes": 969,
-      "sha256": "2259ae34ebd13881a9d15c482843b6a340fca37fc43cc1c17485976d7d3eff16",
-      "source_sha256": "60c4e617808e793162ed60741b7ae2d030731cdf2a04f501bc2ce662f5df22a6"
-    },
-    {
       "url": "https://github.com/user-attachments/assets/cec39d8a-0326-4924-a8f0-20c90dc403fa",
       "file": "3ds/romfs/reader-art/f2481f97c8f269864c2f501a5bfc28b31f669a51fb2553b0f080791831e5dd30.rimg",
       "width": 376,
@@ -614,22 +749,31 @@
       "source_sha256": "8e8713dbeca5f5b64dd7407ea92f8d174f573f745016f3e5d995c9462b802ab5"
     },
     {
-      "url": "https://github.com/user-attachments/assets/e406595b-9cc1-4951-bbb0-44e512894e58",
-      "file": "3ds/romfs/reader-art/2523fec72194edee60a15d1ed1ea5df10d745a0725ca57530397338c0531cbd0.rimg",
-      "width": 201,
-      "height": 240,
-      "bytes": 19466,
-      "sha256": "a0e1f0a8d7aeb72ecad2775443aea9e1c095415ae729f2b9483acf9ec900deb3",
-      "source_sha256": "18c568324ba7f28d56ed9dc3f364139346db24d228f245c37de05d2ab85c4306"
+      "url": "https://i.imgur.com/EaY1vRB.jpeg",
+      "file": "3ds/romfs/reader-art/84427ff78719cf60b3a269bc89901b7c598ca747c409fc499e4db894749c7f6c.rimg",
+      "width": 376,
+      "height": 212,
+      "bytes": 89740,
+      "sha256": "839269f6a37b8822f7afb65832e2a1b36b6475498ca15915d9d391474bb6dc92",
+      "source_sha256": "ac1094d81d11f8b8d3d2208b1a6cfd4d5d890d805de04a518dbedf603e22f4cb"
     },
     {
-      "url": "https://github.com/user-attachments/assets/eb4ac5c9-9bc0-4520-9677-d27851c25652",
-      "file": "3ds/romfs/reader-art/cb0181b7202a857fcc4aa0c8147728133d8f6cea8c2b9e91f8b9deb999d69226.rimg",
+      "url": "https://i.imgur.com/OrZ624x.jpeg",
+      "file": "3ds/romfs/reader-art/19a5d9cd1152943c3a2d9d5d4ac7e5467bc625907bd88626edcfd6d22198bc4b.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 60142,
+      "sha256": "064648481c214ad7bc0982e54c8f7598735fd08d273636e962c858a1d4ea8894",
+      "source_sha256": "fd02fa8416700f9a4d24872b563ad99ab0288451e094908ab2e076d2f0a214dc"
+    },
+    {
+      "url": "https://img.youtube.com/vi/P1md4pz01cY/maxresdefault.jpg",
+      "file": "3ds/romfs/reader-art/bd47a7844590efba7d1cbf529636fde9fd971975e80bf1cb1cca0c0a478fa6a0.rimg",
       "width": 376,
-      "height": 226,
-      "bytes": 33457,
-      "sha256": "74024dc659804af99111a9a15128e2820b0da83c1a325dea89d35f6c437ad36d",
-      "source_sha256": "87fe277164de79b87a4b059e85d0844c9cf6720ee85de9a37d694f9973998fbb"
+      "height": 212,
+      "bytes": 222726,
+      "sha256": "363e24687a356039df903c57dcccecc527b9b69d4dceed1af0763647f2e16fef",
+      "source_sha256": "c9e336cbc73cd06732875ea94313d4053bf2aa3961d85517be967cde5c4ba159"
     },
     {
       "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/en/download.png",
@@ -686,6 +830,15 @@
       "source_sha256": "cb5a9053ef21732c86b8377821489d41dd7295187da1caf9ef21bff6fd62cb93"
     },
     {
+      "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/uk/download.png",
+      "file": "3ds/romfs/reader-art/c21b1f393f3be364f4613819e6e6c22c21ccda806a651bb9cc1e89896198041a.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 21333,
+      "sha256": "ff13cfcefa6252a02dede4a93adfe6b88a825476c4fc37224e8d5f8414ba5c77",
+      "source_sha256": "22a8f71434fe66f3ca6a3876113de39fa60669030d4a662d7661ed19641f78ea"
+    },
+    {
       "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/uk/gallery.png",
       "file": "3ds/romfs/reader-art/ba35b606108225ddbe22b3eca51162cc1fefdf2c8a7834df5ef77ba2b528c419.rimg",
       "width": 200,
@@ -695,6 +848,15 @@
       "source_sha256": "002a09616720f187fc64d2da3359c05965b630e680d278a6106ee6ea531b694c"
     },
     {
+      "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/uk/help.png",
+      "file": "3ds/romfs/reader-art/278df95d326ffb154013dd7a16fc35cb1fc1ee9a55231af53508596a3b6ad130.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 21625,
+      "sha256": "f4f2a6753274f04682817ea1549b45e77fcb54d59317f4512473ea43f8b50c78",
+      "source_sha256": "3a0da29c17f722aaf47d1a4441ed16e4bd17771c84d2f946ad0eb61c2096edbc"
+    },
+    {
       "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/uk/panel.png",
       "file": "3ds/romfs/reader-art/40b7a178cbe8aa284005fadb996e6d0251f1770fcd50104d8e57f58b4a61a349.rimg",
       "width": 200,
@@ -702,6 +864,15 @@
       "bytes": 23751,
       "sha256": "8b667a51bd45f32bdc8d7e996cc836cf8cf2889d54ad9d11d21a505e9906cbea",
       "source_sha256": "4ba271dd564c24244c5c42fe502c2f1455e7517a1365f3a39ba9489dd08f4455"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/uk/settings.png",
+      "file": "3ds/romfs/reader-art/b4da38b9ee32b4fde1185ae1b7c7b4b1983cf571fda2936d6d4df7bf0d999b47.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 22606,
+      "sha256": "cd273492dae205b9a6398488783a0aba550eb308a05d62646e7b666854523428",
+      "source_sha256": "9623c0f6b3d42cd8cd82f7b7dec796c811d31029c53f66649da73e0f8fc87eb6"
     },
     {
       "url": "https://raw.githubusercontent.com/BreadChaser/PSX3D/main/docs/performance-dark.svg",
@@ -758,168 +929,6 @@
       "source_sha256": "1aad94d9e7c43b40b221038c402d4c24a30260e68626df2987519ca9782628ee"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/development-heading-dark.svg?v=no-indent-20261104",
-      "file": "3ds/romfs/reader-art/603791fbb3b82062bda8302342899f7cb49a39352cacde8890d244351dfd84de.rimg",
-      "width": 376,
-      "height": 16,
-      "bytes": 1305,
-      "sha256": "e2bf8f96853b6565bc41dadaa6e4bf59d36822e474ca24dffde8f997a74466aa",
-      "source_sha256": "44c67199f0183e0d9ec9192405a327188747d2ac05a2423a0542d87742e2ce78"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/development-heading-light.svg?v=no-indent-20261104",
-      "file": "3ds/romfs/reader-art/6f3cd4dbcd1ee26baf97e41ba86aa79fded269a6a8cb4789930cb6dfb6146040.rimg",
-      "width": 376,
-      "height": 16,
-      "bytes": 1288,
-      "sha256": "906ff557208734ed81f7293785a15c3f544e9425694c29a94c152ebd41f9a270",
-      "source_sha256": "5b33c04cb479c2d64202266fdb782f1341c0f43a91255a0a382740039ac0e126"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/development-paragraph-dark.svg",
-      "file": "3ds/romfs/reader-art/ab30ad7dfd052fa24a4f0df58c2c0ffe386a38d4044a3da161eb716524ab2d22.rimg",
-      "width": 376,
-      "height": 16,
-      "bytes": 2064,
-      "sha256": "05497d322c8f2996054497cfa6c2e44a18b509fb298382fc8a87f33efe17deea",
-      "source_sha256": "582c1783fb2715b698ebc310e3659de62ee5e473609f835b1d52dfd7e3b3577a"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/development-paragraph-light.svg",
-      "file": "3ds/romfs/reader-art/3e2deea67209ee758b6dfdb99037ce2c58583da4e0a7ecc5a5c46e43162d11ee.rimg",
-      "width": 376,
-      "height": 16,
-      "bytes": 2067,
-      "sha256": "a99a4569555e4789f881ff5b47935612b5f127eaf91a72cd4dd5915f11dfca5e",
-      "source_sha256": "e64b8e09203f505323d62cb98afbc22fcfeacb6a14ec1fcc4e2909412c02623e"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/development-process-dark.svg?v=no-indent-20261104",
-      "file": "3ds/romfs/reader-art/8d42fa4b444001abd429d2c6a9ad969e22d78a291a0390bebc02817feb10e316.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2508,
-      "sha256": "6144a5d6baaab06d64c4402eb083626084f51615d3beb2936ce72b9bf967ee60",
-      "source_sha256": "0591bbe9b51fa62eb45ae42790a83900923a5dbfd13bf86b03084a23b420580e"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/development-process-light.svg?v=no-indent-20261104",
-      "file": "3ds/romfs/reader-art/bb9ee34b3a968299f5f0c3fcd56b9b801322064088a1acd3301140c43aeda3c6.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2552,
-      "sha256": "dc1344aed23fbf7f0260c26b57161b2955fdd5ac60463f7f85446e302b04e6c3",
-      "source_sha256": "96e35133fec53286363e57650e44f4b2ce9a585a002f4ad2efbbd47f78a2978e"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/info-support-heading-dark.svg?v=no-indent-20261104",
-      "file": "3ds/romfs/reader-art/3ec225725b1737adbf6e9b67767a5d0af193df15436b934be290c018ceff1432.rimg",
-      "width": 376,
-      "height": 12,
-      "bytes": 1330,
-      "sha256": "50b3825ef558b19520816aaa6e528e32e1ad2204601364eebdbda2c03e17176c",
-      "source_sha256": "b8f98b422b605a374a1903a4ef983332e3c977ff75fcf95a43966c790763d747"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/info-support-heading-light.svg?v=no-indent-20261104",
-      "file": "3ds/romfs/reader-art/bbefe161c05c9044d9bb2ccc703d8a25603efa384e9962608b237d65149bc8a8.rimg",
-      "width": 376,
-      "height": 12,
-      "bytes": 1306,
-      "sha256": "ab7f1835df754d8951781827f1dd84eb73d4e5a43efe2961767f895db106611d",
-      "source_sha256": "6eb04cda06757f333c4717101ffb8a09f820210e0e758674995ad63a633319be"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/link-discord-dark.svg",
-      "file": "3ds/romfs/reader-art/b2ab3109a2e1b307af1e3f93e4ab9b55f80e42a5e0b0d762badcd1d65a9c9fd8.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2276,
-      "sha256": "c807b718d53e78230e117926e8ca5730208e068772cd208c6811883fcf08639e",
-      "source_sha256": "1329f745b8036e97bcca242f20184208b94ea5c38994da5967e07127de854f52"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/link-discord-light.svg",
-      "file": "3ds/romfs/reader-art/07340646d533e078ef818478066759ca65b88b9c8ad3015782142efcd1c070a8.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2329,
-      "sha256": "c5bf2c609baa4db1c7bb9935fb83827d5dccd78fe6a90311300e872b4a15db50",
-      "source_sha256": "d715740f440fe473f1f961682c9bcce7ea4c88c49c9385161c227bae15da308f"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/link-kofi-dark.svg",
-      "file": "3ds/romfs/reader-art/e373fca2da8b4bc535972a8f57a95d05637c91dd486b91b5f5e8d3e77a953a70.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2202,
-      "sha256": "de4025f30e1191a5fac54712bb7d346bf8b105ec88fe7544e4d77a93763d0931",
-      "source_sha256": "73bed031335e2024f178056dbc46cf64fb5165fd7f5400379e8fe7d987be71eb"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/link-kofi-light.svg",
-      "file": "3ds/romfs/reader-art/253f01e84002737ce2e3b210aec1f2e30b2d5620f6cb60f45c32e006fe66aca7.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2269,
-      "sha256": "1706b5815b02f0abd7c568455efa1b5d7f9480f3a06432f7780e7c848312cb3e",
-      "source_sha256": "024476b3f6fc27fdb8bc1aa79e9cbe583cf1955e60447fc1bb9e586731d51a06"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/link-patreon-dark.svg",
-      "file": "3ds/romfs/reader-art/9237e81e8ec6a4c44c2dfa013e1108755e5b606100539f7b99076e4e68f991f9.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2358,
-      "sha256": "82ece3c1a95738175e5d1f7430c9348c20fbe2ebe2dbf2263a90d6ef45a4460b",
-      "source_sha256": "13a068815021d50118c05e725257e176d873755f7be036a8b1f16c1a5c47b227"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/link-patreon-light.svg",
-      "file": "3ds/romfs/reader-art/1af8a496859ccbbdef90fcd56d5a08b4d89287acef085305100b389fd94e00eb.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2422,
-      "sha256": "d4a46e3e4cfe9fcd62a3b118a3f56613452c07de01784d673eb6cecf3865bce3",
-      "source_sha256": "a819c3c9829a22feca68eedab703e53db11d6c6a672fc38a8061758ecac791a6"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/link-website-dark.svg",
-      "file": "3ds/romfs/reader-art/6541dcdfb1cac4d72d07f6f3b036c13a236abeff1841829cafc5302fe8398c6c.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2230,
-      "sha256": "877757ded7593bd2403627b74e9540f348da699d2077133301b01add1038ac49",
-      "source_sha256": "414d1b1f29c57bed812a5e0a8afd0ec61b4ce8e60ac82dccaebb24997edee17f"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/link-website-light.svg",
-      "file": "3ds/romfs/reader-art/10d9585fd5202c914b838c5dd8fdfa45cc5d87d3087e3e923cca177d8e61fb80.rimg",
-      "width": 376,
-      "height": 9,
-      "bytes": 2268,
-      "sha256": "5c9a4c585d8089b2fc8fba8271e3bf47ba6b9501c099f40f723eb30122f8a3db",
-      "source_sha256": "98257db9c3295df9925593bde18c7cc8ee53b490cd34c6040ba9bd36ef994946"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/profile-card-dark.svg?v=stats-20261104-41972996640",
-      "file": "3ds/romfs/reader-art/cb1d4b10e609b89ee108e9e4045717f727bc1ebccdd5f0edb65126ca69131191.rimg",
-      "width": 376,
-      "height": 185,
-      "bytes": 36455,
-      "sha256": "e29d1cafef080fa0d014414327f943b52c85d0448f87b81ae20691664a908b08",
-      "source_sha256": "c3bc6112d5ee1c6ba3d1dd69ae114fe21fd1dbd73473a040000133a0bc06fe06"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/EstebanPdN/main/assets/profile-card-light.svg?v=stats-20261104-41972996640",
-      "file": "3ds/romfs/reader-art/50c307a79479e0f14eb6888233c649e5ebda186589b83d8c9c540f202388a9ad.rimg",
-      "width": 376,
-      "height": 185,
-      "bytes": 36420,
-      "sha256": "1e57219f7c365dc024eecafa2debbbd606508cc0624f7d00fe65be5ce0420ce9",
-      "source_sha256": "c268b406e620d2fade78e13a46405317b54bdacd3ff59c40fb19624398738813"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/dusklight-3ds/main/assets/images/logo.png",
       "file": "3ds/romfs/reader-art/742879f6c17848cde680449611e541a497c847fff0d0f32bfdb81fa78c6ee1ea.rimg",
       "width": 376,
@@ -965,15 +974,6 @@
       "source_sha256": "a88eda56178a646d5288994e4f101a3110d9eb07c82d8600b60ffa9ed8ef6c2d"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/dusklight-3ds/main/docs/images/discord-official.svg",
-      "file": "3ds/romfs/reader-art/9084cfe183b5f9ed8222b837430d5cd58af9258523e04ab56725850901b28c7f.rimg",
-      "width": 166,
-      "height": 46,
-      "bytes": 1893,
-      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
-      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/dusklight-3ds/main/docs/images/kofi.svg",
       "file": "3ds/romfs/reader-art/0b95d27c5e833b434b17d4f89bedb4ae1673d49e0db9358398888058fe8d4445.rimg",
       "width": 190,
@@ -983,22 +983,49 @@
       "source_sha256": "f129272ba6537e9427a78060fb79cd7feb09fe3de792bd6c3b6840b3a6468ce4"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/dusklight-3ds/main/docs/images/patreon.svg",
-      "file": "3ds/romfs/reader-art/8ac3d31b38b72c672c3283eef8b2e5e0b83ead4c7d0bedaf197d559d6ed5dfff.rimg",
-      "width": 216,
-      "height": 46,
-      "bytes": 2603,
-      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
-      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/docs/badges/license.svg",
+      "file": "3ds/romfs/reader-art/7687aee4c8007c6c0b43d7ba89ba87e48f12cf795cc755061e646bbc03faa983.rimg",
+      "width": 211,
+      "height": 22,
+      "bytes": 2003,
+      "sha256": "45da61af5caaa539b208a8f5b23861afeab6b4aa96f70a72c2065ae855960b0b",
+      "source_sha256": "6d7283b8863b04fb04a66ccef59eb1d3bd5791738c64410ed9c213adc3daf251"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/dusklight-3ds/main/docs/images/website.svg",
-      "file": "3ds/romfs/reader-art/aee7c4fd15205d1daae56cb1f6710c3cbc2fd02ca011e29b37731e608d3709d2.rimg",
-      "width": 142,
-      "height": 46,
-      "bytes": 1879,
-      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
-      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/docs/badges/platform.svg",
+      "file": "3ds/romfs/reader-art/bc782567c3d65e2669694c630f9168f2456219d42788fe0528dfc1dd0951be34.rimg",
+      "width": 183,
+      "height": 22,
+      "bytes": 1850,
+      "sha256": "6046e8a39dd979851f251ae06b1db046214691fda4cb96680e6fd6b180b09d6f",
+      "source_sha256": "81416e0f34fcc98d6b58fa0868a2e83c3b81e7722d1101d308c73ed60a6c4e7d"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/docs/badges/resources.svg",
+      "file": "3ds/romfs/reader-art/fd529131e482cc5e203c90a6e3b77b744f48d3908c4cdd5b558b659778cbdb39.rimg",
+      "width": 155,
+      "height": 22,
+      "bytes": 1629,
+      "sha256": "6b39c42c21b471fb661738ff0dad45e2f98454ecd58391b7e1b558f1bc7f9c8d",
+      "source_sha256": "bd2174225034f16b3e0aa7da08d9a02238aaa38f0cf2c04591c79bdbedf95b49"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/docs/badges/status.svg",
+      "file": "3ds/romfs/reader-art/40191e259bd68468a0811cd6fdc438937dcff61a29d604e2259f2ce01f62d0eb.rimg",
+      "width": 197,
+      "height": 22,
+      "bytes": 2015,
+      "sha256": "e770e1aa4fb81654da1dc4d7b3bf8c4418e4c31dfa25c9927b466ddf023befc9",
+      "source_sha256": "b4c037841c14080e7b9478c25ef91b764ca7d492b8b5c79390183b7fd54355e8"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/docs/images/store-preview.png",
+      "file": "3ds/romfs/reader-art/eb8bc66ca3b9b8244aaf467a6061acf617538064f9ee5958657e4d8b6a854f75.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 97927,
+      "sha256": "6e404cc956c94a479502072b8c847a975a0380e9ca6ed90854d965f8734c8379",
+      "source_sha256": "c2012b0606a4cde2507b863ca0a8812e23d0d87db883bc9ccc1a64c6038146e7"
     },
     {
       "url": "https://raw.githubusercontent.com/EstebanPdN/legend-of-doom-3ds/main/docs/badges/license.svg",
@@ -1037,15 +1064,6 @@
       "source_sha256": "79dc8d9564e4aa09c0e8866e48d8ee76cc4339c6c40bc348ea502123c0855dcc"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/legend-of-doom-3ds/main/docs/images/discord-official.svg",
-      "file": "3ds/romfs/reader-art/0e0d357fe164ce14b42b40a888e892105ef686ed601e26743f028aba50c5b6db.rimg",
-      "width": 166,
-      "height": 46,
-      "bytes": 1893,
-      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
-      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/legend-of-doom-3ds/main/docs/images/download-cia.svg",
       "file": "3ds/romfs/reader-art/55aa96990ebef6d4435f478256723598a20228797db33fad9cd31eb931b2803b.rimg",
       "width": 210,
@@ -1073,15 +1091,6 @@
       "source_sha256": "f129272ba6537e9427a78060fb79cd7feb09fe3de792bd6c3b6840b3a6468ce4"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/legend-of-doom-3ds/main/docs/images/patreon.svg",
-      "file": "3ds/romfs/reader-art/7e09df3801428391b951aacae8586bc78b54903b9ae4ad1404efc3fbc6120fb4.rimg",
-      "width": 216,
-      "height": 46,
-      "bytes": 2603,
-      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
-      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/legend-of-doom-3ds/main/docs/images/showcase-rounded.webp",
       "file": "3ds/romfs/reader-art/78b81e2e83840033d6c96c0397132acaeeaa23a8418c738313ee9eb44debb10c.rimg",
       "width": 376,
@@ -1089,15 +1098,6 @@
       "bytes": 112314,
       "sha256": "06109565aa886095e98f499e0541b0b6178e7dde98330d543c9083a92bc1c203",
       "source_sha256": "7f2a693c25dc83de7fb78128f26dd1a7857d7a8341fb9d3685f5436ed50f7c49"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/legend-of-doom-3ds/main/docs/images/website.svg",
-      "file": "3ds/romfs/reader-art/9c86e905d5778fa18d5e5d95b365c7b0472384dbae36293dd36e21ff55f56754.rimg",
-      "width": 142,
-      "height": 46,
-      "bytes": 1879,
-      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
-      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
     },
     {
       "url": "https://raw.githubusercontent.com/EstebanPdN/mario-kart-64-3ds/main/docs/badges/license.svg",
@@ -1127,15 +1127,6 @@
       "source_sha256": "1f89987b79f75d2a18834b73c2ce801d520d57cfafeabc31670c015a9be4b364"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/mario-kart-64-3ds/main/docs/images/discord-official.svg",
-      "file": "3ds/romfs/reader-art/999e29c37aa9ece9b664e6fd7b84d7d92073c4c20a88470313c9fac60dcc2e10.rimg",
-      "width": 166,
-      "height": 46,
-      "bytes": 1893,
-      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
-      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/mario-kart-64-3ds/main/docs/images/kofi.svg",
       "file": "3ds/romfs/reader-art/2d085be38557a02555a4a2a2f6f230d9744bb9fff3be63895a2b3fe3a9a46b85.rimg",
       "width": 190,
@@ -1145,15 +1136,6 @@
       "source_sha256": "f129272ba6537e9427a78060fb79cd7feb09fe3de792bd6c3b6840b3a6468ce4"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/mario-kart-64-3ds/main/docs/images/patreon.svg",
-      "file": "3ds/romfs/reader-art/d68c672c931228ff982767fa7e0a86a56125670033d6c85fed2dd0c82692525a.rimg",
-      "width": 216,
-      "height": 46,
-      "bytes": 2603,
-      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
-      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/mario-kart-64-3ds/main/docs/images/showcase-rounded.webp",
       "file": "3ds/romfs/reader-art/569ff60ec9a2c21ef1765c7260ccfbaa5f65ae9b773e04cb450710ae4927d283.rimg",
       "width": 376,
@@ -1161,15 +1143,6 @@
       "bytes": 129461,
       "sha256": "b3f1dbe05088005a7a72fc186a460c1fcfa30399a48927ef2e6bdddc1bdf6e4d",
       "source_sha256": "f7aa3b149e3cc03cd5c90ec1fcbbde68ed9730b82df3f92edf9982ae86eac9bf"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/mario-kart-64-3ds/main/docs/images/website.svg",
-      "file": "3ds/romfs/reader-art/db5b674181469a9f6e8c4a3cde4d94ea700e3f68f8f3769f5fe28d1a4a493fd8.rimg",
-      "width": 142,
-      "height": 46,
-      "bytes": 1879,
-      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
-      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
     },
     {
       "url": "https://raw.githubusercontent.com/EstebanPdN/mutiny-3ds/main/docs/badges/license.svg",
@@ -1199,15 +1172,6 @@
       "source_sha256": "79dc8d9564e4aa09c0e8866e48d8ee76cc4339c6c40bc348ea502123c0855dcc"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/mutiny-3ds/main/docs/images/discord-official.svg",
-      "file": "3ds/romfs/reader-art/aff8d3af61c6ae36ab82cfd111c0fba2f6a1d4acd5976c8fe88d20e864f17400.rimg",
-      "width": 166,
-      "height": 46,
-      "bytes": 1893,
-      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
-      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/mutiny-3ds/main/docs/images/download-3dsx.svg",
       "file": "3ds/romfs/reader-art/f5d09884ab4fa270d9d5af049ea9bf5716d175b47adfc48eb8143dfcb7036602.rimg",
       "width": 210,
@@ -1224,15 +1188,6 @@
       "bytes": 2042,
       "sha256": "25c3ab75f67afb22333a9754ae4635e24ed53d82fc72f772744f28ffdaa46581",
       "source_sha256": "cd653c3a7413122151e0b3005b481a0649f4aa32e423082bd6b49eb1e8675fc5"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/mutiny-3ds/main/docs/images/patreon.svg",
-      "file": "3ds/romfs/reader-art/2ab743c74dfe3cc51f9164b92e7eb5216a851d70b72c201f9b1aafca730a18fd.rimg",
-      "width": 216,
-      "height": 46,
-      "bytes": 2603,
-      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
-      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
     },
     {
       "url": "https://raw.githubusercontent.com/EstebanPdN/mutiny-3ds/main/docs/images/screens/poop.png",
@@ -1260,15 +1215,6 @@
       "bytes": 72530,
       "sha256": "bbf7f7a9378eef38c8a5029d763f60d553cdbf6f10c220623f4d9a4bd34edc3f",
       "source_sha256": "28014c7268e86171a2a7362ccb04a1b2ce96ca95a1b6bb92189b6cae786d46b7"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/mutiny-3ds/main/docs/images/website.svg",
-      "file": "3ds/romfs/reader-art/c586ad4d75a470e54153e9ddd8527638f3030ae940e8025009e9a8d0f8caa4dd.rimg",
-      "width": 142,
-      "height": 46,
-      "bytes": 1879,
-      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
-      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
     },
     {
       "url": "https://raw.githubusercontent.com/EstebanPdN/sm64ds-3ds/main/docs/images/badges/build.svg",
@@ -1307,15 +1253,6 @@
       "source_sha256": "56c314ad64d9e81a053041ebddb822aa28d32c06b980a54fad38c5775ee9df2f"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/sm64ds-3ds/main/docs/images/discord-official.svg",
-      "file": "3ds/romfs/reader-art/eb69a63961c6b04295d5632e3b673ea242a0f28388a446d4b4a835f882fc3a3a.rimg",
-      "width": 166,
-      "height": 46,
-      "bytes": 1893,
-      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
-      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/sm64ds-3ds/main/docs/images/kofi.svg",
       "file": "3ds/romfs/reader-art/c477e7354f71b6593cd8bc63d796a4b18379ab50c1779b145bd04750e06f84fa.rimg",
       "width": 190,
@@ -1323,24 +1260,6 @@
       "bytes": 3265,
       "sha256": "12ad651ab08ce4e4470dac9a56de79781e9ceb5d810122583fc090eff895e981",
       "source_sha256": "f129272ba6537e9427a78060fb79cd7feb09fe3de792bd6c3b6840b3a6468ce4"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/sm64ds-3ds/main/docs/images/patreon.svg",
-      "file": "3ds/romfs/reader-art/9a99eb3d40d5b358114f8ea51ea0bbe8beec24153720635d35c1657e90e62391.rimg",
-      "width": 216,
-      "height": 46,
-      "bytes": 2603,
-      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
-      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/sm64ds-3ds/main/docs/images/website.svg",
-      "file": "3ds/romfs/reader-art/dd8f23de577dbf35fc59b5fd30def6d9d8cdbf637e598dcec45e7a3d98908360.rimg",
-      "width": 142,
-      "height": 46,
-      "bytes": 1879,
-      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
-      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
     },
     {
       "url": "https://raw.githubusercontent.com/EstebanPdN/starwing-3ds/main/docs/badges/license.svg?v=2",
@@ -1379,15 +1298,6 @@
       "source_sha256": "ddf7dfb74099053bf6aac20ace5ac5df9cee5527cd72818ad6f6ae2d7bf92e3d"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/starwing-3ds/main/docs/images/discord-official.svg",
-      "file": "3ds/romfs/reader-art/11a33e169144d78e9a6c1d2fe10005be8f34a23ad93ffbd79666c68c667d7c1e.rimg",
-      "width": 166,
-      "height": 46,
-      "bytes": 1893,
-      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
-      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/starwing-3ds/main/docs/images/download-3dsx.svg",
       "file": "3ds/romfs/reader-art/94c29d6b8a21af5c8143f187afec042f047ad773b65fe6ee2ae61ec2849939e3.rimg",
       "width": 210,
@@ -1415,15 +1325,6 @@
       "source_sha256": "f129272ba6537e9427a78060fb79cd7feb09fe3de792bd6c3b6840b3a6468ce4"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/starwing-3ds/main/docs/images/patreon.svg",
-      "file": "3ds/romfs/reader-art/e001336653ed6451df8c94634250d374410c7ac8996dfde34c509dba0ed20ba4.rimg",
-      "width": 216,
-      "height": 46,
-      "bytes": 2603,
-      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
-      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/starwing-3ds/main/docs/images/showcase-rounded.webp",
       "file": "3ds/romfs/reader-art/c9698536d4da7b8d43ea458d0ab056f44db06ce259e22ce9d0a51992c8c7404a.rimg",
       "width": 376,
@@ -1431,15 +1332,6 @@
       "bytes": 149440,
       "sha256": "b6e516a92ab167b85e7bd440f1758ebcfd25d963045b62f368c71a954f4a6386",
       "source_sha256": "1206f37c0b98fc18d108c212215bffea6dc3e981f30275f08ed20337d771a839"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/starwing-3ds/main/docs/images/website.svg",
-      "file": "3ds/romfs/reader-art/04259fbec1dce0eb688562467240d4eb944afa88323703eb10973031ce8ab92d.rimg",
-      "width": 142,
-      "height": 46,
-      "bytes": 1879,
-      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
-      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
     },
     {
       "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-alttp-3ds/main/docs/badges/license.svg",
@@ -1478,15 +1370,6 @@
       "source_sha256": "9551bc103eb93d2ec6ca5eb8beda6f435e2ab05410995ddac889a4a70c6a3d54"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-alttp-3ds/main/docs/images/discord-official.svg",
-      "file": "3ds/romfs/reader-art/8f818a01dd04ef1c898a4d2fd79b4d004be3b9fa0215dea82154e99b9509774f.rimg",
-      "width": 166,
-      "height": 46,
-      "bytes": 1893,
-      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
-      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-alttp-3ds/main/docs/images/download-3dsx.svg",
       "file": "3ds/romfs/reader-art/6c2e5955d2593686f4833c57c0ced45e0320ea8505f7ad157b8607e05a821241.rimg",
       "width": 210,
@@ -1514,15 +1397,6 @@
       "source_sha256": "f129272ba6537e9427a78060fb79cd7feb09fe3de792bd6c3b6840b3a6468ce4"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-alttp-3ds/main/docs/images/patreon.svg",
-      "file": "3ds/romfs/reader-art/7fe9ea27dea81e638abfdb503abb0b18ccfc48e39a9d63d9b0b84eb7f7c78880.rimg",
-      "width": 216,
-      "height": 46,
-      "bytes": 2603,
-      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
-      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-alttp-3ds/main/docs/images/showcase-rounded.webp",
       "file": "3ds/romfs/reader-art/ab82f3cc978ae430cd5c288abad33f632bf8a8729b7daf7ff84d7ee0976da853.rimg",
       "width": 376,
@@ -1530,15 +1404,6 @@
       "bytes": 168042,
       "sha256": "5d0c52c5462d2356f1ab73107c87ef90826c6acb0a12c19094a896f1b17f4e35",
       "source_sha256": "45869e4c2bab30441b1d980a80ed9080ee13b293bce22f7e5299348c91b9afdf"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-alttp-3ds/main/docs/images/website.svg",
-      "file": "3ds/romfs/reader-art/f154763710d1e88e0c9bfde2295ff7a9d787a3fe541fef3d538fb594f66feca0.rimg",
-      "width": 142,
-      "height": 46,
-      "bytes": 1879,
-      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
-      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
     },
     {
       "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-tmc-3ds/main/docs/badges/license.svg",
@@ -1577,15 +1442,6 @@
       "source_sha256": "63be2fb31b77b3aa73858e66002d863501ed4d1b013ac8f8c26157ba0fa21884"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-tmc-3ds/main/docs/images/discord-official.svg",
-      "file": "3ds/romfs/reader-art/ef9ba514396ad7357c79c8372d0db7cfe00024dbc19e0031f1ff2f49b84bf97a.rimg",
-      "width": 166,
-      "height": 46,
-      "bytes": 1893,
-      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
-      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-tmc-3ds/main/docs/images/download-3dsx.svg",
       "file": "3ds/romfs/reader-art/d0791cfaacc155c76ac649293150c5f73d239ad0ee2a202616a3e5026dba1297.rimg",
       "width": 210,
@@ -1613,15 +1469,6 @@
       "source_sha256": "f129272ba6537e9427a78060fb79cd7feb09fe3de792bd6c3b6840b3a6468ce4"
     },
     {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-tmc-3ds/main/docs/images/patreon.svg",
-      "file": "3ds/romfs/reader-art/c7813b9524cdeffca5d7eb68bf9e04b5c1a155edcebec0c9f3207ac34a6090e3.rimg",
-      "width": 216,
-      "height": 46,
-      "bytes": 2603,
-      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
-      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
-    },
-    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-tmc-3ds/main/docs/images/showcase-rounded.webp",
       "file": "3ds/romfs/reader-art/9149171a66c37f5f8ea470ac18686ab0fe4d4a37cf71f4e3c3f9fafd455c1e99.rimg",
       "width": 376,
@@ -1629,15 +1476,6 @@
       "bytes": 156407,
       "sha256": "20a62fec45bf8ce94f9c2d281a02cbfcd8f600298503a0687b65fc6437323677",
       "source_sha256": "92b5f273b9ea26cad2671089b7b4eb69642f54b2795ee8e71c1f1542a7f01ffe"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-tmc-3ds/main/docs/images/website.svg",
-      "file": "3ds/romfs/reader-art/dfbceb6659408ccb1dd4cbef815138d1757b6c409191bc35803edb9d727a0300.rimg",
-      "width": 142,
-      "height": 46,
-      "bytes": 1879,
-      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
-      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
     },
     {
       "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/battle.png",
@@ -1676,6 +1514,15 @@
       "source_sha256": "1bf9936fe8bd9a4a7201f62938462d7a82b791d1af6352a415df8dccd6859b96"
     },
     {
+      "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/new-game.png",
+      "file": "3ds/romfs/reader-art/8a8af5d66b248df8ab4dd8338475cedcebc95beb9564978c86fb92fd360b5fa0.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 38687,
+      "sha256": "946e8d09787c2f12d35b0fae6ac088c78b04032ba99ea7e8490855b91b549a82",
+      "source_sha256": "0581c2efdfd2a645c5a9bb7dec49cc9876994887aa5c8810a079f2b0169565fc"
+    },
+    {
       "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/options.png",
       "file": "3ds/romfs/reader-art/1bcd2c855b568963313b03b419dbbab8610d3fe6b3990a5d812566d5e1f84828.rimg",
       "width": 200,
@@ -1692,6 +1539,15 @@
       "bytes": 86416,
       "sha256": "f9092209ea1b7f5ad5e425ddd75ce1b24185c63ac00d538f4567f9a1a8337d67",
       "source_sha256": "87921df91e2f863381893cc2d5f60c99037cb188bcb5d3deea76ff2610c96b68"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/randomizer.png",
+      "file": "3ds/romfs/reader-art/f7b18d3a184214f6ff671b3db933086e9353064f0b57ded912290f704e2768f7.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 48354,
+      "sha256": "c0512ccc0b5df4e5e660c14b232332b28aa5de85213727123b2e37aebe0d7718",
+      "source_sha256": "4ee82f59af8eef02fb2b3bfbf61b5304e50486f6e1aaca9c4c3469e1b09118e6"
     },
     {
       "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/tattle-text.png",
@@ -1791,78 +1647,6 @@
       "bytes": 7164,
       "sha256": "298706474519e795c73b05825ae0becbca79810858e064a39e0a346a07c499a9",
       "source_sha256": "fa661ce6d6594c8a557e710a108e7470af45954cdcf8c6230b210b79135d7604"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/cruxxxxxx/gdx-3ds/main/docs/media/character1.jpg",
-      "file": "3ds/romfs/reader-art/e614eb27fad2015b09f060e1f067bfd4d67144f8cfd0309dee441681f56ef027.rimg",
-      "width": 360,
-      "height": 240,
-      "bytes": 96411,
-      "sha256": "f911b077df920ba2ae091920c646eca8f2e77a2ce583610a71cf3716389b96ae",
-      "source_sha256": "f3cd13c1ef09a0b12419a10db73116171a44ca1f0757388ba30edbbafcfebbe0"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/cruxxxxxx/gdx-3ds/main/docs/media/character2.jpg",
-      "file": "3ds/romfs/reader-art/46bb7ccd3d4ed4c7275f769b045ac33cdad31e3e6c292684206a9c0fcdce2b59.rimg",
-      "width": 360,
-      "height": 240,
-      "bytes": 80595,
-      "sha256": "204abbf0851c9130e9c38b757f68eb0bf819f55e863fa21aea7fd8c5f5ab210b",
-      "source_sha256": "e830a61c1f1f91204d2828c03fe4e8b68d47744789a38f8401ddc561de469b81"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/cruxxxxxx/gdx-3ds/main/docs/media/gameplay-handheld.gif",
-      "file": "3ds/romfs/reader-art/fcb16aa15f1cceb4eee5aa7648c6d6908d7db45a318b0e5ac03811b1cc1135be.rimg",
-      "width": 376,
-      "height": 211,
-      "bytes": 81567,
-      "sha256": "eb1b07ab326f876be7a970c24af48938663b2c29275a18c959cc503d1e1c948d",
-      "source_sha256": "f854268739be13a57be230855cfa75903bed70cf3cf47006b7e925406c5dc09e"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/cruxxxxxx/gdx-3ds/main/docs/media/gameplay-race.gif",
-      "file": "3ds/romfs/reader-art/50307bf61f76a4800b9a428ea5c8c00e452d7cc97f75de0011be13d3ace7f14f.rimg",
-      "width": 376,
-      "height": 212,
-      "bytes": 101674,
-      "sha256": "dfb58ea4f24ea17235fb1e9009cfc55aa2362866dd4dda110036f3a38b71db84",
-      "source_sha256": "ace0bc0554ec69e1e44f52d70d1c515433f214f27379ed1f7d0072a31d4b778e"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/cruxxxxxx/gdx-3ds/main/docs/media/menu.jpg",
-      "file": "3ds/romfs/reader-art/dafc643f1094153be91d87e3ff3a6bac3409e9eceddee0c95c5fb8eb91c3abb0.rimg",
-      "width": 360,
-      "height": 240,
-      "bytes": 106144,
-      "sha256": "869354f790d0619f97776ae5ab9298896fe51b2e60de445b5544f839532423d0",
-      "source_sha256": "5cb2d02c2feaad2370d6a7ccf88e3115160848cbd3faa4e7f74e4f6fa7f4a23d"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/cruxxxxxx/gdx-3ds/main/docs/media/title.jpg",
-      "file": "3ds/romfs/reader-art/6b5b810cf185a06dc728f91560ee0b35b249f76edfb4f54e6bf12e3b2d58ef27.rimg",
-      "width": 360,
-      "height": 240,
-      "bytes": 94784,
-      "sha256": "19ef3f56907f44456121b564cdb9a7b67f10cccf94f4e8d9d5b23b83e04b641b",
-      "source_sha256": "3ad6c609cb8eaedc9da2245f8476d9e70c861b6717d58c8e133dcc5663d4f1d7"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/cruxxxxxx/gdx-3ds/main/docs/media/v1-menu.jpg",
-      "file": "3ds/romfs/reader-art/84d5a6461123b9b3cdd1ecea17cbe3b396dfd0c8c328674bc144de3685742f4e.rimg",
-      "width": 360,
-      "height": 240,
-      "bytes": 192308,
-      "sha256": "091ffe7f65601a7dca288adca37549c83a8f7158e133f6bf2bc6588deba65c2b",
-      "source_sha256": "20b7f6cc52ad86e26c2dc7625ba29c8fd8f04808e230d0705b1b3c0b9453a274"
-    },
-    {
-      "url": "https://raw.githubusercontent.com/cruxxxxxx/gdx-3ds/main/docs/media/v1-race.jpg",
-      "file": "3ds/romfs/reader-art/c03e1e1f8c1b9ffb7800309d0dc97e513d82948dc50b3075c5a41db8de9ea9e3.rimg",
-      "width": 360,
-      "height": 240,
-      "bytes": 203854,
-      "sha256": "9da197d6225c0182bbde6b58ac5818c0a87fd726705bc4640935e7c607be5dbd",
-      "source_sha256": "c8a0bbb8d6c954650447bdd6f5d8505650743a66d660dc49611a625307f2943c"
     },
     {
       "url": "https://raw.githubusercontent.com/hax0kartik/wumiibo/master/wumiibohelper/gfx/icon.png",
@@ -2025,6 +1809,78 @@
       "bytes": 68062,
       "sha256": "163006a61bc3875f262015695ba865490a509e7d2898203b7ca27f20b6abca0a",
       "source_sha256": "d6b52d0301eeca581762cbe85a7e862686a8d16e4915a120716b08eca324de3e"
+    },
+    {
+      "url": "https://xproger.info/projects/OpenLara/shots/caustics.jpg",
+      "file": "3ds/romfs/reader-art/f2568b5b84e7237b4653919a4ab2bb5de333a1859e9d9e886cb6dc753da307f2.rimg",
+      "width": 376,
+      "height": 211,
+      "bytes": 221003,
+      "sha256": "2371290a478f5c3be7e30f63587554b021e1085d3123ed2efd14664d874717d8",
+      "source_sha256": "e19e93626412742184744948e34e5467205e8d5ca10eb9c072078cbc08e59c60"
+    },
+    {
+      "url": "https://xproger.info/projects/OpenLara/shots/cut1.jpg",
+      "file": "3ds/romfs/reader-art/5ff3e23a68ca6ca08f693cd276278a57a7e2532df86ec2dc60419a489d238280.rimg",
+      "width": 376,
+      "height": 211,
+      "bytes": 174832,
+      "sha256": "4c13d245ccfb87e7c1d1722fac354a51e32d34c51c1a54b64ceb8913edd7dcc7",
+      "source_sha256": "a4013d593a785a0e746e8cc671b7b408d18f074fc03abc7e20e7f8290cdbf649"
+    },
+    {
+      "url": "https://xproger.info/projects/OpenLara/shots/flipmap.jpg",
+      "file": "3ds/romfs/reader-art/195fc3ef4cde3b921766fe7ae2b958ffd9a2ef06c1a826ac92e5af0387b1bd90.rimg",
+      "width": 376,
+      "height": 211,
+      "bytes": 193059,
+      "sha256": "c1808169766fd0605fb055933ab1257a8b08803286159ad334f67d6c4bcfddb4",
+      "source_sha256": "59697572c8ec4999f6c8e6cd38b107b30f7cf74e071809a298ce512a76d13e99"
+    },
+    {
+      "url": "https://xproger.info/projects/OpenLara/shots/multi-aim.jpg",
+      "file": "3ds/romfs/reader-art/41422ffc67699c9b23688791d5d59b6082634756432701cdf2183a492c00bb0b.rimg",
+      "width": 376,
+      "height": 211,
+      "bytes": 231897,
+      "sha256": "26e3eae6d851614fe20db11005de7cb2ceff3921ae7bd3aba884a08cceaa47eb",
+      "source_sha256": "6b66be33e403532a8ef0bdd727076749fe5418966abda5f644ece19737e9612c"
+    },
+    {
+      "url": "https://xproger.info/projects/OpenLara/shots/tr2_opera.jpg",
+      "file": "3ds/romfs/reader-art/a8c9e3da0fb380e85918e14e6acc5dcc22ee6755596b18b33188e70438def3b9.rimg",
+      "width": 376,
+      "height": 211,
+      "bytes": 175609,
+      "sha256": "62510c1d3ae5584a9d1be252d5856ee2fb7f3c6bf692b57069af86f6e261e31d",
+      "source_sha256": "46499ba4ed6ea22d184c4151fb39159ccf4eac8b991112c45f8aaaba5dde6a46"
+    },
+    {
+      "url": "https://xproger.info/projects/OpenLara/shots/tr2_unwater1.jpg",
+      "file": "3ds/romfs/reader-art/88dfd9a5728f6d9b364f21e2ac907986193868ef1eb4a0f35c5ba5cbabc2756a.rimg",
+      "width": 376,
+      "height": 211,
+      "bytes": 184431,
+      "sha256": "7c3e87616ecffc7ff83cf3ac31741a5531f6ee7ea70cf2b1c798f0e60ce12967",
+      "source_sha256": "da14455450742242734855bad5f2ef2004ad8e6901da87139069bafadad0ebae"
+    },
+    {
+      "url": "https://xproger.info/projects/OpenLara/shots/tr3_temple.jpg",
+      "file": "3ds/romfs/reader-art/36f611415952c0f6001e4567994332b7c726f92a1cd35112460dcc6a025875cc.rimg",
+      "width": 376,
+      "height": 211,
+      "bytes": 236127,
+      "sha256": "343710be0ec8537eab14ef261163e62a95ff0750609963ab05e082cf9d92ddc3",
+      "source_sha256": "647889df5bb46e01cd54cd8280662130153874dbadd2c85a820f70535bf3fb26"
+    },
+    {
+      "url": "https://xproger.info/projects/OpenLara/shots/waterfall.jpg",
+      "file": "3ds/romfs/reader-art/7867dfdd6c72c46a280644b95afdb64850ec10121b5eed07febf2aaacb65f861.rimg",
+      "width": 376,
+      "height": 211,
+      "bytes": 190072,
+      "sha256": "9bb24da7e3358aeface6cbcd9bedcbe9862601780f472fc582d6c6ebf8511451",
+      "source_sha256": "5717460b057de8327c1c7b198d93b5bf338aa21ad608de80f1607d7f8d1ced1e"
     }
   ]
 }

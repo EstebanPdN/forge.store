@@ -5,6 +5,7 @@ import { setLang, t, detectLang, LANGUAGES } from './core/i18n.js';
 import { State } from './core/state.js';
 import { SDCard } from './core/sd.js';
 import { Catalog } from './core/catalog.js';
+import { warmBanners } from './core/banner-cache.js';
 import { Installer } from './core/installer.js';
 import { AudioEngine } from './core/audio.js';
 import { Input } from './core/input.js';
@@ -52,6 +53,7 @@ async function main() {
     saveTimer = setTimeout(() => state.save(sd), 300);
   });
   const catalog = new Catalog(data, state, sd);
+  const bannersReady = warmBanners(catalog.list('forge'));
   const installer = new Installer({ catalog, sd, state });
   const audio = new AudioEngine();
   audio.setVolume(state.get('volume'));
@@ -209,12 +211,13 @@ async function main() {
   }
 
   // --- power on --------------------------------------------------------------
-  function powerOn() {
+  async function powerOn() {
     if (powered) return;
     powered = true;
     audio.unlock();
     device.classList.remove('off');
     document.body.classList.add('powered');
+    await Promise.race([bannersReady, new Promise((resolve) => setTimeout(resolve, 6000))]);
     input.enabled = true;
     app.reset('intro', {}, 'none');
     live();

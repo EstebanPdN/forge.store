@@ -18,6 +18,8 @@ typedef struct {
     bool universal, dev, needs_rom, needs_data, stereo, old_ok, pixel_icon;
     bool featured, has_stars, old_experimental, retired;
     Sheet bg, fg;
+    size_t banner_bytes;
+    unsigned banner_used;
     Layer mid, logo;
     int shots;
     bool shot_bottom[12];
@@ -39,9 +41,11 @@ extern Sheet ICONS;
 extern json_t *CATALOG;
 
 bool catalog_load(void);
-/** Warms the first banner; navigation keeps only the current/previous pair. */
+/** Main thread: bounded LRU; warm Forge before the intro and nearby Home items. */
 void catalog_request_banners(void);
 void app_request_banner(App *a);
+void app_prefetch_banner(App *a);
+bool catalog_banners_ready(void);
 void catalog_trim_banners(App *current, App *previous);
 void app_request_shots(App *a);
 /** Main thread: retain current/previous/neighbor pairs; thumbnails stay resident. */

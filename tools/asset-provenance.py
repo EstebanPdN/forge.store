@@ -13,6 +13,7 @@ for p in sorted((ROOT/'assets').rglob('*')):
     license='No blanket reuse license; see LICENSE.md.'
     if parts[0]=='ports' and parts[1] in apps:
         a=apps[parts[1]];source='https://github.com/'+a.get('repo','EstebanPdN')
+    if rel=='assets/ports/minish/art-home.webp':source='Minish Cap artwork and framing supplied by me for the Home banner; Nintendo game artwork.'
     elif parts[0]=='community':source=community.get(rel,'Official repository artwork; source URLs and crops in assets/community/sources.json')
     elif parts[0]=='reader-art':source='Public README images; exact URLs and original hashes in assets/reader-art/manifest.json'
     elif parts[0]=='reader-data':source='Public GitHub reader snapshots; exact endpoints and hashes in assets/reader-data/manifest.json'

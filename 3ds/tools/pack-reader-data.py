@@ -22,10 +22,20 @@ ENDPOINT = re.compile(r'https://api\.github\.com/(?:repos/[\w.-]+/[\w.-]+(?:/rea
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--snapshot', type=Path, required=True)
+    parser.add_argument('--web',action='store_true',help='Also render local web reader pages (markdown-it-py 3.0.0)')
     args = parser.parse_args()
     snapshot = json.loads(args.snapshot.read_text())
     captured = datetime.datetime.fromisoformat(snapshot['captured_at'].replace('Z', '+00:00'))
     stamp = int(captured.timestamp())
+    required=[]
+    repos={a.get('repo') for a in json.loads((ROOT/'catalog/forge-store.json').read_text())['apps'] if a.get('repo')}
+    repos.add('EstebanPdN/forge.store')
+    for repo in repos:
+        required += [(f'https://api.github.com/repos/{repo}'+suffix,ACCEPTS[1] if suffix=='/readme' else ACCEPTS[0])
+                     for suffix in ('','/readme','/releases?per_page=12','/commits?per_page=10')]
+    present={(x['url'],x['accept']) for x in snapshot['responses']}
+    missing=set(required)-present
+    if missing:raise ValueError('Curated reader snapshot is incomplete: '+str(sorted(missing)))
     out = ROOT / '3ds/romfs/reader-data'
     out.mkdir(exist_ok=True)
     report = []
@@ -55,6 +65,19 @@ def main():
     manifest.parent.mkdir(exist_ok=True)
     manifest.write_text(json.dumps({'format': 'FGH2', 'captured_at': snapshot['captured_at'],
                                     'responses': report}, ensure_ascii=False, indent=2) + '\n')
+    if args.web:
+        from markdown_it import MarkdownIt
+        md=MarkdownIt('commonmark',{'html':True}).enable('table')
+        pages={}
+        for item in snapshot['responses']:
+            path=item['url'].removeprefix('https://api.github.com')
+            raw=item['accept']==ACCEPTS[1]
+            data=md.render(item['body']) if raw else json.loads(item['body'])
+            if '/releases?' in path:
+                for release in data:
+                    release['body_html']=md.render(release.get('body') or '')
+            pages[('html:' if raw else 'json:')+path]=data
+        (manifest.parent/'pages.json').write_text(json.dumps({'captured_at':snapshot['captured_at'],'pages':pages},ensure_ascii=False,separators=(',',':'))+'\n')
     print(f'{len(report)} bundled public responses, {sum(x["bytes"] for x in report)/1048576:.2f} MiB')
 
 if __name__ == '__main__':

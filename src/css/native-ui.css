@@ -119,7 +119,8 @@
 .tool-label { display: flex; align-items: center; justify-content: center; gap: 3px; max-width: 100%; }
 .tool-label > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tool-label > svg { flex: none; width: 11px; height: 11px; }
-.tool.round { border-radius: 8px; }
+.tool.round { position: relative; border-radius: 50%; }
+.tool.round .glyph { position: absolute; right: -3px; bottom: -3px; transform: scale(.85); }
 .tool .glyph { margin: 0; }
 .home-card { height: 68px; padding: 8px; border-radius: 12px; }
 .card-title { font-size: 14px; font-weight: 700; line-height: 17px; letter-spacing: 0; }

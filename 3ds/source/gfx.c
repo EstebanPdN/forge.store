@@ -5,176 +5,7 @@
 Sheet UI;
 static json_t *ui_names;
 
-// ---- .ftx sheets ---------------------------------------------------------------------
-// Decoding (file read + inflate) runs on a low-priority thread; the GPU upload is a
-// memcpy into linear memory done on the main thread, a couple of sheets per frame.
-static bool decode(Sheet *s) {
-    FILE *f = fopen(s->path, "rb");
-    if (!f) return false;
-    u8 head[12];
-    bool ok = false;
-    if (fread(head, 1, 12, f) == 12 && !memcmp(head, "FTX1", 4)) {
-        s->w = head[4] | head[5] << 8;
-        s->h = head[6] | head[7] << 8;
-        s->fmt = head[8];
-        s->count = head[9] > SHEET_MAX ? SHEET_MAX : head[9];
-        u16 r[4];
-        for (int i = 0; i < head[9]; i++) {
-            if (fread(r, 2, 4, f) != 4) goto done;
-            if (i >= SHEET_MAX) continue;
-            Tex3DS_SubTexture *t = &s->sub[i];
-            t->width = r[2];
-            t->height = r[3];
-            t->left = r[0] / (float)s->w;
-            t->right = (r[0] + r[2]) / (float)s->w;
-            t->top = 1.0f - r[1] / (float)s->h;
-            t->bottom = 1.0f - (r[1] + r[3]) / (float)s->h;
-        }
-        u32 sizes[2];
-        if (fread(sizes, 4, 2, f) != 2) goto done;
-        void *z = malloc(sizes[1]);
-        s->pixels = malloc(sizes[0]);
-        if (z && s->pixels && fread(z, 1, sizes[1], f) == sizes[1]) {
-            uLongf out = sizes[0];
-            ok = uncompress(s->pixels, &out, z, sizes[1]) == Z_OK && out == sizes[0];
-            s->size = sizes[0];
-        }
-        free(z);
-        if (!ok) {
-            free(s->pixels);
-            s->pixels = NULL;
-        }
-    }
-done:
-    fclose(f);
-    return ok;
-}
-
-static GPU_TEXCOLOR tex_fmt(Sheet *s) {
-    static const GPU_TEXCOLOR f[5] = {GPU_RGBA8, GPU_RGB565, GPU_RGBA4, GPU_A8, GPU_RGB8};
-    return f[s->fmt < 5 ? s->fmt : 0];
-}
-
-// Copies up to `budget` bytes into the texture; true once the whole sheet is in.
-static bool upload_part(Sheet *s, size_t budget) {
-    if (!s->tex_init) {
-        if (!C3D_TexInit(&s->tex, s->w, s->h, tex_fmt(s))) {
-            free(s->pixels);
-            s->pixels = NULL;
-            s->state = SHEET_FAILED;
-            return false;
-        }
-        C3D_TexSetFilter(&s->tex, s->crisp ? GPU_NEAREST : GPU_LINEAR, GPU_LINEAR);
-        C3D_TexSetWrap(&s->tex, GPU_CLAMP_TO_EDGE, GPU_CLAMP_TO_EDGE);
-        s->tex_init = true;
-        s->copied = 0;
-    }
-    size_t n = s->size - s->copied;
-    if (n > budget) n = budget;
-    memcpy((u8 *)s->tex.data + s->copied, (u8 *)s->pixels + s->copied, n);
-    s->copied += n;
-    if (s->copied < s->size) return false;
-    C3D_TexFlush(&s->tex);
-    free(s->pixels);
-    s->pixels = NULL;
-    return true;
-}
-
-static bool upload(Sheet *s) { return upload_part(s, SIZE_MAX); }
-
-bool sheet_load_now(Sheet *s, const char *path) {
-    snprintf(s->path, sizeof s->path, "%s", path);
-    s->tex_init = false;
-    bool ok = decode(s) && upload(s);
-    s->state = ok ? SHEET_READY : SHEET_FAILED;
-    return ok;
-}
-
-#define QMAX 128
-static Sheet *pending[QMAX];
-static int npending;
-// Tracks queued sheets so the pump can upload them.
-static void track(Sheet *s) {
-    if (npending < QMAX) pending[npending++] = s;
-}
-static Sheet *queue[QMAX];
-static volatile int q_head, q_tail;
-static LightLock q_lock;
-static LightEvent q_event;
-static Thread loader;
-static volatile bool loader_quit;
-
-static void loader_main(void *arg) {
-    (void)arg;
-    while (!loader_quit) {
-        LightEvent_Wait(&q_event);
-        for (;;) {
-            LightLock_Lock(&q_lock);
-            Sheet *s = q_head != q_tail ? queue[q_head] : NULL;
-            if (s) q_head = (q_head + 1) % QMAX;
-            LightLock_Unlock(&q_lock);
-            if (!s || loader_quit) break;
-            bg_wait();
-            s->state = decode(s) ? SHEET_DECODED : SHEET_FAILED;
-        }
-    }
-}
-
-void sheet_request(Sheet *s, const char *path) {
-    if (s->state == SHEET_QUEUED || s->state == SHEET_DECODED) s->discard = false;  // wanted again
-    if (s->state != SHEET_EMPTY) return;
-    snprintf(s->path, sizeof s->path, "%s", path);
-    s->tex_init = false;
-    s->copied = 0;
-    s->state = SHEET_QUEUED;
-    LightLock_Lock(&q_lock);
-    queue[q_tail] = s;
-    q_tail = (q_tail + 1) % QMAX;
-    LightLock_Unlock(&q_lock);
-    track(s);
-    LightEvent_Signal(&q_event);
-}
-
-// About 1-2 ms of copying per frame on an Old 3DS, so loading never drops a frame.
-#define PUMP_BUDGET (384 * 1024)
-
-void sheets_pump(void) {
-    size_t budget = PUMP_BUDGET;
-    for (int i = 0; i < npending; i++) {
-        Sheet *s = pending[i];
-        if (s->state == SHEET_DECODED && s->discard) {  // freed while it was loading
-            if (s->tex_init) C3D_TexDelete(&s->tex);
-            s->tex_init = false;
-            free(s->pixels);
-            s->pixels = NULL;
-            s->discard = false;
-            s->state = SHEET_EMPTY;
-            pending[i--] = pending[--npending];
-            continue;
-        }
-        if (s->state == SHEET_DECODED && budget) {
-            size_t before = s->copied;
-            if (upload_part(s, budget)) s->state = SHEET_READY;
-            size_t used = s->copied - before;
-            budget = used >= budget ? 0 : budget - used;
-        }
-        if (s->state == SHEET_READY || s->state == SHEET_FAILED || s->state == SHEET_EMPTY) {
-            pending[i--] = pending[--npending];
-        }
-    }
-}
-
-void sheet_free(Sheet *s) {
-    if (s->state == SHEET_QUEUED || s->state == SHEET_DECODED) {
-        s->discard = true;  // the pump drops it once the loader is done
-        return;
-    }
-    if (s->tex_init) C3D_TexDelete(&s->tex);
-    s->tex_init = false;
-    free(s->pixels);
-    s->pixels = NULL;
-    s->state = SHEET_EMPTY;
-}
+#include "texture_stream.inc"
 
 // ---- UI atlas ----------------------------------------------------------------------------
 // Name -> index, hashed once: icons are looked up many times per frame.
@@ -1017,6 +848,7 @@ void draw_badge(const char *button, float x, float y, float alpha) {
 void gfx_init(void) {
     LightLock_Init(&q_lock);
     LightEvent_Init(&q_event, RESET_ONESHOT);
+    LightEvent_Init(&upload_event, RESET_ONESHOT);
     s32 prio = 0x30;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
     // Same core as the main thread, lower priority: it only runs while a frame waits for vsync.
@@ -1036,7 +868,9 @@ void gfx_init(void) {
 void gfx_exit(void) {
     loader_quit = true;
     LightEvent_Signal(&q_event);
+    LightEvent_Signal(&upload_event);
     if (!thread_reap(&loader)) return;  // still decoding a sheet from a busy card
+    free(banner_bank);banner_bank=NULL;
     text_reset();
     for (int i = 0; i < npages; i++) sheet_free(&glyph_pages[i]);
     free(glyphs); glyphs = NULL;

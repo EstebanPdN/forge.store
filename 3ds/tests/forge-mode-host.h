@@ -40,9 +40,13 @@ static int mbedtls_gcm_auth_decrypt(mbedtls_gcm_context*c,size_t n,const unsigne
     total=len;if(ok)ok=EVP_CIPHER_CTX_ctrl(x,EVP_CTRL_GCM_SET_TAG,(int)tn,(void*)tag)==1&&EVP_DecryptFinal_ex(x,out+total,&len)==1;
     EVP_CIPHER_CTX_free(x);return ok?0:-1;
 }
-static void mbedtls_md_init(mbedtls_md_context_t*c){*c=0;}
-static void mbedtls_md_free(mbedtls_md_context_t*c){*c=0;}
-static const void *mbedtls_md_info_from_type(int t){(void)t;return (void*)1;}
-static int mbedtls_md_setup(mbedtls_md_context_t*c,const void*i,int h){(void)c;(void)i;(void)h;return 0;}
-static int mbedtls_pkcs5_pbkdf2_hmac(mbedtls_md_context_t*c,const unsigned char*p,size_t pn,const unsigned char*s,size_t sn,unsigned iterations,unsigned n,unsigned char*out){(void)c;return PKCS5_PBKDF2_HMAC((const char*)p,(int)pn,s,(int)sn,(int)iterations,EVP_sha256(),(int)n,out)==1?0:-1;}
+typedef SHA256_CTX mbedtls_sha256_context;
+static void mbedtls_sha256_init(mbedtls_sha256_context*c){memset(c,0,sizeof*c);}
+static void mbedtls_sha256_free(mbedtls_sha256_context*c){memset(c,0,sizeof*c);}
+static void mbedtls_sha256_clone(mbedtls_sha256_context*d,const mbedtls_sha256_context*s){*d=*s;}
+static int mbedtls_sha256_starts_ret(mbedtls_sha256_context*c,int s){(void)s;return SHA256_Init(c)?0:-1;}
+static int mbedtls_sha256_update_ret(mbedtls_sha256_context*c,const unsigned char*p,size_t n){return SHA256_Update(c,p,n)?0:-1;}
+static int mbedtls_sha256_finish_ret(mbedtls_sha256_context*c,unsigned char*p){return SHA256_Final(p,c)?0:-1;}
 static int mbedtls_sha256_ret(const unsigned char*p,size_t n,unsigned char*out,int sha224){(void)sha224;return SHA256(p,n,out)?0:-1;}
+static u64 osGetTime(void){struct timespec t;clock_gettime(CLOCK_MONOTONIC,&t);return t.tv_sec*1000ull+t.tv_nsec/1000000;}
+#define log_line(...) ((void)0)

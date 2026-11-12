@@ -71,6 +71,7 @@ void *threadCreate(void (*fn)(void *),void *arg,size_t stack,int prio,int affini
 bool install_busy(App *a) {return busy;}
 bool sheet_load_now(Sheet *s,const char *p) {return false;}
 void sheet_request(Sheet *s,const char *p) {s->state=SHEET_QUEUED;}
+void sheet_prefetch(Sheet *s,const char *p) {sheet_request(s,p);}
 void sheet_free(Sheet *s) {s->state=SHEET_EMPTY;}
 
 static json_t *J(const char *s) {json_t *j=json_loads(s,JSON_DECODE_ANY,NULL);CHECK(j);return j;}
