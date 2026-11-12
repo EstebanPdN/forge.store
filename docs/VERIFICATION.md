@@ -1,8 +1,19 @@
 # Verification record
 
-Publication candidate: **2026.11.12.8**, native C implementation. This is a development
+Publication candidate: **2026.11.12.9**, native C implementation. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## HOME lettering and lateral rotation — 2026.11.12.9
+
+The title is enlarged by about 19% and aligned to a common baseline. The 512×128
+lettering texture bypasses the converter's width reduction. The medallion now rotates
+±24° around its own center with fixed height and unit scale; its billboard override is off.
+The serialized animation gate checks the lateral angles, loop closure, fixed pivot and
+absence of vertical motion. Source-model previews at 400×240 show both extreme poses;
+these are Blender renders, not physical HOME captures. Native HOME remains unqualified.
+The package gate verifies the embedded banner and ExeFS hashes. All eleven banner
+checks pass, including rejection of vertical bob and preservation of the wider texture.
 
 ## Native 3D HOME banner — 2026.11.12.8
 

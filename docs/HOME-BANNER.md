@@ -5,19 +5,24 @@ English wordmark and subtitle, and an oval background that fades from 35% of its
 radius to its transparent edge. `3ds/meta/banner.png` is the previous flat reference.
 The application screens and runtime code are unchanged.
 
-The medallion is a closed, bevelled 48-sided mesh with a fixed 14-degree pose.
-Its six-second loop gently changes width by ±1.8% and height position by ±0.1
-world units (about one pixel in the HOME camera). Rendered rigid bones use
-YAxial billboarding with identity rest transforms; no rotation curve competes
-with HOME's facing transform. This is deliberately subtle native motion.
+The medallion is a closed, bevelled 48-sided mesh. Its six-second loop rotates
+24 degrees to each side about its own vertical axis. Translation compensates the
+world-space pivot in X/Z; Y remains fixed and scale remains one. The medallion's
+billboarding is disabled so HOME does not cancel its authored rotation. The backdrop
+and lettering retain YAxial billboarding with identity rest transforms.
+
+The title is about 19% larger, with both font weights sharing one baseline. Its
+512×128 RGBA4 texture is explicitly restored after conversion, avoiding the converter's
+256px width cap. This is pre-rasterized lettering, not a claim of hardware pixel-perfect
+sampling; HOME owns final projection/filtering.
 
 ## Resource budget
 
 - 292 authored triangles, six serialized meshes / draws, three rigid rendered bones.
-- Three textures: 128×128 RGB565 logo, 256×128 RGBA4 lettering, 256×128 LA8 oval.
-- Texture payload: 163,840 bytes (160 KiB). LA8 preserves 256 alpha levels for the
+- Three textures: 128×128 RGB565 logo, 512×128 RGBA4 lettering, 256×128 LA8 oval.
+- Texture payload: 229,376 bytes (224 KiB). LA8 preserves 256 alpha levels for the
   white oval; RGBA8 is not used. The text has a separate baseline and clear gap.
-- CGFX: 198,552 bytes, below the 524,288-byte HOME limit.
+- CGFX: 264,088 bytes, below the 524,288-byte HOME limit.
 - Animation: one member, six scalar curves, 61 keys per authored track,
   360 native frames, matching endpoints and strictly positive scales.
 - Audio: the original welcome sound, stereo PCM16, 32 kHz, exactly 96,000 samples
@@ -64,14 +69,14 @@ resources and compare the packaged PCM samples with the input WAV.
 
 - Compilation/package: passed with `zsh 3ds/build.sh`, no asset-wide `--pack`.
   The SDK linker reports its existing `crtn.o` GNU-stack note warning.
-- Host: ten banner checks and 27 production installer scenario groups passed.
+- Host: eleven banner checks and 27 production installer scenario groups passed.
 - Preview: rendered from the same glTF geometry, textures and animation in
   Blender at the HOME camera; GIF/MP4 are design evidence, not HOME captures.
 - Emulator HOME: not validated. Launching a 3DSX would not exercise this resource.
 - Physical Old/New 3DS: not validated. Select the icon for several complete loops,
   switch repeatedly between titles, check sound ends at three seconds, test 3D
   off/on and sleep/resume on both models before declaring it lag-free.
-- Version 2026.11.12.8 packages this banner in the distributable CIA alongside the
+- Version 2026.11.12.9 packages this banner in the distributable CIA alongside the
   existing store fixes and refreshed emulator artwork. The build validates the embedded
   banner and ExeFS hashes before packaging.
 

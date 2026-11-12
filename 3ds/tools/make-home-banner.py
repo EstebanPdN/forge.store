@@ -31,13 +31,13 @@ def main():
             px[x,y]=(*col,alpha)
     bg.save(out/'oval.png')
     # Rasterize the wordmark once, with a separate subtitle baseline. Preserve the fonts.
-    text=Image.new('RGBA',(256,128)); d=ImageDraw.Draw(text)
-    bold=ImageFont.truetype(str(out/'brand.ttf'),44);bold.set_variation_by_axes([800])
-    regular=ImageFont.truetype(str(out/'brand.ttf'),44);regular.set_variation_by_axes([400])
-    small=ImageFont.truetype(str(out/'ui.ttf'),16);small.set_variation_by_axes([800])
-    d.text((0,0),'forge.',font=bold,fill='#dd741b',anchor='lt')
-    d.text((d.textlength('forge.',font=bold),0),'store',font=regular,fill='#2c3e45',anchor='lt')
-    d.text((3,53),'Ports for Nintendo 3DS',font=small,fill='#465960',anchor='lt')
+    text=Image.new('RGBA',(512,128)); d=ImageDraw.Draw(text)
+    bold=ImageFont.truetype(str(out/'brand.ttf'),88);bold.set_variation_by_axes([800])
+    regular=ImageFont.truetype(str(out/'brand.ttf'),88);regular.set_variation_by_axes([400])
+    small=ImageFont.truetype(str(out/'ui.ttf'),28);small.set_variation_by_axes([800])
+    d.text((0,78),'forge.',font=bold,fill='#dd741b',anchor='ls')
+    d.text((round(d.textlength('forge.',font=bold)),78),'store',font=regular,fill='#2c3e45',anchor='ls')
+    d.text((4,119),'Ports for Nintendo 3DS',font=small,fill='#465960',anchor='ls')
     text=text.point(lambda v: (v//16)*17)
     text.save(out/'wordmark.png')
     Image.open(ROOT/'assets/brand/forge-icon.png').resize((128,128),Image.Resampling.NEAREST).save(out/'logo.png')
@@ -69,9 +69,9 @@ def main():
     def node(name,prims):
         i=len(g['nodes']);g['nodes'].append(dict(name=name,mesh=len(g['meshes'])));g['meshes'].append(dict(name=name,primitives=prims));g['scenes'][0]['nodes'].append(i);return i
     node('Backdrop',[quad(-16,-7,-.45,32,16,paper)])
-    node('Lettering',[quad(-3.2,-3.65,.05,14.6,7.3,lettering)])
+    node('Lettering',[quad(-3.4,-1.7,.05,17.4,4.35,lettering)])
     # Low polygon closed medallion: white bevel, cylindrical edge, back and logo face.
-    N=48;cx=-8.2;cy=1.;ang=math.radians(-14)
+    N=48;cx=-8.2;cy=1.;ang=0.0
     def transform(p):
         x,y,z=p;return (cx+x*math.cos(ang)+z*math.sin(ang),cy+y,-x*math.sin(ang)+z*math.cos(ang)+.7)
     def norm(p):
@@ -95,13 +95,13 @@ def main():
         for i in range(N):a0=i*2;b=((i+1)%N)*2;idx.extend([a0,b,a0+1,b,b+1,a0+1])
         return primitive([transform(p) for p in ps],ns,None,idx,m)
     coin=node('Medallion',[disc(3.25,.43,face),ring(3.65,.26,3.25,.43,rim),ring(3.65,-.26,3.65,.26,edge),disc(3.65,-.26,edge,True)])
-    # Keep actual rendered bones camera-facing. Mild scale and translation provide a
-    # closed float/sway without fighting HOME's automatic rotation/billboarding.
-    times=[i/10 for i in range(61)];scales=[];positions=[]
+    # Rotate the rigid coin about its own center, without vertical bob or scale squash.
+    times=[i/10 for i in range(61)];rotations=[];positions=[]
     for t in times:
-        wave=math.sin(t*math.tau/6);sx=1+.018*wave
-        scales.append((sx,1,1));positions.append((cx*(1-sx),.10*wave,0))
-    g['animations']=[dict(name='COMMON',samplers=[dict(input=access(times,'SCALAR'),output=access(scales,'VEC3'),interpolation='LINEAR'),dict(input=access(times,'SCALAR'),output=access(positions,'VEC3'),interpolation='LINEAR')],channels=[dict(sampler=0,target=dict(node=coin,path='scale')),dict(sampler=1,target=dict(node=coin,path='translation'))])]
+        yaw=math.radians(24)*math.sin(t*math.tau/6)
+        rotations.append((0,math.sin(yaw/2),0,math.cos(yaw/2)))
+        positions.append((cx-cx*math.cos(yaw)-.7*math.sin(yaw),0,.7+cx*math.sin(yaw)-.7*math.cos(yaw)))
+    g['animations']=[dict(name='COMMON',samplers=[dict(input=access(times,'SCALAR'),output=access(rotations,'VEC4'),interpolation='LINEAR'),dict(input=access(times,'SCALAR'),output=access(positions,'VEC3'),interpolation='LINEAR')],channels=[dict(sampler=0,target=dict(node=coin,path='rotation')),dict(sampler=1,target=dict(node=coin,path='translation'))])]
     g['cameras']=[dict(type='perspective',perspective=dict(aspectRatio=400/240,yfov=math.pi/6,znear=26.5,zfar=1000))]
     g['nodes'].append(dict(name='BannerCamera',camera=0,translation=[0,1,44.786]));g['scenes'][0]['nodes'].append(len(g['nodes'])-1)
     g['buffers']=[dict(uri='banner.bin',byteLength=len(buf))];(out/'banner.bin').write_bytes(buf);(out/'banner.gltf').write_text(json.dumps(g))
@@ -114,7 +114,7 @@ def main():
     for mesh in model.meshes.data.contents:
         shape=model.shapes.data.contents[mesh.shape_index];sets=shape.primitive_sets.data.contents
         assert len(sets)==1 and sets[0].skinning_mode==0
-        bone=model.skeleton.bones[sets[0].related_bones.data.contents[0]];bone.billboard_mode=BillboardMode.YAxial
+        bone=model.skeleton.bones[sets[0].related_bones.data.contents[0]];bone.billboard_mode=BillboardMode.Off if bone.name=='Medallion' else BillboardMode.YAxial
         mesh.mesh_node_name=bone.name;mesh.name=shape.name=f'{bone.name}_{mesh.shape_index}'
     for name in model.materials:
         m=model.materials[name];d=m.material_color.diffuse
@@ -140,6 +140,11 @@ def main():
     oval.pixel_based_image.data=bytes(raw)
     logo=native.data.textures['logo.png'];logo.hw_format=TextureFormat.RGB565
     logo.pixel_based_image.data=swizzle(Image.open(out/'logo.png').convert('RGBA').transpose(Image.Transpose.FLIP_TOP_BOTTOM),TextureFormat.RGB565)
+    wordmark=native.data.textures['wordmark.png']
+    wordmark.width=wordmark.pixel_based_image.width=512
+    wordmark.height=wordmark.pixel_based_image.height=128
+    wordmark.hw_format=TextureFormat.RGBA4
+    wordmark.pixel_based_image.data=swizzle(text.transpose(Image.Transpose.FLIP_TOP_BOTTOM),TextureFormat.RGBA4)
     texture_bytes=sum(len(native.data.textures[name].pixel_based_image.data) for name in native.data.textures)
     data=c.write(native);(out/'banner.cgfx').write_bytes(data); report=inspect(data)
     triangles=sum(g['accessors'][p['indices']]['count']//3 for m in g['meshes'] for p in m['primitives'])

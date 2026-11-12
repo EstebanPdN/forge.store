@@ -1,5 +1,10 @@
 # Changelog
 
+## HOME banner lettering and rotation — 2026.11.12.9
+
+- Enlarge and align the HOME wordmark, preserving its full 512px texture width.
+- Replace the medallion's vertical bob and width pulse with a real ±24-degree lateral rotation about a fixed center.
+
 ## Native 3D HOME banner — 2026.11.12.8
 
 - Package the animated 3D Forge medallion and three-second welcome sound in the HOME Menu banner, together with all previous store fixes and emulator artwork improvements.

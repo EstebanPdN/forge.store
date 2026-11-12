@@ -80,6 +80,7 @@ def animations(data):
         count, table = u32(p+24), pointer(p+28)
         assert data[table:table+4] == b'DICT' and u32(table+8) == count
         curve_count = 0
+        rotation_tracks = 0
         members = []
         for i in range(1, count+1):
             bone = pointer(table+12+16*i+12)
@@ -88,6 +89,7 @@ def animations(data):
             members.append(string(bone+4))
             const = [0x40,0x80,0x100,0x200,0x400,0x800,0x2000,0x4000,0x8000]
             ignored = [0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x800000,0x1000000,0x2000000]
+            tracks = {}
             for slot in range(9):
                 field = bone+20+4*slot+(4 if slot >= 6 else 0)
                 if flags & ignored[slot]:
@@ -97,7 +99,7 @@ def animations(data):
                 if flags & const[slot]:
                     values = [struct.unpack_from('<f', data, field)[0]]
                 else:
-                    assert not 3 <= slot <= 5, 'rotation track competes with billboard'
+                    if 3 <= slot <= 5: rotation_tracks += 1
                     curve = pointer(field)
                     first, last = struct.unpack_from('<2f', data, curve)
                     assert math.isfinite(first) and math.isfinite(last) and 0 <= first <= last <= duration
@@ -118,13 +120,22 @@ def animations(data):
                             assert all(keys[k][0] <= keys[k+1][0] for k in range(n-1))
                             values.extend(v for t, v in keys)
                     curve_count += 1
+                tracks[slot] = values
                 assert all(math.isfinite(v) for v in values), 'non-finite animation value'
                 assert values and abs(values[0]-values[-1]) < 1e-6, 'animation loop is not closed'
                 if slot <= 2:
                     assert all(v > 0 for v in values), 'singular scale in animation'
                 if 3 <= slot <= 5:
-                    assert all(v == 0 for v in values), 'nonzero authored billboard rotation'
-        result.append(dict(frames=duration, members=members, curves=curve_count, scales_positive=True, rotation_tracks=0))
+                    assert members[-1] == 'Medallion' and all(abs(v) <= .5 for v in values), 'unexpected rotation'
+                    if slot != 4: assert all(v == 0 for v in values), 'rotation must be lateral'
+                if slot == 7: assert all(v == 0 for v in values), 'vertical bob forbidden'
+            if members[-1] == 'Medallion':
+                yaw = tracks[4]; xs = tracks[6]; zs = tracks[8]
+                assert len(yaw) == len(xs) == len(zs) and min(yaw) < -.4 and max(yaw) > .4, 'missing lateral swing'
+                for angle, x, z in zip(yaw, xs, zs):
+                    assert abs(-8.2*math.cos(angle)+.7*math.sin(angle)+x+8.2) < 1e-5, 'coin pivot drifts horizontally'
+                    assert abs(8.2*math.sin(angle)+.7*math.cos(angle)+z-.7) < 1e-5, 'coin pivot drifts in depth'
+        result.append(dict(frames=duration, members=members, curves=curve_count, scales_positive=True, rotation_tracks=rotation_tracks))
     return result
 
 
@@ -160,7 +171,7 @@ def inspect(data):
         target = name(p+112)
         assert target in bones, ('mesh has no resolved bone', target, hex(p))
         b = bones[target]
-        assert b['mode'] == 5, ('rendered bone is not YAxial', target, b['mode'])
+        assert b['mode'] == (0 if target == 'Medallion' else 5), ('unexpected billboard mode', target, b['mode'])
         assert b['trs'] == (1.,1.,1.,0.,0.,0.,0.,0.,0.), ('non-identity rest bone', target, b['trs'])
         meshes.append(target)
     assert meshes, 'no meshes'
@@ -168,7 +179,7 @@ def inspect(data):
                 dictionaries=len(tables), dictionary_keys=sum(len(t)-1 for t in tables),
                 meshes=len(meshes), rendered_bones=sorted(set(meshes)),
                 skeletal_animations=animations(data),
-                all_mesh_links_resolve=True, all_rendered_bones_yaxial=True,
+                all_mesh_links_resolve=True, medallion_billboard_off=True,
                 all_rendered_rest_transforms_identity=True, hardware_tested=False)
 
 
@@ -214,7 +225,7 @@ def textures(data):
         height,width=struct.unpack_from('<II',data,p+24)
         fmt=struct.unpack_from('<I',data,p+52)[0]
         assert fmt in (3,4,5), 'unsupported HOME texture format (RGBA8 forbidden)'
-        assert 8 <= width <= 256 and 8 <= height <= 256, 'texture dimensions'
+        assert 8 <= width <= 512 and 8 <= height <= 256, 'texture dimensions'
         assert width & (width-1)==0 and height & (height-1)==0, 'texture is not power of two'
         image=p+56+struct.unpack_from('<i',data,p+56)[0]
         assert 0 <= image <= len(data)-32, 'image pointer'
@@ -224,7 +235,7 @@ def textures(data):
         assert 0 <= start and start+size <= len(data), 'texture data bounds'
         result.append(dict(width=width,height=height,format=fmt,bytes=size))
     assert len(result)==3, 'expected exactly three textures'
-    assert sum(t['bytes'] for t in result)<=160*1024, 'texture budget'
+    assert sum(t['bytes'] for t in result)<=224*1024, 'texture budget'
     return result
 
 

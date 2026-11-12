@@ -12,8 +12,9 @@ class BannerTests(unittest.TestCase):
     def test_packaged_resource(self):
         r=gate.inspect(self.model);self.assertEqual(r['meshes'],6)
         self.assertEqual(r['skeletal_animations'][0]['frames'],360)
-        self.assertEqual(sum(t['bytes'] for t in gate.textures(self.model)),163840)
+        self.assertEqual(sum(t['bytes'] for t in gate.textures(self.model)),229376)
         self.assertEqual(gate.audio_info(self.audio)[0]['seconds'],3)
+        self.assertIn((512,128),[(t['width'],t['height']) for t in gate.textures(self.model)])
     def test_pcm_roundtrip(self):
         with wave.open(str(ROOT/'3ds/meta/banner.wav')) as w:frames=w.readframes(w.getnframes())
         _,channels=gate.audio_info(self.audio)
@@ -34,13 +35,19 @@ class BannerTests(unittest.TestCase):
         for offset,value in ((0x4c,48000),(0x54,96001),(0x5c,1)):
             b=bytearray(self.audio);struct.pack_into('<I',b,offset,value)
             with self.assertRaises(AssertionError):gate.audio_info(b)
-    def test_invalid_animation_scale(self):
+    def test_lateral_rotation(self):
+        r=gate.inspect(self.model)
+        self.assertTrue(r['medallion_billboard_off'])
+        self.assertEqual(r['skeletal_animations'][0]['rotation_tracks'],3)
+
+    def test_reject_vertical_bob(self):
         b=bytearray(self.model)
         pointer=lambda p:p+struct.unpack_from('<i',b,p)[0]
         anim=b.find(b'CANM');table=pointer(anim+28);member=pointer(table+40)
-        curve=pointer(member+20);segment=pointer(curve+20)
-        struct.pack_into('<f',b,segment+24,-1.)
+        curve=pointer(member+52);segment=pointer(curve+20)
+        struct.pack_into('<f',b,segment+32,.1)
         with self.assertRaises(AssertionError):gate.inspect(b)
+
     def test_oval_alpha_precision(self):
         b=self.model
         for p in range(0,len(b)-60,4):
