@@ -48,6 +48,8 @@ static bool installed_commit_manifest(App*a,const char*v,bool e,bool c,json_t*f,
 static bool installed_forget(App*a) {return host_commit_ok;}
 static bool app_requirement_met(App*a,json_t*r) {return false;}
 static json_t *app_install_steps(App*a,bool cia) {return json_object_get(json_object_get(a->j,"install"),cia?"cia":"3dsx");}
+static bool app_has_format(App*a,bool cia) {return json_array_size(app_install_steps(a,cia))>0;}
+static json_t *forge_mode_plan(const char *id,json_t *base) {return json_deep_copy(base);}
 static json_t *app_release(App*a,bool e) {return json_object_get(json_object_get(a->j,"releases"),e?"experimental":"stable");}
 static bool app_release_experimental(App*a,json_t*r) {return r==json_object_get(json_object_get(a->j,"releases"),"experimental");}
 static json_t *app_asset(App*a,json_t*r,const char*k) {return json_object_get(json_object_get(r,"assets"),k);}

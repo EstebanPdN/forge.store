@@ -41,6 +41,7 @@ export async function refreshFromGitHub(catalog, state) {
     const live = repos[app.repo];
     if (!live) continue;
     if (live.stars != null) app.stars = live.stars;
+    if (app.releasePinned) continue;
     const releases = live.releases.filter((r) => !r.tag.startsWith('store-media-'));
     merge(app, 'stable', releases.find((r) => !r.pre));
     const stable = app.releases.stable;

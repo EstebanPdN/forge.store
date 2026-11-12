@@ -1,13 +1,6 @@
 {
   "files": [
     {
-      "path": "assets/.DS_Store",
-      "bytes": 6148,
-      "sha256": "72f1e7ee81f42628b4701f0076e27065dd43408a2156bcb45a13802ae8e0bd25",
-      "source_context": "Existing Forge project asset; source-specific permission not established in this repository.",
-      "rights": "No blanket reuse license; see LICENSE.md."
-    },
-    {
       "path": "assets/audio/intro-enter.mp3",
       "bytes": 66071,
       "sha256": "e6e820db38b51ad9b9e07262843b2d9ac9f8ae2da79f8f6371e9b10a4a75b7d8",
@@ -29,11 +22,557 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
-      "path": "assets/fonts/.DS_Store",
-      "bytes": 6148,
-      "sha256": "f3a8ee85c8a66913a2c8564cc83d5356e093172ac0baaaf50b32e7e474da0e84",
-      "source_context": "Bundled typefaces; see adjacent OFL texts and docs/legal/THIRD_PARTY_NOTICES.md",
-      "rights": "SIL OFL where supplied; verify the matching font notice."
+      "path": "assets/community/3dsdl/icon.webp",
+      "bytes": 80638,
+      "sha256": "6da50d0bf02a51b4b8de0a8dc05f1a42ee1652bc99f6e978f4ea7604748fd9fc",
+      "source_context": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/video/assets/brand/icon-1024.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/3dsdl/logo.webp",
+      "bytes": 10782,
+      "sha256": "7a85603e8b9e833889e4e91769c09064d141b45acee2bb5789bbe774ec86a433",
+      "source_context": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/resources/banner/logo.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/3dsdl/shot-1-bottom.webp",
+      "bytes": 4474,
+      "sha256": "45ea09a3f922f8f1e49533be537a1b2da1c5ca45d1fa5ac0ea308d1ad6af8fbf",
+      "source_context": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/downloading-bottom.webp",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/3dsdl/shot-1-top.webp",
+      "bytes": 12624,
+      "sha256": "b94f71600b4e2c86a48408b7fde18a097a7fdf6e0e3db6b714aa8ea7dab87f78",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/3dsdl/shot-2-bottom.webp",
+      "bytes": 14050,
+      "sha256": "be39bc3cbc86b6588bda5ce98610011c3dd6651f98f5b33d148cdf96bd2ee87f",
+      "source_context": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/files-bottom.webp",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/3dsdl/shot-2-top.webp",
+      "bytes": 11416,
+      "sha256": "1941ccb782277f2dab9d7b6cbd0c9030019d832e70e5ecc459aa8020b2b7c87b",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/3dsdl/shot-3-bottom.webp",
+      "bytes": 6932,
+      "sha256": "e38620dcd4d094955ef29661d460d62a0fcd5a8787d8db7e8ec0642c89b24e66",
+      "source_context": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/installed-bottom.webp",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/3dsdl/shot-3-top.webp",
+      "bytes": 13096,
+      "sha256": "6f19b6721bb5c2883d7cab3a7d2fc76275307fd525ec0af381c55daa72adf908",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/anemone/icon.webp",
+      "bytes": 2158,
+      "sha256": "b81ccf4369bcca4decb660525f19971d49fcf0deb50750385561d8da346c5f58",
+      "source_context": "https://raw.githubusercontent.com/astronautlevel2/Anemone3DS/master/meta/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/anemone/logo.webp",
+      "bytes": 5294,
+      "sha256": "389fd43df15b683a1c0a9b3233e95da2ac89fb7d7f7fad40dfcd17bdaeaa2c0c",
+      "source_context": "https://raw.githubusercontent.com/astronautlevel2/Anemone3DS/master/meta/banner.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/artic/icon.webp",
+      "bytes": 8448,
+      "sha256": "2087eb3e0e357c366ec94eaa9eaa18e2bf6f973f6bacbdc27a4d8f798886cea4",
+      "source_context": "https://raw.githubusercontent.com/azahar-emu/ArticSetupTool/main/images/logo_small.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/banjo/icon.webp",
+      "bytes": 47696,
+      "sha256": "6f79ba5e2236fbd2fe1705ccccb41ac03b275a687734dea06862bf727867571f",
+      "source_context": "https://raw.githubusercontent.com/oneup03/BanjoRecomp3D/main/icons/app.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/banjo/logo.webp",
+      "bytes": 48626,
+      "sha256": "0def63a0f8ce8310580ba17ae5c6b17193f55d3ab426964206f7d4abd51f6fa0",
+      "source_context": "https://raw.githubusercontent.com/oneup03/BanjoRecomp3D/main/assets/Logo.svg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/butterscotch/icon.webp",
+      "bytes": 774,
+      "sha256": "2d7e8954607fcd575b283d342fa8529bcfde0b04dbd57530c87b7aca2a6ebb18",
+      "source_context": "https://raw.githubusercontent.com/efimandreev0/Butterscotch/main/3ds/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/butterscotch/logo.webp",
+      "bytes": 524,
+      "sha256": "1c84a9ab69c05e251f59257a8ffbc1529538ebc34e3ae4ee5f6e2fd1620f48f3",
+      "source_context": "https://raw.githubusercontent.com/efimandreev0/Butterscotch/main/3ds/banner.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/checkpoint/icon.webp",
+      "bytes": 972,
+      "sha256": "8619d43ec07cbc4dcfe13976866ac8731200420174ea366e2e581f36a55682a4",
+      "source_context": "https://raw.githubusercontent.com/BernardoGiordano/Checkpoint/master/3ds/assets/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/ctrquake/icon.webp",
+      "bytes": 1484,
+      "sha256": "a312bc37caa84e1a81129b33c430356b038b940fa94f15e241eb119962e53487",
+      "source_context": "https://raw.githubusercontent.com/masterfeizz/ctrQuake/master/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/daedalus/icon.webp",
+      "bytes": 2910,
+      "sha256": "5b527ca907f96b1b5040734572fa31fa46927ff4f9f3aa6ac4926257fd341fbd",
+      "source_context": "https://raw.githubusercontent.com/masterfeizz/DaedalusX64-3DS/master/Source/SysCTR/Resources/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/daedalus/logo.webp",
+      "bytes": 3060,
+      "sha256": "d359dc3461c1eda6834b31367ecf01468c33d195f5249f2ad54336bbf424037f",
+      "source_context": "https://raw.githubusercontent.com/masterfeizz/DaedalusX64-3DS/master/Data/Resources/logo.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/dk64/icon.webp",
+      "bytes": 24176,
+      "sha256": "492e10524dad9d6acbf0f4ce37f1bb59856fd0b0c646f6bfb1f40f727717c909",
+      "source_context": "https://raw.githubusercontent.com/oneup03/Donkey-Kong-64-3D/main/icons/app.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/dk64/logo.webp",
+      "bytes": 72160,
+      "sha256": "b2c6e6b749e0cbf81dcb91903ebe983a22413fa76572b918ae2802487efa56c5",
+      "source_context": "https://raw.githubusercontent.com/oneup03/Donkey-Kong-64-3D/main/assets/Logo.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/fbi/icon.webp",
+      "bytes": 196,
+      "sha256": "31b4304e51ecb3d0a306c16d6734af955128f0b2387cbe22548fa10d4ba9e33e",
+      "source_context": "https://raw.githubusercontent.com/Steveice10/FBI/master/romfs/logo.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/fourthtube/icon.webp",
+      "bytes": 480,
+      "sha256": "83c67b21cfdc61fc13495e7a2f9f69a60a7a1efb2a07d89b34fabc6356eeac68",
+      "source_context": "https://raw.githubusercontent.com/erievs/FourthTube/main/resource/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/fourthtube/logo.webp",
+      "bytes": 6612,
+      "sha256": "8919f2db0532f2587b673312eb5f693b3c570707a73b29dad54e37df1df6bd15",
+      "source_context": "https://raw.githubusercontent.com/erievs/FourthTube/main/resource/banner_legacy.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/ftpd/icon.webp",
+      "bytes": 1372,
+      "sha256": "7d909b03a630bbf1aa3cf12675978ff21f6471d67e7b6db846331246f079badc",
+      "source_context": "https://raw.githubusercontent.com/mtheall/ftpd/master/meta/icon.svg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/gd3ds/icon.webp",
+      "bytes": 4184,
+      "sha256": "8cef9cb221d00f1628b7752a30bae8afd64e28c29afee87db1c29b82a05d2ab3",
+      "source_context": "https://raw.githubusercontent.com/AleFunky/gd3ds/master/resources/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/gd3ds/shot-1-bottom.webp",
+      "bytes": 31924,
+      "sha256": "20deb395868241cdf26f5552032ddb2b5e2e29f0f5666255c516ee184a16fa46",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/gd3ds/shot-1-top.webp",
+      "bytes": 27774,
+      "sha256": "d89ba95c94836c7cc091bc3ab3ea0da3a911b3eda4e545b517b75c6be4b4b9e8",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/gd3ds/shot-2-bottom.webp",
+      "bytes": 18752,
+      "sha256": "6195de7944102f27fcff2bce059bc7be60aae2c5f5ee0fba68389c0443b2f1e6",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/gd3ds/shot-2-top.webp",
+      "bytes": 7766,
+      "sha256": "15f7ef888d0a7e82bf49ecca53a9d705ad67abab030060402f773aef870621e6",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/gd3ds/shot-3-bottom.webp",
+      "bytes": 19946,
+      "sha256": "753cf953adfb4e2c4745916e92c3bfff58f871af601e61ccfd3eb47836292982",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/gd3ds/shot-3-top.webp",
+      "bytes": 51318,
+      "sha256": "2131d9564149532c1aa2a2af951bae4efde1af235952165a758e01b9400d028f",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/goemon/icon.webp",
+      "bytes": 49528,
+      "sha256": "6e5b3d001b043f01587246e15b3968643f7b77afb2f0ceea61e22a0a2b67cfd1",
+      "source_context": "https://raw.githubusercontent.com/oneup03/Goemon64Recomp3D/dev/icons/512.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/lynx3ds/icon.webp",
+      "bytes": 87310,
+      "sha256": "430d724ed734643b21e7ebd44397c670f6d483c20a7c94879f5f445bd4df8b37",
+      "source_context": "https://raw.githubusercontent.com/PeterWarrington/lynx3ds/main/icon.svg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/mgba/icon.webp",
+      "bytes": 34924,
+      "sha256": "bbc87a80c7625ea72393b6cd65dc42cca0b1f37fd07020e341aaec23d9a149a7",
+      "source_context": "https://raw.githubusercontent.com/mgba-emu/mgba/master/src/platform/switch/icon.jpg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/mkwii/icon.webp",
+      "bytes": 7540,
+      "sha256": "af17d82511b5dbba5d7166893057b8696088973cd913956b8bd14050d6408b2d",
+      "source_context": "https://raw.githubusercontent.com/Epic0522/MarioKartWii-3DS-Redux/main/tools/release/artwork/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/mkwii/logo.webp",
+      "bytes": 36624,
+      "sha256": "b566554957b588fe5c014ce70ba03c345bca2c3fac63e93696508c9629772bdd",
+      "source_context": "https://raw.githubusercontent.com/Epic0522/MarioKartWii-3DS-Redux/main/tools/release/artwork/logo.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/nimbus/icon.webp",
+      "bytes": 602,
+      "sha256": "775ebc8bf7e0b0f060149e819e7f55ca2796b355519b82f9868c91e90d628044",
+      "source_context": "https://raw.githubusercontent.com/PretendoNetwork/nimbus/main/app/meta/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/openlara/icon.webp",
+      "bytes": 10224,
+      "sha256": "be3d9781cadad4466de2a138029cca6ff0eb913ccaeba9e638d2704497f9a11f",
+      "source_context": "https://raw.githubusercontent.com/XProger/OpenLara/master/src/platform/osx/Assets.xcassets/AppIcon.appiconset/icon512x512.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/picodrive/icon.webp",
+      "bytes": 1510,
+      "sha256": "f2cefc643d7d7e4c00feac614405b3ef372a8e0671ced475ec2fe368445d5313",
+      "source_context": "https://raw.githubusercontent.com/bubble2k16/emus3ds/master/src/cores/picodrive/assets/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/psx3d/icon.webp",
+      "bytes": 4078,
+      "sha256": "51a615b7927b42116e6cac99113667b649b13f4c9b2c4df53491adc16a375f1b",
+      "source_context": "https://raw.githubusercontent.com/BreadChaser/PSX3D/main/psx3d/meta/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/psx3d/shot-1-bottom.webp",
+      "bytes": 33852,
+      "sha256": "b5553bd11b90ba92533fe3b8a8d9081e194d898e4a33d9eae5e54a3d98ef3d06",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/psx3d/shot-1-top.webp",
+      "bytes": 73008,
+      "sha256": "898bf1a6ee4caa6459b9644be9ee8cf0006861c9c96b01de84f5a089fd7ef44d",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/psx3d/shot-2-bottom.webp",
+      "bytes": 22462,
+      "sha256": "f6ae9e5b71c08279d2bb903f1f917d10491d60c2c6a94d8505e613c29f887bc1",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/psx3d/shot-2-top.webp",
+      "bytes": 83900,
+      "sha256": "b329f5fc2ea0d76a93b774175a0b70492bd73679a7bdf84276f02483c4c1d5ba",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/psx3d/shot-3-bottom.webp",
+      "bytes": 3446,
+      "sha256": "2b80e43edc7235bda0cccb63dc99016b42cd700bbb95ccece30984e562f770c7",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/psx3d/shot-3-top.webp",
+      "bytes": 140716,
+      "sha256": "292c2e4537706c84d6674a6f627f0e070d3398094c542f1c84b59efef6603bf5",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/recorder/icon.webp",
+      "bytes": 636,
+      "sha256": "52395676060b1c5fbed7e6d348431a0c8d8887a4d17352f67c1532fbe7f6f5fa",
+      "source_context": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/app/assets/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/recorder/logo.webp",
+      "bytes": 2546,
+      "sha256": "1a344a3fc17ebdf9020a70a7201a669632b501b9c81a91520d8a236cf608bfa4",
+      "source_context": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/app/assets/banner.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/recorder/shot-1-bottom.webp",
+      "bytes": 5302,
+      "sha256": "2144a3ad8af0e4f37a4a68d7947e3d6b8949c669859ecd0c9fd14a782d06c9e6",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/recorder/shot-1-top.webp",
+      "bytes": 16728,
+      "sha256": "f181037b80593915bf1855841e7a904ace62f9fb41b769d05c05cb1215ec1cbd",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/recorder/shot-2-bottom.webp",
+      "bytes": 8814,
+      "sha256": "56116f761df1e0c59f115bc43b82798ad5b1cf6047757e21a379808bbb736be0",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/recorder/shot-2-top.webp",
+      "bytes": 25490,
+      "sha256": "d0346a7b116f4c2838052ac28ebb501306079b9d75f622aa91f92a59baaaa38a",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/recorder/shot-3-bottom.webp",
+      "bytes": 9162,
+      "sha256": "fb57d089576df7d1ee0a970ca156b9f67d211ba97be41ad4b3e01497342470b2",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/recorder/shot-3-top.webp",
+      "bytes": 5852,
+      "sha256": "eab82fb0355acc5a52d41a8e60eb30d4dacee767d48568b24b02962c81d66bd5",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/retroarch/icon.webp",
+      "bytes": 3590,
+      "sha256": "02446ea5bc98477b2be46456c2f0fdc264453fb6d9737dcda2534a4cfb919fdf",
+      "source_context": "https://raw.githubusercontent.com/libretro/RetroArch/master/media/ico_src/icon.svg",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/icon.webp",
+      "bytes": 2170,
+      "sha256": "7017cf66b3ef8e09e000f50bf04e278fcff9dd0fcc7a46ad97ced2d1cf24e884",
+      "source_context": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/resources/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/logo.webp",
+      "bytes": 20304,
+      "sha256": "7abf1b0625b718812233524d1861b297cc5f7117fbe5f6851c944c582fb9ac21",
+      "source_context": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/gfx/splash_logo.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/shot-1-bottom.webp",
+      "bytes": 20420,
+      "sha256": "a5d10de3e2c384df76fe0d8608f001af220b880bb68009839204f3057b5fa97e",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/shot-1-top.webp",
+      "bytes": 109264,
+      "sha256": "8777a5f574628741433f7a12fd81d0fb5903be620fe710fde7aa2c629f8e6fc1",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/shot-2-bottom.webp",
+      "bytes": 3008,
+      "sha256": "a5c56b7e610a0c4ad0f6c1d11a43ce387c7621c730e136d6c82682bb801d50a3",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/shot-2-top.webp",
+      "bytes": 44272,
+      "sha256": "d4d474d2d22141b6017c7666376dccfd778f5b24a7dcca53feb186dfa892cc3f",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/shot-3-bottom.webp",
+      "bytes": 2190,
+      "sha256": "289a1d815b6e72edcc247c6fa0e20c97917357066ec33a21a6bd7dceea355a64",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/snes9x/shot-3-top.webp",
+      "bytes": 51002,
+      "sha256": "7e0b831e35f17f116126aeac2cc169280516fab7600bdecd4775b260ac049574",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/sources.json",
+      "bytes": 21273,
+      "sha256": "88b840f441f98b55293ab5a6c24b253b214e43def37bb68cdc62a2edee31cc88",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/icon.webp",
+      "bytes": 2742,
+      "sha256": "1493d36e4f91b80b29f0b049fc000181f646af2621ff90558a5659f949d6a46f",
+      "source_context": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/cia/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/shot-1-bottom.webp",
+      "bytes": 43212,
+      "sha256": "466f0fd69faf07a5b9501cfcf85f41a8ad33e8202e54b76e980d0394908b0188",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/shot-1-top.webp",
+      "bytes": 105232,
+      "sha256": "b93b8d82b7d2a49955a1cde18fd1fce4ab0975aa4600c29a4d1f1ae12682d094",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/shot-2-bottom.webp",
+      "bytes": 25094,
+      "sha256": "0a79379e4ef0acad3afed2739cf747977a900cb671360d2890743d8b8fddcc77",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/shot-2-top.webp",
+      "bytes": 112986,
+      "sha256": "9ddaac55d751151f392f46c32ab411489bcd28dfa8ba8fe6d8df287e790491a4",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/shot-3-bottom.webp",
+      "bytes": 89726,
+      "sha256": "16c4249874018ec3323ccb2b0f48681f04c8b2ae969159e5b8297d648e287307",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/shot-3-top.webp",
+      "bytes": 106868,
+      "sha256": "13346991c98537af4e15b35216473b91a90cafdfeb5cb6916773dedfe4052827",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/shot-4-bottom.webp",
+      "bytes": 40710,
+      "sha256": "ec8a6856fb35f4e7a77eb192daa9731fc6ba474276e25eeee1c39563fe9ec98d",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/starhaven/shot-4-top.webp",
+      "bytes": 105360,
+      "sha256": "7a259b01f40a5906abca648c3141d065825a7d4b8d29730b2ae7fc2791d5c0a3",
+      "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/universal/icon.webp",
+      "bytes": 1536,
+      "sha256": "9e50d449020c9acd520f5004800375d1a9ca3108c90f6f5f1fa310a1744caab8",
+      "source_context": "https://raw.githubusercontent.com/Universal-Team/Universal-Updater/master/app/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/universal/logo.webp",
+      "bytes": 14964,
+      "sha256": "880d73d73c43a66b995db7d114e922b887efb6b8e09fbadf6879cc16fbde3262",
+      "source_context": "https://raw.githubusercontent.com/Universal-Team/Universal-Updater/master/resources/2d-banner.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/wumiibo/icon.webp",
+      "bytes": 1846,
+      "sha256": "dee3267f8be570769890471bb7366ccf9a3b77c468d8031c89dc33cf4d902292",
+      "source_context": "https://raw.githubusercontent.com/hax0kartik/wumiibo/master/wumiibohelper/gfx/icon.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/community/xash3ds/icon.webp",
+      "bytes": 17156,
+      "sha256": "70fbaa29278de7f77846328d943065dc00cacc7b140ed1469aa415d45c6eebef",
+      "source_context": "https://raw.githubusercontent.com/masterfeizz/Xash3DS/master/game_launch/icon-xash-material.png",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/config/personal-assets.fme",
+      "bytes": 1836,
+      "sha256": "b3654c2e76e78584fb66f245c183484bad7ad7142e13276b3cb36ec42e1bc14a",
+      "source_context": "Authenticated encrypted personal-resource metadata; contains no game payload or decryption key",
+      "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/fonts/20fc9b6fc618e7c3c68d.woff2",
@@ -146,13 +685,6 @@
       "sha256": "95837e182baeeada83368f7748db28357f0a1b75c6b84ff7065b5edf933c8e18",
       "source_context": "Bundled typefaces; see adjacent OFL texts and docs/legal/THIRD_PARTY_NOTICES.md",
       "rights": "SIL OFL where supplied; verify the matching font notice."
-    },
-    {
-      "path": "assets/ports/.DS_Store",
-      "bytes": 8196,
-      "sha256": "e4e88cb998f2a85d963287b67590a6a2ab39e9e66ce4f791a342ff838fafc0f2",
-      "source_context": "Existing Forge project asset; source-specific permission not established in this repository.",
-      "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/ports/alttp/art.webp",
@@ -569,8 +1101,8 @@
     },
     {
       "path": "assets/ports/mk64/icon.webp",
-      "bytes": 14532,
-      "sha256": "fd122e1a4b4b10d93fb7ffb18dd823cc6cecac32f0aa93f59ca25173842afa13",
+      "bytes": 103874,
+      "sha256": "7191e7f93191e4450d4d4f0ed04ace8a7b6276e4902085b87702c5a871fdba77",
       "source_context": "https://github.com/EstebanPdN/mario-kart-64-3ds",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -1030,73 +1562,87 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/reader-art/manifest.json",
+      "bytes": 102136,
+      "sha256": "eeecfd232d0e823f7e0fdbc7a087e8c5f6fa85139c07d0e49225b54ca33989c6",
+      "source_context": "Public README images; exact URLs and original hashes in assets/reader-art/manifest.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
+      "path": "assets/reader-data/manifest.json",
+      "bytes": 53059,
+      "sha256": "cc841f233b9f1147628880612fef15bab226091b095065c2e3e1c47ffefcb01a",
+      "source_context": "Public GitHub reader snapshots; exact endpoints and hashes in assets/reader-data/manifest.json",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/store-resources/alttp-light-world.fvid",
       "bytes": 711836,
       "sha256": "7b59424a20307d04e9fb70481220d9887558d6f8f0a35e83157e910a8f1ab030",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/alttp-trailer.fvid",
       "bytes": 5941159,
       "sha256": "b8865ea4d1ca2d1df179c7eec3c377d6d3d6de54014a0495aff971cad1c99e86",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/doom-forest.fvid",
       "bytes": 657894,
       "sha256": "2f1de1e3e8ab75ba74bb7aecbb8c752ae153d3efe272c54a31d6c15e3a172a01",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/hosting.json",
       "bytes": 2012,
-      "sha256": "d33cfa1366ca7d2d8b6e41aade4acfec46d1030101325b2f4a505f75b0c21550",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "sha256": "abfbcfe2410d1a1f04293ac492f610478d12df638f0166c77ff37406ad54a16a",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/manifest.json",
       "bytes": 2012,
-      "sha256": "0f1ff9ff1cd81425e62f8b5c2df528848f6a5607b8fa69b0868b3dd50455ec34",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "sha256": "0d58e1f099e4a473cf6e84c1c6c05558f6bddb5e3eab38842162d828d350c8f4",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/minish-minish-woods.fvid",
       "bytes": 931111,
       "sha256": "83d0df6f311a4618d3f0ce7a8005d55a95f647850dcb2d4d2c8202d564176640",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/mk64-luigi-raceway.fvid",
       "bytes": 1188789,
       "sha256": "9648ebd25225811e3d78e5b47207236d8cb0ef96ac05ab3d3fba959df3880c49",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/mk64-trailer.fvid",
       "bytes": 5931857,
       "sha256": "b5c881b5750c7c3a9fe7fc8432879ea7005ce8e560a46e0533ab66ecdeace613",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/report.json",
       "bytes": 7970,
       "sha256": "99a3f7819aad1e2f1033bb3db587466a53fbd2b464eee598d0498fb36b33118f",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/store-resources/starwing-corneria.fvid",
       "bytes": 682303,
       "sha256": "157ec7c9a8318ad3d44f4f5c1d5f2571a8e03999094a6a02bb0a26d258a9fb23",
-      "source_context": "tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
+      "source_context": "3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     }
   ]

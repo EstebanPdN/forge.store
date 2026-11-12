@@ -24,6 +24,10 @@ int main(void) {
  parse("before ![a](a.png) between ![b](b.png) after [one](a.md) [two](https://example.com)");
  assert(kinds(GH_IMAGE)==2&&kinds(GH_LINK)==2&&has("between")&&has("after"));
  assert(strstr(d.nodes[1].url,"raw.githubusercontent.com/owner/repo/main/a.png"));
+ parse("![native](https://github.com/owner/repo/blob/main/meta/banner.png?raw=true) [source](https://github.com/owner/repo/blob/main/meta/banner.png)");
+ assert(kinds(GH_IMAGE)==1&&kinds(GH_LINK)==1);
+ assert(!strcmp(d.nodes[0].url,"https://raw.githubusercontent.com/owner/repo/main/meta/banner.png?raw=true"));
+ assert(!strcmp(d.nodes[d.count-1].url,"https://github.com/owner/repo/blob/main/meta/banner.png"));
  parse("[![Badge](badge.svg)](https://example.com)");assert(kinds(GH_IMAGE)==1&&kinds(GH_LINK)==1);
  parse("<picture><source media=\"(prefers-color-scheme: dark)\" srcset=\"dark.svg\"><img src=\"light.svg\" alt=\"card\"></picture><img src=\"other.png\">");
  assert(kinds(GH_IMAGE)==2&&strstr(d.nodes[0].url,"dark.svg")&&strstr(d.nodes[1].url,"other.png"));

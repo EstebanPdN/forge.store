@@ -17,8 +17,8 @@ bool catalog_sync_pump(void){
         free(body);waiting_app=-1;next_at=NOW+1;
     }
     if(!stopped&&NOW>=next_at&&!install_active()&&!reader_slot_busy(slot)){
-        while(next_app<BUILTIN_APPS){App *app=&APPS[next_app++];if(!app->repo||!json_is_object(json_object_get(app->j,"releases")))continue;
-            char path[256];int n=snprintf(path,sizeof path,"repos/%s/releases?per_page=10",app->repo);
+        while(next_app<BUILTIN_APPS){App *app=&APPS[next_app++];if(!app->repo||!json_object_size(json_object_get(app->j,"releases"))||json_is_true(json_object_get(app->j,"releasePinned")))continue;
+            char path[256];int n=snprintf(path,sizeof path,"repos/%s/releases?per_page=12",app->repo);
             if(n>0&&(size_t)n<sizeof path&&reader_request_slot_ttl(slot,path,false,21600)){waiting_app=next_app-1;break;}
         }
     }return changed;

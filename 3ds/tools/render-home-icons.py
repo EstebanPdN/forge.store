@@ -32,7 +32,9 @@ from PIL import Image, ImageDraw, __version__ as PIL_VERSION
 ROOT = Path(__file__).resolve().parents[2]
 OUT = ROOT / '3ds/build/gen/icons-44'
 FTX = ROOT / '3ds/romfs/gfx/icons-44.ftx'
-SIZE, RADIUS, AA, COUNT = 44, 10, 8, 23
+SIZE, RADIUS, AA = 44, 10, 8
+COUNT = len(json.loads((ROOT / 'catalog/forge-store.json').read_text())['apps'])
+ATLAS_H = 256 if COUNT<=25 else 512
 
 # Only a template shim: no browser, layout engine, server or network. Calling the
 # real glyphIcon avoids copying SVG paths or reimplementing its gradient geometry.
@@ -74,7 +76,7 @@ def sha(data):
 def read_catalog():
     apps = json.loads((ROOT / 'catalog/forge-store.json').read_text())['apps']
     ids = [a['id'] for a in apps]
-    require(len(ids) == COUNT and len(set(ids)) == COUNT, 'Expected 23 unique Forge catalog IDs')
+    require(len(ids) == COUNT and len(set(ids)) == COUNT, 'Expected unique catalog IDs')
     require(all(re.fullmatch(r'[a-z0-9_-]+', x) for x in ids), 'Unsafe icon ID')
     for a in apps:
         if isinstance(a['icon'], str):
@@ -118,17 +120,19 @@ def render_icon(app, glyphs):
         luma = rgb @ np.array([.213, .715, .072])
         rgb = (luma[:, :, None] + .15 * (rgb - luma[:, :, None])) * .86
         rgb = np.clip((rgb - .5) * .92 + .5, 0, 1)
-    # The current RVC source has alpha 254 everywhere. Match the light web tile
-    # background; its dark-theme difference is recorded rather than hidden.
-    alpha = px[:, :, 3:4]
-    rgb = rgb * alpha + np.array([238, 242, 244]) / 255 * (1 - alpha)
+    # Preserve source transparency. icon_at supplies the current theme's tile
+    # behind this atlas, so official transparent art works in both themes.
+    alpha = px[:, :, 3].copy()
     outer = round_shape()
     border = outer & ~round_shape(inset=1)
     highlight = outer & ~round_shape(dy=1)
     # ::after lists the white top inset first, so it is painted above the black rim.
-    rgb[border] *= .92
-    rgb[highlight] = rgb[highlight] * .65 + .35
-    rgba = np.dstack((np.rint(rgb * 255).astype(np.uint8), outer.astype(np.uint8) * 255))
+    for region, opacity, color in ((border,.08,0),(highlight,.35,1)):
+        old = alpha[region]
+        new = opacity + old * (1-opacity)
+        rgb[region] = (color*opacity + rgb[region]*old[:,None]*(1-opacity))/new[:,None]
+        alpha[region] = new
+    rgba = np.dstack((np.rint(rgb * 255).astype(np.uint8), np.rint(alpha * outer * 255).astype(np.uint8)))
     rgba[~outer] = 0
     return Image.fromarray(rgba).convert('RGBa').resize((SIZE, SIZE), Image.Resampling.BOX).convert('RGBA')
 
@@ -137,9 +141,9 @@ def ftx_bytes(images):
     """FTX1 RGBA8, same shelf layout and ABGR Morton encoding as pack.py.
 
     This small standalone writer cannot invoke pack.py's destructive main().
-    Rect order stays catalog order; 23 padded 44 px cells fit a 256x256 texture.
+    Rect order stays catalog order; atlas height grows with the curated catalog.
     """
-    w = h = 256
+    w, h = 256, ATLAS_H
     canvas = np.zeros((h, w, 4), dtype=np.uint8)
     rects = []
     for i, im in enumerate(images):
@@ -163,7 +167,7 @@ def ftx_bytes(images):
 def verify_ftx(data, images):
     """Decode independently with scalar address math; compare every image/gutter."""
     magic, w, h, fmt, count, pad = struct.unpack_from('<4sHHBBH', data)
-    require((magic, w, h, fmt, count, pad) == (b'FTX1', 256, 256, 0, COUNT, 0), 'Bad FTX header')
+    require((magic, w, h, fmt, count, pad) == (b'FTX1', 256, ATLAS_H, 0, COUNT, 0), 'Bad FTX header')
     offset = 12 + count * 8
     raw_size, zsize = struct.unpack_from('<II', data, offset)
     require(len(data) == offset + 8 + zsize, 'Bad FTX payload size')
@@ -198,13 +202,16 @@ def verify_icons(apps, images):
     for app, im in zip(apps, images):
         require(im.mode == 'RGBA' and im.size == (SIZE, SIZE), f'Bad dimensions/mode: {app["id"]}')
         alpha = np.asarray(im)[:, :, 3]
-        require(np.array_equal(alpha, expected_alpha), f'Bad rounded alpha: {app["id"]}')
-        require(np.array_equal(alpha, alpha[::-1]) and np.array_equal(alpha, alpha[:, ::-1]), 'Asymmetric corners')
-        require(alpha[0, 0] == 0 and alpha[0, RADIUS] == 255 and alpha[22, 22] == 255, 'Bad coverage')
+        opaque = not isinstance(app['icon'],str) or Image.open(ROOT/app['icon']).convert('RGBA').getchannel('A').getextrema() == (255,255)
+        require(np.all(alpha <= expected_alpha), f'Artwork escapes rounded mask: {app["id"]}')
+        require(alpha[0,0] == 0 and np.any(alpha > 128), 'Empty artwork or opaque corner')
+        if opaque:
+            require(np.array_equal(alpha, expected_alpha), f'Bad rounded alpha: {app["id"]}')
+            require(np.array_equal(alpha, alpha[::-1]) and np.array_equal(alpha, alpha[:, ::-1]), 'Asymmetric corners')
 
 
 def contact_sheet(apps, images):
-    sheet = Image.new('RGB', (800, 5 * 204 + 36), '#20252b')
+    sheet = Image.new('RGB', (800, ((COUNT+4)//5) * 204 + 36), '#20252b')
     draw = ImageDraw.Draw(sheet)
     draw.text((12, 10), 'Forge home icons | catalog order, 0-based | 1x + nearest 2x | 44px / r10', fill='white')
     for i, (app, im) in enumerate(zip(apps, images)):
@@ -247,12 +254,37 @@ def check(apps, expect_ftx):
         verify_ftx(FTX.read_bytes(), images)
 
 
+def write_other_sizes(apps, sharp):
+    """Render original art at each real draw size, preserving catalog indices."""
+    import importlib.util
+    global SIZE, RADIUS
+    old_argv = sys.argv
+    sys.argv = ['pack.py', str(ROOT)]
+    spec = importlib.util.spec_from_file_location('forge_pack', ROOT / '3ds/tools/pack.py')
+    pack = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pack)
+    sys.argv = old_argv
+    for size in (20, 32, 40, 48, 64):
+        SIZE, RADIUS = size, round(size * 10 / 44)
+        result = subprocess.run(['node', '-e', SVG_WORKER], input=json.dumps({
+            'root': str(ROOT), 'sharp': sharp, 'size': SIZE * AA,
+            'apps': [a for a in apps if not isinstance(a['icon'], str)],
+        }), text=True, capture_output=True, check=True)
+        glyphs = json.loads(result.stdout)['images']
+        images = [render_icon(a, glyphs) for a in apps]
+        path = ROOT / '3ds/romfs/gfx' / ('icons.ftx' if size == 48 else f'icons-{size}.ftx')
+        pack.write_sheet(path, images, pack.RGBA8)
+        print(f'{path.relative_to(ROOT)}: {len(images)} icons at {size} px')
+    SIZE, RADIUS = 44, 10
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--sharp-module', default=os.environ.get('FORGE_SHARP_MODULE', 'sharp'),
                         help='Installed Sharp module name or absolute directory; never downloads dependencies')
     parser.add_argument('--write-ftx', action='store_true', help='Also write/verify ONLY romfs/gfx/icons-44.ftx')
     parser.add_argument('--check', action='store_true', help='Verify outputs and source hashes without rendering/writing')
+    parser.add_argument('--all-sizes', action='store_true', help='Also regenerate the 20/32/40/48/64 px native atlases')
     args = parser.parse_args()
     apps = read_catalog()
     if args.check:
@@ -273,6 +305,10 @@ def main():
         verify_ftx(data, images)
     require(source_hashes(apps) == sources, 'Source changed during render; retry')
     OUT.mkdir(parents=True, exist_ok=True)
+    wanted = {a['id'] for a in apps} | {'contact-sheet'}
+    for old in OUT.glob('*.png'):
+        if old.stem not in wanted:
+            old.unlink()
     entries = []
     for i, (app, im) in enumerate(zip(apps, images)):
         path = OUT / f'{app["id"]}.png'
@@ -289,54 +325,40 @@ def main():
                 'source_sha256': sources, 'renderer': {'pillow': PIL_VERSION, 'numpy': np.__version__,
                                                      'sharp': rendered['versions']},
                 'ftx': None if data is None else {'path': str(FTX.relative_to(ROOT)), 'sha256': sha(data),
-                                                'size_bytes': len(data), 'texture': [256, 256],
-                                                'format': 'FTX1 RGBA8', 'raw_bytes': 262144},
+                                                'size_bytes': len(data), 'texture': [256, ATLAS_H],
+                                                'format': 'FTX1 RGBA8', 'raw_bytes': 256*ATLAS_H*4},
                 'icons': entries}
     (OUT / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-    report = '''# Offline Forge home icons
+    if args.all_sizes:
+        write_other_sizes(apps, args.sharp_module)
+    report = f'''# Offline Forge home icons
 
-23 RGBA PNGs, 44x44 pixels, circular radius 10. Source composition: 10 local
-image icons and 13 original web SVG glyphs/gradients. Four development icons
-(sm64ds, rvc, worms, dusklight) use saturate(.15), brightness(.86), contrast(.92).
-Mutiny uses nearest sampling; other raster artwork uses Lanczos. Rounded clips
-and the 1 px inset rim/top highlight use 8x area coverage. Original assets and
-the older icon sets are inputs only. contact-sheet.png shows 1x and nearest 2x.
+{COUNT} RGBA PNGs, 44×44 pixels, with a circular radius of 10. Official local
+artwork and original SVG glyphs follow catalog order. Development artwork uses
+saturate(.15), brightness(.86), contrast(.92). Pixel artwork uses nearest sampling;
+other raster artwork uses Lanczos. Rounded clips and the inset rim use 8× coverage.
 
 ## Verification
 
-The generator checks count, unique IDs, source/native catalog order, dimensions,
-RGBA mode, symmetric alpha, transparent corners and the radius-10 quarter-circle
-area. FTX validation independently decodes every Morton texel and compares all
-23 ordered images plus their duplicated 1 px gutters. --check is read-only and
-also checks source/output SHA-256. manifest.json records renderer versions.
+The generator checks unique IDs, source/native catalog order, dimensions and modes.
+Independent quarter-circle area checks validate the corner mask. Opaque sources
+have symmetric full coverage; transparent sources must stay inside that mask.
+FTX validation independently decodes every Morton texel, ordered image and gutter.
+`--check` validates source and output hashes without changing files.
 
-## Native integration (not implemented by this tool)
+## Native integration
 
-1. catalog.c: add 44 to ICON_PX, expand ICON_SZ and both four-entry loops
-   (catalog_load and app_icon_px). Existing loading uses icons-%d.ftx and crisp
-   sampling; the sheet index remains App.icon. Update catalog.h's size comment.
-   The 256x256 RGBA8 sheet adds 256 KiB of decoded texture memory when loaded.
-2. Home's icon draw calls must request app_icon_px(app, 44) and draw at 1:1.
-   Keep the selection frame outside the texture: 52x52, 2 px free gap, 2 px stroke.
-   Without the loader change a 44 request still falls back to the 48 px sheet.
-3. pack.py now includes icons-44 from these generated PNGs in its full asset
-   pack. To refresh only this sheet, run this generator with --write-ftx.
-   No full asset pack or application packaging was run during this change.
-4. This is the 23-app Forge sheet only. Universal icons remain on their existing
-   sheets and take the separate app_icon path; native 44 px Universal art is pending.
+The 44 px sheet is drawn at 1:1 by Home. Other callers use 20/32/40/48/64 px sheets.
+The selection frame and status overlays remain separate. The native scene draws
+its current theme's tile beneath preserved source transparency. Universal-DB art
+uses its separate cache and atlases.
 
 ## Limits
 
-No browser, emulator, hardware test, native build or application packaging was run.
-Pillow/Lanczos and Sharp/librsvg rasterization are not proven byte-identical to
-Chromium. Pixelated CSS downsampling can differ from nearest at non-integer ratios.
-CSS outer drop shadow, selection and dynamic status overlays are not baked into
-the strict 44x44 rounded tile; render them outside it if required. The underlying
-parent inset shadow is covered by opaque artwork; the visible ::after rim is baked.
-RVC has alpha 254: its background is composited against the light surface #eef2f4;
-the dark web surface can differ by at most one RGB level from this single sheet.
-Style constants mirror the reviewed CSS; CSS changes require reviewing this tool.
-No claim of exact browser parity or console validation is made.
+This generator does not validate emulator or hardware behavior. Pillow and Sharp
+rasterization are not proven byte-identical to Chromium. Pixelated downsampling
+can differ at non-integer ratios. The CSS outer shadow is not baked into the tile.
+CSS changes require reviewing this renderer and its visual evidence.
 
 ## Exact sheet order (zero-based)
 
@@ -356,7 +378,7 @@ No claim of exact browser parity or console validation is made.
     check(apps, args.write_ftx)
     print(f'Generated and verified {COUNT} icons in {OUT.relative_to(ROOT)}')
     if data is not None:
-        print(f'{FTX.relative_to(ROOT)}: {len(data)} bytes; 256x256 RGBA8 (256 KiB decoded)')
+        print(f'{FTX.relative_to(ROOT)}: {len(data)} bytes; 256x{ATLAS_H} RGBA8')
 
 
 if __name__ == '__main__':

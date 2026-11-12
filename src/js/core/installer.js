@@ -4,6 +4,7 @@
 import { Emitter } from './state.js';
 import { L } from './i18n.js';
 import { baseName } from './sd.js';
+import { forgeMode } from './forge-mode.js';
 
 const MB = 1024 * 1024;
 
@@ -35,6 +36,7 @@ export class Installer extends Emitter {
       speed: 0,
       eta: Infinity,
       created: [],
+      personalCreated: [],
       dirs: [],
       missing: [],
       warnings: [],
@@ -50,7 +52,7 @@ export class Installer extends Emitter {
 
   plan(job) {
     const { app, format, release } = job;
-    const raw = app.install[format];
+    const raw = forgeMode.plan(app.id, app.install[format]);
     const steps = [];
     if (raw.some((s) => s.type === 'downloadRelease' || s.type === 'downloadUrl')) {
       steps.push({ type: 'resolve', key: 'install.step.resolve', vars: { repo: app.repo || 'Universal-DB' }, weight: 0.6 });
@@ -202,6 +204,8 @@ export class Installer extends Emitter {
     if (job.cancelled) {
       this.rollback(job);
       job.status = 'cancelled';
+    } else if (job.status === 'error') {
+      this.rollback(job);
     } else if (job.status !== 'error') {
       job.status = 'done';
       job.progress = 1;
@@ -226,10 +230,12 @@ export class Installer extends Emitter {
         job.dirs.push(...this.sd.mkdir(step.path, meta));
         break;
       case 'downloadRelease':
+        if (step.raw?.personal && this.sd.exists(step.output)) break;
         await this.download(job, step);
         if (job.cancelled) return;
-        job.dirs.push(...this.sd.writeFile(step.output, step.total, { ...meta, kind: step.output.startsWith(tmp) ? 'temp' : 'app' }));
-        job.created.push(step.output);
+        job.dirs.push(...this.sd.writeFile(step.output, step.total, step.raw?.personal ? { kind: 'user' } : { ...meta, kind: step.output.startsWith(tmp) ? 'temp' : 'app' }));
+        if (!step.raw?.personal) job.created.push(step.output);
+        else job.personalCreated.push(step.output);
         break;
       case 'verifySha256':
         await this.tick(job, step, 520);
@@ -348,6 +354,7 @@ export class Installer extends Emitter {
   /** Removes what a cancelled job had already written. */
   rollback(job) {
     for (const path of job.created) this.sd.remove(path);
+    for (const path of job.personalCreated) this.sd.remove(path);
     for (const path of [...job.dirs].reverse()) {
       if (!this.sd.list(path).length) this.sd.remove(path);
     }

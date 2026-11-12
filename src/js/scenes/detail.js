@@ -6,6 +6,7 @@ import { h, animate, clamp } from '../core/dom.js';
 import { t, L, fmtSize, fmtDate, fmtStars } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { Banner } from '../ui/banner.js';
+import { originLabel } from '../core/catalog.js';
 import { appIcon, glyph, segmented, Scroller } from '../ui/components.js';
 import { TabBar, revealTabContent } from '../ui/navigation.js';
 import { baseName, parentOf, splitPath, normalize } from '../core/sd.js';
@@ -70,7 +71,7 @@ export class DetailScene extends Scene {
     }
     this.headIcon = appIcon(item, { size: 46 });
     this.chips = h('div.dt-chips');
-    const origin = item.origin ? `${item.origin.platform}${item.origin.year ? ' · ' + item.origin.year : ''} → 3DS` : '';
+    const origin = originLabel(item, true);
     this.head = h(
       'div.dt-head',
       this.headIcon,
@@ -92,7 +93,7 @@ export class DetailScene extends Scene {
     const status = this.catalog.status(item, this.installer.jobs);
     if (status.kind === 'installed') chips.unshift(h('span.chip.mint', icon('check'), t('status.installed')));
     if (status.kind === 'needs-file') chips.unshift(h('span.chip.amber', icon('warn'), t('status.needsFile')));
-    if (status.kind === 'dev') chips.unshift(h('span.chip.lav', icon('hammer'), `${t('status.dev')} · ${item.progress} %`));
+    if (status.kind === 'dev') chips.unshift(h('span.chip.lav', icon('hammer'), Number.isFinite(item.progress) ? `${t('status.dev')} · ${item.progress} %` : t('status.dev')));
     this.chips.replaceChildren(...chips);
   }
 
@@ -375,8 +376,8 @@ export class DetailScene extends Scene {
           'div.dev-card',
           h('div.dev-head', icon('hammer'), h('b', t('detail.devTitle'))),
           h('p', t('detail.devBody')),
-          h('div.dev-progress', h('span', t('detail.progress')), h('b', `${item.progress} %`)),
-          h('div.bar.static', h('i', { style: { '--p': item.progress / 100, background: 'linear-gradient(90deg, var(--lavender), #b9a8ff)' } })),
+          h('div.dev-progress', h('span', t('detail.progress')), h('b', Number.isFinite(item.progress) ? `${item.progress} %` : t('status.unknown'))),
+          Number.isFinite(item.progress) ? h('div.bar.static', h('i', { style: { '--p': item.progress / 100, background: 'linear-gradient(90deg, var(--lavender), #b9a8ff)' } })) : null,
         ),
       );
     }
@@ -466,7 +467,7 @@ export class DetailScene extends Scene {
       );
     } else {
       this.shotView.replaceChildren(
-        h('div.dt-shot-bottom', m.bottom ? h('img', { src: m.bottom, alt: '' }) : h('div.dt-shot-none', icon('eye'))),
+        h('div.dt-shot-bottom', { on: { click: () => m.bottom && this.openBottomShot(m) } }, m.bottom ? h('img', { src: m.bottom, alt: '' }) : h('div.dt-shot-none', icon('eye'))),
         h('div.dt-shot-side', h('div.dt-shot-caption', L(m.caption)), h('p.faint', t('detail.shotHint'))),
       );
     }
@@ -756,7 +757,7 @@ export class DetailScene extends Scene {
         break;
       }
       case 'dev':
-        parts.push(btn('ghost', 'hammer', t('action.inDev', { p: item.progress }), null, null, true));
+        parts.push(btn('ghost', 'hammer', Number.isFinite(item.progress) ? t('action.inDev', { p: item.progress }) : t('status.dev'), null, null, true));
         break;
       default:
     }
@@ -926,8 +927,19 @@ export class DetailScene extends Scene {
     if (btn === 'LEFT' || btn === 'RIGHT' || btn === 'L' || btn === 'R') sheet.controls[sheet.focus]?.step(btn === 'RIGHT' || btn === 'R' ? 1 : -1);
   }
 
+  openBottomShot(media) {
+    this.bottomShot?.remove();
+    this.bottomShot = h('div.dt-bottom-fullscreen', h('img', { src: media.bottom, alt: L(media.caption) || '' }));
+    this.bottom.append(this.bottomShot);
+    this.audio.sfx('select');
+  }
+
   // --- input ------------------------------------------------------------------
   onButton(btn) {
+    if (this.bottomShot) {
+      if (btn === 'B') { this.bottomShot.remove(); this.bottomShot = null; this.audio.sfx('back'); }
+      return;
+    }
     if (this.sheet) return this.sheetButton(btn);
     if (this.playing) return this.playerButton(btn);
     switch (btn) {

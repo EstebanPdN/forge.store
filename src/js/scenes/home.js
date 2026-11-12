@@ -5,6 +5,7 @@ import { h, animate, wait, clamp } from '../core/dom.js';
 import { t, L, fmtSize, fmtStars } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { Banner } from '../ui/banner.js';
+import { originLabel } from '../core/catalog.js';
 import { appIcon, statusChip } from '../ui/components.js';
 import { TabBar, revealTabContent } from '../ui/navigation.js';
 
@@ -289,7 +290,7 @@ export class HomeScene extends Scene {
     badges.replaceChildren();
     cell.dataset.status = status.kind;
     if (status.kind === 'installed') badges.append(h('i.badge.ok', icon('check')));
-    if (status.kind === 'update') badges.append(h('i.badge.up', icon('update')));
+    if (status.kind === 'update') badges.append(h('i.badge.up', icon('download')));
     if (status.kind === 'needs-file') badges.append(h('i.badge.warn', icon('warn')));
     if (status.kind === 'dev') badges.append(h('i.badge.dev', icon('hammer')));
     if (status.kind === 'downloading' || status.kind === 'queued') {
@@ -325,7 +326,7 @@ export class HomeScene extends Scene {
       h(
         'div.card-text',
         h('div.card-title.ellipsis', app.title),
-        h('div.card-sub.ellipsis', t('home.by', { author: app.author }), app.origin?.platform ? ` · ${app.origin.platform} → 3DS` : ''),
+        h('div.card-sub.ellipsis', t('home.by', { author: app.author }), originLabel(app) ? ` · ${originLabel(app)}` : ''),
         h('div.card-chips', chips),
       ),
       this.cardStatus,
@@ -346,7 +347,8 @@ export class HomeScene extends Scene {
       const p = status.job.progress || 0;
       main = h('div.card-progress', h('span', status.kind === 'queued' ? t('status.queued') : `${Math.round(p * 100)} %`), h('div.bar', h('i', { style: { '--p': p } })));
     } else if (status.kind === 'dev') {
-      main = h('div.card-progress', h('span', `${app.progress} %`), h('div.bar.static', h('i', { style: { '--p': app.progress / 100, background: 'var(--lavender)' } })));
+      const known = Number.isFinite(app.progress);
+      main = h('div.card-progress', h('span', known ? `${app.progress} %` : t('status.unknown')), known ? h('div.bar.static', h('i', { style: { '--p': app.progress / 100, background: 'var(--lavender)' } })) : null);
     } else {
       main = statusChip(status) || h('span.chip.forge.size', icon('download'), fmtSize(this.catalog.downloadSize(app)));
     }

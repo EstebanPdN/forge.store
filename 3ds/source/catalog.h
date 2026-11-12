@@ -22,6 +22,8 @@ typedef struct {
     int shots;
     bool shot_bottom[12];
     Sheet shots_t[3], shots_b[3];
+    int shot_index[3];
+    Sheet shot_thumbs;
 } App;
 
 typedef struct {
@@ -37,9 +39,14 @@ extern Sheet ICONS;
 extern json_t *CATALOG;
 
 bool catalog_load(void);
-/** Queues banner layers for every app (they load while the intro plays). */
+/** Warms the first banner; navigation keeps only the current/previous pair. */
 void catalog_request_banners(void);
+void app_request_banner(App *a);
+void catalog_trim_banners(App *current, App *previous);
 void app_request_shots(App *a);
+/** Main thread: retain current/previous/neighbor pairs; thumbnails stay resident. */
+void app_request_gallery(App *a, int current, int previous);
+C2D_Image app_shot(App *a, int index, bool bottom, bool *ready);
 void app_free_shots(App *a);
 C2D_Image app_icon(App *a);
 /** Icon rendered at exactly `size` px (20, 32, 40, 48 or 64); the 48 px one otherwise. */

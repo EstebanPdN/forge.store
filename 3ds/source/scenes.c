@@ -17,6 +17,7 @@
 #include "github_prefetch.h"
 #include "sd_usage.h"
 #include "file_view.h"
+#include "forge_mode.h"
 #include <dirent.h>
 #include <ctype.h>
 #include <errno.h>
@@ -28,6 +29,7 @@ float EYE;
 Theme TH;
 static Sheet HOME_ICONS;
 static bool test_freeze_media;
+static void open_secret(void);
 static Sheet BG[4]; // top-light, top-dark, bottom-light, bottom-dark
 
 enum { SC_INTRO, SC_HOME, SC_DETAIL, SC_INSTALL, SC_SETTINGS, SC_SEARCH, SC_DOWNLOADS, SC_SD, SC_GITHUB };
@@ -252,9 +254,8 @@ static json_t *app_missing_requirement_view(App *a) {
 static AppStatus app_status_view(App *a) {
     if(!a)return ST_AVAILABLE;
     if(install_busy(a))return ST_BUSY;
-    if(a->dev)return ST_DEV;
     const char *version=app_installed_version(a);
-    if(!version||!*version)return ST_AVAILABLE;
+    if(!version||!*version)return a->dev?ST_DEV:ST_AVAILABLE;
     json_t *record=installed_record(a);
     const char *channel=json_string_value(json_object_get(record,"channel"));
     bool exp=channel?!strcmp(channel,"experimental"):json_is_true(json_object_get(record,"experimental"));
@@ -273,7 +274,10 @@ static void status_icon(App *a, float cx, float cy, float al) {
         circle(cx, cy, 7.5f, C(TH.bg, al)), circle(cx, cy, 6, C(MINT, al)), draw_icon("check", cx, cy, 9, C(0xffffff, al));
         break;
     case ST_UPDATE:
-        circle(cx, cy, 7.5f, C(TH.bg, al)), circle(cx, cy, 6, C(FORGE, al)), draw_icon("update", cx, cy, 9, C(0xffffff, al));
+        circle(cx, cy, 7.5f, C(TH.bg, al)), circle(cx, cy, 6, C(FORGE, al)), draw_icon("download", cx, cy, 9, C(0xffffff, al));
+        break;
+    case ST_DEV:
+        circle(cx, cy, 7.5f, C(TH.bg, al)), circle(cx, cy, 6, C(LAV, al)), draw_icon("hammer", cx, cy, 9, C(0xffffff, al));
         break;
     case ST_NEEDS_FILE:
         circle(cx, cy, 7.5f, C(TH.bg, al)), circle(cx, cy, 6, C(AMBER, al)), draw_icon("warn", cx, cy, 9, C(0xffffff, al));
@@ -289,6 +293,7 @@ static void icon_at(App *a, float x, float y, int size, float scale, float al) {
     if(a->universal&&a->icon<BUILTIN_APPS){const char *url=json_string_value(json_object_get(a->j,"icon"));if(remote_image_ready(url)){remote_image_draw(url,x,y,size*scale,size*scale,al);return;}}
     C2D_Image im=size==44 && !a->universal && sheet_ok(&HOME_ICONS) && a->icon<HOME_ICONS.count?sheet_img(&HOME_ICONS,a->icon):app_icon_px(a,size);
     float s = scale * size / im.subtex->width;
+    if (!a->universal) rrect(x,y,size*scale,size*scale,roundf(size*.21f)*scale,C(TH.surface2,al));
     draw_img(im, x, y, s, s, al); // apps in development are rendered muted (the .dev filter)
 }
 
@@ -299,6 +304,7 @@ typedef struct {
     Sheet wobble, spin;
     int frames, spins;
     float cx, cy, size;
+    bool shadow;
 } Coin;
 static Coin COIN_EMBLEM, COIN_THEME[2];
 
@@ -312,6 +318,7 @@ static void coin_load(Coin *c, const char *name, bool spin) {
     c->cx = json_number_value(json_object_get(m, "cx"));
     c->cy = json_number_value(json_object_get(m, "cy"));
     c->size = json_number_value(json_object_get(m, "size"));
+    c->shadow = strcmp(name, "about") != 0;
     char path[64];
     snprintf(path, sizeof path, "romfs:/gfx/coin-%s.ftx", name);
     sheet_load_now(&c->wobble, path);
@@ -344,7 +351,8 @@ static float bezier(float x, float x1, float y1, float x2, float y2) {
 #define UI_TAB_MAX 16
 #define UI_TAB_SECONDS .340f
 typedef struct {
-    bool ready;
+    bool ready, dragging, manual_scroll;
+    float drag_shift;
     int selected, count, direction;
     float padding;
     float x, y, w, widths[UI_TAB_MAX], positions[UI_TAB_MAX];
@@ -372,7 +380,10 @@ static void tabs_layout(UiTabs *t, float x, float y, float w, const char *const 
     int spare = (int)fmaxf(0, viewport - 6 - total);
     total = 3;
     for (int i=0;i<count;i++) { t->widths[i] += spare/count + (i < spare%count); t->positions[i]=total; total+=t->widths[i]; }
+    bool changed_selection=!t->ready || t->selected!=selected;
     float shift = roundf(clampf(t->positions[selected]+t->widths[selected]/2-viewport/2, 0, fmaxf(0,total+3-viewport)));
+    if(t->manual_scroll && !changed_selection) shift=clampf(t->to_shift,0,fmaxf(0,total+3-viewport));
+    if(changed_selection) t->manual_scroll=false;
     if (!t->ready || t->selected != selected || t->to_shift != shift || t->to_w != t->widths[selected]) {
         if (t->ready) tabs_sample(t);
         t->direction = selected >= t->selected ? 1 : -1;
@@ -407,8 +418,20 @@ static int tabs_input(UiTabs *t, bool wrap) {
     int d=0;
     if (IN.down & KEY_L || hit(t->x,t->y,16,28)) d=-1;
     if (IN.down & KEY_R || hit(t->x+t->w-16,t->y,16,28)) d=1;
-    if (d) { int n=t->selected+d; return wrap?(n+t->count)%t->count:(int)clampf(n,0,t->count-1); }
+    if (d) { t->manual_scroll=false; int n=t->selected+d; return wrap?(n+t->count)%t->count:(int)clampf(n,0,t->count-1); }
     float left=t->x+19,right=t->x+t->w-19;
+    if(IN.touch_down && IN.tx>=left && IN.tx<right && IN.ty>=t->y && IN.ty<t->y+28) {
+        tabs_sample(t);t->dragging=true;t->drag_shift=t->shift;
+    }
+    if(t->dragging) {
+        if(IN.touching && IN.dragged) {
+            float total=t->positions[t->count-1]+t->widths[t->count-1]+3;
+            t->shift=roundf(clampf(t->drag_shift-(IN.tx-IN.start_x),0,fmaxf(0,total-(right-left))));
+            t->from_shift=t->to_shift=t->shift;t->manual_scroll=true;
+        }
+        if(IN.touch_up) {t->dragging=false;if(IN.dragged)return -1;}
+        else if(IN.dragged)return -1;
+    }
     for (int i=0;i<t->count;i++) {
         float x=fmaxf(left,left+t->positions[i]-t->shift), r=fminf(right,left+t->positions[i]+t->widths[i]-t->shift);
         if(r>x && hit(x,t->y,r-x,28)) return i;
@@ -435,7 +458,7 @@ static void coin_shadow(Coin *c, float cx, float cy, float pose, float scale, fl
 static void coin_draw(Coin *c, float cx, float cy, float pose, float scale, float a) {
     if (!sheet_ok(&c->wobble) || a <= 0.004f)
         return;
-    coin_shadow(c, cx, cy, pose, scale, a);
+    if (c->shadow) coin_shadow(c, cx, cy, pose, scale, a);
     float f = clampf(pose, 0, 1) * (c->frames - 1);
     int i = (int)f;
     float w = f - i;
@@ -754,6 +777,7 @@ static void banner_show(App *a, int dir) {
         sheet_request(&a->bg, p);
         if(a->icon<BUILTIN_APPS)remote_image_request(json_string_value(json_object_get(json_object_get(a->j,"banner"),"bg")));
     }
+    app_request_banner(a);
     bn_prev = bn_cur;
     bn_cur = a;
     bn_t = NOW;
@@ -841,8 +865,9 @@ static void home_move(u32 k) {
 }
 
 static void home_update(void) {
-    if (bn_prev && bn_prev->universal && bn_prev != bn_cur && NOW - bn_t > .6f) {
+    if (bn_prev && bn_prev != bn_cur && NOW - bn_t > .8f) {
         sheet_free(&bn_prev->bg);
+        sheet_free(&bn_prev->fg);
         bn_prev = NULL;
     }
     // Smooth cursor and page slide (spring-like lerps, frame-rate independent).
@@ -917,16 +942,28 @@ static void banner_draw(App *a, float al, float dx) {
         float scale=1.14f-.11f*burn;
         float bx=(-.016f+.032f*burn)*432*scale,by=(-.01f+.02f*burn)*272*scale;
         C2D_Image bg=sheet_img(&a->bg,0);
-        draw_img(bg,200-bg.subtex->width*scale/2+bx+LX(-.7f),120-bg.subtex->height*scale/2+by+LY(-.7f),scale,scale,al);
+        // Clamp the complete pan (idle, stereo and transition) to the overscan.
+        scale=fmaxf(scale,fmaxf(400.f/bg.subtex->width,240.f/bg.subtex->height));
+        float width=bg.subtex->width*scale,height=bg.subtex->height*scale;
+        float x=clampf(200-width/2+bx+LX(-.7f),400-width,0);
+        float y=clampf(120-height/2+by+LY(-.7f),240-height,0);
+        draw_img(bg,x,y,scale,scale,al);
     } else {
         rect(0,0,TOP_W,SCR_H,C(a->color,al));
         if(a->universal&&a->icon<BUILTIN_APPS){const char *url=json_string_value(json_object_get(json_object_get(a->j,"banner"),"bg"));int w,h;if(remote_image_ready(url)&&remote_image_dimensions(url,&w,&h)){float scale=fmaxf(400.f/w,240.f/h)*1.14f;remote_image_draw(url,200-w*scale/2+LX(-.7f),120-h*scale/2+LY(-.7f),w*scale,h*scale,al);}}
     }
     fx_draw(LX(-.2f),al);
-    if(a->universal){
+    if(a->universal||a->logo.i<0){
+        if(a->mid.i>=0 && !a->universal) {
+            float h=text_wrap_h_family(a->title,28,800,FONT_BRAND,216);
+            text_wrap_family(a->title,22+EYE*3+dx,92-h/2,28,800,FONT_BRAND,C(0xffffff,al),216);
+        } else {
         float ty=76,tx=200+EYE*3+dx;
-        text_ex(a->title,tx,ty+3,30,800,FONT_BRAND,-1.2f,C(0,.35f*al),AL_CENTER);
-        text_ex(a->title,tx,ty,30,800,FONT_BRAND,-1.2f,C(0xffffff,al),AL_CENTER);
+        float size=30;
+        while(size>16&&text_ex_w(a->title,size,800,FONT_BRAND,-1.2f)>376)size--;
+        text_ex(a->title,tx,ty+3,size,800,FONT_BRAND,-1.2f,C(0,.35f*al),AL_CENTER);
+        text_ex(a->title,tx,ty,size,800,FONT_BRAND,-1.2f,C(0xffffff,al),AL_CENTER);
+        }
     }
     if(sheet_ok(&a->fg)) {
         float mid=a==bn_cur?bezier(span(NOW,bn_t+.07f,.62f),.22f,1,.36f,1):1;
@@ -953,7 +990,7 @@ static void home_card(App *a, float al, float dy) {
     text_fit(a->title,x+57,y+8,14,212,C(TH.ink,al));
     char sub[160],by[96],stars[24];
     tvars(by,sizeof by,T("home.by"),"author",a->author,NULL,NULL);
-    snprintf(sub,sizeof sub,a->platform?"%s · %s → 3DS":"%s",by,a->platform);
+    snprintf(sub,sizeof sub,a->platform?(!strcmp(a->platform,"3DS")?"%s · %s":"%s · %s → 3DS"):"%s",by,a->platform);
     text_fit(sub,x+57,y+27,10,212,C(TH.ink_soft,al));
     float cx=x+57,cy=y+44;
     json_t *rel=app_release(a,S.experimental);
@@ -963,7 +1000,7 @@ static void home_card(App *a, float al, float dy) {
     if(!a->old_ok) cx+=chip(cx,cy,T("chip.n3dsOnly"),NULL,C(TH.ink_soft,1),C(TH.surface2,1),al)+3;
     if(a->stereo) chip(cx,cy,T("chip.3d"),"depth",C(TH.ink_soft,1),C(TH.surface2,1),al);
     scissor_off();
-    if(a->stars) {
+    if(a->has_stars) {
         fmt_stars(stars,sizeof stars,a->stars);
         text(stars,x+w-8,y+12,10,C(S.dark?0xffc94a:0xc98a00,al),AL_RIGHT);
         draw_icon("starFill",x+w-14-text_w(stars,10),y+19,9,C(S.dark?0xffc94a:0xc98a00,al));
@@ -976,10 +1013,11 @@ static void home_card(App *a, float al, float dy) {
             chip(x+w-10-text_w(label,9)-22,y+40,label,"clock",C(TH.ink_soft,1),C(TH.surface2,1),al);
         } else {
             float p=st==ST_DEV?a->progress/100.f:j?job_progress(j):0;
-            snprintf(label,sizeof label,"%d %%",(int)(p*100));
+            if(p<0)snprintf(label,sizeof label,"%s",T("status.unknown"));
+            else snprintf(label,sizeof label,"%d %%",(int)(p*100));
             text(label,x+w-10,y+33,10,C(TH.ink,al),AL_RIGHT);
-            rrect(x+w-90,y+53,80,5,2,C(TH.surface3,al));
-            rrect(x+w-90,y+53,fmaxf(1,80*p),5,2,C(st==ST_DEV?LAV:FORGE,al));
+            if(p>=0){rrect(x+w-90,y+53,80,5,2,C(TH.surface3,al));
+            rrect(x+w-90,y+53,fmaxf(1,80*p),5,2,C(st==ST_DEV?LAV:FORGE,al));}
         }
     } else {
         const char *ic="download"; u32 fg=FORGE;
@@ -1072,11 +1110,6 @@ static void home_bottom(float sa) {
         float ia = arrive(.14f + (i % PER_PAGE) * .035f, &dy) * sa;
         bx += grid_dir * 12 * (1 - reveal);
         ia *= reveal;
-        if (list[i]->dev) {
-            circle(bx - 20, by + 20 + dy, 7.5f, C(TH.bg, ia));
-            circle(bx - 20, by + 20 + dy, 6, C(LAV, ia));
-            draw_icon("hammer", bx - 20, by + 20 + dy, 9, C(0xffffff, ia));
-        }
         status_icon(list[i], bx + 20, by + 20 + dy, ia);
     }
     scissor_off();
@@ -1118,7 +1151,7 @@ static void video_ui_show(bool on){
 }
 static int dtab, shot_i, shot_prev = -1, news_open;
 static int shot_direction=1;
-static bool shot_waiting;
+static bool shot_waiting, shot_fullscreen;
 static UiTabs gallery_thumbs;
 static float news_rows[16];
 static int news_count;
@@ -1185,7 +1218,7 @@ static void open_detail(void) {
     thumb_shift = 0;
     shot_i = 0;
     shot_prev = -1;
-    shot_waiting=false;shot_direction=1;memset(&gallery_thumbs,0,sizeof gallery_thumbs);
+    shot_waiting=false;shot_fullscreen=false;shot_direction=1;memset(&gallery_thumbs,0,sizeof gallery_thumbs);
     shot_t = NOW;
     dscroll = dscroll_target = 0;
     news_open = 0; requirement_tool_count=0;
@@ -1200,15 +1233,7 @@ static void open_detail(void) {
 }
 
 static C2D_Image shot_img(int i, bool bottom, bool *ok) {
-    int b = i;
-    if (bottom) { // bottom shots are packed without gaps
-        b = 0;
-        for (int k = 0; k < i; k++)
-            b += dapp->shot_bottom[k];
-    }
-    Sheet *s = bottom ? &dapp->shots_b[b / 4] : &dapp->shots_t[i / 4];
-    *ok = sheet_ok(s);
-    return sheet_img(s, b % 4);
+    return app_shot(dapp,i,bottom,ok);
 }
 
 static C2D_Image gallery_image(int index,bool bottom,bool *ok);
@@ -1306,10 +1331,7 @@ static void play_video(void) {
     char path[256];
     if (media_ready_path(dapp->id, id, path, sizeof path)) {
         video_wanted = false;
-        // The selected video's poster remains available while the decoder
-        // starts. Screenshot atlases are invisible and must not compete with
-        // its frame banks for Old 3DS linear memory.
-        app_free_shots(dapp);
+        // The bounded 1.5 MiB gallery stays warm across video playback.
         video_ui_until=NOW+3.2f;video_ui_on=true;video_reveal_touch=false;video_overlay_alpha=video_ui_from=1;video_ui_changed=NOW-1;
         if (!video_start(path)) toast(video_error(), DANGER);
     } else {
@@ -1328,6 +1350,10 @@ enum { GALLERY_X=168, GALLERY_W=142, GALLERY_PREVIEW_W=148, GALLERY_NAV_Y=167, G
 static float gallery_play_y=125;
 
 static void detail_update(void) {
+    if(shot_fullscreen) {
+        if(IN.down&KEY_B) {shot_fullscreen=false;sfx("back");}
+        return;
+    }
     detail_plan_update();
     if (video_wanted) {
         const char *id = shot_i < 0 ? json_string_value(json_object_get(selected_video(), "id")) : NULL;
@@ -1461,7 +1487,7 @@ static void detail_update(void) {
         else
             dscroll_target += IN.repeat & KEY_DOWN ? 34 : -34;
     }
-    if (IN.touching && !IN.touch_down && IN.start_y > 30 && IN.start_y < 204)
+    if (IN.touching && !IN.touch_down && IN.start_y >= 36 && IN.start_y < 204)
         dscroll_target -= (IN.ty - IN.last_y), dscroll = dscroll_target;
     if(dtab==1) dscroll=dscroll_target=0;
     dscroll_target = clampf(dscroll_target, 0, fmaxf(0, content_h - 159));
@@ -1491,6 +1517,11 @@ static void detail_update(void) {
                 detail_select_shot(i-nvideo,i>selected?1:-1);
                 sfx("move");
             }
+        if(shot_i>=0 && dapp->shot_bottom[shot_i] && hit(10,81,GALLERY_PREVIEW_W,111)) {
+            bool ready;shot_img(shot_i,true,&ready);
+            if(ready) {shot_fullscreen=true;sfx("select");}
+            return;
+        }
         if (shot_i < 0 && (IN.down & KEY_A || hit(GALLERY_X,gallery_play_y,GALLERY_W,28) || hit(10,81,GALLERY_PREVIEW_W,111))) {
             play_video();
             return;
@@ -1563,7 +1594,7 @@ static void detail_top_overlay(float sa) {
     char tmp[96];
     if(st==ST_INSTALLED){HEAD_CHIP(T("status.installed"),"check",C(S.dark?TH.mint:0xdcefe7,S.dark?.16f:1));chips[nc-1].fg=C(S.dark?0x8fdcc0:0x2f7a63,1);}
     if(st==ST_NEEDS_FILE){HEAD_CHIP(T("status.needsFile"),"warn",C(S.dark?AMBER:0xfff4d6,S.dark?.18f:1));chips[nc-1].fg=C(S.dark?0xffcc5c:0xa86f00,1);}
-    if(st==ST_DEV){snprintf(tmp,sizeof tmp,"%s · %d %%",T("status.dev"),dapp->progress);HEAD_CHIP(tmp,"hammer",C(S.dark?0x9d92f0:0xece8ff,S.dark?.16f:1));chips[nc-1].fg=C(S.dark?0x9d92f0:LAV,1);}
+    if(st==ST_DEV){snprintf(tmp,sizeof tmp,dapp->progress>=0?"%s · %d %%":"%s",T("status.dev"),dapp->progress);HEAD_CHIP(tmp,"hammer",C(S.dark?0x9d92f0:0xece8ff,S.dark?.16f:1));chips[nc-1].fg=C(S.dark?0x9d92f0:LAV,1);}
     if(rel){snprintf(tmp,sizeof tmp,"%s · %s",json_string_value(json_object_get(rel,"tag")),T(sheet_exp?"channel.experimental":"channel.stable"));HEAD_CHIP(tmp,sheet_exp?"sparkle":"shield",C(0,.45f));}
     if(dapp->has_stars){fmt_stars(tmp,sizeof tmp,dapp->stars);HEAD_CHIP(tmp,"star",C(0,.45f));}
     if(!dapp->old_ok)HEAD_CHIP(T("chip.n3dsOnly"),NULL,C(0,.45f));
@@ -1578,7 +1609,7 @@ static void detail_top_overlay(float sa) {
     text_fit(dapp->full,hx+56,hy,15,324,C(0xffffff,sa));
     char meta[160],by[96];tvars(by,sizeof by,T("home.by"),"author",dapp->author,NULL,NULL);
     if(dapp->platform&&dapp->year)snprintf(meta,sizeof meta,"%s · %s · %d → 3DS",by,dapp->platform,dapp->year);
-    else if(dapp->platform)snprintf(meta,sizeof meta,"%s · %s → 3DS",by,dapp->platform);
+    else if(dapp->platform)snprintf(meta,sizeof meta,!strcmp(dapp->platform,"3DS")?"%s · %s":"%s · %s → 3DS",by,dapp->platform);
     else snprintf(meta,sizeof meta,"%s",by);
     text_fit(meta,hx+56,hy+19,10,324,C(0xffffff,sa));
     scissor(TOP_W,hx+56,230-ch,324,ch);
@@ -1675,9 +1706,11 @@ static float detail_info(float y, float a) {
         rrect(x,y,w,h,10,C(lavender,.16f*a));draw_icon("hammer",x+14,y+15,12,C(lavender,a));
         text_style(T("detail.devTitle"),x+26,y+9,10,900,0,C(lavender,a),AL_LEFT);
         text_wrap(T("detail.devBody"),x+9,y+27,11,C(TH.ink_soft,a),w-18);
-        float py=y+27+body+6;char percent[16];snprintf(percent,sizeof percent,"%d %%",dapp->progress);
+        float py=y+27+body+6;char percent[32];
+        if(dapp->progress>=0)snprintf(percent,sizeof percent,"%d %%",dapp->progress);
+        else snprintf(percent,sizeof percent,"%s",T("status.unknown"));
         text_style(T("detail.progress"),x+9,py,10,800,0,C(TH.ink,a),AL_LEFT);text_style(percent,x+w-9,py,10,800,0,C(TH.ink,a),AL_RIGHT);
-        rrect(x+9,py+17,w-18,5,2.5f,C(TH.surface3,a));rrect(x+9,py+17,(w-18)*dapp->progress/100.f,5,2.5f,C(lavender,a));
+        if(dapp->progress>=0){rrect(x+9,py+17,w-18,5,2.5f,C(TH.surface3,a));rrect(x+9,py+17,(w-18)*dapp->progress/100.f,5,2.5f,C(lavender,a));}
         y+=h+8;
     }
     const char *tag = LJ(json_object_get(dapp->j, "tagline")), *desc = LJ(json_object_get(dapp->j, "description"));
@@ -1762,10 +1795,11 @@ static float detail_shots(float y, float a) {
         if (i < nvideo) {
             ok = sheet_ok(&video_posters);
             im = sheet_img(&video_posters, i);
-        } else
-            im = shot_img(i - nvideo, false, &ok);
+        } else {
+            ok=sheet_ok(&dapp->shot_thumbs);im=sheet_img(&dapp->shot_thumbs,i-nvideo);
+        }
         if (ok)
-            draw_img(im, x, y + 3, 46.f / 400, 28.f / 240, a * (.55f+.45f*clampf(1-fabsf(i*50-gallery_thumbs.thumb)/50,0,1)));
+            draw_img(im, x, y + 3, 46.f / im.subtex->width, 28.f / im.subtex->height, a * (.55f+.45f*clampf(1-fabsf(i*50-gallery_thumbs.thumb)/50,0,1)));
         if (i < nvideo)
             draw_icon("play", x + 23, y + 17, 12, C(0xffffff, a));
     }
@@ -2065,6 +2099,12 @@ static void sheet_draw(float a) {
 }
 
 static void detail_bottom(float sa) {
+    if(shot_fullscreen) {
+        rect(0,0,320,240,C(0,sa));
+        bool ready;C2D_Image im=shot_img(shot_i,true,&ready);
+        if(ready) draw_img(im,0,0,320.f/im.subtex->width,240.f/im.subtex->height,sa);
+        return;
+    }
     if (video_active()) {
         bool split = video_bottom();
         bool ui=!split||video_ui_on;
@@ -2172,7 +2212,8 @@ static void detail_bottom(float sa) {
         char tmp[96];
         char pct[8];
         snprintf(pct, sizeof pct, "%d", dapp->progress);
-        tvars(tmp, sizeof tmp, T("action.inDev"), "p", pct, NULL, NULL);
+        if(dapp->progress>=0)tvars(tmp, sizeof tmp, T("action.inDev"), "p", pct, NULL, NULL);
+        else snprintf(tmp,sizeof tmp,"%s",T("status.dev"));
         button_round(5,205,280,28, tmp, "hammer", NULL, BTN_GHOST, a * .7f);
     }
     if(dapp->repo && st!=ST_BUSY) {
@@ -2475,7 +2516,7 @@ static void dsp_task(void *unused) {
 static void set_change(int dir) {
     switch (sfocus) {
     case SET_CONSOLE:
-        sfx_pitch("move", -5);
+        if(!dir)open_secret();
         return;
     case SET_THEME:
         S.dark = dir ? dir > 0 : !S.dark; theme_apply();
@@ -2702,6 +2743,12 @@ static void tile_draw(const char *kind, u32 color, float x, float y, float a) {
     }
 }
 
+// Native 18px anvil, shared geometry with forgeMark in forge-seal.js.
+static void forge_mode_mark(float x,float y,float a) {
+    static const unsigned char runs[][3]={{14,2,3},{14,3,3},{1,4,16},{1,5,16},{2,6,14},{3,7,12},{6,8,7},{8,9,4},{8,10,4},{7,11,6},{7,12,6},{5,13,10},{4,14,12},{4,15,12}};
+    x=roundf(x);y=roundf(y);
+    for(unsigned i=0;i<sizeof runs/sizeof runs[0];i++)rect(x+runs[i][0],y+runs[i][1],runs[i][2],1,C(FORGE,a));
+}
 /** Console details (.cs-head, .cs-grid, .cs-sd): the top screen while "Console" is focused. */
 static void console_sheet(float a) {
     static const char *MODELS[] = {"Nintendo 3DS", "Nintendo 3DS XL",     "New Nintendo 3DS",
@@ -2714,6 +2761,7 @@ static void console_sheet(float a) {
     draw_icon("cpu",26,50,18, C(0xffffff, a));
     text_style(known ? MODELS[sys.model] : (IS_NEW3DS ? "New Nintendo 3DS" : "Nintendo 3DS"), 49, 35, 12, 900, 0, C(TH.ink, a), AL_LEFT);
     text_style(sub,49,51,9,800,0,C(TH.ink_faint,a),AL_LEFT);
+    if(forge_mode_enabled())forge_mode_mark(370,40,a);
     const char *regions[] = {"JPN", "USA", "EUR", "AUS", "CHN", "KOR", "TWN"};
     char top_s[40], bot_s[40], apps[8];
     snprintf(top_s, sizeof top_s, "400×240 / 800×240");
@@ -2804,14 +2852,14 @@ static void settings_top(float sa) {
     text(T(SET_KEYS[shown]), 76, ty, 13, C(TH.ink, ha), AL_LEFT);
     text_wrap(T(key), 76, ty + 20, 11, C(TH.ink_soft, ha), 312);
     DRAW_Y -= dy;
-    // .st-about card: 34 px coin, brand, catalog line and sources
+    // .st-about card: 40 px coin without contact shadow, then a 10 px text gap.
     float cy = 166;
     rrect(12, cy + 1, 376, 64, 12, C(0x000000, .08f * sa));
     glass(12, cy, 376, 64, 12, sa);
-    coin_draw(&COIN_ABOUT, 38, cy + 32, wobble_pose(NOW, 5.2f), 1, sa);
+    coin_draw(&COIN_ABOUT, 40, cy + 32, wobble_pose(NOW, 5.2f), 1, sa);
     float bw = text_ex_w("forge.", 15, 750, 1, -.5f);
-    text_ex("forge.", 65, cy + 8, 15, 750, 1, -.5f, C(TH.ink, sa), AL_LEFT);
-    text_ex("store", 65 + bw - .5f, cy + 8, 15, 400, 1, -.5f, C(TH.ink, sa), AL_LEFT);
+    text_ex("forge.", 71, cy + 8, 15, 750, 1, -.5f, C(TH.ink, sa), AL_LEFT);
+    text_ex("store", 71 + bw - .5f, cy + 8, 15, 400, 1, -.5f, C(TH.ink, sa), AL_LEFT);
     json_t *store = json_object_get(CATALOG, "store");
     char rev[8], n[8], date[32], about[96];
     snprintf(rev, sizeof rev, "%d", (int)json_integer_value(json_object_get(store, "revision")));
@@ -2824,8 +2872,8 @@ static void settings_top(float sa) {
         snprintf(tail, sizeof tail, "%s", dpos + 6);
         snprintf(dpos, sizeof about - (dpos - about), "%s%s", date, tail);
     }
-    text_fit(about,65,cy+28,10,315,C(TH.ink_soft,sa));
-    float chx=65,chy=cy+45;
+    text_fit(about,71,cy+28,10,309,C(TH.ink_soft,sa));
+    float chx=71,chy=cy+45;
     chx += chip(chx, chy, "Esteban's Forge", "check", C(TH.mint, 1), C(TH.mint, .16f), sa) + 3;
     chip(chx, chy, "Universal-DB", S.universal ? "check" : "globe", C(S.universal ? TH.mint : TH.ink_soft, 1), C(TH.surface2, 1), sa);
 }
@@ -2898,6 +2946,9 @@ static void settings_bottom(float sa) {
             int lit = (int)roundf(S.volume * 10), base = (int)roundf(y) + 24;
             for (int k = 0; k < 10; k++)
                 rect(258 + k * 5, base - (4 + k), 3, 4 + k, C(k < lit ? FORGE : TH.surface3, sa));
+        } else if(i==SET_CONSOLE&&forge_mode_enabled()) {
+            text_style(v,282,y+17-line_h(10)/2,10,600,0,C(TH.ink_soft,sa),AL_RIGHT);
+            forge_mode_mark(288,y+7,sa);
         } else if (v[0]) {
             char fitted[48]; fit_label(fitted,sizeof fitted,v,10,94); snprintf(v,sizeof v,"%s",fitted);
             float w=text_w(v,10)+14;
@@ -2999,6 +3050,7 @@ void scenes_init(float intro_delay) {
 }
 
 void scenes_update(void) {
+    forge_mode_pump();
     file_view_pump(NOW);
     rom_find_pump(NOW);
     media_package_refresh();
@@ -3021,7 +3073,7 @@ void scenes_update(void) {
     }
     if(scene==SC_SD||scene==SC_DOWNLOADS)sys_refresh();
     if(scene!=SC_GITHUB&&!S.universal)remote_image_trim();
-    if(media_started)github_prefetch_start();
+    github_prefetch_start();
     github_prefetch_pause(scene==SC_GITHUB||install_active()!=NULL||video_active());
     bool catalog_changed=false;
     if(!test_freeze_media&&media_started){catalog_changed=catalog_sync_pump();catalog_changed|=universal_sync_pump(scene==SC_HOME||scene==SC_SEARCH||scene==SC_SETTINGS);}
@@ -3053,8 +3105,10 @@ void scenes_update(void) {
         music_due = -1;
         music_play(3);
     }
-    if(scene==SC_GITHUB && dapp){app_free_shots(dapp);sheet_free(&video_posters);sheet_free(&video_bottom_posters);}
-    if(scene==SC_DETAIL){if(video_active()||video_wanted)app_free_shots(dapp);else app_request_shots(dapp);}
+    App *active_banner=(scene==SC_DETAIL||(scene==SC_GITHUB&&gh_parent==SC_DETAIL))?dapp:bn_cur;
+    catalog_trim_banners(active_banner,scene==SC_HOME&&NOW-bn_t<.8f?bn_prev:NULL);
+    if(active_banner) app_request_banner(active_banner);
+    if(scene==SC_DETAIL) app_request_gallery(dapp,shot_i,gallery_progress()<1?shot_prev:-1);
     if (scene == SC_DETAIL && nvideo && video_posters.state == SHEET_EMPTY)
         sheet_request(&video_posters, poster_path);
     if (scene == SC_DETAIL && nvideo && video_bottom_posters.state == SHEET_EMPTY) {
@@ -3089,11 +3143,11 @@ void scenes_update(void) {
             fx_set(NULL);
     } else if (trans_phase == 2 && NOW - trans_t >= .46f) {
         trans_phase = 0;
-        if(previous_scene==SC_DETAIL&&scene!=SC_DETAIL){
+        if(scene==SC_HOME||(previous_scene==SC_DETAIL&&scene!=SC_DETAIL&&scene!=SC_GITHUB)){
             app_free_shots(dapp);
             sheet_free(&video_posters);
-    sheet_free(&video_bottom_posters);
-    video_wanted = false;
+            sheet_free(&video_bottom_posters);
+            video_wanted = false;
         }
     }
     if (scene != SC_GITHUB)
@@ -3371,6 +3425,7 @@ void scenes_test_log(FILE *file){
     for(unsigned i=0;i<media_count();i++){MediaItem m;if(media_item(i,&m))fprintf(file,"media item=%s/%s state=%d bytes=%u/%u attempts=%u error=%s\n",m.appid,m.id,m.state,m.received,m.total,m.attempts,m.error);}
     fprintf(file,"package state=%d items=%u ready=%u bytes=%llu/%llu\n",PKG.state,PKG.items,PKG.ready,(unsigned long long)PKG.received,(unsigned long long)PKG.bytes);
     fprintf(file,"catalog apps=%d universal=%s\n",NAPPS,universal_sync_status());
+    if(dapp){fprintf(file,"gallery app=%s thumbs=%d fullscreen=%d slots=",dapp->id,sheet_ok(&dapp->shot_thumbs),shot_fullscreen);for(int k=0;k<3;k++)fprintf(file,"%d:%d/%d,",dapp->shot_index[k],sheet_ok(&dapp->shots_t[k]),sheet_ok(&dapp->shots_b[k]));fprintf(file,"\n");}
     static const char *kinds[]={"intro","home","detail","install","settings","search","downloads","sd","github"};
     fprintf(file,"view kind=%s scroll=%.3f video_time=%.3f\n",kinds[scene],scene==SC_DETAIL?dscroll:scene==SC_GITHUB?gh_scroll:0,video_time());
     if(scene==SC_DOWNLOADS){fprintf(file,"queue focus=%d scroll=%.3f rows=",dl_focus,dl_scroll);for(int i=0;i<dl_n;i++)if(dl_rows[i].job){Job *j=dl_rows[i].job;fprintf(file,"%s:%d:%d,",j->app->id,j->state,j->warnings);}fprintf(file,"\n");}
@@ -3379,5 +3434,5 @@ void scenes_test_log(FILE *file){
     App *selected=scene==SC_DETAIL?dapp:scene==SC_HOME&&nlist&&sel<nlist?list[sel]:NULL;
     bool exp=scene==SC_DETAIL?sheet_exp:S.experimental,cia=scene==SC_DETAIL?sheet_cia:S.cia;
     json_t *release=selected?app_release(selected,exp):NULL;
-    fprintf(file,"state app=%s tag=%s dark=%d lang=%s format=%s channel=%s query=%s sd=%s\n",selected?selected->id:"-",release?jstr(release,"tag"):"-",S.dark,LANGS[S.lang],cia?"cia":"3dsx",exp?"experimental":"stable",query,scene==SC_SD?sd_dir:"-");
+    fprintf(file,"state app=%s tag=%s dark=%d lang=%s format=%s channel=%s query=%s sd=%s\n",selected?selected->id:"-",release?jstr(release,"tag"):"-",S.dark,LANGS[S.lang],cia?"cia":"3dsx",exp?"experimental":"stable",secret_mode?"[masked]":query,scene==SC_SD?sd_dir:"-");
 }

@@ -1,0 +1,140 @@
+{
+  "version": "2026.11.12.3",
+  "store_build": 2026111203,
+  "public_binaries": {
+    "forge-store.cia": {
+      "bytes": 54399936,
+      "sha256": "0caa3d615dbf35bb6c9425ee1b985209d84130eb0c4444c62d7028270ff49244"
+    },
+    "forge-store.3dsx": {
+      "bytes": 54891552,
+      "sha256": "02b9cc9ee0747aef1d3632663a55318d48987461d76d568c83a2024957eaad0a"
+    }
+  },
+  "catalog": {
+    "curated": 39,
+    "origins_complete": true,
+    "initial_public_repo_stars": 37,
+    "higher_resolution_original_icons": 14,
+    "additional_original_logos": 6,
+    "reader_responses": 152,
+    "prepared_images": 225
+  },
+  "host": {
+    "catalog_asan_ubsan_assertions": 297,
+    "install_integrity_scenario_groups": 27,
+    "am_services": "mocked",
+    "update_icon_masks": 3314,
+    "update_icon_transitions": 49,
+    "updater_scenarios": 23,
+    "cache_tsan_threads": 4,
+    "cache_tsan_requests": 24,
+    "reader_bundle_crc_and_hash_checks": 152,
+    "image_bundle_checks": 225,
+    "forge_mode": "authenticated envelope, wrong code, tampering, bounds, persistence, worker ownership",
+    "javascript_modules": 14
+  },
+  "web": {
+    "banner_compositions_reviewed": 39,
+    "broken_banner_images": 0,
+    "about_coin_px": 40,
+    "about_text_gap_px": 10,
+    "about_shadow": "none",
+    "forge_mark_px": 18,
+    "thumbnail_cursor_px": [
+      -2,
+      64.2563,
+      98
+    ],
+    "fullscreen_bottom_px": [
+      320,
+      240
+    ],
+    "fullscreen_B_returns": true
+  },
+  "emulator": [
+    {
+      "run": "catalog-art-old-final",
+      "model": "Old 3DS",
+      "executable_sha256": "02b9cc9ee0747aef1d3632663a55318d48987461d76d568c83a2024957eaad0a",
+      "source_matches_package": true,
+      "video_cache_seeded": true,
+      "github_cache_seeded": false,
+      "normal_exit": true,
+      "music_underruns": [
+        0
+      ],
+      "captures": {
+        "about-light.png": "1f33c9df3d65df7532fd17ec540f7dbdae316cd92368278b1e900ae96eb6aad2",
+        "about.png": "478a0178eb4e3a7d4025c9735fdb899d3cd48ac058da9e92ddff1a8638a79603",
+        "community.png": "76dc7ecad45f6fa888b3c5d33589e7cc92f6a131b7ac0f61864e151f85b3ba83",
+        "dk64.png": "ef97d78e7895c33dbd9aec01ccfa80c9e539f7a69234b7b51564a9e4d8fd7958",
+        "forge-mark.png": "16dbab9e19d5bf3c27e947497dc3c4cf187d09d9f5ec7ba028dbfcb212141a91",
+        "goemon.png": "4dafae8bf018f006c9b1f18cb65cecd9599bc762ae9f29c6d8f60d9688afd464",
+        "half-life.png": "f8f9fad2a888b045b7e36364ed7047482b6d7e282b0908fcdb883824b854762f",
+        "home-return.png": "1c1733351ccaa150f48ee85706f3709f028fc54d87fface7747f68b572aac6f5",
+        "home.png": "71014f8028fbeb0987bdad78c93b2cf3404446b5c3cfb550bc9d5f5a66690610",
+        "mutiny-fullscreen.png": "bbfdf67614e5a0763e40f6412a166fde7271e35788e7668873791cab1c3fc92e",
+        "mutiny-return.png": "8d5a2bba4e9685b5f1ef275eff40502017a6a1a8e6f7e204db3cb5518814d328",
+        "mutiny.png": "44fad53da829df0a7823532a7b0933b5bc30c64c5c5ebe95eed62bef5a9a6e7c",
+        "profile.png": "ae522d66114d931acaa56356774771456d2de1ebb4d101c8f44504e197396ef0",
+        "readme-2.png": "fb66c7b147faf65ad7811c6eb84e2e886f044c8738c0634636b129861eefdff7",
+        "readme-30.png": "cb3baa5435d8055f9f183d18cad144b0c9fdc2da66445052af28dbb02070b67d",
+        "readme-ready.png": "9b8e4b9a40e44ce3188a6755a85391e8c4266abccbb95d6545a2ea8c302003f1",
+        "unknown.png": "691cabaec45387fc5ae833e77fae776d4559a09b2b57f9a045f0045cbbf8189e",
+        "video-return-2.png": "4c4be0fb2acbeed90232ef8bbc98a33c02265a4eb46ed97a725a9ba7f49e8ae0",
+        "video-return.png": "36098c1b7ab61994b1a65ed6a13181ffac98cdb80812cded979db836508382c5",
+        "video.png": "955fae0386bd85ad320ef4ddb4d6b36c11b7a9a5eda40550c82518318b645ffa"
+      }
+    },
+    {
+      "run": "catalog-video-old-final",
+      "model": "Old 3DS",
+      "executable_sha256": "02b9cc9ee0747aef1d3632663a55318d48987461d76d568c83a2024957eaad0a",
+      "source_matches_package": true,
+      "video_cache_seeded": true,
+      "github_cache_seeded": false,
+      "normal_exit": true,
+      "music_underruns": [
+        0
+      ],
+      "captures": {
+        "full-bottom.png": "6d2b78f2d5ad356bbf85201ce2007612d5e4ae9e0553f4b07601f84a6876fdb2",
+        "github-return-2.png": "0ad3e575dced698a4ee99b6bc64021afcc68f3b5fb93b1a1acb7868b775eba4d",
+        "github-return.png": "4f9c44c42b243c3d5462b90c6f604e2e0e41feaacdd22d055c3e9c27bbcc58eb",
+        "readme.png": "fe1be21d568a13bdf75610206f3d658f786d6817c2aee57a21b1a26f3c5d824b",
+        "return-2.png": "3587ec4b136f719dd9d3465bd714ec1b7ead6ff86f0881c6584f4bafe887d424",
+        "return-image.png": "e1f5d3f4ddbb749df1510dbb13b3f80dff8d3cafdd7d9616da2bf18c2dbf997a",
+        "video-card.png": "1f8f47d8695c5f6a8b8ba9c4c3f6b33824008b92b1476505f299fd63f3228300",
+        "video-playing.png": "cba76ccf2068707c21bd9d24ae359101191289d9f96d2b775203790cfa686754"
+      }
+    },
+    {
+      "run": "catalog-art-new-final",
+      "model": "New 3DS",
+      "executable_sha256": "02b9cc9ee0747aef1d3632663a55318d48987461d76d568c83a2024957eaad0a",
+      "source_matches_package": true,
+      "video_cache_seeded": false,
+      "github_cache_seeded": false,
+      "normal_exit": true,
+      "music_underruns": [
+        0
+      ],
+      "captures": {
+        "artic.png": "20b49031cccc9ec34564644b3707c5fb05f8a38453a115b4398541b6067a3683",
+        "banjo.png": "b4def43055939d7ceb343ced9575ca5ea359e10a520cc18cc6750a91b66624d4",
+        "butterscotch.png": "6cc7e36cfe07a59e84fdf92a42020d7286fcd121cec7a828b504a37a8c048141",
+        "forge-a.png": "a5d7455f3bf410dc50de0785fe666ad653982a116305a2f65d361da22a555ef4",
+        "forge-b.png": "9f0f3729b40a82700ae3b6377a606a364bf5c71ddec25971138ff0152b222f80",
+        "forge-c.png": "ee9a7439a1a96469203c896a6840b1f98fbd60f81742d27878e2c9ec2479872a",
+        "forge-idle.png": "957d87c066d59bdbb29dff100c9b24d41ce84c35a4ef41ffb89291a3ebb8ed14",
+        "mgba.png": "e161a113d44dc42fcbdb16faba97334fadbf3dccd34085c58159bb080547ecdf",
+        "openlara.png": "2f90b6e00545801e1d45b38e22ebf2ec87b292ea18945f040e370495fae71654",
+        "retroarch.png": "d37a2de312abea0f80baf777dae71871553b497900b96541c19db123fdc9e1a8",
+        "snes9x.png": "f59d153f01d19b7581403fcfc2187843bd285221556c6290cd20922e1298069d",
+        "universal.png": "f29837cf168993e813d036cdf0f0fe311f71c7f8acedbdf3b3256152bc79fda7"
+      }
+    }
+  ],
+  "hardware_validation": false
+}

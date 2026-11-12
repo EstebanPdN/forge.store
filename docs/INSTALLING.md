@@ -24,7 +24,9 @@ Existing verified files are reused on later starts.
 ## Controls
 
 - D-pad / touch: navigate; A: open or confirm; B: back.
-- L/R: change tabs. X opens GitHub from a game's detail view.
+- L/R: change tabs. Drag the category strip horizontally to reveal more tabs.
+- In Captures, tap a lower-screen image to view it at 320×240; B returns to the gallery.
+- X opens GitHub from a game's detail view.
 - X/Y/START/SELECT shortcuts follow the current scene; touch buttons are always visible.
 - Video: A pauses, left/right seeks, Y mutes, B returns.
 - `FORGE_DEBUG=1` builds reserve SELECT for private RAM/VRAM/framebuffer diagnostics;
@@ -43,3 +45,20 @@ Some ports need a legally obtained user file. The store checks each port's docum
 rules and shows a found filename when accepted. Store resources contain previews, not ROMs.
 If HOME/close, sound or installation fails, report model, format, exact build hash and steps.
 Physical-console validation remains necessary; do not treat emulator success as proof of it.
+
+## Forge Mode
+
+Settings → Console opens the secret-code keyboard. A valid personal code authenticates
+the encrypted resource manifest, animates the forge into a check, and saves activation
+locally. The orange **forge mode enabled** indicator remains beside the console model
+after restarting. The code and personal download addresses are not displayed in logs.
+
+For configured ports, installation downloads missing personal files through the normal
+size/hash-checked transaction. Existing files are preserved. New personal files roll back
+with a failed install but remain on the SD when the application is uninstalled.
+
+The repository contains an authenticated encrypted manifest, not game payloads or its
+decryption key. Activation stores a derived key on the local SD (or localStorage in the
+web simulator). A short shared code can be guessed offline, so this is convenience
+encryption, not access control for a public hosting service. Keep local activation keys
+and personal data out of source commits.

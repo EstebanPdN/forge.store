@@ -30,7 +30,7 @@ int main(int argc, char **argv) {
     const char *dir = argc > 1 ? argv[1] : NULL;
     uint8_t before[40][40], after[40][40];
     // Every state can be interrupted without a discontinuity at the handoff.
-    for (int a = UI_SPIN; a <= UI_WARN; a++) for (int b = UI_SPIN; b <= UI_WARN; b++) {
+    for (int a = UI_SPIN; a <= UI_FORGING; a++) for (int b = UI_SPIN; b <= UI_FORGING; b++) {
         UpdateIcon icon = {0};update_icon_set(&icon, a, 0);
         pixels_at(&icon, .37f, before);update_icon_set(&icon, b, .37f);
         pixels_at(&icon, .37f, after);assert(!memcmp(before, after, sizeof before));
@@ -71,5 +71,21 @@ int main(int argc, char **argv) {
     picture(dir, "current-check", &direct, 2);
     pixels_at(&direct, 2, before);pixels_at(&down, 4, after);
     assert(!memcmp(before, after, sizeof before)); // Same final check for both paths.
-    printf("PASS: %d pixel masks, 25 state transitions, interruption continuity, crisp strokes and download motion.\n", frames);
+    UpdateIcon forge = {0};update_icon_set(&forge,UI_FORGING,0);
+    // The head must stay perpendicular to the handle for the entire swing.
+    // A horizontal head joined to a diagonal handle was visibly malformed.
+    for(int i=0;i<120;i++){
+        UpdateIconFrame frame;update_icon_shape(UI_FORGING,i*.72f/120,&frame);
+        float hx=frame.p[1][16].x-frame.p[1][0].x,hy=frame.p[1][16].y-frame.p[1][0].y;
+        float tx=frame.p[2][1].x-frame.p[2][0].x,ty=frame.p[2][1].y-frame.p[2][0].y;
+        assert(fabsf(hx*tx+hy*ty)<.001f);
+        assert(fabsf(tx*tx+ty*ty-144)<.001f);
+        pixels_at(&forge,i*.72f/120,after);
+    }
+    pixels_at(&forge,0,before);pixels_at(&forge,.4f,after);assert(memcmp(before,after,sizeof before));
+    for(int i=0;i<12;i++){char name[32];snprintf(name,sizeof name,"forge-%02d",i);picture(dir,name,&forge,i*.06f);}
+    update_icon_set(&forge,UI_CHECK,.72f);
+    for(int i=0;i<=12;i++){char name[32];snprintf(name,sizeof name,"forge-check-%02d",i);picture(dir,name,&forge,.72f+i*.04f);}
+    pixels_at(&forge,1.3f,before);pixels_at(&direct,2,after);assert(!memcmp(before,after,sizeof before));
+    printf("PASS: %d pixel masks, 49 state transitions, interruption continuity, crisp strokes, hammer and download motion.\n", frames);
 }

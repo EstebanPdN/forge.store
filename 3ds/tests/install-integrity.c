@@ -66,5 +66,21 @@ int main(void) {
  // Mocked AM: an update's old package is reinstalled and original cache bytes restored.
  assert(mkdirs(DATA_DIR "/cia-cache",false));put(DATA_DIR "/cia-cache/0004000012345600.cia","old-package");host_title=0x0004000012345600ULL;
  j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","new-package");tx_find("sdmc:/candidate.cia")->deleted=true;strcpy(tx.cia_path,"sdmc:/candidate.cia");assert(cia_prepare(&j));assert(tx_publish(&j));tx.cia_attempted=true;assert(install_cia(&j,&step,tx.cia_cache));int starts=host_am_starts;assert(cia_restore(&j));assert(host_am_starts==starts+1);assert(tx_finish(&j,false));equal(DATA_DIR "/cia-cache/0004000012345600.cia","old-package");clear_job(&j);
- puts("install integrity: 22 scenario groups passed (isolated host fixture; AM mocked)");return 0;
+ // Pinned hashes bind downloaded bytes before extraction or publication.
+ j=make_job();assert(tx_begin(&j));stage(&j,live,"abc");
+ assert(verify_download(&j,&step,live,"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"));
+ assert(!verify_download(&j,&step,live,"0000000000000000000000000000000000000000000000000000000000000000"));
+ assert(tx_finish(&j,false));clear_job(&j);
+ // Personal data participates in rollback but never in the uninstall inventory.
+ const char *personal="sdmc:/3ds/personal.bin";
+ j=make_job();assert(tx_begin(&j));stage(&j,personal,"personal");tx_find(personal)->personal=true;
+ assert(tx_publish(&j));assert(json_array_size(j.files)==0);assert(tx_finish(&j,true));equal(personal,"personal");clear_job(&j);
+ // Existing personal data is preserved without accessing its download URL.
+ j=make_job();assert(tx_begin(&j));step.raw=json_loads("{\"type\":\"downloadUrl\",\"personal\":true,\"output\":\"/3ds/personal.bin\"}",0,NULL);
+ assert(run_step(&j,&step));assert(tx.count==0);assert(tx_finish(&j,true));equal(personal,"personal");clear_job(&j);json_decref(step.raw);
+ // A file appearing after staging is preserved; transaction rollback removes no user bytes.
+ j=make_job();assert(tx_begin(&j));stage(&j,personal,"replacement");tx_find(personal)->personal=true;
+ assert(!tx_publish(&j));assert(tx_finish(&j,false));equal(personal,"personal");clear_job(&j);
+ remove(personal);j=make_job();assert(tx_begin(&j));stage(&j,personal,"new");tx_find(personal)->personal=true;assert(tx_publish(&j));assert(tx_finish(&j,false));assert(!path_exists(personal));clear_job(&j);
+ puts("install integrity: 27 scenario groups passed (isolated host fixture; AM mocked)");return 0;
 }

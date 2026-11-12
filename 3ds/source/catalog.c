@@ -304,6 +304,7 @@ bool catalog_load(void) {
             break;
         App *a = &APPS[NAPPS];
         memset(a, 0, sizeof *a);
+        for (int k=0;k<3;k++) a->shot_index[k]=-1;
         a->j = v;
         a->updated = release_update_date(v);
         a->icon = NAPPS++;
@@ -320,7 +321,7 @@ bool catalog_load(void) {
         json_t *origin = json_object_get(v, "origin");
         a->platform = json_string_value(json_object_get(origin, "platform"));
         a->year = json_integer_value(json_object_get(origin, "year"));
-        a->progress = json_integer_value(json_object_get(v, "progress"));
+        a->progress = json_is_integer(json_object_get(v,"progress")) ? json_integer_value(json_object_get(v,"progress")) : -1;
         a->stars = json_integer_value(json_object_get(v, "stars"));
         a->has_stars = json_is_integer(json_object_get(v, "stars"));
         a->featured = json_is_true(json_object_get(v, "featured"));
@@ -388,37 +389,71 @@ bool catalog_load(void) {
     return true;
 }
 
-void catalog_request_banners(void) {
+void app_request_banner(App *a) {
+    if (!a) return;
     char path[96];
-    for (int i = 0; i < BUILTIN_APPS; i++) {
-        snprintf(path, sizeof path, "romfs:/gfx/banner/%s-bg.ftx", APPS[i].id);
-        sheet_request(&APPS[i].bg, path);
-        if (APPS[i].mid.i >= 0 || APPS[i].logo.i >= 0) {
-            snprintf(path, sizeof path, "romfs:/gfx/banner/%s-fg.ftx", APPS[i].id);
-            sheet_request(&APPS[i].fg, path);
-        }
+    snprintf(path,sizeof path,"romfs:/gfx/%s/%s%s.ftx",a->universal?"universal":"banner",a->id,a->universal?"":"-bg");
+    sheet_request(&a->bg,path);
+    if (a->mid.i>=0 || a->logo.i>=0) {
+        snprintf(path,sizeof path,"romfs:/gfx/banner/%s-fg.ftx",a->id);
+        sheet_request(&a->fg,path);
+    }
+}
+void catalog_request_banners(void) { if(BUILTIN_APPS) app_request_banner(&APPS[0]); }
+void catalog_trim_banners(App *current,App *previous) {
+    for(int i=0;i<NAPPS;i++) if(&APPS[i]!=current && &APPS[i]!=previous) {
+        if(APPS[i].bg.state!=SHEET_EMPTY) sheet_free(&APPS[i].bg);
+        if(APPS[i].fg.state!=SHEET_EMPTY) sheet_free(&APPS[i].fg);
     }
 }
 
-void app_request_shots(App *a) {
+static bool gallery_wants(const int *want,int index) {
+    for(int i=0;i<3;i++) if(want[i]==index) return true;
+    return false;
+}
+void app_request_gallery(App *a,int current,int previous) {
+    if(!a || !a->shots) return;
     char path[96];
-    for (int s = 0; s * 4 < a->shots && s < 3; s++) {
-        snprintf(path, sizeof path, "romfs:/gfx/shots/%s-t%d.ftx", a->id, s);
-        a->shots_t[s].crisp=true;sheet_request(&a->shots_t[s], path);
-        int bottoms = 0;
-        for (int k = 0; k < a->shots; k++)
-            bottoms += a->shot_bottom[k];
-        if (s * 4 < bottoms) {
-            snprintf(path, sizeof path, "romfs:/gfx/shots/%s-b%d.ftx", a->id, s);
-            a->shots_b[s].crisp=true;sheet_request(&a->shots_b[s], path);
+    snprintf(path,sizeof path,"romfs:/gfx/shots/%s-thumbs.ftx",a->id);
+    a->shot_thumbs.crisp=true;sheet_request(&a->shot_thumbs,path);
+    // Videos/GitHub keep the warm gallery. Nothing has to reload on B.
+    if(current<0 || current>=a->shots) return;
+    int want[3]={current,(current+1)%a->shots,(current+a->shots-1)%a->shots};
+    if(previous>=0 && previous<a->shots && previous!=current) want[2]=previous;
+    for(int k=0;k<3;k++) if(a->shot_index[k]>=0 && !gallery_wants(want,a->shot_index[k])) {
+        sheet_free(&a->shots_t[k]);sheet_free(&a->shots_b[k]);
+        // A queued decoder owns the Sheet until the frame pump releases it.
+        if(a->shots_t[k].state==SHEET_EMPTY && a->shots_b[k].state==SHEET_EMPTY) a->shot_index[k]=-1;
+    }
+    for(int n=0;n<3;n++) {
+        int slot=-1;
+        for(int k=0;k<3;k++) if(a->shot_index[k]==want[n]) slot=k;
+        if(slot<0) for(int k=0;k<3;k++) if(a->shot_index[k]<0) {slot=k;a->shot_index[k]=want[n];break;}
+        if(slot<0) continue;
+        snprintf(path,sizeof path,"romfs:/gfx/shots/%s-t-%d.ftx",a->id,want[n]);
+        a->shots_t[slot].crisp=true;sheet_request(&a->shots_t[slot],path);
+        if(a->shot_bottom[want[n]]) {
+            snprintf(path,sizeof path,"romfs:/gfx/shots/%s-b-%d.ftx",a->id,want[n]);
+            a->shots_b[slot].crisp=true;sheet_request(&a->shots_b[slot],path);
         }
     }
 }
-
+void app_request_shots(App *a) {app_request_gallery(a,0,-1);}
+C2D_Image app_shot(App *a,int index,bool bottom,bool *ready) {
+    *ready=false;
+    if(a && index>=0 && index<a->shots && (!bottom || a->shot_bottom[index]))
+        for(int k=0;k<3;k++) if(a->shot_index[k]==index) {
+            Sheet *s=bottom?&a->shots_b[k]:&a->shots_t[k];
+            *ready=sheet_ok(s);return sheet_img(s,0);
+        }
+    return (C2D_Image){0};
+}
 void app_free_shots(App *a) {
-    for (int s = 0; s < 3; s++) {
-        sheet_free(&a->shots_t[s]);
-        sheet_free(&a->shots_b[s]);
+    if(!a) return;
+    sheet_free(&a->shot_thumbs);
+    for(int k=0;k<3;k++) {
+        sheet_free(&a->shots_t[k]);sheet_free(&a->shots_b[k]);
+        if(a->shots_t[k].state==SHEET_EMPTY && a->shots_b[k].state==SHEET_EMPTY) a->shot_index[k]=-1;
     }
 }
 
@@ -1444,7 +1479,10 @@ json_t *app_install_steps(App *a, bool cia) {
     json_t *steps = a ? json_object_get(json_object_get(a->j, "install"), cia ? "cia" : "3dsx") : NULL;
     return json_is_array(steps) ? steps : NULL;
 }
-bool app_has_format(App *a, bool cia) { return json_array_size(app_install_steps(a, cia)) > 0; }
+bool app_has_format(App *a, bool cia) {
+    if(a && !cia && !IS_NEW3DS && json_is_false(json_object_get(json_object_get(a->j,"compat"),"o3ds3dsx"))) return false;
+    return json_array_size(app_install_steps(a, cia)) > 0;
+}
 
 json_t *app_asset(App *a, json_t *rel, const char *key) {
     (void)a;

@@ -93,6 +93,14 @@ void http_cache_invalidate(const char *url, const char *accept) {
     remove(meta);
     LightLock_Unlock(&write_lock);
 }
+static void bundled_path(const char *url,const char *accept,char *path,size_t cap) {
+    char cache[256];http_cache_path(url,accept,cache,sizeof cache);
+    snprintf(path,cap,"romfs:/reader-data/%s",strrchr(cache,'/')+1);
+}
+bool http_cache_bundled(const char *url,const char *accept) {
+    char path[256];bundled_path(url,accept,path,sizeof path);
+    struct stat st;return !stat(path,&st)&&S_ISREG(st.st_mode);
+}
 static bool validator(const char *s) {
     if (!s || strlen(s) > 255)
         return false;
@@ -191,6 +199,10 @@ char *http_cache_get(const char *url, const char *accept, size_t limit, bool ref
     char *cached = reader_cache_load(path, UINT64_MAX - 1, UINT64_MAX, limit, &cached_size);
     json_t *validators = cached && refresh ? json_load_file(meta, 0, NULL) : NULL;
     LightLock_Unlock(&write_lock);
+    if(!cached) {
+        char bundled[256];bundled_path(url,accept,bundled,sizeof bundled);
+        cached=reader_cache_load(bundled,UINT64_MAX-1,UINT64_MAX,limit,&cached_size);
+    }
     if (cached && !refresh) {
         if (length)
             *length = cached_size;

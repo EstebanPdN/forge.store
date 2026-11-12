@@ -40,13 +40,16 @@ python3 -m venv 3ds/tools/.venv
 
 The video harness also needs FFmpeg, a host C compiler, pthreads, libtheoradec, libogg and
 libjpeg-turbo (on macOS: Homebrew packages `ffmpeg theora jpeg-turbo`). Installer/catalog
-harnesses need host Jansson and libarchive. Some host transport shims currently use macOS
+harnesses need host Jansson and libarchive. The Forge Mode host shim also needs OpenSSL
+libcrypto; the production binary uses the existing mbedTLS portlib. Some host transport shims currently use macOS
 CommonCrypto, so the full queue suite is macOS-specific.
 
 ```sh
 python3 tools/check-repository.py
 python3 3ds/tests/catalog-host.py
 python3 3ds/tests/run-install-integrity.py
+python3 3ds/tests/run-forge-mode.py
+python3 3ds/tests/run-reader-image.py
 python3 3ds/tests/run-store-network.py
 python3 3ds/tests/run-audio-gain.py
 python3 3ds/tests/run-update-icon.py

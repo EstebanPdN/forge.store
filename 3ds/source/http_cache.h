@@ -11,5 +11,8 @@ char *http_cache_get(const char *url, const char *accept, size_t limit, bool ref
 void http_cache_path(const char *url, const char *accept, char *path, size_t size);
 // Age since the last successful 200/304 response; never uses SD file mtimes.
 bool http_cache_fresh(const char *url, const char *accept, uint32_t max_age);
+// Immutable, CRC-checked public responses bundled with the store. Foreground
+// readers can use these immediately while prefetch validates the SD copy.
+bool http_cache_bundled(const char *url, const char *accept);
 
 void http_cache_invalidate(const char *url, const char *accept);

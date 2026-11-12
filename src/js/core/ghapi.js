@@ -63,7 +63,11 @@ export function cleanHTML(html, repo, branch = 'HEAD') {
       if (name.startsWith('on') || (['href', 'src'].includes(name) && /^\s*javascript:/i.test(attr.value))) el.removeAttribute(attr.name);
     }
   }
-  const raw = (src) => (/^(https?:|data:)/.test(src) ? src : `https://raw.githubusercontent.com/${repo}/${branch}/${src.replace(/^\.?\//, '')}`);
+  const raw = (src) => {
+    const blob = src.match(/^https:\/\/github\.com\/([^/]+\/[^/]+)\/blob\/(.+)$/);
+    if (blob) return `https://raw.githubusercontent.com/${blob[1]}/${blob[2]}`;
+    return /^(https?:|data:)/.test(src) ? src : `https://raw.githubusercontent.com/${repo}/${branch}/${src.replace(/^\.?\//, '')}`;
+  };
   // <picture> picks its <source> with the OS colour scheme and relative paths would
   // resolve against the store: choose the variant for the store's theme instead.
   const dark = document.documentElement.dataset.theme === 'dark';

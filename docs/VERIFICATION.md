@@ -1,8 +1,39 @@
 # Verification record
 
-Publication candidate: **2026.11.12.2**, native C implementation plus web V2. This is a development
+Publication candidate: **2026.11.12.3**, native C implementation plus web V2. This is a development
 build, not a claim of complete parity or hardware qualification. Exact public binary hashes
 and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## Catalog, cached content and artwork — 2026.11.12.3
+
+All three final emulator runs use the exact packaged public 3DSX and matching native sources.
+The [evidence index](verification/catalog-loading.json) records binary and capture hashes.
+Private SD fixtures, memory dumps and full logs are excluded from publication.
+
+- Production catalog tests passed 297 assertions under ASan/UBSan, including the bounded
+  three-pair gallery, sparse lower screens and texture retention across video return.
+- Installer integrity passed 27 scenario groups. Forge Mode authentication, tampering,
+  persistent unlock and worker handoff passed; AM/CIA services remain mocked on the host.
+- HTTP tests passed 23 updater scenarios, concurrent cache use under TSan, offline bundle
+  fallback and all 152 bundled response keys, sizes, CRCs and hashes. The prepared-image
+  cache passed invalidation, corruption, bounds and all 225 bundled image checks.
+- The hammer/update icon harness passed 3,314 native pixel masks and 49 transitions.
+  Its hammer head stays perpendicular to the handle through the strike.
+- Code Atlas reviewed all 39 banner compositions with no missing images. It verified
+  the 40 px About coin without its contact shadow, 10 px text gap, 18 px Forge mark,
+  moving thumbnail cursor and 320×240 lower fullscreen with B returning normally.
+- Old 3DS played the actual cached ALttP trailer. The three gallery slots were already
+  ready two sampled frames after B, and stayed ready when returning from GitHub.
+  These are residency observations, not physical-SD latency measurements.
+- Old/New emulator runs reviewed banners, origins, unknown progress, both Settings themes,
+  Forge Mode, README/profile data and Mutiny lower screenshots. GitHub started without
+  an HTTP cache seed; the Old run showed 218 README nodes by its 30-frame sample.
+  All three runs closed normally and sampled music logs reported zero underruns.
+
+The visual Old/New runs explicitly seed no network-response cache. Two Old runs seed the
+verified video package to isolate playback and return behavior. The New run starts without
+that video seed. No physical-console self-update installation or HOME/suspend qualification
+is claimed. The sections below retain results from earlier published builds.
 
 ## Native audio, gallery motion and update confirmation
 

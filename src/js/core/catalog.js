@@ -2,6 +2,13 @@
 // and the status of each app on the (virtual) SD card.
 import { L } from './i18n.js';
 
+export function originLabel(app, includeYear = false) {
+  const origin = app.origin;
+  if (!origin?.platform) return '';
+  if (origin.platform === '3DS') return '3DS';
+  return `${origin.platform}${includeYear && origin.year ? ' · ' + origin.year : ''} → 3DS`;
+}
+
 export class Catalog {
   constructor(data, state, sd) {
     this.data = data;
@@ -80,7 +87,7 @@ export class Catalog {
 
   /** CIA first: it installs to the HOME Menu, which is what most players expect. */
   formats(app) {
-    return Object.keys(app.install || {}).sort((a, b) => (a === b ? 0 : a === 'cia' ? -1 : b === 'cia' ? 1 : 0));
+    return Object.keys(app.install || {}).filter((f) => !(f === '3dsx' && this.state.get('console') === 'o3ds' && app.compat?.o3ds3dsx === false)).sort((a, b) => (a === b ? 0 : a === 'cia' ? -1 : b === 'cia' ? 1 : 0));
   }
 
   format(app, preferred = this.state.get('format')) {
@@ -144,9 +151,8 @@ export class Catalog {
   status(app, jobs) {
     const job = jobs?.find((j) => j.app.id === app.id && ['running', 'queued'].includes(j.status));
     if (job) return { kind: job.status === 'running' ? 'downloading' : 'queued', job };
-    if (app.status === 'development') return { kind: 'dev' };
     const record = this.state.installed[app.id];
-    if (!record) return { kind: 'available' };
+    if (!record) return { kind: app.status === 'development' ? 'dev' : 'available' };
     const latest = this.release(app, record.channel);
     if (latest && latest.tag !== record.version) return { kind: 'update', record, latest };
     if (this.missingRequirements(app).length) return { kind: 'needs-file', record };

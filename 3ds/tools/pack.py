@@ -136,6 +136,42 @@ def write_alpha_page(path, canvas):
     return len(z)
 
 
+def pack_shots():
+    """Independent native frames + a tiny persistent thumbnail atlas.
+
+    Three top/bottom pairs use 1.5 MiB at most, instead of loading every
+    four-frame atlas. Bottom filenames keep the original gallery index even
+    when only some screenshots have a second screen.
+    """
+    catalog = json.loads((ROOT / 'catalog/forge-store.json').read_text())
+    meta = {}
+    folder = OUT / 'gfx/shots'
+    folder.mkdir(parents=True, exist_ok=True)
+    wanted = set()
+    for app in catalog['apps']:
+        shots = app.get('shots', [])[:12]
+        if not shots:
+            continue
+        thumbs = []
+        for i, shot in enumerate(shots):
+            top = load(ROOT / shot['top'], (400, 240))
+            thumbs.append(top.resize((46, 28), Image.Resampling.LANCZOS))
+            for side, im in [('t', top), ('b', load(ROOT / shot['bottom'], (320, 240)) if shot.get('bottom') else None)]:
+                if im is not None:
+                    path = folder / f"{app['id']}-{side}-{i}.ftx"
+                    write_sheet(path, [im], RGB565)
+                    wanted.add(path)
+        path = folder / f"{app['id']}-thumbs.ftx"
+        write_sheet(path, thumbs, RGB565)
+        wanted.add(path)
+        meta[app['id']] = {'count': len(shots), 'bottom': [bool(s.get('bottom')) for s in shots]}
+    for path in folder.glob('*.ftx'):
+        if path not in wanted:
+            path.unlink()
+    (OUT / 'gfx/shots.json').write_text(json.dumps(meta))
+    print(f'Independent galleries: {len(meta)}; files: {len(wanted)}')
+
+
 def pack_glyphs():
     """Fonts and UI icons baked by render-fonts.mjs -> A8 pages + fonts.bin.
 
@@ -316,26 +352,7 @@ def main():
         banner_meta[a] = meta
     (OUT / 'gfx/banners.json').write_text(json.dumps(banner_meta))
 
-    # Screenshots: top 400x240 and bottom 320x240 per app (loaded when a page opens).
-    shots_meta = {}
-    for app in catalog['apps']:
-        tops, bottoms = [], []
-        for s in app.get('shots', []):
-            tops.append(load(ROOT / s['top'], (400, 240)))
-            bottoms.append(load(ROOT / s['bottom'], (320, 240)) if s.get('bottom') else None)
-        if not tops:
-            continue
-        # Up to 4 per sheet keeps every atlas within 1024x1024.
-        sheets = []
-        for i in range(0, len(tops), 4):
-            write_sheet(OUT / f"gfx/shots/{app['id']}-t{i // 4}.ftx", tops[i:i + 4], RGB565)
-            sheets.append(len(tops[i:i + 4]))
-        real_bottoms = [b for b in bottoms if b is not None]
-        if real_bottoms:
-            for i in range(0, len(real_bottoms), 4):
-                write_sheet(OUT / f"gfx/shots/{app['id']}-b{i // 4}.ftx", real_bottoms[i:i + 4], RGB565)
-        shots_meta[app['id']] = {'count': len(tops), 'bottom': [b is not None for b in bottoms]}
-    (OUT / 'gfx/shots.json').write_text(json.dumps(shots_meta))
+    pack_shots()
 
     # Audio: synthesized effects and music, and the site's intro sounds.
     (OUT / 'audio').mkdir()
@@ -359,6 +376,8 @@ def main():
 if __name__ == '__main__':
     if '--fonts-only' in sys.argv[2:]:
         pack_glyphs()
+    elif '--shots-only' in sys.argv[2:]:
+        pack_shots()
     elif '--ui-only' in sys.argv[2:]:  # only gfx/ui.ftx + ui.json, like --fonts-only for glyphs
         print('ui', *pack_ui())
     else:

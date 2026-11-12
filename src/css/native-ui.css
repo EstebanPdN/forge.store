@@ -198,6 +198,9 @@
 .st-hero p, .st-explain, .st-desc { font-size: 11px; line-height: 15px; }
 .st-hero h3 { font-size: 14px; line-height: 18px; }
 .st-about { padding: 7px; }
+.st-about > .coin { flex: 0 0 40px; }
+.st-about > div:last-child { min-width: 0; }
+.st-about .coin-shadow { display: none; }
 .cs-fact span { font-size: 9px; line-height: 12px; letter-spacing: 0; }
 .cs-fact b, .cs-head small, .cs-sd .head, .info-value { font-size: 10px; line-height: 14px; }
 .cs-grid { margin-top: 6px; }
@@ -339,3 +342,20 @@
   border: 2px solid var(--forge); border-radius: 6px; pointer-events: none; z-index: 1;
   transition: transform 340ms cubic-bezier(.22,1,.36,1);
 }
+
+.dt-bottom-fullscreen { position: absolute; inset: 0; z-index: 50; background: #000; }
+.dt-bottom-fullscreen img { width: 100%; height: 100%; object-fit: contain; image-rendering: pixelated; }
+.forge-enabled { color: var(--forge, #ff8a1f); font-size: 9px; white-space: nowrap; }
+.forge-mode-mark { color: var(--forge, #ff8a1f); display: inline-flex; width: 18px; height: 18px; flex: 0 0 18px; align-items: center; transform: translateY(-1px); }
+.cs-head > .forge-mode-mark { margin-left: auto; }
+.secret-code .pn-top { position: absolute; top: 43px; left: 24px; right: 24px; height: 176px; padding: 0; border-radius: 16px; background: var(--surface); border: 1px solid var(--line); text-align: center; }
+.secret-code .secret-eyebrow { position: absolute; top: 11px; left: 0; right: 0; font-size: 9px; font-weight: 800; letter-spacing: 1px; color: var(--forge); }
+.secret-code .pn-title { position: absolute; top: 93px; left: 0; right: 0; margin: 0; font-size: 17px; line-height: 22px; }
+.secret-code .se-query { position: absolute; top: 31px; left: 143px; width: 64px; height: 52px; margin: 0; padding: 6px 12px; border-radius: 13px; background: rgb(255 138 31 / 8%); }
+.secret-code .se-query canvas { display: block; width: 40px; height: 40px; image-rendering: pixelated; }
+.secret-code .pn-sub { position: absolute; top: 121px; left: 16px; right: 16px; margin: 0; font-size: 11px; font-weight: 500; line-height: 16px; white-space: normal; }
+.secret-code .secret-progress { position: absolute; top: 151px; left: 151px; width: 48px; height: 3px; border-radius: 1px; background: var(--line); overflow: hidden; }
+.secret-code .secret-progress::after { content: ''; display: block; width: 8px; height: 3px; margin-left: 20px; background: var(--forge); }
+.secret-code[data-forge-state="checking"] .secret-progress::after { width: 16px; margin-left: 0; animation: forge-checking 1.26s ease-in-out infinite alternate; }
+.secret-code[data-forge-state="enabled"] .secret-progress::after { width: 48px; margin-left: 0; background: #4f9e86; }
+@keyframes forge-checking { to { transform: translateX(32px); } }

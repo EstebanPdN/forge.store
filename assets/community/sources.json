@@ -1,0 +1,693 @@
+[
+  {
+    "app": "starhaven",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/cia/icon.png",
+    "sha256": "7ddf2fb3980fc0d84239588f3cc64df77a860b47f70a175b63d30e847e3866bb",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/starhaven/icon.webp"
+  },
+  {
+    "app": "mkwii",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/Epic0522/MarioKartWii-3DS-Redux/main/tools/release/artwork/icon.png",
+    "sha256": "3c10edeca7338906e006345d9f8516104d2fca79a481ce87c0e0e54ad826947d",
+    "size": [
+      64,
+      64
+    ],
+    "output": "assets/community/mkwii/icon.webp"
+  },
+  {
+    "app": "gd3ds",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/AleFunky/gd3ds/master/resources/icon.png",
+    "sha256": "9cc8c2fea374f5a95115f18e609a1357d3f1e470af6adba26e7f463d1a925c2b",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/gd3ds/icon.webp"
+  },
+  {
+    "app": "ctrquake",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/masterfeizz/ctrQuake/master/icon.png",
+    "sha256": "a1b7f2a546e081fde6d9b94c01444b7b68bdc47546568b9f1ad313f48c219200",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/ctrquake/icon.webp"
+  },
+  {
+    "app": "snes9x",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/resources/icon.png",
+    "sha256": "d082c76277840e23478f7cf9f501784563c8c8c152b839de276c7f49691814de",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/snes9x/icon.webp"
+  },
+  {
+    "app": "daedalus",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/masterfeizz/DaedalusX64-3DS/master/Source/SysCTR/Resources/icon.png",
+    "sha256": "caa7f33cc6c7ab3158e259f31ffe269bcf9dd6db36d724b705f6c9e3e111a951",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/daedalus/icon.webp"
+  },
+  {
+    "app": "psx3d",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/BreadChaser/PSX3D/main/psx3d/meta/icon.png",
+    "sha256": "f5edbdc03733d90a9ab81a06cb04067c93cde5c727e31bfa9275ac7d50e37757",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/psx3d/icon.webp"
+  },
+  {
+    "app": "picodrive",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/bubble2k16/emus3ds/master/src/cores/picodrive/assets/icon.png",
+    "sha256": "3fad552bd7e7c2c425b83ebb464ba6b61db23c79958b7fad4b34391ba6137887",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/picodrive/icon.webp"
+  },
+  {
+    "app": "checkpoint",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/BernardoGiordano/Checkpoint/master/3ds/assets/icon.png",
+    "sha256": "a189f3c8388231e97992817a8024de278590a728da7e6a6d1345436fea6e5089",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/checkpoint/icon.webp"
+  },
+  {
+    "app": "nimbus",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/PretendoNetwork/nimbus/main/app/meta/icon.png",
+    "sha256": "9c5fef163c948ee479645aa12b99fa2adcfaac1aefd7fa52ce5db92d6010e2cb",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/nimbus/icon.webp"
+  },
+  {
+    "app": "universal",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/Universal-Team/Universal-Updater/master/app/icon.png",
+    "sha256": "5c871a14a07ed93628e6dcc4c95ed63992f011424fb49d3fbf8416033cd28683",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/universal/icon.webp"
+  },
+  {
+    "app": "fourthtube",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/erievs/FourthTube/main/resource/icon.png",
+    "sha256": "a685f514f8afa48e2d410ef15cb27a950ad25560883a5bcff0ae6331a0cde312",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/fourthtube/icon.webp"
+  },
+  {
+    "app": "anemone",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/astronautlevel2/Anemone3DS/master/meta/icon.png",
+    "sha256": "d3850723dae020ee1e7d6336d908dd5652e74dc412f61d6553453ae05cf1a665",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/anemone/icon.webp"
+  },
+  {
+    "app": "recorder",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/app/assets/icon.png",
+    "sha256": "2cab6e29ebb94e4906a4569880018d4a81678805cb93c2ef269614bda6e9fc7b",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/recorder/icon.webp"
+  },
+  {
+    "app": "starhaven",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/field.png",
+    "sha256": "8f5003329bce6771ee2197a0670da0032d4059ec594921995e74c9b14c38b35a",
+    "sourceSize": [
+      600,
+      720
+    ],
+    "outputs": [
+      "assets/community/starhaven/shot-1-top.webp",
+      "assets/community/starhaven/shot-1-bottom.webp"
+    ]
+  },
+  {
+    "app": "starhaven",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/battle.png",
+    "sha256": "c0eda8053abaeee92008134b9d539c89a8e26e05feff49404f4b787c8c0d943c",
+    "sourceSize": [
+      600,
+      720
+    ],
+    "outputs": [
+      "assets/community/starhaven/shot-2-top.webp",
+      "assets/community/starhaven/shot-2-bottom.webp"
+    ]
+  },
+  {
+    "app": "starhaven",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/map.png",
+    "sha256": "1bf9936fe8bd9a4a7201f62938462d7a82b791d1af6352a415df8dccd6859b96",
+    "sourceSize": [
+      600,
+      720
+    ],
+    "outputs": [
+      "assets/community/starhaven/shot-3-top.webp",
+      "assets/community/starhaven/shot-3-bottom.webp"
+    ]
+  },
+  {
+    "app": "starhaven",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/docs/screenshots/party.png",
+    "sha256": "87921df91e2f863381893cc2d5f60c99037cb188bcb5d3deea76ff2610c96b68",
+    "sourceSize": [
+      600,
+      720
+    ],
+    "outputs": [
+      "assets/community/starhaven/shot-4-top.webp",
+      "assets/community/starhaven/shot-4-bottom.webp"
+    ]
+  },
+  {
+    "app": "psx3d",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/BreadChaser/PSX3D/main/docs/screenshots/main-menu.png",
+    "sha256": "53429413d958100ecde46b8a77022f828be1a1317af7bdcaf2e5ce2dbfd5ba36",
+    "sourceSize": [
+      400,
+      540
+    ],
+    "outputs": [
+      "assets/community/psx3d/shot-1-top.webp",
+      "assets/community/psx3d/shot-1-bottom.webp"
+    ]
+  },
+  {
+    "app": "psx3d",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/BreadChaser/PSX3D/main/docs/screenshots/library.png",
+    "sha256": "e05601596405b1c3252b68fc874e48be75ad52f921c6cd810e35f6c0b721bdf1",
+    "sourceSize": [
+      400,
+      540
+    ],
+    "outputs": [
+      "assets/community/psx3d/shot-2-top.webp",
+      "assets/community/psx3d/shot-2-bottom.webp"
+    ]
+  },
+  {
+    "app": "psx3d",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/BreadChaser/PSX3D/main/docs/screenshots/crash.png",
+    "sha256": "74dbb2f71ea92015f8713631b363e6013b340ba46017d20c2dab44bb4cb5ff5d",
+    "sourceSize": [
+      400,
+      540
+    ],
+    "outputs": [
+      "assets/community/psx3d/shot-3-top.webp",
+      "assets/community/psx3d/shot-3-bottom.webp"
+    ]
+  },
+  {
+    "app": "snes9x",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/screenshots/dark-mode-file-menu.png",
+    "sha256": "9fa762e8559c5d810265c061fcc8e45d6ea6846411315e34596fb4fa743ae729",
+    "sourceSize": [
+      400,
+      480
+    ],
+    "outputs": [
+      "assets/community/snes9x/shot-1-top.webp",
+      "assets/community/snes9x/shot-1-bottom.webp"
+    ]
+  },
+  {
+    "app": "snes9x",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/screenshots/retroarch-pause-screen.png",
+    "sha256": "fa941148a7f04177724b6bbefc1e2f8c822dd875e342624171ad11da265c6f95",
+    "sourceSize": [
+      400,
+      480
+    ],
+    "outputs": [
+      "assets/community/snes9x/shot-2-top.webp",
+      "assets/community/snes9x/shot-2-bottom.webp"
+    ]
+  },
+  {
+    "app": "snes9x",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/screenshots/dkc-hotkeys.png",
+    "sha256": "2a8d3db968d4b95818715264873e6468e9f85bdf27e0a12f98c938c6c1780db6",
+    "sourceSize": [
+      400,
+      480
+    ],
+    "outputs": [
+      "assets/community/snes9x/shot-3-top.webp",
+      "assets/community/snes9x/shot-3-bottom.webp"
+    ]
+  },
+  {
+    "app": "3dsdl",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/downloading-top.webp",
+    "sha256": "a8db88393c379e675d993e57ca5096cb22007663f916a6c4937e25801688c783",
+    "sourceSize": [
+      400,
+      240
+    ],
+    "outputs": [
+      "assets/community/3dsdl/shot-1-top.webp",
+      "assets/community/3dsdl/shot-1-bottom.webp"
+    ]
+  },
+  {
+    "app": "3dsdl",
+    "kind": "screenshot-bottom",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/downloading-bottom.webp",
+    "output": "assets/community/3dsdl/shot-1-bottom.webp"
+  },
+  {
+    "app": "3dsdl",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/files-top.webp",
+    "sha256": "3fa303629c41440dd59592b229ede7097c0aba015205ef4258ea35a8c0d4c03a",
+    "sourceSize": [
+      400,
+      240
+    ],
+    "outputs": [
+      "assets/community/3dsdl/shot-2-top.webp",
+      "assets/community/3dsdl/shot-2-bottom.webp"
+    ]
+  },
+  {
+    "app": "3dsdl",
+    "kind": "screenshot-bottom",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/files-bottom.webp",
+    "output": "assets/community/3dsdl/shot-2-bottom.webp"
+  },
+  {
+    "app": "3dsdl",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/installed-top.webp",
+    "sha256": "f855536a2d56929acd4036183f1504197c00568ae8e7259b308f46ac523dfa2d",
+    "sourceSize": [
+      400,
+      240
+    ],
+    "outputs": [
+      "assets/community/3dsdl/shot-3-top.webp",
+      "assets/community/3dsdl/shot-3-bottom.webp"
+    ]
+  },
+  {
+    "app": "3dsdl",
+    "kind": "screenshot-bottom",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/site/assets/screens/installed-bottom.webp",
+    "output": "assets/community/3dsdl/shot-3-bottom.webp"
+  },
+  {
+    "app": "recorder",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/en/panel.png",
+    "sha256": "fd26d808405a6e2d567f6a6c8b3ae4a8e13acc7c5b3cdcc50a43bfe15e094e32",
+    "sourceSize": [
+      400,
+      480
+    ],
+    "outputs": [
+      "assets/community/recorder/shot-1-top.webp",
+      "assets/community/recorder/shot-1-bottom.webp"
+    ]
+  },
+  {
+    "app": "recorder",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/en/gallery.png",
+    "sha256": "5d242240c240e57f02a470ee38d486cedeeeb9e02e88d28436e18ed510f63058",
+    "sourceSize": [
+      400,
+      480
+    ],
+    "outputs": [
+      "assets/community/recorder/shot-2-top.webp",
+      "assets/community/recorder/shot-2-bottom.webp"
+    ]
+  },
+  {
+    "app": "recorder",
+    "kind": "screenshot",
+    "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/docs/screenshots/en/download.png",
+    "sha256": "463994dae49ff2cf61ff33377bb2d700ef4e995be38b6b7d4a7ea3877a86a222",
+    "sourceSize": [
+      400,
+      480
+    ],
+    "outputs": [
+      "assets/community/recorder/shot-3-top.webp",
+      "assets/community/recorder/shot-3-bottom.webp"
+    ]
+  },
+  {
+    "app": "gd3ds",
+    "kind": "screenshot",
+    "url": "https://github.com/user-attachments/assets/d802266b-2eb9-4115-870c-0073ed5a50ff",
+    "sha256": "8e8713dbeca5f5b64dd7407ea92f8d174f573f745016f3e5d995c9462b802ab5",
+    "sourceSize": [
+      720,
+      240
+    ],
+    "outputs": [
+      "assets/community/gd3ds/shot-1-top.webp",
+      "assets/community/gd3ds/shot-1-bottom.webp"
+    ]
+  },
+  {
+    "app": "gd3ds",
+    "kind": "screenshot",
+    "url": "https://github.com/user-attachments/assets/d55b2434-4f4b-4136-bab8-668f5e8e62c7",
+    "sha256": "5eba05805d9bf15caa42ab9bc73512dbfc274d590d440160260265cfd25c5521",
+    "sourceSize": [
+      720,
+      240
+    ],
+    "outputs": [
+      "assets/community/gd3ds/shot-2-top.webp",
+      "assets/community/gd3ds/shot-2-bottom.webp"
+    ]
+  },
+  {
+    "app": "gd3ds",
+    "kind": "screenshot",
+    "url": "https://github.com/user-attachments/assets/cec39d8a-0326-4924-a8f0-20c90dc403fa",
+    "sha256": "9145a8c71100c06c9ebc0a05169262b076c56a23364f100fe44bda588fd8b19d",
+    "sourceSize": [
+      720,
+      240
+    ],
+    "outputs": [
+      "assets/community/gd3ds/shot-3-top.webp",
+      "assets/community/gd3ds/shot-3-bottom.webp"
+    ]
+  },
+  {
+    "app": "butterscotch",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/efimandreev0/Butterscotch/main/3ds/icon.png",
+    "sha256": "4547983eece811448b52e083a5bf346bf30405a1645a7e2f2b443c48c42a3652",
+    "output": "assets/community/butterscotch/icon.webp"
+  },
+  {
+    "app": "dk64",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/oneup03/Donkey-Kong-64-3D/main/assets/Logo.png",
+    "sha256": "28a7bd2aef67620455732302c9dfabc7c8857ba84dbf69bd90726e21c2190066",
+    "output": "assets/community/dk64/logo.webp"
+  },
+  {
+    "app": "banjo",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/oneup03/BanjoRecomp3D/main/assets/Logo.svg",
+    "sha256": "41d7f3768fff8bcb84f3d2c40c706eaddd521ebb708b87ffaf9fed47fb725bb3",
+    "output": "assets/community/banjo/logo.webp"
+  },
+  {
+    "app": "mkwii",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/Epic0522/MarioKartWii-3DS-Redux/main/tools/release/artwork/logo.png",
+    "sha256": "12f21139f97ea8547c58dd69dd48936abc6f852bf8bbaf534fc0b1ea2c2a63fe",
+    "output": "assets/community/mkwii/logo.webp"
+  },
+  {
+    "app": "3dsdl",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/resources/banner/logo.png",
+    "sha256": "37dcb23884a529ba086f9a5e7e47d17d2ab84daa4654627c677da777ebdcb458",
+    "output": "assets/community/3dsdl/logo.webp"
+  },
+  {
+    "app": "daedalus",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/masterfeizz/DaedalusX64-3DS/master/Data/Resources/logo.png",
+    "sha256": "9425f0e448261e268cc5dcfbefe72d29a4c30699d0db2aa6be284b99374f5cdd",
+    "output": "assets/community/daedalus/logo.webp"
+  },
+  {
+    "app": "mk64",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/EstebanPdN/mario-kart-64-3ds/main/platform/desktop/extractor/assets/icon.png",
+    "sha256": "d1999a2a0a2081afad196bca9f5eae531138ce18e918208c7655cc1e5f2080fb",
+    "size": [
+      256,
+      256
+    ],
+    "output": "assets/ports/mk64/icon.webp"
+  },
+  {
+    "app": "dk64",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/oneup03/Donkey-Kong-64-3D/main/icons/app.png",
+    "sha256": "b743cafe4f3e19dba6aad4c17af833b62ff758af0390d13eec3303f166893f6b",
+    "size": [
+      512,
+      512
+    ],
+    "output": "assets/community/dk64/icon.webp"
+  },
+  {
+    "app": "banjo",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/oneup03/BanjoRecomp3D/main/icons/app.png",
+    "sha256": "991e10bb4ad6ef405e3027f91fee901db2fbc3ac795b9958b925bbdd68c417f5",
+    "size": [
+      512,
+      512
+    ],
+    "output": "assets/community/banjo/icon.webp"
+  },
+  {
+    "app": "goemon",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/oneup03/Goemon64Recomp3D/dev/icons/512.png",
+    "sha256": "101788aa50b860a4ba71a864aad6e933bd263d3006b238256b038cfa2a684369",
+    "size": [
+      512,
+      512
+    ],
+    "output": "assets/community/goemon/icon.webp"
+  },
+  {
+    "app": "xash3ds",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/masterfeizz/Xash3DS/master/game_launch/icon-xash-material.png",
+    "sha256": "1ad13ba2780b03d704732f6ca93e364d55d1b825b27964fd95752d9394d09d8a",
+    "size": [
+      256,
+      256
+    ],
+    "output": "assets/community/xash3ds/icon.webp"
+  },
+  {
+    "app": "openlara",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/XProger/OpenLara/master/src/platform/osx/Assets.xcassets/AppIcon.appiconset/icon512x512.png",
+    "sha256": "be792a75e3cb2e1f389b3dbc7a9297990dda9e47eeb8392a917730d3de456c49",
+    "size": [
+      512,
+      512
+    ],
+    "output": "assets/community/openlara/icon.webp"
+  },
+  {
+    "app": "mgba",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/mgba-emu/mgba/master/src/platform/switch/icon.jpg",
+    "sha256": "19cac5c219d84a59e61aba32b41aa0c300e3467e38b2e9ad18b62b4056384dd0",
+    "size": [
+      256,
+      256
+    ],
+    "output": "assets/community/mgba/icon.webp"
+  },
+  {
+    "app": "3dsdl",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/ankushKun/3dsDL/main/video/assets/brand/icon-1024.png",
+    "sha256": "2dd81391d856d7ea67d35aeab59252082df68a4b8613b8a062d6c3fd81e09e97",
+    "size": [
+      1024,
+      1024
+    ],
+    "output": "assets/community/3dsdl/icon.webp"
+  },
+  {
+    "app": "retroarch",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/libretro/RetroArch/master/media/ico_src/icon.svg",
+    "sha256": "aec6fbf3112100e3a707165ba1f0c5b343bc862301d81e9233490930ad102583",
+    "size": "vector",
+    "output": "assets/community/retroarch/icon.webp"
+  },
+  {
+    "app": "ftpd",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/mtheall/ftpd/master/meta/icon.svg",
+    "sha256": "a93a48b610e7cd4f7d3e24cf30827f7beb6fdd29e555a984d1c73b5bb06318b8",
+    "size": "vector",
+    "output": "assets/community/ftpd/icon.webp"
+  },
+  {
+    "app": "lynx3ds",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/PeterWarrington/lynx3ds/main/icon.svg",
+    "sha256": "67a0d5e54fedc723bded7d92af8cea64214c04f99fae7bfc700d82c32e26d83a",
+    "size": "vector",
+    "output": "assets/community/lynx3ds/icon.webp"
+  },
+  {
+    "app": "fbi",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/Steveice10/FBI/master/romfs/logo.png",
+    "sha256": "064cf10b8dbc73d0e8e3970237f23489aca22d863f7ea775a051df3bd8ecc71d",
+    "size": [
+      144,
+      144
+    ],
+    "output": "assets/community/fbi/icon.webp"
+  },
+  {
+    "app": "wumiibo",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/hax0kartik/wumiibo/master/wumiibohelper/gfx/icon.png",
+    "sha256": "64820f8dd394600fe7425be47edc19b3ad05194e35c15ca58e67e95430807a59",
+    "size": [
+      128,
+      128
+    ],
+    "output": "assets/community/wumiibo/icon.webp"
+  },
+  {
+    "app": "artic",
+    "kind": "icon",
+    "url": "https://raw.githubusercontent.com/azahar-emu/ArticSetupTool/main/images/logo_small.png",
+    "sha256": "da27400d6b474f1335e273122ae96995669b25ea9eb838a6028de23c2a2ed797",
+    "size": [
+      128,
+      128
+    ],
+    "output": "assets/community/artic/icon.webp"
+  },
+  {
+    "app": "snes9x",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/gfx/splash_logo.png",
+    "sha256": "7bbba9c41ac406577a78bd319ba6cb20ecde93667bf175f89c35e6f5b1dafc6a",
+    "size": [
+      256,
+      62
+    ],
+    "output": "assets/community/snes9x/logo.webp"
+  },
+  {
+    "app": "butterscotch",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/efimandreev0/Butterscotch/main/3ds/banner.png",
+    "sha256": "eacc77855739ff695d47ed5beed6a1a45c2f4326f59455025c0118f64efe522b",
+    "size": [
+      256,
+      128
+    ],
+    "output": "assets/community/butterscotch/logo.webp"
+  },
+  {
+    "app": "anemone",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/astronautlevel2/Anemone3DS/master/meta/banner.png",
+    "sha256": "fa661ce6d6594c8a557e710a108e7470af45954cdcf8c6230b210b79135d7604",
+    "size": [
+      256,
+      128
+    ],
+    "output": "assets/community/anemone/logo.webp"
+  },
+  {
+    "app": "recorder",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/app/assets/banner.png",
+    "sha256": "ab3b9bb55b73fe8f43cbf873866304a47d922bdc4075d399a6180ab267bbd72d",
+    "size": [
+      256,
+      128
+    ],
+    "output": "assets/community/recorder/logo.webp"
+  },
+  {
+    "app": "universal",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/Universal-Team/Universal-Updater/master/resources/2d-banner.png",
+    "sha256": "4e520437ba9303c492dd6f9af7b0a99ecbde808dff36d8be3568c0e0670340de",
+    "size": [
+      256,
+      128
+    ],
+    "output": "assets/community/universal/logo.webp"
+  },
+  {
+    "app": "fourthtube",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/erievs/FourthTube/main/resource/banner_legacy.png",
+    "sha256": "9118d5d114f5e64447f25c584a5e5ca06cf06910cc266f74d54dc68fba1b846c",
+    "size": [
+      256,
+      128
+    ],
+    "output": "assets/community/fourthtube/logo.webp"
+  }
+]

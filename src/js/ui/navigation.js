@@ -37,6 +37,34 @@ export class TabBar {
       else this.step(e.key === 'ArrowRight' ? 1 : -1);
       this.buttons.find((b) => b.dataset.value === String(this.value))?.focus({ preventScroll: true });
     });
+    this.viewport.style.touchAction = 'none';
+    this.viewport.addEventListener('pointerdown', (e) => {
+      if (e.button && e.pointerType === 'mouse') return;
+      const scale = this.viewport.getBoundingClientRect().width / this.viewport.clientWidth;
+      this.drag = { id: e.pointerId, x: e.clientX, shift: this.shift || 0, scale, moved: false };
+    });
+    this.viewport.addEventListener('pointermove', (e) => {
+      const d = this.drag;
+      if (!d || d.id !== e.pointerId) return;
+      const delta = (e.clientX - d.x) / d.scale;
+      if (!d.moved && Math.abs(delta) < 4) return;
+      d.moved = true;
+      this.viewport.setPointerCapture(e.pointerId);
+      this.manualShift = d.shift - delta;
+      this.sync(false);
+      e.preventDefault();
+      e.stopPropagation();
+    });
+    const finish = (e) => {
+      if (this.drag?.id !== e.pointerId) return;
+      this.suppressClick = this.drag.moved;
+      this.drag = null;
+    };
+    this.viewport.addEventListener('pointerup', finish);
+    this.viewport.addEventListener('pointercancel', finish);
+    this.viewport.addEventListener('click', (e) => {
+      if (this.suppressClick) { e.preventDefault(); e.stopPropagation(); this.suppressClick = false; }
+    }, true);
     this.setOptions(options);
     this.resize = new ResizeObserver(() => this.sync(false));
     this.resize.observe(this.viewport);
@@ -59,6 +87,7 @@ export class TabBar {
   set(value, animated = true) {
     if (!this.options.some((o) => o.value === value)) return;
     this.value = value;
+    this.manualShift = null;
     this.buttons.forEach((b) => {
       const selected = b.dataset.value === String(value);
       b.setAttribute('aria-pressed', String(selected));
@@ -87,7 +116,7 @@ export class TabBar {
       b.style.width = `${widths[i] + Math.floor(spare / widths.length) + (i < spare % widths.length ? 1 : 0)}px`;
     });
     const max = Math.max(0, this.track.scrollWidth - width);
-    const shift = Math.round(clamp(active.offsetLeft + active.offsetWidth / 2 - width / 2, 0, max));
+    const shift = this.shift = Math.round(clamp(this.manualShift ?? (active.offsetLeft + active.offsetWidth / 2 - width / 2), 0, max));
     for (const el of [this.track, this.thumb]) el.style.transitionDuration = animated ? '' : '0s';
     this.track.style.transform = `translateX(${-shift}px)`;
     this.thumb.style.width = `${active.offsetWidth}px`;

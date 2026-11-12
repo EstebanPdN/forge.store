@@ -10,6 +10,7 @@ import { AudioEngine } from './core/audio.js';
 import { Input } from './core/input.js';
 import { refreshFromGitHub } from './core/github.js';
 import { loadUniversal } from './core/universal.js';
+import { forgeMode } from './core/forge-mode.js';
 import { App } from './app.js';
 import { IntroScene } from './scenes/intro.js';
 import { HomeScene } from './scenes/home.js';
@@ -43,6 +44,7 @@ async function main() {
 
   let powered = false;
   const data = await fetch('catalog/forge-store.json', { cache: 'no-cache' }).then((r) => r.json());
+  await forgeMode.ready;
   const sd = new SDCard(state.sdData);
   let saveTimer;
   sd.on('change', () => {

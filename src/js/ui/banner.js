@@ -83,6 +83,9 @@ export class Banner {
     if (b.mid) mid = h('img.bn-mid-img', { src: b.mid, alt: '' });
     else if (!b.bg && !b.logo && typeof app.icon === 'object') {
       mid = h('div.bn-glyph', glyphIcon(app.icon, 132));
+    } else if (!b.bg && typeof app.icon === 'string') {
+      mid = h('img.bn-app-icon', { src: app.icon, alt: '' });
+      slide.classList.add('has-app-icon');
     }
     if (mid) {
       slide.classList.add('has-mid');
@@ -91,7 +94,7 @@ export class Banner {
 
     const logo = b.logo
       ? h('img.bn-logo-img' + (b.logoPixel ? '.pixel' : ''), { src: b.logo, alt: app.title, style: { '--ls': b.logoScale || 1, '--ly': `${b.logoY || 0}px` } })
-      : h('div.bn-wordmark', h('span', app.title), h('small', app.origin?.platform ? `${app.origin.platform} → 3DS` : ''));
+      : h('div.bn-wordmark', h('span', app.title));
     slide.append(layer('logo', 1, logo));
     return slide;
   }

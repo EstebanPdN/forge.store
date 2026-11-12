@@ -27,7 +27,7 @@ const COINS = {
   emblem: { size: 76, depth: 12, edge: ['#ffffff', '#b9c4ca'], scale: 1, face: 'emblem' },
   light: { size: 80, depth: 10, edge: ['#ffffff', '#d6ccb0'], scale: 1.06, face: 'light' },
   dark: { size: 80, depth: 10, edge: ['#6b717d', '#1f2125'], scale: 1.06, face: 'dark' },
-  about: { size: 34, depth: 6, edge: ['#ffffff', '#b9c4ca'], scale: 1, face: 'emblem' },  // settings card
+  about: { size: 40, depth: 6, edge: ['#ffffff', '#b9c4ca'], scale: 1, face: 'emblem' },  // settings card
 };
 
 const meta = {};

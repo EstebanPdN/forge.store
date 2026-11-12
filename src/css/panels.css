@@ -473,11 +473,12 @@
 }
 .se-text .ph {
   color: var(--ink-faint);
-  font-weight: 700;
+  font-weight: 500;
+  opacity: .65;
 }
 .caret {
   display: inline-block;
-  width: 1.5px;
+  width: 1px;
   height: 12px;
   margin-left: 1px;
   vertical-align: -2px;

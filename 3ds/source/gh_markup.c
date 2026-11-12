@@ -37,7 +37,11 @@ static bool resolve(char *out, size_t cap, const char *src, const char *repo, co
         return true;
     }
     int n;
-    if (!strncmp(src, "https://", 8)) n = snprintf(out, cap, "%s", src);
+    if (image && !strncmp(src,"https://github.com/",19) && strstr(src+19,"/blob/")) {
+        const char *path=src+19,*blob=strstr(path,"/blob/");
+        n=snprintf(out,cap,"https://raw.githubusercontent.com/%.*s/%s",(int)(blob-path),path,blob+6);
+    }
+    else if (!strncmp(src, "https://", 8)) n = snprintf(out, cap, "%s", src);
     else if (strchr(src, ':') || !strncmp(src, "//", 2)) return false;
     else {
         while (*src == '/') src++;

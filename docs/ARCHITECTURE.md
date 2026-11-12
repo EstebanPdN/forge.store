@@ -30,6 +30,8 @@ other local projects and the one-time rendering environment.
 - `gfx.c`, `fx.c` draw pre-rasterized fonts/images, geometric UI and banner effects.
 - `audio.c` owns NDSP channels, streamed store music and UI sounds. Video uses channel 10.
 - `media.c` owns the resource queue, manifest, cache verification, retries and cleanup.
+- `reader_image.c` owns prepared README rasters and their bounded decoded SD cache.
+- `forge_mode.c` authenticates encrypted personal-resource metadata off the rendering thread.
 - `video.c` owns the bounded frame/sound rings, FVD2/FVID decoder worker and video textures.
 - `install.c`, `catalog.c`, `live_release.c`, `catalog_sync.c` handle install transactions,
   installed state, release metadata and curated refreshes.
@@ -54,7 +56,8 @@ exactly zero**: the 3DS kernel can return a positive timeout code.
    confirmation, then downloads, installs and requests restart. Rejecting it fades to black
    and exits; a current/unavailable result fades into the introduction. The choice has no timeout.
 3. Present the introduction/theme choice and bring Home into view. Start one persistent media
-   worker and the low-priority GitHub prefetch pass once Home is usable. Keep pumping queues and input.
+   worker once Home is usable; low-priority GitHub prefetch begins during the introduction,
+   after the update gate. Keep pumping queues and input.
 4. Verify each cached video or download to a private `.part` path, hash it and rename atomically.
 5. Downloads aggregates all media items into one Store resources row. Each verified item can
    play independently while the rest continues.

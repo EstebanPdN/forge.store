@@ -8,6 +8,7 @@
 #endif
 #include "network.h"
 #include "dsp_dump.h"
+#include "forge_mode.h"
 #endif
 #include <archive.h>
 #include <archive_entry.h>
@@ -69,7 +70,7 @@ void tvars(char *out, size_t n, const char *tmpl, const char *k1, const char *v1
 
 typedef struct {
     char path[PATH_CAP], stage[96], backup[96];
-    bool deleted, published, had_old, remove_live;
+    bool deleted, published, had_old, remove_live, personal;
 } TxFile;
 typedef struct {
     TxFile *files;
@@ -280,13 +281,15 @@ static bool tx_publish(Job *j) {
         if (!e->remove_live && (stat(e->stage, &st) || !S_ISREG(st.st_mode))) return fail(j, "Missing staged file");
         if (!mkdirs(e->path, true)) return fail(j, "Cannot create destination directory");
         if (!stat(e->path, &st)) {
+            if(e->personal)return fail(j,"Personal file appeared during installation; preserved");
             if (!S_ISREG(st.st_mode) || rename(e->path, e->backup)) return fail(j, "Cannot back up destination");
             e->had_old = true;
         } else if (errno != ENOENT) return fail(j, "Cannot inspect destination");
         if (e->remove_live) continue;
         if (rename(e->stage, e->path)) return fail(j, "Cannot publish staged file");
         e->published = true;
-        if (json_array_append_new(j->files, json_string(e->path))) return fail(j, "Out of memory");
+        if(e->personal)json_object_del(j->hashes,e->path);
+        else if (json_array_append_new(j->files, json_string(e->path))) return fail(j, "Out of memory");
     }
     if (json_array_extend(j->dirs, tx.dirs)) return fail(j, "Out of memory");
     return true;
@@ -700,6 +703,14 @@ static bool extract(Job *j, JobStep *st, const char *archive_path, const char *i
 // ---- job ----------------------------------------------------------------------------------------
 static const char *str(json_t *o, const char *k) { return json_string_value(json_object_get(o, k)); }
 
+static bool verify_download(Job *j,JobStep *st,const char *path,const char *expected) {
+    if(!expected||!*expected)return true; // older releases use their SHA256SUMS step
+    if(strlen(expected)!=64)return fail(j,"Invalid SHA-256 metadata");
+    char digest[65];const char *staged=tx_read(path);
+    if(!staged||!sha256_file(staged,digest,st,&j->cancel)||strcasecmp(digest,expected))return fail(j,"Downloaded file failed SHA-256 verification");
+    return true;
+}
+
 static bool run_step(Job *j, JobStep *st) {
     json_t *s = st->raw;
     const char *type = str(s, "type");
@@ -710,6 +721,16 @@ static bool run_step(Job *j, JobStep *st) {
         return mkdirs(path, false) || fail(j, "Cannot create directory");
     }
     if (!strcmp(type, "downloadUrl")) {
+        bool personal=json_is_true(json_object_get(s,"personal"));
+        if(personal) {
+            if(!sd_path(path,sizeof path,str(s,"output")))return fail(j,"Invalid personal-resource path");
+            struct stat existing;
+            if(!stat(path,&existing)) {
+                if(!S_ISREG(existing.st_mode))return fail(j,"Personal-resource path is not a regular file");
+                st->progress=1;return true; // never overwrite a user's existing game data
+            }
+            if(errno!=ENOENT)return fail(j,"Cannot inspect personal-resource path");
+        }
         const char *direct = str(s, "url");
         if (direct && *direct) {
             if (!checked(url, sizeof url, "%s", direct)) return fail(j, "URL too long");
@@ -748,7 +769,10 @@ static bool run_step(Job *j, JobStep *st) {
         if (!sd_path(path, sizeof path, str(s, "output"))) return fail(j, "Invalid or oversized catalog path");
         json_int_t size = json_integer_value(json_object_get(s, "size"));
         if (size < 0) return fail(j, "Invalid download size");
-        return download_to_file(j, st, url, path, (u64)size);
+        if(!download_to_file(j, st, url, path, (u64)size))return false;
+        if(!verify_download(j,st,path,str(s,"sha256")))return false;
+        if(personal){TxFile *e=tx_find(path);if(!e)return fail(j,"Missing personal-resource transaction");e->personal=true;}
+        return true;
     }
     if (!strcmp(type, "downloadRelease")) {
         json_t *asset = app_asset(j->app, j->release, str(s, "asset"));
@@ -756,7 +780,7 @@ static bool run_step(Job *j, JobStep *st) {
         if (!sd_path(path, sizeof path, str(s, "output"))) return fail(j, "Invalid or oversized catalog path");
         json_int_t size = json_integer_value(json_object_get(asset, "size"));
         if (size < 0) return fail(j, "Invalid download size");
-        return download_to_file(j, st, url, path, (u64)size);
+        return download_to_file(j, st, url, path, (u64)size)&&verify_download(j,st,path,str(asset,"sha256"));
     }
     if (!strcmp(type, "verifySha256")) {
         if (!sd_path(path, sizeof path, str(s, "file"))) return fail(j, "Invalid or oversized catalog path");
@@ -863,7 +887,8 @@ static bool run_step(Job *j, JobStep *st) {
             j->warnings++;
             return true;
         }
-        if (app_requirement_met(j->app, req)) {
+        TxFile *personal=sd_path(path,sizeof path,p)?tx_find(path):NULL;
+        if ((personal&&personal->personal&&!personal->deleted) || app_requirement_met(j->app, req)) {
             snprintf(st->result, sizeof st->result, "%s", T("install.step.found"));
         } else {
             st->state = STEP_WARN;
@@ -997,9 +1022,11 @@ static void run(Job *j) {
     }
     float *weights = j->weight, total = 0;
     for (int i = 0; i < j->nsteps; i++) {
+        json_t *step=j->steps[i].raw;
+        json_t *asset=!strcmp(str(step,"type"),"downloadUrl")?step:app_asset(j->app,j->release,str(step,"asset"));
         weights[i] =
             j->steps[i].bytes
-                ? 1 + (float)json_integer_value(json_object_get(app_asset(j->app, j->release, str(j->steps[i].raw, "asset")), "size")) /
+                ? 1 + (float)json_integer_value(json_object_get(asset, "size")) /
                           1048576.0f
                 : (!strcmp(str(j->steps[i].raw, "type"), "installCia") ? 3 : 0.4f);
         total += weights[i];
@@ -1167,14 +1194,14 @@ static const char *step_key(const char *type) {
     return NULL;
 }
 
-Job *install_start(App *a, bool cia, bool experimental) {
+static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *script) {
     if (!a || !worker) {
         toast("Installer unavailable", DANGER);
         return NULL;
     }
     if (install_busy(a))
         return install_job(a);
-    json_t *script = app_install_steps(a, cia);
+    if(!app_has_format(a,cia)){toast("This format is unavailable on this console",AMBER);return NULL;}
     if (!json_array_size(script) || json_array_size(script) > 28 || json_is_true(json_object_get(a->j, "nativeUnsupported"))) {
         toast(S.lang == 0 ? "Este instalador necesita opciones adicionales." : "This installer requires additional choices.", AMBER);
         return NULL;
@@ -1282,6 +1309,12 @@ Job *install_start(App *a, bool cia, bool experimental) {
     LightLock_Unlock(&lock);
     LightEvent_Signal(&wake);
     return j;
+}
+
+Job *install_start(App *a,bool cia,bool experimental) {
+    json_t *plan=a?forge_mode_plan(a->id,app_install_steps(a,cia)):NULL;
+    Job *j=install_start_plan(a,cia,experimental,plan);
+    json_decref(plan);return j;
 }
 
 Job *install_job(App *a) {

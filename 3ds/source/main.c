@@ -22,6 +22,7 @@
 #include "store_update.h"
 #include "update_icon.h"
 #include "github_prefetch.h"
+#include "forge_mode.h"
 
 #define BOOT_FADE 0.7f  // black -> background, before the intro starts
 
@@ -665,6 +666,7 @@ int main(int argc, char **argv) {
     audio_init();
     audio_load_rest();
     install_init();
+    forge_mode_init();
     scenes_init(BOOT_FADE);
     store_update_start(argc>0?argv[0]:NULL);
     catalog_request_banners();  // banners decode in the background while the intro plays
@@ -761,6 +763,7 @@ int main(int argc, char **argv) {
     github_prefetch_exit();
     store_update_exit();
     install_exit();
+    forge_mode_exit();
     debug_exit_trace("install");
     saves_flush();
     audio_exit();

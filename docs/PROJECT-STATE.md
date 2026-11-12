@@ -1,6 +1,6 @@
 # Estado actual
 
-Actualizado: 2026-11-11. La referencia mantenida es web V2; V1 permanece intacta.
+Actualizado: 2026-11-12. La referencia mantenida es web V2; V1 permanece intacta.
 La aplicación nativa ya está implementada, con validación separada de la web simulada.
 
 - Repositorio solicitado: `EstebanPdN/forge.store`, público, sin releases.
@@ -15,3 +15,16 @@ La aplicación nativa ya está implementada, con validación separada de la web 
   del paquete. La instalación y el reinicio en consola física siguen pendientes de validar.
 - Caché HTTP compartida y precarga de páginas/imágenes públicas de GitHub, con solicitudes
   condicionales y reintento de fallos transitorios. Contratos en [actualizaciones y caché](UPDATES-AND-CACHE.md).
+
+- Catálogo curado: 39 fichas, con iconos oficiales y 19 nuevas parejas de capturas verificadas.
+  Butterscotch enlaza `efimandreev0/Butterscotch` v1.3 y acredita mi colaboración.
+  Red Viper Color aparece en Forge y Emuladores; sigue en desarrollo, sin binario público.
+- Capturas inferiores a pantalla completa, miniaturas independientes y galería conservada
+  al volver del vídeo o GitHub. 225 imágenes públicas y 152 respuestas de GitHub preparadas dentro de RomFS.
+- Modo Forge persistente con manifiesto cifrado autenticado e instalación transaccional
+  de archivos personales. Forja/martillo pixelados que se transforman en un check.
+
+- Banners con iconos quietos, inclinación estática y efectos propios; 14 iconos oficiales
+  de mayor resolución, seis logos adicionales y transparencia correcta en ambos temas.
+- Fichas con plataformas de origen y estrellas iniciales; progreso desconocido cuando
+  no existe un dato publicado. Icono de forja de 18 px y logo de información de 40 px sin sombra.

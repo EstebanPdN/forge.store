@@ -4,15 +4,20 @@ from pathlib import Path
 import hashlib,json
 ROOT=Path(__file__).resolve().parents[1]
 apps={a['id']:a for a in json.loads((ROOT/'catalog/forge-store.json').read_text())['apps']}
+community={x['output']:x['url'] for x in json.loads((ROOT/'assets/community/sources.json').read_text()) if 'output' in x}
 items=[]
 for p in sorted((ROOT/'assets').rglob('*')):
-    if not p.is_file() or p.name=='provenance.json':continue
+    if not p.is_file() or p.name=='provenance.json' or p.name.startswith('.'):continue
     rel=p.relative_to(ROOT).as_posix(); parts=p.relative_to(ROOT/'assets').parts
     source='Existing Forge project asset; source-specific permission not established in this repository.'
     license='No blanket reuse license; see LICENSE.md.'
     if parts[0]=='ports' and parts[1] in apps:
         a=apps[parts[1]];source='https://github.com/'+a.get('repo','EstebanPdN')
-    elif parts[0]=='store-resources':source='tools/pack-video.py; browser originals in assets/ports; reviewed report.json'
+    elif parts[0]=='community':source=community.get(rel,'Official repository artwork; source URLs and crops in assets/community/sources.json')
+    elif parts[0]=='reader-art':source='Public README images; exact URLs and original hashes in assets/reader-art/manifest.json'
+    elif parts[0]=='reader-data':source='Public GitHub reader snapshots; exact endpoints and hashes in assets/reader-data/manifest.json'
+    elif parts[0]=='config':source='Authenticated encrypted personal-resource metadata; contains no game payload or decryption key'
+    elif parts[0]=='store-resources':source='3ds/tools/pack-video.py; browser originals in assets/ports; reviewed report.json'
     elif parts[0]=='fonts':source='Bundled typefaces; see adjacent OFL texts and docs/legal/THIRD_PARTY_NOTICES.md';license='SIL OFL where supplied; verify the matching font notice.'
     elif parts[0] in ('brand','audio'):source='Esteban’s Forge portfolio; imported by tools/prepare-assets.sh'
     items.append({'path':rel,'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'source_context':source,'rights':license})

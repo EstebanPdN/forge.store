@@ -8,6 +8,8 @@ import { icon } from '../core/icons.js';
 import { Scroller } from '../ui/components.js';
 import { coin } from '../ui/coin.js';
 import { DEFAULTS } from '../core/state.js';
+import { forgeMode } from '../core/forge-mode.js';
+import { forgeMark } from '../ui/forge-seal.js';
 
 const OUT = 'cubic-bezier(0.22, 1, 0.36, 1)';
 /** Settings that "Restore defaults" puts back. View and onboarding are left alone. */
@@ -31,6 +33,7 @@ export class SettingsScene extends Scene {
     this.render();
     this.listen(this.state, 'setting', ({ key }) => key === 'volume' ? this.syncVolume() : this.render(true));
     this.listen(this.app.sd, 'change', () => this.render(true));
+    this.listen(forgeMode, 'change', () => this.render(true));
   }
 
   get dsp() {
@@ -42,7 +45,7 @@ export class SettingsScene extends Scene {
     const lang = LANGUAGES.find((l) => l.id === this.state.get('lang')) || LANGUAGES[0];
     const hasDsp = this.app.sd.exists(this.dsp.path);
     return [
-      { id: 'console', icon: 'cpu', c: '#59606a', type: 'info', value: model },
+      { id: 'console', icon: 'cpu', c: '#59606a', type: 'info', value: model, run: () => this.app.open('search', { secret: true }) },
       { id: 'theme', icon: this.state.get('theme') === 'dark' ? 'moon' : 'sun', c: '#f2a100', type: 'choice', options: [['light', t('settings.theme.light')], ['dark', t('settings.theme.dark')]] },
       { id: 'lang', icon: 'language', c: '#2f8fe0', type: 'list', value: lang.name, run: () => this.openLanguages() },
       { id: 'music', icon: 'music', c: '#7c6fd6', type: 'switch' },
@@ -91,7 +94,7 @@ export class SettingsScene extends Scene {
         } }),
       );
     } else if (row.type === 'list') control = [h('span.pill', row.value), icon('next', 'arrow')];
-    else if (row.type === 'info') control = h('span.info-value', row.value);
+    else if (row.type === 'info') control = [h('span.info-value', row.value), forgeMode.enabled ? forgeMark(t('forge.ready')) : null];
     else control = [row.value ? h('span.info-value' + (row.ok ? '.ok' : '.warn'), row.ok ? icon('check') : icon('warn'), row.value) : null, h('span.pill', t('settings.run'))];
     return h(
       (row.type === 'stepper' ? 'div.li' : 'button.li') + (i === this.focus ? '.focus' : '') + (row.type === 'info' ? '.static' : ''),
@@ -142,7 +145,7 @@ export class SettingsScene extends Scene {
     const used = sd.used();
     return h(
       'div.cs-sheet',
-      h('div.cs-head', h('span.st-tile', { style: { '--c': '#59606a' } }, icon('cpu')), h('div', h('b', isNew ? 'New Nintendo 3DS XL' : 'Nintendo 3DS'), h('small', isNew ? 'KTR-001 · ' + t('console.c-stick') : 'CTR-001'))),
+      h('div.cs-head', h('span.st-tile', { style: { '--c': '#59606a' } }, icon('cpu')), h('div', h('b', isNew ? 'New Nintendo 3DS XL' : 'Nintendo 3DS'), h('small', isNew ? 'KTR-001 · ' + t('console.c-stick') : 'CTR-001')), forgeMode.enabled ? forgeMark(t('forge.ready')) : null),
       h('div.cs-grid', facts.map(([k, v]) => h('div.cs-fact', h('span', t(k)), h('b', v)))),
       h(
         'div.cs-sd',
@@ -168,7 +171,7 @@ export class SettingsScene extends Scene {
     const face = h('div.emblem-face', h('img', { src: 'assets/brand/forge-icon.png', alt: '' }));
     const udb = this.state.get('universalDb');
     this.about.replaceChildren(
-      coin({ face, size: 34, depth: 6, edge: ['#ffffff', '#b9c4ca'] }),
+      coin({ face, size: 40, depth: 6, edge: ['#ffffff', '#b9c4ca'], cls: 'about-coin' }),
       h(
         'div',
         h('div.brand', h('b', 'forge.'), 'store'),
@@ -193,7 +196,7 @@ export class SettingsScene extends Scene {
   change(dir) {
     const row = this.items[this.focus];
     const value = this.value(row);
-    if (row.type === 'info') return this.audio.sfx('move', { pitch: -5 });
+    if (row.type === 'info') { this.audio.sfx('open'); return row.run?.(); }
     if (row.type === 'action' || row.type === 'list') {
       this.audio.sfx('select');
       return row.run();

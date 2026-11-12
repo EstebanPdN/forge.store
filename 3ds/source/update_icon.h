@@ -7,7 +7,7 @@
 // One native 40×40 pixel family. Geometry can move smoothly, but coverage is
 // binary and is drawn at 1:1: no texture scaling, filtering or subpixel strokes.
 enum { UPDATE_ICON_SIZE = 40, UPDATE_ICON_PARTS = 3, UPDATE_ICON_POINTS = 17 };
-typedef enum { UI_SPIN, UI_DOWNLOAD, UI_DOWNLOADING, UI_CHECK, UI_WARN } UpdateIconKind;
+typedef enum { UI_SPIN, UI_DOWNLOAD, UI_DOWNLOADING, UI_CHECK, UI_WARN, UI_FORGE, UI_FORGING } UpdateIconKind;
 typedef struct { float x, y; } UpdateIconPoint;
 typedef struct { UpdateIconPoint p[UPDATE_ICON_PARTS][UPDATE_ICON_POINTS]; float green; } UpdateIconFrame;
 typedef struct {
@@ -53,6 +53,33 @@ static inline void update_icon_shape(UpdateIconKind kind, float age, UpdateIconF
                                 : update_icon_lerp((UpdateIconPoint){35, 33}, (UpdateIconPoint){20, 6}, (t - .5f) * 2);
                 } else p = update_icon_lerp((UpdateIconPoint){20, part == 1 ? 16 : 28},
                                             (UpdateIconPoint){20, part == 1 ? 23 : 28}, t);
+            } else if (kind == UI_FORGE || kind == UI_FORGING) {
+                // The same three polylines become the check: anvil, handle, head.
+                // The hammer pivots around its grip; rasterization snaps each pose
+                // to LCD pixels rather than filtering a rotated texture.
+                static const UpdateIconPoint anvil[] = {
+                    {4,24},{34,24},{7,26},{34,26},{16,28},{28,28},{17,30},{27,30},
+                    {17,32},{27,32},{13,34},{32,34},{12,36},{33,36},{33,36},{33,36},{33,36}
+                };
+                if (part == 0) {
+                    p = anvil[i];
+                } else {
+                    float cycle = fmodf(fmaxf(0,age)/(kind==UI_FORGING?.72f:1.8f),1);
+                    float swing = cycle<.5f ? 1 : cycle<.72f ? 1-update_icon_ease((cycle-.5f)/.22f) : update_icon_ease((cycle-.72f)/.28f);
+                    float rotation = -.35f + .40f*swing;
+                    if(part==1)p=update_icon_lerp((UpdateIconPoint){17,11},(UpdateIconPoint){31,18},t);
+                    else {
+                        // A rigid T: the head's long axis is perpendicular to
+                        // the 2:1 handle, even while the whole hammer pivots.
+                        // Three parallel strokes fill the rectangular head.
+                        int vertex=i<6?i:5;
+                        float along=-2+2*(vertex/2), across=vertex%2?6:-6;
+                        const float ux=.89442719f,uy=.44721360f;
+                        p=(UpdateIconPoint){17+along*ux-across*uy,11+along*uy+across*ux};
+                    }
+                    float x=p.x-31,y=p.y-18;
+                    p=(UpdateIconPoint){31+x*cosf(rotation)-y*sinf(rotation),18+x*sinf(rotation)+y*cosf(rotation)};
+                }
             } else {
                 if (part == 0) p = update_icon_lerp((UpdateIconPoint){20, 5 + bounce}, (UpdateIconPoint){20, 23 + bounce}, t);
                 else if (part == 1) p = update_icon_corner((UpdateIconPoint){11, 14 + bounce}, (UpdateIconPoint){20, 23 + bounce},

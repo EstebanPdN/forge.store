@@ -206,4 +206,19 @@ static void live_universal(void){
     catalog_icons_begin();catalog_request_icon(&APPS[BUILTIN_APPS+150]);catalog_icons_end();for(int i=0;i<7;i++)CHECK(universal_icons[i].state==(i==3?SHEET_QUEUED:SHEET_EMPTY));
     puts("PASS visible icon working set: all seven sorted sheets coexist, leaving the grid releases six, no mid-batch eviction");
 }
-int main(void) {persistence();requirements();search_and_releases();live_universal();printf("PASS catalog production host tests: %d assertions (ASan + UBSan)\n",assertions);return 0;}
+static void gallery_cache(void) {
+ App a={.id="fixture",.shots=12};for(int k=0;k<3;k++)a.shot_index[k]=-1;
+ for(int i=0;i<12;i++)a.shot_bottom[i]=(i%2)==0;
+ app_request_gallery(&a,0,-1);CHECK(a.shot_thumbs.state==SHEET_QUEUED);
+ for(int i=0;i<12;i++) {
+  int previous=(i+11)%12;app_request_gallery(&a,i,previous);
+  bool current=false,old=false;
+  for(int k=0;k<3;k++){current|=a.shot_index[k]==i;old|=a.shot_index[k]==previous;CHECK(a.shot_index[k]>=0&&a.shot_index[k]<12);}
+  CHECK(current&&old);
+ }
+ int warm[3];memcpy(warm,a.shot_index,sizeof warm);app_request_gallery(&a,-1,-1);CHECK(!memcmp(warm,a.shot_index,sizeof warm));
+ bool ready=true;app_shot(&a,1,true,&ready);CHECK(!ready); // sparse bottom index is not shifted
+ app_free_shots(&a);CHECK(a.shot_thumbs.state==SHEET_EMPTY);for(int k=0;k<3;k++)CHECK(a.shot_index[k]==-1);
+ puts("PASS bounded gallery: current/previous/next, sparse bottoms, warm video return, cleanup");
+}
+int main(void) {persistence();requirements();search_and_releases();live_universal();gallery_cache();printf("PASS catalog production host tests: %d assertions (ASan + UBSan)\n",assertions);return 0;}

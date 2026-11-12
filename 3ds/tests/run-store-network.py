@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Exercise actual updater/cache code with HTTP fixtures and mocked 3DS AM services."""
 from pathlib import Path
-import tempfile,subprocess,threading,http.server,os,json,hashlib,struct
+import tempfile,subprocess,threading,http.server,os,json,hashlib,struct,zlib,time
 root=Path(__file__).resolve().parents[1]
 state={'case':'current','calls':0,'etag':False}
 seq=int(__import__('re').search(r'STORE_BUILD (\d+)',(root/'source/store_version.h').read_text())[1])
@@ -63,6 +63,33 @@ curl_global_cleanup();return 0;}
  (p/'cache.c').write_text(cache);subprocess.run(flags+[str(p/'cache.c'),str(p/'reader_cache.c'),'-o',str(p/'cache')],check=True)
  for case,refresh,expected,calls in [('reset',1,'cached payload',2),('fresh',0,'cached payload',0),('unchanged',1,'cached payload',1),('offline',1,'cached payload',2),('changed',1,'changed',1)]:
   state.update(case=case,calls=0,etag=False);subprocess.run([str(p/'cache'),str(refresh),expected],cwd=p,env=env,check=True);assert state['calls']==calls,(case,state);assert case!='unchanged' or state['etag']
+ # Public RomFS snapshots must open without network, while a newer SD response
+ # wins and corrupt snapshots still take the normal bounded HTTP path.
+ bundled=(root/'source/http_cache.c').read_text().replace('#include "network.h"','#include "platform.h"')
+ bundled+=r'''
+int main(int argc,char**argv){
+ http_cache_init();curl_global_init(CURL_GLOBAL_DEFAULT);char error[128];size_t size;
+ const char *url="https://fixture/cache/bundle";
+ assert(http_cache_bundled(url,"*/*"));
+ char *body=http_cache_get(url,"*/*",1024,atoi(argv[1]),NULL,NULL,&size,error,sizeof error);
+ assert(body&&size==strlen(argv[2])&&!strcmp(body,argv[2]));free(body);
+ curl_global_cleanup();return 0;
+}
+'''
+ (p/'bundled.c').write_text(bundled);subprocess.run(flags+[str(p/'bundled.c'),str(p/'reader_cache.c'),'-o',str(p/'bundled')],check=True)
+ key=hashlib.sha256(b'https://fixture/cache/bundle*/*').hexdigest()
+ bundle=p/'romfs:/reader-data'/key;bundle.parent.mkdir(parents=True)
+ body=b'bundled payload';packed=struct.pack('<4sQII',b'FGH2',int(time.time()),len(body),zlib.crc32(body))+body
+ bundle.write_bytes(packed);disk=p/'sdmc:/3ds/forge-store/http-v1'/key
+ def check_bundle(case,refresh,want,calls):
+  state.update(case=case,calls=0);subprocess.run([str(p/'bundled'),str(refresh),want],cwd=p,env=env,check=True);assert state['calls']==calls,(case,state)
+ check_bundle('offline',0,'bundled payload',0)
+ check_bundle('offline',1,'bundled payload',2)
+ check_bundle('changed',1,'changed',1)
+ check_bundle('offline',0,'changed',0)
+ disk.write_bytes(b'broken SD cache');check_bundle('offline',0,'bundled payload',0)
+ bundle.write_bytes(packed[:-1]+bytes([packed[-1]^1]));check_bundle('fresh',0,'cached payload',1)
+ print('PASS: bundled pages require no HTTP; newer SD wins; corrupt SD/ROMFS and offline refresh recover.')
  concurrency=(root/'source/http_cache.c').read_text().replace('#include "network.h"','#include "platform.h"')
  concurrency+=r'''
 static void *cache_reader(void *unused){
@@ -92,3 +119,10 @@ int main(void){
  print('PASS: four concurrent cache readers/writers, 24 requests; ThreadSanitizer.')
  print(f'PASS: {len(cases)} updater scenarios; cache hit, conditional 304, changed payload, reset retry and offline fallback; ASan/UBSan. CIA services mocked.')
 server.shutdown()
+manifest=json.loads((root.parent/'assets/reader-data/manifest.json').read_text())
+for item in manifest['responses']:
+ blob=(root.parent/item['file']).read_bytes();magic,stamp,length,crc=struct.unpack('<4sQII',blob[:20])
+ assert magic==b'FGH2' and 0<length<=1024*1024 and len(blob)==20+length and zlib.crc32(blob[20:])==crc
+ assert hashlib.sha256(blob).hexdigest()==item['sha256']
+ assert Path(item['file']).name==hashlib.sha256((item['url']+item['accept']).encode()).hexdigest()
+print(f'PASS: {len(manifest["responses"])} bundled responses: cache keys, lengths, CRCs and SHA-256.')

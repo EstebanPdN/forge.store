@@ -62,6 +62,12 @@ SHA-256 of URL and Accept header. Bodies use the existing CRC-checked cache form
 retains ETag, Last-Modified and the last successful validation time; a shared lock protects
 publication, invalidation and reads across workers.
 
+The CIA also bundles 152 public metadata, README, release and commit responses for
+the curated repositories and profile. Foreground reads use CRC-verified SD data or
+the bundled response immediately; a failed refresh falls back to the last usable copy.
+The background pass revalidates metadata, while catalog synchronization owns release refreshes
+and keeps pinned multi-file packages on their reviewed version.
+
 Fresh foreground requests use disk immediately. The normal GitHub response TTL is one hour;
 catalog callers can request six hours. Image freshness is one day. Background validation uses
 `If-None-Match` or `If-Modified-Since`; a 304 updates freshness without replacing the body.
@@ -76,10 +82,12 @@ The cache is capped at 192 payload files; GitHub JSON is limited to 1 MiB and ea
 
 ## Prefetch and rendering priority
 
-After Home is ready, `github_prefetch.c` makes one background pass per launch over the public
-profile and up to 24 curated Forge repositories. It validates metadata, READMEs, release/commit
-summaries, avatars and the first twelve README images for both themes. Repeated image URLs
-are deduplicated. This pass allocates no GPU textures and never needs an account or token.
+After the startup update gate, during the introduction, `github_prefetch.c` makes one background pass per launch over the public
+profile and up to 24 curated Forge repositories. It validates metadata, READMEs, commit
+summaries, avatars and every image emitted by the bounded README parser, for both themes. Repeated image URLs
+are deduplicated using 32-byte hashes (up to 512 per launch), saving 496 KiB compared
+with retaining full URL buffers. Background metadata freshness is six hours and
+image freshness seven days. This pass allocates no GPU textures and never needs an account or token.
 
 Prefetch yields while the GitHub reader, installer or video player is active. Foreground
 GitHub metadata uses at most two concurrent request slots; visible image decoding remains
@@ -91,3 +99,22 @@ most 128 KiB of small avatars/badges to reduce placeholders on return. This cach
 the reader into a browser: supported image formats and the bounded Markdown/HTML/SVG subset
 still determine what can be displayed. GitHub rate limits and an interrupted connection can
 still delay content; retries do not guarantee remote availability.
+
+## Prepared art and warm galleries
+
+The build includes 225 public README images and avatars, resized to at most 376×240 (avatars to 64×64) and stored as
+CRC-checked, zlib-compressed RGBA (`RIM1`). Their original URLs and hashes are recorded in
+`assets/reader-art/manifest.json`. Those exact bundled URLs need no network request or
+PNG/WebP/SVG decode on the console. Other decoded images use an atomic SD cache capped at
+128 files; a changed HTTP payload invalidates only its decoded copy. Bundled art changes
+with a store update, while live badges and new URLs continue through the normal HTTP path.
+
+Gallery thumbnails use independent 46×28 textures. Full-size pictures occupy individual
+512×256 RGB565 sheets. At most three top/bottom pairs stay resident: selected, previous and
+next (1.5 MiB combined). Video playback and the GitHub reader preserve that working set.
+Returning with B therefore reuses ready textures; Home or a different game releases them.
+Sparse lower-screen entries retain their original index, fixing missing Mutiny previews.
+
+The Old 3DS emulator test observed ready gallery slots on the first sampled frame after B
+from cached video, and the same slots after GitHub. This is a resource-lifetime observation,
+not a measured latency guarantee for physical SD cards.

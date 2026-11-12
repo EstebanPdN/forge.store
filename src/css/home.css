@@ -157,6 +157,19 @@
   height: 114px;
   display: block;
 }
+.bn-app-icon {
+  display: block;
+  width: 114px;
+  height: 114px;
+  margin: 0 30px 30px 0;
+  border-radius: 24px;
+  object-fit: contain;
+  transform: rotate(8deg);
+  background: color-mix(in srgb, var(--tint) 32%, #172334);
+  box-shadow: 0 14px 30px rgb(0 0 0 / 40%), inset 0 0 0 1px rgb(255 255 255 / 16%);
+}
+.has-app-icon .bn-wordmark { width: 216px; text-wrap: balance; }
+.has-app-icon .bn-wordmark span { font-size: 28px; line-height: 1.12; }
 @keyframes glyph-float {
   50% {
     transform: rotate(5deg) translateY(-4px);
@@ -447,14 +460,9 @@
 }
 .badge.dev {
   background: var(--lavender);
-  left: 3px;
-  right: auto;
 }
 .cell.selected .badge {
   transform: translate(2px, 2px) scale(1.08);
-}
-.cell.selected .badge.dev {
-  transform: translate(-2px, 2px) scale(1.08);
 }
 .ring svg {
   display: block;

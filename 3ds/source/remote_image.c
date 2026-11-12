@@ -19,6 +19,7 @@
 #include "gfx.h"
 #include "network.h"
 #include "http_cache.h"
+#include "reader_image.h"
 #include <sys/stat.h>
 #include <time.h>
 #endif
@@ -298,9 +299,16 @@ static int ri_find_variant(const char *url,int side,int radius) {
 static int ri_find(const char *url){return ri_find_variant(url,0,0);}
 static bool ri_cancelled(void *ctx){return ri_stopping();}
 static bool ri_download(const char *url,RIPixels *out){
-    size_t bytes=0;char error[128];bool refresh=!http_cache_fresh(url,"*/*",86400);
-    char *data=http_cache_get(url,"*/*",RI_PAYLOAD,refresh,ri_cancelled,NULL,&bytes,error,sizeof error);
-    bool ok=data&&!ri_stopping()&&ri_decode((unsigned char*)data,bytes,out);if(data&&!ok&&!ri_stopping())http_cache_invalidate(url,"*/*");free(data);return ok;
+    if(reader_image_load(url,&out->rgba,&out->w,&out->h)) return true;
+    size_t bytes=0;char error[128];
+    // Foreground accepts a verified disk hit immediately. Only the prefetch
+    // worker performs conditional network refreshes, never the visible image.
+    char *data=http_cache_get(url,"*/*",RI_PAYLOAD,false,ri_cancelled,NULL,&bytes,error,sizeof error);
+    bool ok=data&&!ri_stopping()&&ri_decode((unsigned char*)data,bytes,out);
+    if(data&&!ok&&!ri_stopping()) http_cache_invalidate(url,"*/*");
+    free(data);
+    if(ok) reader_image_save(url,out->rgba,out->w,out->h);
+    return ok;
 }
 static void ri_worker(void *unused) {
     (void)unused;

@@ -1,6 +1,7 @@
 // Native counterparts of scenes/search, downloads, sdcard and github.js.
 #include "gh_flow.h"
 #include "gh_table_layout.h"
+#include "update_icon.h"
 // Included after the shared drawing helpers and detail/settings scenes.
 #include <3ds/archive.h>
 static void go(int to) {
@@ -44,6 +45,9 @@ static void capacity(float a) {
 // Search — real-time matches on top, 3DS-sized keyboard below.
 static int key_row = 1, key_col, search_pick, search_n,search_total;
 static float search_scroll;
+static bool secret_mode;
+static ForgeModeState secret_last;
+static UpdateIcon secret_icon;
 static App *search_results[MAX_APPS];
 static const char *keys[5][10] = {{"1", "2", "3", "4", "5", "6", "7", "8", "9", "0"},
                                   {"q", "w", "e", "r", "t", "y", "u", "i", "o", "p"},
@@ -52,11 +56,13 @@ static const char *keys[5][10] = {{"1", "2", "3", "4", "5", "6", "7", "8", "9", 
                                   {" ", "OK"}};
 static const int key_counts[] = {10, 10, 10, 9, 2};
 static void search_refresh(void) {
+    if(secret_mode)return;
     search_total=catalog_search(query,search_results,MAX_APPS);search_n=search_total<5?search_total:5;
     search_scroll = 0;
     search_pick = 0;
 }
 static void open_search(void) {
+    secret_mode=false;
     query[0] = 0;
     key_row = 1;
     key_col = 0;
@@ -64,7 +70,17 @@ static void open_search(void) {
     sfx("open");
     go(SC_SEARCH);
 }
+static void open_secret(void) {
+    secret_mode=true;query[0]=0;key_row=1;key_col=0;
+    memset(&secret_icon,0,sizeof secret_icon);
+    secret_last=forge_mode_state();sfx("open");go(SC_SEARCH);
+}
 static void search_open(void) {
+    if(secret_mode){
+        if(forge_mode_unlock(query)){query[0]=0;sfx("select");}
+        else if(forge_mode_state()!=FORGE_CHECKING&&forge_mode_state()!=FORGE_ENABLED)sfx("error");
+        return;
+    }
     if (!search_n) {
         sfx("error");
         return;
@@ -111,6 +127,12 @@ static void key_box(int r, int c, float *x, float *w) {
     }
 }
 static void search_update(void) {
+    if(secret_mode){
+        ForgeModeState st=forge_mode_state();
+        if(st!=secret_last){if(st==FORGE_ENABLED)sfx("complete");else if(st==FORGE_INVALID||st==FORGE_STORAGE_ERROR)sfx("error");secret_last=st;}
+        if(IN.down&KEY_B || hit(8,205,28,28)){query[0]=0;go(SC_SETTINGS);sfx("back");return;}
+        if(st==FORGE_CHECKING||st==FORGE_ENABLED)return;
+    }
     if (IN.down & KEY_B) {
         if (query[0])
             search_press("⌫");
@@ -122,7 +144,7 @@ static void search_update(void) {
         search_open();
         return;
     }
-    if (IN.down & (KEY_L | KEY_R)) {
+    if (!secret_mode && IN.down & (KEY_L | KEY_R)) {
         search_pick = (int)clampf(search_pick + (IN.down & KEY_R ? 1 : -1), 0, fmaxf(0, search_n - 1));
         sfx("move");
     }
@@ -169,6 +191,29 @@ static void search_update(void) {
 }
 static void search_top(float a) {
     draw_bg(true, a);
+    if(secret_mode){
+        glass(24,43,352,176,16,a);
+        ForgeModeState st=forge_mode_state();
+        update_icon_set(&secret_icon,st==FORGE_ENABLED?UI_CHECK:st==FORGE_CHECKING?UI_FORGING:UI_FORGE,NOW);
+        UpdateIconFrame frame;uint8_t pixels[UPDATE_ICON_SIZE][UPDATE_ICON_SIZE];
+        update_icon_frame(&secret_icon,NOW,&frame);update_icon_raster(&frame,pixels);
+        u32 tint=((u32)lerpf(255,79,frame.green)<<16)|((u32)lerpf(138,158,frame.green)<<8)|(u32)lerpf(31,134,frame.green);
+        text_style("FORGE MODE",200,55,9,800,1,C(FORGE,a),AL_CENTER);
+        rrect(168,75,64,52,13,C(tint,.08f*a));
+        for(int y=0;y<UPDATE_ICON_SIZE;y++)for(int x=0;x<UPDATE_ICON_SIZE;){
+            if(!pixels[y][x]){x++;continue;}int first=x;while(x<UPDATE_ICON_SIZE&&pixels[y][x])x++;
+            rect(180+first,81+y,x-first,1,C(tint,a));
+        }
+        text_style(T(st==FORGE_ENABLED?"forge.ready":"forge.title"),200,137,17,800,0,C(TH.ink,a),AL_CENTER);
+        const char *key=st==FORGE_CHECKING?"forge.checking":st==FORGE_ENABLED?"forge.enabled":st==FORGE_INVALID?"forge.invalid":st==FORGE_STORAGE_ERROR?"forge.storage":"forge.enter";
+        float size=11;while(size>9&&text_style_w(T(key),size,500,0)>312)size--;
+        text_style(T(key),200,165,size,500,0,C(st==FORGE_ENABLED?FORGE:TH.ink_soft,a),AL_CENTER);
+        rrect(176,195,48,3,1,C(TH.ink_faint,.18f*a));
+        float w=st==FORGE_ENABLED?48:st==FORGE_CHECKING?16:8;
+        float dx=st==FORGE_CHECKING?roundf((.5f-.5f*cosf(NOW*5))*32):(48-w)/2;
+        rrect(176+dx,195,w,3,1,C(tint,a));
+        return;
+    }
     panel_title(T("search.title"), a);
     char display[160];snprintf(display,sizeof display,"«%s»",query);
     text_fit_style(query[0]?display:T("search.suggestions"),12,63,12,400,376,C(query[0]?TH.ink:TH.ink_faint,a));
@@ -199,9 +244,10 @@ static void search_top(float a) {
 static void search_bottom(float a) {
     draw_bg(false, 1);
     glass(8, 6, 304, 26, 13, a);
-    draw_icon("search", 23, 19, 12, C(TH.ink_faint, a));
+    draw_icon(secret_mode?"shield":"search", 23, 19, 12, C(TH.ink_faint, a));
     scissor(320, 35, 8, 250, 23);
-    text(query[0] ? query : T("search.placeholder"), 35, 12, 11, C(query[0] ? TH.ink : TH.ink_faint, a), AL_LEFT);
+    text(query[0] ? query : T(secret_mode?"forge.title":"search.placeholder"), query[0]?35:38, 12, 11, C(query[0] ? TH.ink : TH.ink_faint, a*(query[0]?1:.65f)), AL_LEFT);
+    if(fmodf(NOW,1)<.5f)rect(35+(query[0]?roundf(text_w(query,11))+1:0),12,1,13,C(FORGE,a));
     scissor_off();
     draw_icon("close", 301, 19, 10, C(TH.ink_soft, a));
     for (int r = 0; r < 5; r++)
@@ -213,11 +259,12 @@ static void search_bottom(float a) {
             rrect(x, y + 1.5f, w, 27, 7, C(TH.line, .18f * a));
             rrect(x, y, w, 27, 7, C(ok ? FORGE : TH.surface, a));
             rrect_outline(x, y, w, 27, 7, on ? 1.5f : 1, C(on ? FORGE : TH.line, (on ? 1 : TH.line_a) * a));
-            const char *label = r == 4 ? T(c ? "search.open" : "search.space") : keys[r][c];
+            const char *label = r == 4 ? (c&&secret_mode?"OK":T(c ? "search.open" : "search.space")) : keys[r][c];
             if (!strcmp(keys[r][c], "⌫")) draw_icon("back", x + w / 2, y + 13.5f, 12, C(TH.ink, a));
             else text_style(label, roundf(x + w / 2), y + 6, 12, 600, 0, C(ok ? 0xffffff : TH.ink, a), AL_CENTER);
         }
     button(8, 205, 28, 28, "", "back", NULL, BTN_SURFACE, a);
+    if(secret_mode)return;
     button(204, 205, 28, 28, "", "back", NULL, BTN_SURFACE, a);
     button(284, 205, 28, 28, "", "next", NULL, BTN_SURFACE, a);
     char position[24];

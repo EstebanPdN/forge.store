@@ -1,5 +1,24 @@
 # Changelog
 
+## Catalog, loading and Forge Mode — 2026.11.12.3
+
+- Expand the curated catalog to 39 entries with official icons, verified download plans and
+  19 new paired screenshots. Link Butterscotch v1.3 and credit my contributions.
+- Keep Red Viper Color in both Forge and Emulators; leave unreleased projects visibly in development.
+- Bundle 152 public GitHub responses and bake 225 README images/avatars, add a bounded decoded SD cache, split gallery thumbnails
+  from full-size images and keep the current gallery warm across video/GitHub navigation.
+- Tap a lower screenshot to open it full screen; B returns. Add horizontal touch dragging to tabs.
+- Bound banner movement, adjust the two Zelda backgrounds and use the actual Mario Kart 64 icon.
+- Add a persistent personal-code unlock, authenticated encrypted metadata and verified
+  transactional personal-file installation. Preserve existing files and exclude them from uninstall.
+- Redesign the unlock panel with a correctly perpendicular hammer head and a pixel-aligned
+  anvil animation that morphs into a check. Keep typed code visible and the empty caret at the start.
+- Upgrade 14 official icons, add six original logos and theme 26 generated banners.
+  Preserve source transparency in both themes and keep foreground artwork still at rest.
+- Include platform origins and initial stars; label unpublished progress as Unknown.
+- Center the 18 px Forge Mode mark. Enlarge the About coin to 40 px, remove its contact
+  shadow and move the information block six pixels right.
+
 ## Audio, gallery motion and update confirmation — 2026-11-12
 
 - Amplify music PCM by 1.60×, intro audio by 1.50× and effects by 3×, independently of the

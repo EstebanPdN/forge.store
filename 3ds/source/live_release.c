@@ -47,6 +47,9 @@ static bool merge_channel(json_t *releases,const char *channel,json_t *live){
     bool ok=json_object_set_new(releases,channel,updated)==0;return ok;
 }
 bool live_release_merge(json_t *app,json_t *github){
+    // Curated archives include versioned internal paths and verified payload
+    // hashes. Do not retag their metadata while retaining an older install plan.
+    if(json_is_true(json_object_get(app,"releasePinned")))return false;
     json_t *releases=json_object_get(app,"releases");if(!json_is_object(releases)||!json_is_array(github))return false;
     json_t *stable=NULL,*pre=NULL,*r;size_t i;
     json_array_foreach(github,i,r){if(json_is_true(json_object_get(r,"draft"))||!strncmp(s(r,"tag_name"),"store-media-",12)||!valid_tag(s(r,"tag_name")))continue;

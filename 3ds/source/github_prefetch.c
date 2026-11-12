@@ -2,6 +2,8 @@
 #include "http_cache.h"
 #include "catalog.h"
 #include "gh_markup.h"
+#include "reader_image.h"
+#include <mbedtls/sha256.h>
 static Thread worker;
 static bool stop, paused;
 static char repos[24][160];
@@ -19,19 +21,39 @@ static char *fetch(const char *url, const char *accept, size_t limit) {
         return NULL;
     size_t length;
     char error[160];
-    return http_cache_get(url, accept, limit, true, interrupted, NULL, &length, error, sizeof error);
+    bool refresh=!http_cache_fresh(url,accept,!strcmp(accept,"*/*")?7*86400:21600);
+    return http_cache_get(url, accept, limit, refresh, interrupted, NULL, &length, error, sizeof error);
 }
-static char seen_images[128][1024];
+// Keep only URL digests: 16 KiB instead of reserving 512 KiB of Old 3DS RAM.
+static unsigned char seen_images[512][32];
 static int seen_count;
 static void image(const char *url) {
-    if (!url || !*url || strlen(url) >= sizeof seen_images[0])
+    if (!url || !*url || strlen(url) >= 1024)
         return;
+    unsigned char key[32];mbedtls_sha256_ret((const unsigned char*)url,strlen(url),key,0);
     for (int i = 0; i < seen_count; i++)
-        if (!strcmp(url, seen_images[i]))
+        if (!memcmp(key, seen_images[i],sizeof key))
             return;
-    char *data = fetch(url, "*/*", 2 * 1024 * 1024);
-    if (data && seen_count < 128)
-        snprintf(seen_images[seen_count++], sizeof seen_images[0], "%s", url);
+    if(reader_image_bundled(url)) return;
+    // Compare encoded bytes on a refresh. A changed image invalidates only its
+    // decoded SD copy; unchanged ETag/304 responses keep the fast path intact.
+    char *before=NULL,error[160];size_t old_length=0,new_length=0;
+    bool refresh=!http_cache_fresh(url,"*/*",7*86400);
+    unsigned char old_hash[32],new_hash[32];
+    if(refresh) {
+        char path[256];http_cache_path(url,"*/*",path,sizeof path);
+        FILE *f=fopen(path,"rb");
+        if(f){fclose(f);before=http_cache_get(url,"*/*",2*1024*1024,false,interrupted,NULL,&old_length,error,sizeof error);}
+        if(before){mbedtls_sha256_ret((unsigned char*)before,old_length,old_hash,0);free(before);}
+    }
+    if(!wait_ready())return;
+    char *data = http_cache_get(url,"*/*",2*1024*1024,refresh,interrupted,NULL,&new_length,error,sizeof error);
+    if(data&&refresh){
+        mbedtls_sha256_ret((unsigned char*)data,new_length,new_hash,0);
+        if(!old_length||memcmp(old_hash,new_hash,32))reader_image_invalidate(url);
+    }
+    if (data && seen_count < 512)
+        memcpy(seen_images[seen_count++],key,sizeof key);
     free(data);
 }
 static void readme(const char *repo, const char *branch) {
@@ -45,7 +67,7 @@ static void readme(const char *repo, const char *branch) {
         GhDocument doc = {0};
         if (gh_document_parse(&doc, data, repo, branch, dark)) {
             int images = 0;
-            for (int i = 0; i < doc.count && images < 12; i++)
+            for (int i = 0; i < doc.count && images < GH_DOC_NODES; i++)
                 if (doc.nodes[i].kind == GH_IMAGE) {
                     image(doc.nodes[i].url);
                     images++;
@@ -75,9 +97,8 @@ static void run(void *unused) {
         readme(repos[i], branch ? branch : "main");
         image(json_string_value(json_object_get(json_object_get(meta, "owner"), "avatar_url")));
         json_decref(meta);
-        snprintf(url, sizeof url, "https://api.github.com/repos/%s/releases?per_page=12", repos[i]);
-        data = fetch(url, "application/vnd.github+json", 1024 * 1024);
-        free(data);
+        // The catalog owns release refreshes using this same cache. Do not
+        // duplicate them here or consume a second GitHub API request budget.
         snprintf(url, sizeof url, "https://api.github.com/repos/%s/commits?per_page=10", repos[i]);
         data = fetch(url, "application/vnd.github+json", 1024 * 1024);
         free(data);

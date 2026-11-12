@@ -6,6 +6,8 @@ import { h, animate, clamp } from '../core/dom.js';
 import { t, L } from '../core/i18n.js';
 import { icon } from '../core/icons.js';
 import { appIcon, Scroller } from '../ui/components.js';
+import { forgeMode } from '../core/forge-mode.js';
+import { ForgeSeal } from '../ui/forge-seal.js';
 
 const LAYOUT = [
   ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0'],
@@ -19,6 +21,7 @@ export class SearchScene extends Scene {
   static section = 'search';
 
   build() {
+    this.secret = !!this.params.secret;
     this.query = '';
     this.pick = 0;
     this.row = 1;
@@ -34,7 +37,7 @@ export class SearchScene extends Scene {
     this.text = h('span.se-text');
     const input = h(
       'div.se-input',
-      icon('search'),
+      icon(this.secret ? 'shield' : 'search'),
       this.text,
       h('button.se-clear', { type: 'button', on: { click: () => this.setQuery('') } }, icon('close')),
     );
@@ -42,7 +45,7 @@ export class SearchScene extends Scene {
       row.map((spec, c) => {
         const [label, span] = Array.isArray(spec) ? spec : [spec, 1];
         const cls = span === 2 ? '.wide2' : span === 4 ? '.wide4' : span === 6 ? '.wide6' : '';
-        const content = label === '⌫' ? icon('back') : label === ' ' ? t('search.space') : label === 'OK' ? t('search.open') : label;
+        const content = label === '⌫' ? icon('back') : label === ' ' ? t('search.space') : label === 'OK' ? (this.secret ? 'OK' : t('search.open')) : label;
         const key = h('button.key' + cls + (label === 'OK' ? '.ok' : ''), { type: 'button', dataset: { key: label } }, content);
         key.addEventListener('click', () => {
           this.row = r;
@@ -64,9 +67,20 @@ export class SearchScene extends Scene {
     this.bottom.append(h('div.bg-forge'), input, board, hint);
     this.render();
     this.syncFocus();
+    if (this.secret) {
+      this.top.classList.add('secret-code');
+      this.top.querySelector('.pn-top').append(h('small.secret-eyebrow', 'FORGE MODE'), h('i.secret-progress'));
+      this.bottom.querySelectorAll('.kb-hint > :not(:first-child)').forEach((el) => el.hidden = true);
+      this.listen(forgeMode, 'change', (state) => {
+        this.render();
+        if (state === 'enabled') this.audio.sfx('complete');
+        else if (state === 'invalid' || state === 'storage') this.audio.sfx('error');
+      });
+    }
   }
 
   onShow() {
+    this.seal?.start();
     this.app.input.textHandler = (key) => {
       if (key === 'Enter') return this.openPick();
       if (key === 'Backspace') return this.press('⌫');
@@ -76,10 +90,13 @@ export class SearchScene extends Scene {
 
   onHide() {
     this.app.input.textHandler = null;
+    this.seal?.stop();
+    if (this.secret) this.query = '';
   }
 
   destroy() {
     super.destroy();
+    this.seal?.stop();
     cancelAnimationFrame(this.scroller.raf);
     clearTimeout(this.scroller.snap);
     clearTimeout(this.scroller.flashTimer);
@@ -87,6 +104,7 @@ export class SearchScene extends Scene {
   }
 
   press(label, keyEl) {
+    if (this.secret && (forgeMode.status === 'checking' || forgeMode.enabled)) return;
     const key = keyEl || this.keys.flat().find((k) => k.dataset.key === label);
     if (key) {
       key.classList.add('pressed');
@@ -115,7 +133,18 @@ export class SearchScene extends Scene {
   }
 
   render() {
-    this.text.replaceChildren(this.query ? this.query : h('span.ph', t('search.placeholder')), h('i.caret'));
+    if (this.secret) {
+      this.text.replaceChildren(...(this.query ? [this.query, h('i.caret')] : [h('i.caret'), h('span.ph', t('forge.title'))]));
+      const state = forgeMode.status;
+      if (!this.seal) { this.seal = new ForgeSeal(state); this.queryEl.replaceChildren(this.seal.el); }
+      this.seal.set(state);
+      this.top.dataset.forgeState = state;
+      this.top.querySelector('.pn-title b').textContent = t(forgeMode.enabled ? 'forge.ready' : 'forge.title');
+      this.countEl.textContent = t('forge.' + ({ locked: 'enter', enabled: 'enabled', checking: 'checking', invalid: 'invalid', storage: 'storage' }[state] || 'enter'));
+      this.countEl.classList.toggle('forge-enabled', forgeMode.enabled);
+      this.results.replaceChildren(); this.list = []; return;
+    }
+    this.text.replaceChildren(...(this.query ? [this.query, h('i.caret')] : [h('i.caret'), h('span.ph', t('search.placeholder'))]));
     this.queryEl.replaceChildren(this.query ? `«${this.query}»` : h('span.ph', t('search.suggestions')));
     const list = this.matches();
     this.list = list;
@@ -157,6 +186,7 @@ export class SearchScene extends Scene {
   }
 
   openPick() {
+    if (this.secret) { const code = this.query; this.setQuery(''); forgeMode.unlock(code); return; }
     const app = this.list[this.pick];
     if (!app) return this.audio.sfx('error');
     this.audio.sfx('select');
@@ -192,6 +222,8 @@ export class SearchScene extends Scene {
   }
 
   onButton(btn) {
+    if (this.secret && btn === 'B') { this.query = ''; this.audio.sfx('back'); return this.app.back(); }
+    if (this.secret && (btn === 'L' || btn === 'R')) return;
     if (['UP', 'DOWN', 'LEFT', 'RIGHT'].includes(btn)) return this.moveKey(btn);
     if (btn === 'A') return this.press(this.keys[this.row][this.col].dataset.key, this.keys[this.row][this.col]);
     if (btn === 'L' || btn === 'R') return this.movePick(btn === 'R' ? 1 : -1);
@@ -204,7 +236,7 @@ export class SearchScene extends Scene {
   }
 
   onLanguage() {
-    this.top.querySelector('.pn-title b').textContent = t('search.title');
+    this.top.querySelector('.pn-title b').textContent = t(this.secret ? (forgeMode.enabled ? 'forge.ready' : 'forge.title') : 'search.title');
     this.render();
   }
 }
