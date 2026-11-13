@@ -1,0 +1,16 @@
+{
+  "version": "2026.11.12.13",
+  "title_id": "000400000F0F5E00",
+  "bytes": 49447872,
+  "sha256": "e4c86ebb6c4424b63df6aa5e825ede94e5ab2e7446f9f4f65f44f7e2741a9bea",
+  "banner_sha256": "d6f4d9e68ec4d90415d6ef6ea4609c163e6f95628303799a38983cb5c98e906c",
+  "hardware_verified": false,
+  "kind": "full-store-banner-candidate",
+  "emulator": "Azahar 2126.2",
+  "emulator_home_verified": true,
+  "emulator_home_selection_cycles": 3,
+  "emulator_app_boot_verified": true,
+  "host_banner_checks": 16,
+  "host_installer_scenario_groups": 27,
+  "host_queue_music_video_checks": true
+}
