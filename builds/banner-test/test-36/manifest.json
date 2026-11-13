@@ -1,0 +1,17 @@
+{
+  "title_id": "000400000F0F5F00",
+  "bytes": 545728,
+  "sha256": "d1cd3c478ebcdb99ef28a9e681f7452aed991b47d45a351e46c9571caad144c1",
+  "banner_sha256": "2be505de70dbad2c4646289ea2b700a3aa03598eef3c022146349023d135c1b6",
+  "hardware_verified": false,
+  "version": 36,
+  "kind": "isolated centered native 3D banner diagnostic",
+  "layout": "coin centered above independently centered wordmark and subtitle",
+  "change_from_27": "Only title texture pixels changed. Geometry, native animation, background and all bindings are byte-identical.",
+  "host_checks": 16,
+  "independent_reader": "passed",
+  "physical_console": "not verified",
+  "production_store_changed": false,
+  "recommended_for_production": false,
+  "emulator": "real EUR HOME: both centered lines and rotating central coin observed; prior Azahar lower-UI limitation remains unverified on hardware"
+}
