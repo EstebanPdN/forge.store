@@ -1,0 +1,11 @@
+{
+  "title_id": "000400000F0F5F00",
+  "bytes": 511936,
+  "sha256": "70b17bd84f213d1f2732bf0f099260ca4d97e87332970cde0f679bd8944fa0ca",
+  "banner_sha256": "07df21c7250d09efefda7fac67e179f79873ded2cdc96e1d842ee26202a3272f",
+  "hardware_verified": false,
+  "emulator_home_verified": true,
+  "emulator": "Azahar 2126.2",
+  "emulator_home_selection_cycles": 3,
+  "animation": "none; medallion faces forward"
+}
