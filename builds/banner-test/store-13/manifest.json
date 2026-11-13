@@ -12,5 +12,7 @@
   "emulator_app_boot_verified": true,
   "host_banner_checks": 16,
   "host_installer_scenario_groups": 27,
-  "host_queue_music_video_checks": true
+  "host_queue_music_video_checks": true,
+  "hardware_result": "rejected: console freeze reported by user",
+  "recommended": false
 }
