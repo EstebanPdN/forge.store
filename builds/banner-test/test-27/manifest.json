@@ -1,0 +1,23 @@
+{
+  "title_id": "000400000F0F5F00",
+  "bytes": 545728,
+  "sha256": "71696b609afafefae5800cd26e9ee32b417be0bae97f121c9ed551e496e544d0",
+  "banner_sha256": "32f9170017f4d2ea37d2916a4fb7b57b431ce6212e602b1168341ba74f4488a0",
+  "hardware_verified": false,
+  "version": 27,
+  "kind": "isolated native 3D banner diagnostic",
+  "layout": "central rotating coin above fixed wordmark, Minish-style diagnostic layout",
+  "rotation": "one continuous native Y rotation, two-sided rigid geometry",
+  "meshes": 7,
+  "triangles": 324,
+  "texture_bytes": 229376,
+  "icon_flags": "0x125",
+  "audio_seconds": 3,
+  "compilation": "passed",
+  "host_checks": 16,
+  "independent_reader": "passed",
+  "emulator": "centered turn, both faces, app launch and START return observed; lower HOME UI rendering limitation also reproduced with original Minish reference",
+  "physical_console": "not verified",
+  "production_store_changed": false,
+  "recommended_for_production": false
+}
