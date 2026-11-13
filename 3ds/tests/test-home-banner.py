@@ -58,6 +58,24 @@ class BannerTests(unittest.TestCase):
         struct.pack_into('<I',b,member+48,0)
         with self.assertRaises(AssertionError):gate.inspect(b)
 
+    def test_reject_missing_rotation_w_flag(self):
+        # Recreate the exact byte-level defect in rejected hardware test 14.
+        b=bytearray(self.model)
+        pointer=lambda p:p+struct.unpack_from('<i',b,p)[0]
+        anim=b.find(b'CANM');table=pointer(anim+28);member=pointer(table+40)
+        flags=struct.unpack_from('<I',b,member)[0]
+        self.assertTrue(flags & 0x400000)
+        self.assertEqual(struct.unpack_from('<I',b,member+44)[0],0)
+        struct.pack_into('<I',b,member,flags & ~0x400000)
+        with self.assertRaisesRegex(AssertionError,'Rotation W'):gate.inspect(b)
+
+    def test_reject_null_present_curve(self):
+        b=bytearray(self.model)
+        pointer=lambda p:p+struct.unpack_from('<i',b,p)[0]
+        anim=b.find(b'CANM');table=pointer(anim+28);member=pointer(table+40)
+        struct.pack_into('<I',b,member+36,0)  # nonconstant Y rotation curve
+        with self.assertRaisesRegex(AssertionError,'null animation'):gate.inspect(b)
+
     def test_extended_banner_flag(self):
         icon=bytearray(0x36c0);icon[:4]=b'SMDH'
         struct.pack_into('<I',icon,0x2028,0x105)

@@ -162,7 +162,17 @@ def main():
     wordmark.hw_format=TextureFormat.RGBA4
     wordmark.pixel_based_image.data=swizzle(text.transpose(Image.Transpose.FLIP_TOP_BOTTOM),TextureFormat.RGBA4)
     texture_bytes=sum(len(native.data.textures[name].pixel_based_image.data) for name in native.data.textures)
-    data=c.write(native);(out/'banner.cgfx').write_bytes(data); report=inspect(data)
+    data=bytearray(c.write(native))
+    # Transform (5) contains TEN on-disk slots: Sxyz, Rxyz, reserved Rw, Txyz.
+    # pycgfx emits Rw as zero padding but omits its Inexistent flag. Readers that
+    # follow the flags then dereference address zero as an animation curve.
+    # Patch only this missing bit, using the serialized object's own offset.
+    member=animation.offset
+    assert struct.unpack_from('<I',data,member+16)[0]==5
+    assert struct.unpack_from('<I',data,member+44)[0]==0
+    flags=struct.unpack_from('<I',data,member)[0]
+    struct.pack_into('<I',data,member,flags | 0x00400000)
+    data=bytes(data);(out/'banner.cgfx').write_bytes(data); report=inspect(data)
     triangles=sum(g['accessors'][p['indices']]['count']//3 for m in g['meshes'] for p in m['primitives'])
     assert triangles<=512 and len(data)<=384*1024
     subprocess.run(['ffmpeg','-v','error','-y','-i',str(ROOT/'assets/audio/intro-welcome.mp3'),'-af','apad,atrim=duration=3,afade=t=out:st=2.5:d=0.5','-ac','2','-ar','32000','-c:a','pcm_s16le',str(out/'banner.wav')],check=True)

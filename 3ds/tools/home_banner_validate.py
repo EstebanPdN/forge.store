@@ -65,7 +65,9 @@ def dictionaries(data):
 def animations(data):
     def u32(p): return struct.unpack_from('<I', data, p)[0]
     def pointer(p):
-        q = p + struct.unpack_from('<i', data, p)[0]
+        relative = struct.unpack_from('<i', data, p)[0]
+        assert relative != 0, 'null animation curve/reference'
+        q = p + relative
         assert 0 <= q < len(data), 'animation pointer'
         return q
     def string(p):
@@ -86,6 +88,10 @@ def animations(data):
             bone = pointer(table+12+16*i+12)
             assert u32(bone+16) == 5, 'skeletal member is not a rigid Transform'
             flags = u32(bone)
+            # The skipped field at +44 is Rotation W, not anonymous padding.
+            # Euler Transform (5) must mark that tenth slot absent (bit 22).
+            assert flags & 0x00400000, 'Rotation W is present but has no curve'
+            assert not flags & 0x1000 and u32(bone+44)==0, 'unexpected Rotation W payload'
             members.append(string(bone+4))
             const = [0x40,0x80,0x100,0x200,0x400,0x800,0x2000,0x4000,0x8000]
             ignored = [0x10000,0x20000,0x40000,0x80000,0x100000,0x200000,0x800000,0x1000000,0x2000000]
@@ -135,7 +141,7 @@ def animations(data):
                 assert set(tracks) == set(range(9)), 'all rigid TRS components must be explicit'
                 for slot, expected in ((6,-8.61),(7,1.),(8,.735)):
                     assert all(abs(v-expected)<1e-5 for v in tracks[slot]), 'moving medallion pivot'
-        result.append(dict(frames=duration, members=members, curves=curve_count, scales_positive=True, rotation_tracks=rotation_tracks))
+        result.append(dict(frames=duration, members=members, curves=curve_count, scales_positive=True, rotation_tracks=rotation_tracks,rotation_w_absent=True))
     return result
 
 

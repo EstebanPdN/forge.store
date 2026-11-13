@@ -6,14 +6,14 @@ radius to its transparent edge. `3ds/meta/banner.png` is the previous flat refer
 The application screens and runtime code are unchanged.
 
 Read [HOME banner engineering guide](HOME-BANNER-GUIDE.md) before changing this resource.
-Test revision 13 froze physical HOME when selected, as reported by the user. Its
+Test revisions 13 and 14 froze physical HOME when selected, as reported by the user. Its
 previous pivot explanation was a hypothesis, not a verified cause or fix.
 
-The local candidate removes the extra parent and uses a direct rigid medallion node
-with explicit constant position and scale and one varying Y rotation curve. Both CIA
-builders now set `extendedbanner`; the package gate checks the embedded SMDH bit.
-These corrections pass host checks but **the hardware freeze remains unresolved**.
-The candidate is distributed for hardware testing at the user’s request. Do not reuse the revision 13 QR.
+Test 15 keeps test 14’s geometry, timing and direct rigid node. Its only model change
+is the missing Rotation-W absence bit in CANM. An independent SPICA reader fails on
+the original and succeeds on the corrected animation; the guide records the precise
+experiment. Both CIA builders set `extendedbanner` and the gate checks the embedded
+SMDH. **Physical HOME remains unconfirmed.** Do not reuse either rejected QR.
 
 The intended motion remains a 5.2-second ±24° Y rotation with the welcome screen's
 cubic-bezier(.42,0,.58,1) timing. It has no authored vertical bob or scale change.
@@ -78,7 +78,7 @@ resources and compare the packaged PCM samples with the input WAV.
 
 - Compilation/package: passed with `zsh 3ds/build.sh`, no asset-wide `--pack`.
   The SDK linker reports its existing `crtn.o` GNU-stack note warning.
-- Host: thirteen banner checks and 27 production installer scenario groups passed.
+- Host: fifteen banner checks and 27 production installer scenario groups passed.
 - Preview: rendered from the same glTF geometry, textures and animation in
   Blender at the HOME camera; GIF/MP4 are design evidence, not HOME captures.
 - Emulator HOME: not validated. Launching a 3DSX would not exercise this resource.

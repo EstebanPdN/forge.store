@@ -7,9 +7,9 @@ structural validator are different kinds of evidence. None certifies physical HO
 ## Incident and current status
 
 On 2026-11-12, Forge's earlier banners orbited in physical HOME despite looking
-correct in source previews. The user then reported that selecting test revision 13
+correct in source previews. The user then reported that selecting test revisions 13 and 14
 froze the console. That is a **failed hardware result**, not “unverified success.”
-Do not redistribute that test or reuse its QR as a recommendation.
+Do not redistribute either rejected test or reuse their QRs as a recommendation.
 
 The investigation found a definite packaging omission: Forge's test SMDH contained
 flags `0x105`; Minish Cap's reference test contained `0x425`, including bit `0x20`.
@@ -22,7 +22,54 @@ orbiting or freezing. Do not turn this correlation into a root-cause claim.
 The local candidate also removes the extra pivot parent, supplies all nine rigid
 TRS components explicitly, and retains only the varying Y rotation curve. This
 reduces differences from the Minish reference; it is an experiment, not proven
-hardware remediation. Its 518,080-byte CIA is distributed as an explicitly requested hardware test candidate, not a verified fix.
+hardware remediation. That 518,080-byte CIA was test 14 and it also froze physical HOME.
+
+## Reproduced serialized defect and test 15
+
+A second investigation compared commits `14cb234`, `6cc0f55`, `51a8f8c` and
+`5be8161` and used SPICA's independent animation reader, revision `82acbd63695e4ef8b95a92ce884f25ec1044788f`.
+It reproduced `EndOfStreamException` in each original CANM. Setting only bit 22
+(`0x00400000`, Rotation W inexistent) made **each animation** deserialize successfully.
+Full-scene SPICA import also encounters an unrelated emitter/resource-layout issue;
+this experiment isolates CANM, not the whole scene or HOME renderer.
+
+The pinned pycgfx `CANMBoneTransform` writes ten 32-bit channel fields:
+`Sx Sy Sz Rx Ry Rz Rw Tx Ty Tz`. Its class treats Rw as padding and omits the
+absence bit. Consequently flags advertise a nonconstant W curve whose pointer is
+zero. Our old validator skipped the same field, so it missed the same defect.
+See SPICA's [transform reader](https://github.com/gdkchan/SPICA/blob/82acbd63695e4ef8b95a92ce884f25ec1044788f/SPICA/Formats/CtrGfx/Animation/GfxAnimTransform.cs)
+and [flag definitions](https://github.com/gdkchan/SPICA/blob/82acbd63695e4ef8b95a92ce884f25ec1044788f/SPICA/Formats/CtrGfx/Animation/GfxAnimTransformFlags.cs).
+
+The wrapper now marks the unused field absent at serialization. It does not modify
+the external converter. The production validator checks that bit and zero payload,
+and rejects a null reference for any present nonconstant channel.
+
+Test 15 differs from rejected test 14 in **one byte, one bit**, at model offset
+`0x4366` (decimal 17254). Its flags change from `0x0000EBC0` to `0x0040EBC0`.
+There is no simultaneous hierarchy, timing, geometry, texture, audio or icon-flag
+change. Two regression tests recreate the missing bit and a null present Y curve.
+The independent reader reads all nine intended channels, the 313 yaw keys, a closed
+312-frame loop and the fixed position. The reversed one-bit mutation reproduces the
+out-of-stream error.
+
+This is a proven serialized-reader defect. It existed even in versions the user
+reported as loading, so it does **not** by itself prove the complete reason physical
+HOME began freezing at revision 13. Any statement that those earlier versions were
+fully valid, or that the pivot/extendedbanner change was the confirmed root cause,
+would overstate the evidence. Test 15 still requires physical HOME confirmation.
+
+Run the independent check after conversion, in addition to the normal gate:
+
+```sh
+# External research dependency, not part of the native toolchain.
+python3 3ds/tests/run-home-banner-reference.py \
+  --spica path/to/SPICA --dotnet path/to/dotnet
+```
+
+The harness links SPICA's unmodified parser source into an isolated .NET executable,
+checks the corrected model, then recreates the exact missing-bit corruption and
+requires the independent parser to fail. Generated files and report remain in
+`3ds/build/home-banner/reference-reader/`; no emulator or hardware claim is made.
 
 ## Compare actual resources first
 
@@ -45,7 +92,8 @@ collapsed. Detailed paths and binary reports remain private under `.local/`.
 | Worms, beta01 intermediate | 314,952 | Multiple rigid pieces | Billboard pieces and multiple motion tracks |
 | Forge test 12 | 276,504 | Medallion | Empty facing parent plus rotating child |
 | Forge test 13, user-reported freeze | 268,856 | Medallion | Translated empty parent; omitted position tracks |
-| Forge local candidate | 263,432 | Medallion | Direct rigid node; explicit constant position and scale |
+| Forge test 14, user-reported freeze | 263,432 | Medallion | Direct rigid node; explicit constant position and scale |
+| Forge test 15 | 263,432 | Medallion | Same model as 14; missing Rotation-W absence bit corrected |
 
 The user approves Starfox's appearance. There are two different Starfox assets;
 confirm which is packaged before adopting either wholesale. Its sculpted-v2
@@ -125,8 +173,9 @@ appearance in HOME; revision 13 disproves that as a sufficient delivery criterio
 
 Add regression tests for an observed omission. Do not write assertions that merely
 enshrine a new hypothesis and then use their passing as proof of compatibility.
-The current 13 host tests cover packaged resources, malformed inputs, explicit TRS,
-constant pivot, SMDH flag omission and CIA integrity. They do not emulate HOME.
+The current 15 host tests cover packaged resources, malformed inputs, explicit TRS,
+constant pivot, the reserved Rotation W slot, null present curves, SMDH flag omission
+and CIA integrity. They do not emulate HOME.
 
 ## Build and delivery procedure
 
@@ -158,15 +207,16 @@ HOME extdata, themes, saves or icon arrangements as routine troubleshooting.
 
 ## Open investigation
 
-The precise physical freeze trigger and the final screen-space wobble remain
-unresolved. Missing `extendedbanner`, implicit TRS, parent hierarchy, and HOME's
-own presentation transform must be distinguished experimentally. Preserve rejected
+The exact relationship between the now-reproduced Rotation W defect and physical
+HOME freezes, and the final screen-space wobble, remain unconfirmed. Missing
+`extendedbanner`, TRS encoding, parent hierarchy and HOME's own presentation
+transform must not be conflated with one another. Preserve rejected
 CIA hashes privately and change one factor per diagnostic comparison where possible.
 No new QR should be represented as a confirmed repair without the corresponding
 HOME evidence. Keep reporting compilation, host tests, emulator and physical results
 separately, including failures.
 
-## Local verification record for this candidate
+## Historical verification record for rejected test 14
 
 - Native store build: passed with `FORGE_DEBUG=0 zsh 3ds/build.sh`; existing SDK
   `crtn.o` GNU-stack linker warning remains.
@@ -180,5 +230,21 @@ separately, including failures.
   Rebuild/package together only when publishing a reviewed store update.
 - Emulator HOME: no successful validation in this investigation. The earlier HOME
   boot attempt failed; no new source render is being offered as a substitute.
-- Physical HOME: revision 13 failed according to the user; current candidate untested.
+- Physical HOME: revisions 13 and 14 failed according to the user.
 - Publication: the user subsequently requested the tiny candidate CIA and its QR. Only the test binary is distributed; no store update, release or website deployment.
+
+## Test 15 verification and delivery
+
+- Native build: `FORGE_DEBUG=0 zsh 3ds/build.sh` passed (existing GNU-stack SDK warning).
+- Tiny CIA: 518,080 bytes. Its ExeFS hashes, embedded banner and SMDH `0x125` flags
+  pass the production gate. Its model SHA-256 is
+  `3717abb0d7bd4b4554d8e5bfc8c5f0c2242dd11277ad7d0e5a493f3e1748221c`.
+- Host: 15 tests pass against both the tiny CIA and the locally built store CIA.
+- Independent CANM reader: SPICA reads the corrected data and rejects the same data
+  with only the Rotation-W absence bit cleared. This is parser evidence, not HOME.
+- Emulator: no new successful HOME validation. Physical: 13 and 14 are rejected by
+  user report; 15 awaits feedback. The full store distribution remains unchanged.
+- The publication consistency checker still reports the documented old store-build
+  fingerprint mismatch; it has not been described as passing.
+- The tiny candidate and source are published under the existing user request; no
+  release or website deployment is created. The new QR pins an immutable CIA URL.
