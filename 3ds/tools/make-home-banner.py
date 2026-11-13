@@ -96,13 +96,9 @@ def main():
         for i in range(N):a0=i*2;b=((i+1)%N)*2;idx.extend([a0,b,a0+1,b,b+1,a0+1])
         return primitive([transform(p) for p in ps],ns,None,idx,m,local=True)
     coin=node('Medallion',[disc(3.25,.43,face),ring(3.65,.26,3.25,.43,rim),ring(3.65,-.26,3.65,.26,edge),disc(3.65,-.26,edge,True)])
-    # HOME turned the medallion about its bone's origin even with the position on that
-    # bone (it orbited the whole logo). The animated bone now has no translation at all:
-    # a static parent places it, so the turn has only one possible centre.
-    anchor=len(g['nodes'])
-    g['nodes'].append(dict(name='MedallionPivot',translation=[-8.61,1,.735],children=[coin]))
-    g['scenes'][0]['nodes'].remove(coin)
-    g['scenes'][0]['nodes'].append(anchor)
+    # Match the simple rigid mesh-node layout used by Minish Cap. Position belongs
+    # to the mesh node, with all TRS components explicitly supplied in CANM.
+    g['nodes'][coin]['translation']=[-8.61,1,.735]
     # Rotate the rigid coin about its own center, without vertical bob or scale squash.
     times=[i/60 for i in range(313)];rotations=[]
     for t in times:
@@ -127,7 +123,10 @@ def main():
     from cgfx.mtob import ColorFloat,FragmentLightingFlags,MTOBFlag,ConstantColorSource
     native=c.convert_gltf(gltflib.GLTF.load(str(out/'banner.gltf'),load_file_resources=True));model=native.data.models['COMMON']
     model.skeleton.bones.dict.regenerate()
-    model.skeleton.bones['MedallionPivot'].billboard_mode=BillboardMode.Off
+    animation=native.data.skeletal_animations['COMMON'].member_animations_data['Medallion']
+    animation.scale_x=animation.scale_y=animation.scale_z=1.0
+    animation.rot_x=animation.rot_z=0.0
+    animation.pos_x,animation.pos_y,animation.pos_z=-8.61,1.0,.735
     for mesh in model.meshes.data.contents:
         shape=model.shapes.data.contents[mesh.shape_index];sets=shape.primitive_sets.data.contents
         assert len(sets)==1 and sets[0].skinning_mode==0

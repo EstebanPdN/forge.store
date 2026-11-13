@@ -63,7 +63,7 @@ for o in $OBJS; do [[ -f "$o" ]] || { echo "missing $o"; exit 1; }; done
 # CIA for the HOME Menu (banner sound: the intro's welcome chime)
 "$T/bannertool" makebanner -ci meta/banner.cgfx -a meta/banner.wav -o "$OUT/banner.bnr" >/dev/null
 "$T/bannertool" makesmdh -s "forge.store" -l "forge.store · ports for Nintendo 3DS" -p "Esteban's Forge" \
-  -i meta/icon.png -o "$OUT/icon.icn" >/dev/null
+  -f visible,allow3d,recordusage,extendedbanner -i meta/icon.png -o "$OUT/icon.icn" >/dev/null
 (cd "$D" && "$T/makerom" -f cia -o "$OUT/forge-store.cia" -elf "$OUT/forge-store.elf" -rsf forge-store.rsf \
   -icon "$OUT/icon.icn" -banner "$OUT/banner.bnr" -target t)
 python3 "$D/tools/home_banner_validate.py" "$OUT/banner.bnr" --cia "$OUT/forge-store.cia" > "$OUT/home-banner-package.json"

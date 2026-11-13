@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """Exercise the same serialized-resource gate used by build.sh, including corruptions."""
-import importlib.util, struct, unittest, wave
+import importlib.util, os, struct, unittest, wave
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[2]
 spec=importlib.util.spec_from_file_location('gate',ROOT/'3ds/tools/home_banner_validate.py');gate=importlib.util.module_from_spec(spec);spec.loader.exec_module(gate)
 class BannerTests(unittest.TestCase):
     @classmethod
     def setUpClass(c):
-        c.bnr=(ROOT/'3ds/build/banner.bnr').read_bytes()
+        c.bnr=(Path(os.environ.get('FORGE_TEST_BNR',str(ROOT/'3ds/build/banner.bnr')))).read_bytes()
         c.model,c.audio=gate.unpack_banner(c.bnr)
     def test_packaged_resource(self):
         r=gate.inspect(self.model);self.assertEqual(r['meshes'],6)
@@ -38,21 +38,32 @@ class BannerTests(unittest.TestCase):
     def test_lateral_rotation(self):
         r=gate.inspect(self.model)
         self.assertTrue(r['medallion_billboard_off'])
-        self.assertEqual(r['skeletal_animations'][0]['rotation_tracks'],3)
+        self.assertEqual(r['skeletal_animations'][0]['rotation_tracks'],1)
 
     def test_reject_tilt_and_moving_pivot(self):
+        for slot,value in ((3,.1),(6,-7.0),(7,1.1)):
+            b=bytearray(self.model)
+            pointer=lambda p:p+struct.unpack_from('<i',b,p)[0]
+            anim=b.find(b'CANM');table=pointer(anim+28);member=pointer(table+40)
+            field=member+20+4*slot+(4 if slot>=6 else 0)
+            struct.pack_into('<f',b,field,value)
+            with self.assertRaises(AssertionError):gate.inspect(b)
+
+    def test_reject_implicit_trs(self):
         b=bytearray(self.model)
         pointer=lambda p:p+struct.unpack_from('<i',b,p)[0]
         anim=b.find(b'CANM');table=pointer(anim+28);member=pointer(table+40)
-        # Slot 3 is the X rotation: any tilt besides the lateral turn is rejected.
-        curve=pointer(member+32);segment=pointer(curve+20)
-        struct.pack_into('<f',b,segment+32,.1)
+        flags=struct.unpack_from('<I',b,member)[0]
+        struct.pack_into('<I',b,member,(flags & ~0x2000) | 0x800000)
+        struct.pack_into('<I',b,member+48,0)
         with self.assertRaises(AssertionError):gate.inspect(b)
-        # The turning bone must not carry the medallion's position.
-        b=bytearray(self.model);at=b.find(b'Medallion\0')
-        self.assertGreater(at,0)
-        with self.assertRaises(AssertionError):
-            gate.inspect(bytes(b).replace(b'MedallionPivot\0',b'MedallionPivoX\0'))
+
+    def test_extended_banner_flag(self):
+        icon=bytearray(0x36c0);icon[:4]=b'SMDH'
+        struct.pack_into('<I',icon,0x2028,0x105)
+        with self.assertRaisesRegex(AssertionError,'extendedbanner'):gate.verify_icon(icon)
+        struct.pack_into('<I',icon,0x2028,0x125)
+        self.assertEqual(gate.verify_icon(icon),0x125)
 
     def test_oval_alpha_precision(self):
         b=self.model
@@ -65,5 +76,5 @@ class BannerTests(unittest.TestCase):
                 self.assertEqual((min(alpha),max(alpha)),(0,255));return
         self.fail('LA8 oval missing')
     def test_cia_matches(self):
-        gate.verify_cia(ROOT/'3ds/build/forge-store.cia',self.bnr)
+        gate.verify_cia(Path(os.environ.get('FORGE_TEST_CIA',str(ROOT/'3ds/build/forge-store.cia'))),self.bnr)
 if __name__=='__main__':unittest.main()

@@ -5,16 +5,18 @@ English wordmark and subtitle, and an oval background that fades from 35% of its
 radius to its transparent edge. `3ds/meta/banner.png` is the previous flat reference.
 The application screens and runtime code are unchanged.
 
-On hardware, every version that kept the medallion's position on its rotating bone
-(2026.11.12.9 to .12) orbited the whole logo: HOME turned it about the bone's origin. The
-position now lives on a static `MedallionPivot` parent (no billboard, no animation) and the
-rotating `Medallion` bone has zero translation and no position curve, so its turn has a
-single possible centre: the medallion's own. The validator rejects any other layout.
+Read [HOME banner engineering guide](HOME-BANNER-GUIDE.md) before changing this resource.
+Test revision 13 froze physical HOME when selected, as reported by the user. Its
+previous pivot explanation was a hypothesis, not a verified cause or fix.
 
-The medallion geometry is centered at its own local origin. It uses the welcome screen's
-5.2-second ±24° Y rotation and cubic-bezier(.42,0,.58,1) easing, sampled at 60 Hz. There
-is no vertical bob or scale change. HOME rendering on physical hardware still needs
-confirmation; the standalone test application in `3ds/banner-test/` exists for that.
+The local candidate removes the extra parent and uses a direct rigid medallion node
+with explicit constant position and scale and one varying Y rotation curve. Both CIA
+builders now set `extendedbanner`; the package gate checks the embedded SMDH bit.
+These corrections pass host checks but **the hardware freeze remains unresolved**.
+The candidate is distributed for hardware testing at the user’s request. Do not reuse the revision 13 QR.
+
+The intended motion remains a 5.2-second ±24° Y rotation with the welcome screen's
+cubic-bezier(.42,0,.58,1) timing. It has no authored vertical bob or scale change.
 
 The complete composition is uniformly enlarged by 5% about its center. The wordmark
 baseline is raised 12 texture pixels to separate its descenders from the subtitle.
@@ -29,8 +31,8 @@ sampling; HOME owns final projection/filtering.
 - Three textures: 128×128 RGB565 logo, 512×128 RGBA4 lettering, 256×128 LA8 oval.
 - Texture payload: 229,376 bytes (224 KiB). LA8 preserves 256 alpha levels for the
   white oval; RGBA8 is not used. The text has a separate baseline and clear gap.
-- CGFX: 276,184 bytes, below the 524,288-byte HOME limit.
-- Animation: one member, six scalar curves, 313 keys per authored track,
+- CGFX: 263,432 bytes, below the 524,288-byte HOME limit.
+- Animation: one member, one scalar curve, 313 keys per authored track,
   312 native frames, matching endpoints and strictly positive scales.
 - Audio: the original welcome sound, stereo PCM16, 32 kHz, exactly 96,000 samples
   per channel / three seconds, nonlooping, with a half-second fade out.
@@ -76,7 +78,7 @@ resources and compare the packaged PCM samples with the input WAV.
 
 - Compilation/package: passed with `zsh 3ds/build.sh`, no asset-wide `--pack`.
   The SDK linker reports its existing `crtn.o` GNU-stack note warning.
-- Host: eleven banner checks and 27 production installer scenario groups passed.
+- Host: thirteen banner checks and 27 production installer scenario groups passed.
 - Preview: rendered from the same glTF geometry, textures and animation in
   Blender at the HOME camera; GIF/MP4 are design evidence, not HOME captures.
 - Emulator HOME: not validated. Launching a 3DSX would not exercise this resource.

@@ -132,8 +132,9 @@ def animations(data):
             if members[-1] == 'Medallion':
                 yaw = tracks[4]
                 assert min(yaw) < -.4 and max(yaw) > .4, 'missing lateral swing'
-                # The turning bone never moves: no position curve at all (rest position is zero).
-                assert all(slot not in tracks for slot in (6, 7, 8)), 'medallion position must not be animated'
+                assert set(tracks) == set(range(9)), 'all rigid TRS components must be explicit'
+                for slot, expected in ((6,-8.61),(7,1.),(8,.735)):
+                    assert all(abs(v-expected)<1e-5 for v in tracks[slot]), 'moving medallion pivot'
         result.append(dict(frames=duration, members=members, curves=curve_count, scales_positive=True, rotation_tracks=rotation_tracks))
     return result
 
@@ -163,10 +164,7 @@ def inspect(data):
                 continue
             assert p+216 <= len(data), 'bone bounds'
             bones[key.decode()] = dict(mode=u32(p+212), trs=struct.unpack_from('<9f', data, p+32), parent=name(p+16+struct.unpack_from('<i',data,p+16)[0]) if struct.unpack_from('<i',data,p+16)[0] else '')
-    pivot = bones.get('MedallionPivot', {})
-    assert pivot.get('mode') == 0, 'missing static medallion pivot'
-    assert all(abs(a-b)<1e-5 for a,b in zip(pivot['trs'],(1.,1.,1.,0.,0.,0.,-8.61,1.,.735))), ('pivot carries the position', pivot['trs'])
-    assert bones.get('Medallion',{}).get('parent') == 'MedallionPivot', 'medallion must hang from its pivot'
+    assert bones.get('Medallion',{}).get('parent') == 'Scene root', 'use a direct rigid mesh node'
     meshes = []
     for p in range(0, len(data)-116, 4):
         if data[p:p+8] != b'\0\0\0\x01SOBJ':
@@ -175,7 +173,7 @@ def inspect(data):
         assert target in bones, ('mesh has no resolved bone', target, hex(p))
         b = bones[target]
         assert b['mode'] == (0 if target == 'Medallion' else 5), ('unexpected billboard mode', target, b['mode'])
-        expected=(1.,1.,1.,0.,0.,0.,0.,0.,0.)  # the turning bone has no translation
+        expected=(1.,1.,1.,0.,0.,0.,-8.61,1.,.735) if target=='Medallion' else (1.,1.,1.,0.,0.,0.,0.,0.,0.)
         assert all(abs(a-b)<1e-5 for a,b in zip(b['trs'],expected)), ('unexpected rest transform',target,b['trs'])
         meshes.append(target)
     assert meshes, 'no meshes'
@@ -262,6 +260,13 @@ def audio_info(data):
     return dict(seconds=end/rate,channels=channels,rate=rate,loop=False),samples
 
 
+def verify_icon(data):
+    assert len(data)==0x36c0 and data[:4]==b'SMDH', 'invalid SMDH icon'
+    flags=struct.unpack_from('<I',data,0x2028)[0]
+    assert flags & 0x20, 'CIA icon is missing extendedbanner (0x20)'
+    return flags
+
+
 def verify_cia(path,expected):
     data=Path(path).read_bytes()
     header,_,_,cert,ticket,tmd,meta,content=struct.unpack_from('<IHHIIIIQ',data)
@@ -282,7 +287,8 @@ def verify_cia(path,expected):
         assert hashlib.sha256(payload).digest()==data[exe+0x1e0-i*32:exe+0x200-i*32], 'ExeFS file hash'
         files[name]=payload
     assert files['banner']==expected, 'CIA contains a different banner'
-    return dict(cia_sha256=hashlib.sha256(data).hexdigest(),exefs_hashes_verified=sorted(files),banner_matches=True)
+    icon_flags=verify_icon(files['icon'])
+    return dict(cia_sha256=hashlib.sha256(data).hexdigest(),exefs_hashes_verified=sorted(files),banner_matches=True,icon_flags=icon_flags)
 
 
 if __name__ == '__main__':

@@ -9,7 +9,7 @@ run(cc,'-march=armv6k','-mtune=mpcore','-mfloat-abi=hard','-mtp=soft','-Os','-D_
 rsf=(D/'forge-store.rsf').read_text().replace('Title                   : forge.store','Title                   : ForgeBannerTest').replace('CTR-H-FRGS','CTR-H-FRBT').replace('0xF0F5E','0xF0F5F').replace('RomFs:\n  RootPath                : "build/romfs"\n','')
 (O/'test.rsf').write_text(rsf)
 run(T/'bannertool','makebanner','-ci',D/'meta/banner.cgfx','-a',D/'meta/banner.wav','-o',O/'banner.bnr')
-run(T/'bannertool','makesmdh','-s','Forge Banner Test','-l','Banner test - START exits','-p',"Esteban's Forge",'-i',D/'meta/icon.png','-o',O/'icon.icn')
+run(T/'bannertool','makesmdh','-s','Forge Banner Test','-l','Banner test - START exits','-p',"Esteban's Forge",'-f','visible,allow3d,recordusage,extendedbanner','-i',D/'meta/icon.png','-o',O/'icon.icn')
 run(T/'makerom','-f','cia','-o',O/'forge-banner-test.cia','-elf',O/'banner-test.elf','-rsf',O/'test.rsf','-icon',O/'icon.icn','-banner',O/'banner.bnr','-target','t')
 run('python3',D/'tools/home_banner_validate.py',O/'banner.bnr','--cia',O/'forge-banner-test.cia')
 p=O/'forge-banner-test.cia';report={'title_id':'000400000F0F5F00','bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest(),'banner_sha256':hashlib.sha256((D/'meta/banner.cgfx').read_bytes()).hexdigest(),'hardware_verified':False};(O/'manifest.json').write_text(json.dumps(report,indent=2)+'\n');print(report)

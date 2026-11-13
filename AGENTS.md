@@ -4,6 +4,7 @@
 
 - Preserve approved web V2 appearance and the native 400×240 / 320×240 layout. Do not edit `versions/v1/`.
 - Read `docs/ARCHITECTURE.md`, `docs/BUILDING.md` and the affected original source before edits.
+- Before HOME banner work, read `docs/HOME-BANNER-GUIDE.md`; verify the final CIA icon flags and embedded banner, and never equate source previews with HOME validation.
 - Keep the existing C/libctru/Citro2D toolchain and stable source paths. Use shared components.
 - Build with `zsh 3ds/build.sh`; avoid `--pack` unless intentionally regenerating all runtime assets.
 - Test data integrity, queue/thread lifetimes and decoder behavior with the production-source host harnesses.
