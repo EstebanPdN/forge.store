@@ -17,6 +17,7 @@
 #include "media.h"
 #include "remote_image.h"
 #include "universal_sync.h"
+#include "catalog_remote.h"
 #include "dsp_dump.h"
 #include "debug_dump.h"
 #include "store_update.h"
@@ -765,6 +766,7 @@ int main(int argc, char **argv) {
     store_update_stop();
     media_shutdown();
     universal_sync_stop();
+    catalog_remote_stop();
     remote_image_stop();
     install_stop();
     scenes_stop();
@@ -772,6 +774,7 @@ int main(int argc, char **argv) {
     debug_exit_trace("stop requested");
     // ...then each one is collected within the shared deadline.
     universal_sync_exit();
+    catalog_remote_exit();
     video_exit();
     debug_exit_trace("video");
     remote_image_exit();
@@ -792,6 +795,13 @@ int main(int argc, char **argv) {
 #endif
     gfx_exit();
     debug_exit_trace(EXIT_ABANDONED ? "workers abandoned" : "workers joined");
+    // An abandoned worker must not touch the SD card after libctru unmounts it on return
+    // (a launch crashed in the cache trim this way). Park it at its next bg_wait() and
+    // give the IO already in flight a moment to finish.
+    if (EXIT_ABANDONED) {
+        BG_HOLD = true;
+        svcSleepThread(200000000);
+    }
     C2D_Fini();
     C3D_Fini();
     if (mcu_ok) mcuHwcExit();

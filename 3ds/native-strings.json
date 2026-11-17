@@ -23,7 +23,10 @@
     "media.packageReady": "Recursos listos",
     "media.packageVerifying": "Verificando recursos",
     "media.packageRedownload": "Pulsa A para volver a descargar los recursos.",
-    "media.ok": "Listo"
+    "media.ok": "Listo",
+    "native.retryIn": "Reintentar · {s} s",
+    "native.retry": "Reintentar",
+    "native.update": "Actualizar"
   },
   "en": {
     "native.checkFiles": "Check files",
@@ -49,7 +52,10 @@
     "media.packageReady": "Resources ready",
     "media.packageVerifying": "Checking resources",
     "media.packageRedownload": "Press A to download the resources again.",
-    "media.ok": "Ready"
+    "media.ok": "Ready",
+    "native.retryIn": "Retry · {s} s",
+    "native.retry": "Retry",
+    "native.update": "Update"
   },
   "pt": {
     "native.checkFiles": "Verificar arquivos",
@@ -75,7 +81,10 @@
     "media.packageReady": "Recursos prontos",
     "media.packageVerifying": "Verificando recursos",
     "media.packageRedownload": "Pressione A para baixar os recursos novamente.",
-    "media.ok": "Pronto"
+    "media.ok": "Pronto",
+    "native.retryIn": "Tentar de novo · {s} s",
+    "native.retry": "Tentar de novo",
+    "native.update": "Atualizar"
   },
   "it": {
     "native.checkFiles": "Controlla i file",
@@ -101,7 +110,10 @@
     "media.packageReady": "Risorse pronte",
     "media.packageVerifying": "Verifica delle risorse",
     "media.packageRedownload": "Premi A per scaricare di nuovo le risorse.",
-    "media.ok": "Pronto"
+    "media.ok": "Pronto",
+    "native.retryIn": "Riprova · {s} s",
+    "native.retry": "Riprova",
+    "native.update": "Aggiorna"
   },
   "fr": {
     "native.checkFiles": "Vérifier les fichiers",
@@ -127,7 +139,10 @@
     "media.packageReady": "Ressources prêtes",
     "media.packageVerifying": "Vérification des ressources",
     "media.packageRedownload": "Appuie sur A pour retélécharger les ressources.",
-    "media.ok": "Prêt"
+    "media.ok": "Prêt",
+    "native.retryIn": "Réessayer · {s} s",
+    "native.retry": "Réessayer",
+    "native.update": "Mettre à jour"
   },
   "de": {
     "native.checkFiles": "Dateien prüfen",
@@ -153,7 +168,10 @@
     "media.packageReady": "Ressourcen bereit",
     "media.packageVerifying": "Ressourcen werden geprüft",
     "media.packageRedownload": "Drücke A, um die Ressourcen erneut zu laden.",
-    "media.ok": "Bereit"
+    "media.ok": "Bereit",
+    "native.retryIn": "Erneut · {s} s",
+    "native.retry": "Erneut versuchen",
+    "native.update": "Aktualisieren"
   },
   "ru": {
     "native.checkFiles": "Проверить файлы",
@@ -179,7 +197,10 @@
     "media.packageReady": "Ресурсы готовы",
     "media.packageVerifying": "Проверка ресурсов",
     "media.packageRedownload": "Нажмите A, чтобы снова загрузить ресурсы.",
-    "media.ok": "Готово"
+    "media.ok": "Готово",
+    "native.retryIn": "Повтор · {s} с",
+    "native.retry": "Повторить",
+    "native.update": "Обновить"
   },
   "ja": {
     "native.checkFiles": "ファイルを確認",
@@ -205,6 +226,9 @@
     "media.packageReady": "リソース準備完了",
     "media.packageVerifying": "リソースを確認中",
     "media.packageRedownload": "Aでリソースを再ダウンロードします。",
-    "media.ok": "完了"
+    "media.ok": "完了",
+    "native.retryIn": "再試行 · {s} 秒",
+    "native.retry": "再試行",
+    "native.update": "更新"
   }
 }

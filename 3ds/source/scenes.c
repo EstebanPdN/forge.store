@@ -13,6 +13,7 @@
 #include "catalog_sync.h"
 #include "rom_find.h"
 #include "universal_sync.h"
+#include "catalog_remote.h"
 #include "remote_image.h"
 #include "github_prefetch.h"
 #include "sd_usage.h"
@@ -184,7 +185,8 @@ static void button_round(float x,float y,float w,float h,const char *label,const
 
 // Draw and touch geometry share the space reserved for translated action labels.
 enum { CONFIRM_CANCEL_W=92, CONFIRM_INSTALL_X=114, CONFIRM_INSTALL_W=190,
-       INSTALL_BROWSE_W=211, INSTALL_CANCEL_X=221, INSTALL_CANCEL_W=94 };
+       INSTALL_BROWSE_W=211, INSTALL_CANCEL_X=221, INSTALL_CANCEL_W=94,
+       DETAIL_OPEN_W=140, DETAIL_UPDATE_X=149, INSTALL_RETRY_X=110 };
 
 static bool hit(float x, float y, float w, float h) {
     return IN.touch_up && !IN.dragged && IN.start_x >= x && IN.start_x < x + w && IN.start_y >= y && IN.start_y < y + h &&
@@ -251,8 +253,10 @@ static json_t *app_missing_requirement_view(App *a) {
     json_array_foreach(json_object_get(a->j,"requires"),i,r)if(!requirement_view_has(r))return r;
     return NULL;
 }
+static App *test_installed_app;  // test.txt "detail-installed" only
 static AppStatus app_status_view(App *a) {
     if(!a)return ST_AVAILABLE;
+    if(a==test_installed_app&&!install_busy(a))return ST_INSTALLED;
     if(install_busy(a))return ST_BUSY;
     const char *version=app_installed_version(a);
     if(!version||!*version)return a->dev?ST_DEV:ST_AVAILABLE;
@@ -841,6 +845,7 @@ static int detail_parent = SC_HOME, install_parent = SC_DETAIL;
 static void open_settings(void);
 static void open_search(void);
 static void open_install(Job *j);
+static int retry_count;  // automatic download retries, see install_retry()
 
 static void home_move(u32 k) {
     if (!nlist)
@@ -1323,6 +1328,7 @@ static void start_install(void) {
     if (!sheet_compatible()) { sfx("error"); toast(T("confirm.blockedNew"),DANGER); return; }
     Job *j = install_start(dapp, sheet_cia, sheet_exp);
     sheet_on = false;
+    retry_count = 0;
     if (!j)
         return;
     sfx("download");
@@ -1506,7 +1512,12 @@ static void detail_update(void) {
     }
     AppStatus st = app_status_view(dapp);
     bool removable=st==ST_INSTALLED || st==ST_NEEDS_FILE || st==ST_UPDATE;
-    bool tap_action=hit(5,205,removable?250:280,28);
+    bool installed_view=st==ST_INSTALLED||st==ST_NEEDS_FILE;
+    bool tap_action=hit(5,205,installed_view?DETAIL_OPEN_W:removable?250:280,28);
+    if(installed_view && hit(DETAIL_UPDATE_X,205,255-DETAIL_UPDATE_X,28)) {
+        if(app_release(dapp,false)) open_sheet(); else sfx("error");
+        return;
+    }
     if(removable && (IN.down&KEY_Y || hit(259,205,26,28))) { uninstall_on=true; return; }
     if (dtab == 3)
         for (int i = 0; i < news_count; i++) {
@@ -2200,8 +2211,10 @@ static void detail_bottom(float sa) {
         tvars(lbl, sizeof lbl, T("action.update"), "v", json_string_value(json_object_get(rel, "tag")), NULL, NULL);
         button_round(5,205,250,28,lbl,"update",dtab==1 && shot_i<0?NULL:"A",BTN_PRIMARY,a);
     } else if (st == ST_INSTALLED || st == ST_NEEDS_FILE) {
+        // Installed: open it, or pick another build (stable or experimental) to switch to.
         snprintf(lbl,sizeof lbl,"%s",T("action.open"));
-        button_round(5,205,250,28,lbl,"play",NULL,BTN_MINT,a);
+        button_round(5,205,DETAIL_OPEN_W,28,lbl,"play",NULL,BTN_MINT,a);
+        button_round(DETAIL_UPDATE_X,205,255-DETAIL_UPDATE_X,28,T("native.update"),"update",NULL,BTN_SURFACE,a);
     } else if (st == ST_BUSY) {
         Job *j = install_job(dapp);
         float p = j ? job_progress(j) : 0;
@@ -2250,6 +2263,14 @@ static json_t *install_missing_req;
 static float install_check_y=-1000;
 static float ilog_scroll, ilog_target;
 static float install_open_t, install_shown_p, install_step_t;
+// A failed download retries by itself: a 10 s countdown, up to five attempts. Each failure
+// also asks GitHub again for the app's releases, so a replaced build is picked up.
+#define RETRY_MAX 5
+#define RETRY_WAIT 10.f
+static int retry_count;
+static float retry_at = -1;
+static bool install_saw_running;
+static bool retry_possible(void) { return ij && ij->state == JOB_FAILED && !ij->uninstall && retry_count < RETRY_MAX; }
 static int install_step_seen;
 static bool install_live; // test.txt fixture only: plays a whole installation in real time
 static float install_live_scale = 1;
@@ -2318,11 +2339,23 @@ static void open_install(Job *j) {
     done_t = -1;
     ij_state_seen = -1; ilog_scroll=ilog_target=0; ilog_manual=false;
     install_open_t = NOW; install_shown_p = job_progress(j); install_step_seen = j->cur; install_step_t = NOW - 1;
+    install_saw_running = j->state == JOB_QUEUED || j->state == JOB_RUNNING; retry_at = -1;
     next_scene = SC_INSTALL;
     trans_phase = 1;
     trans_t = NOW;
 }
 
+static void install_retry(void) {
+    Job *n = install_start(ij->app, ij->cia, ij->experimental);
+    retry_at = -1;
+    if (!n || n == ij) { retry_count = RETRY_MAX; sfx("error"); return; }
+    retry_count++;
+    ij = n;
+    done_t = -1; ij_state_seen = -1; ilog_scroll = ilog_target = 0; ilog_manual = false;
+    install_open_t = NOW; install_shown_p = 0; install_step_seen = n->cur; install_step_t = NOW - 1;
+    install_saw_running = true;
+    sfx("download");
+}
 static void install_update(void) {
     if (install_live) install_live_tick();
     bool running = ij->state == JOB_QUEUED || ij->state == JOB_RUNNING;
@@ -2352,9 +2385,15 @@ static void install_update(void) {
             sfx("anvil");
             sfx("complete");
             fx_burst(83, 120, 90);
-        } else
+        } else {
             sfx("error");
+            if (ij->state == JOB_FAILED && !ij->uninstall) catalog_sync_refresh(ij->app), catalog_remote_now();
+            if (install_saw_running && retry_possible()) retry_at = NOW + RETRY_WAIT;
+        }
     }
+    if (running) install_saw_running = true;
+    if (retry_at >= 0 && NOW >= retry_at && retry_possible() && !install_active()) { install_retry(); return; }
+    if (retry_possible() && ((IN.down & KEY_A) || hit(INSTALL_RETRY_X,207,310-INSTALL_RETRY_X+5,28))) { install_retry(); return; }
     if(!running&&ij->warnings&&install_check_y>0&&hit(17,install_check_y,82,24)){
         requirement_check_start(ij->app,NULL,true);return;
     }
@@ -2363,8 +2402,10 @@ static void install_update(void) {
         launch_app(ij->app);
         return;
     }
-    if ((IN.down & KEY_B) || (!running && (IN.down & KEY_A)) ||
-        hit(can_open?74:5,207,running?INSTALL_BROWSE_W:can_open?241:310,28)) {
+    bool retry = retry_possible();
+    if ((IN.down & KEY_B) || (!running && !retry && (IN.down & KEY_A)) ||
+        hit(can_open?74:5,207,running?INSTALL_BROWSE_W:can_open?241:retry?INSTALL_RETRY_X-9:310,28)) {
+        retry_at = -1;
         if (running)
             toast(T("install.background"), FORGE);
         sfx("back");
@@ -2433,13 +2474,6 @@ static void install_top(float sa) {
         ring(cx, cy, radius, 7, h, h + 1.3f, C(gold, .75f * ca));
     } else if (sweep > .01f) {
         ring(cx, cy, radius, 7, -M_PI / 2, -M_PI / 2 + sweep, C(rc, ca));
-        if (ij->state == JOB_RUNNING) {
-            // Glowing head that breathes while bytes keep arriving.
-            float ang = -M_PI / 2 + sweep, hx = cx + cosf(ang) * radius, hy = cy + sinf(ang) * radius;
-            float pulse = .5f + .5f * sinf(NOW * 6);
-            circle(hx, hy, 7 + 2 * pulse, C(gold, (.18f + .12f * pulse) * ca));
-            circle(hx, hy, 4.5f, C(0xfff1c8, ca));
-        }
     }
     if (done) {
         // Mint halo that expands out of the ring once.
@@ -2558,8 +2592,19 @@ static void install_bottom(float sa) {
         button(INSTALL_CANCEL_X,207,INSTALL_CANCEL_W,28,T("action.cancel"), "close", "X", BTN_SURFACE, sa);
     } else {
         bool can_open=ij->state==JOB_DONE && !ij->uninstall;
+        if(retry_possible()) {
+            char lbl[96],secs[16],attempt[32];
+            if(retry_at>=0){snprintf(secs,sizeof secs,"%d",(int)ceilf(fmaxf(0,retry_at-NOW)));tvars(lbl,sizeof lbl,T("native.retryIn"),"s",secs,NULL,NULL);}
+            else snprintf(lbl,sizeof lbl,"%s",T("native.retry"));
+            if(retry_count){snprintf(attempt,sizeof attempt," · %d/%d",retry_count+1,RETRY_MAX);strncat(lbl,attempt,sizeof lbl-strlen(lbl)-1);}
+            button(5,207,INSTALL_RETRY_X-9,28,T("action.back"),"back","B",BTN_GHOST,sa);
+            button(INSTALL_RETRY_X,207,315-INSTALL_RETRY_X,28,lbl,"refresh","A",BTN_PRIMARY,sa);
+            // The countdown drains along the bottom edge of the button.
+            if(retry_at>=0){float k=clampf((retry_at-NOW)/RETRY_WAIT,0,1);rrect(INSTALL_RETRY_X+8,231,(315-INSTALL_RETRY_X-16)*k,2,1,C(0xffffff,.55f*sa));}
+        } else {
         if(can_open) button(5,207,64,28,T("action.open"),"play",NULL,BTN_GHOST,sa);
         button(can_open?74:5,207,can_open?241:310,28, T(ij->state==JOB_DONE?"action.done":"action.back"),ij->state==JOB_DONE?"check":"back",NULL,BTN_PRIMARY,sa);
+        }
     }
 }
 
@@ -3195,7 +3240,7 @@ void scenes_update(void) {
     github_prefetch_start();
     github_prefetch_pause(scene==SC_GITHUB||install_active()!=NULL||video_active()||forge_mode_state()==FORGE_CHECKING);
     bool catalog_changed=false;
-    if(!test_freeze_media&&media_started){catalog_changed=catalog_sync_pump();catalog_changed|=universal_sync_pump(scene==SC_HOME||scene==SC_SEARCH||scene==SC_SETTINGS);}
+    if(!test_freeze_media&&media_started){catalog_changed=catalog_remote_pump(true);catalog_changed|=catalog_sync_pump();catalog_changed|=universal_sync_pump(scene==SC_HOME||scene==SC_SEARCH||scene==SC_SETTINGS);}
     if(catalog_changed){
         requirement_views_rebuild();
         App *selected=nlist&&sel<nlist?list[sel]:NULL;
@@ -3555,6 +3600,7 @@ void scenes_test_view(const char *name) {
         if(!strcmp(name,"detail-shots"))dtab=1;
         if(!strcmp(name,"detail-install"))dtab=2;
         if(!strcmp(name,"detail-news"))dtab=3;
+        if(!strcmp(name,"detail-installed"))test_installed_app=target;
         if(fixture_tab)dtab=!strcmp(fixture_tab,"shots")?1:!strcmp(fixture_tab,"install")?2:!strcmp(fixture_tab,"news")?3:0;
         if(!strcmp(name,"confirm")||!strcmp(name,"incompatible")){open_sheet();sheet_t=NOW-1;}
         if(!strncmp(name,"video",5)){dtab=1;shot_i=!strncmp(name,"video-trailer",13)?-nvideo:-1;shot_t=NOW;}

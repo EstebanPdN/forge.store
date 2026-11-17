@@ -35,8 +35,8 @@ other local projects and the one-time rendering environment.
 - `reader_image.c` owns prepared README rasters and their bounded decoded SD cache.
 - `forge_mode.c` authenticates encrypted personal-resource metadata off the rendering thread.
 - `video.c` owns the bounded frame/sound rings, FVD2/FVID decoder worker and video textures.
-- `install.c`, `catalog.c`, `live_release.c`, `catalog_sync.c` handle install transactions,
-  installed state, release metadata and curated refreshes.
+- `install.c`, `catalog.c`, `live_release.c`, `catalog_sync.c`, `catalog_remote.c` handle install transactions,
+  installed state, release metadata and curated refreshes (see [Updates and cache](UPDATES-AND-CACHE.md#catalog-synchronization)).
 - `universal_convert.c`, `universal_sync.c` convert and refresh Universal-DB.
 - `store_update.c`, `store_update_policy.h`, `store_version.h` own the bounded startup check,
   build selection, verified self-update and restart request.

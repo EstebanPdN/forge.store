@@ -262,66 +262,72 @@
       "folder": "/3ds/Zelda 3DS/",
       "releases": {
         "stable": {
-          "tag": "v4.0",
-          "date": "2026-11-01",
+          "tag": "v4.1",
+          "date": "2026-11-11",
           "assets": {
             "3dsx": {
-              "name": "zelda3-3ds-v4.0.3dsx",
-              "size": 8588148
+              "name": "zelda3-3ds-v4.1.3dsx",
+              "size": 8836848,
+              "sha256": "f78059ec8d8c6a9a1b5da7829b094d2747a3caf557e0597204a8e1bf5ab7d668"
             },
             "cia": {
-              "name": "zelda3-3ds-v4.0.cia",
-              "size": 7312320
+              "name": "zelda3-3ds-v4.1.cia",
+              "size": 7545792,
+              "sha256": "aae3a5d8b638a863a662db9f05aafade1e3465b3d5ef2da2242b0d886c1f5f32"
             },
             "sums": {
               "name": "SHA256SUMS.txt",
-              "size": 258
+              "size": 258,
+              "sha256": "a6150312dd02b1173c565aea2c42c874708b6ec5857d57b1d640678ca31d9303"
             }
           },
           "notes": {
             "es": [
-              "Juego y menús en 7 idiomas: inglés, español, portugués, italiano, francés, alemán y ruso.",
-              "Nuevo inicio con título animado, idioma automático y ajustes de Mods y Calidad de vida.",
-              "Skins de personaje con vista previa y partidas separadas.",
-              "Randomizer en la consola con 5 presets e importación de spoilers ALttPR.",
-              "Menús, HUD táctil e inventario rehechos, y muchas correcciones de transiciones y cámara."
+              "Japonés en textos, menús y gráficos; skins .zspr directas y hasta 512 mods de skins.",
+              "Traducciones corregidas en español, portugués, italiano, ruso, alemán y francés.",
+              "WIDE ampliado al río de Zora, con correcciones de inventario, HUD, mapa y cámara.",
+              "Las hadas de Calidad de vida restauran 10 corazones.",
+              "Ubicaciones de objetos de mazmorra corregidas en semillas nuevas del randomizer."
             ],
             "en": [
-              "Game and menus in 7 languages: English, Spanish, Portuguese, Italian, French, German and Russian.",
-              "New startup home with an animated title, automatic language, Mods and Quality of Life settings.",
-              "Character skins with previews and separate quest saves.",
-              "On-console randomizer with 5 presets and ALttPR spoiler imports.",
-              "Reworked menus, touch HUD and inventory, plus many transition and camera fixes."
+              "Japanese text, menus and assets; direct .zspr skins and up to 512 skin mods.",
+              "Translation fixes in Spanish, Portuguese, Italian, Russian, German and French.",
+              "WIDE extended to Zora's River, with inventory, HUD, map and camera fixes.",
+              "Quality of Life fairies now restore 10 hearts.",
+              "Corrected dungeon-item locations in new randomizer seeds."
             ]
           }
         },
         "experimental": {
-          "tag": "v4.1-E6",
-          "date": "2026-11-08",
+          "tag": "v4.2-E2",
+          "date": "2026-11-12",
           "assets": {
             "3dsx": {
-              "name": "zelda3-3ds-v4.1-E6.3dsx",
-              "size": 8836884
+              "name": "zelda3-3ds-v4.2-E2.3dsx",
+              "size": 9166604,
+              "sha256": "b7dafbeacce09583c1f0473797f789fe3dd0923e11252cb2e11f33e9c909f8b3"
             },
             "cia": {
-              "name": "zelda3-3ds-v4.1-E6.cia",
-              "size": 7545792
+              "name": "zelda3-3ds-v4.2-E2.cia",
+              "size": 7799744,
+              "sha256": "3b605085fd17246a1de9399e9a1735331afe27dc4461defb3b4818d33f489a40"
             },
             "sums": {
               "name": "SHA256SUMS.txt",
-              "size": 267
+              "size": 267,
+              "sha256": "925e84cd848089f8cf4a4d5f964338e8018919e3ff458a786c6acf41b6e30bdf"
             }
           },
           "notes": {
             "es": [
-              "Corrige la ubicación de objetos de mazmorra en semillas nuevas del randomizer.",
-              "WIDE ampliado al río de Zora y correcciones de mapas y cámara.",
-              "Incluye el juego en japonés, skins .zspr directas y hasta 512 mods."
+              "Diálogos y menús en chino simplificado.",
+              "WIDE ampliado al bosque de la Espada Maestra y a la cámara de la Trifuerza.",
+              "Correcciones de fundidos de paleta, orilla del puente y rocas recortadas."
             ],
             "en": [
-              "Fixes dungeon-item locations in new randomizer seeds.",
-              "WIDE extended to Zora's River, plus map and camera fixes.",
-              "Includes the Japanese game, direct .zspr skins and up to 512 mods."
+              "Simplified Chinese dialogue and menus.",
+              "WIDE extended across the Master Sword forest and the Triforce chamber.",
+              "Fixed palette fades, the bridge shoreline and cut-off rocks."
             ]
           }
         }
@@ -698,32 +704,6 @@
               "Removed experimental Full View from the Wide + Pixel Perfect combination.",
               "Fixed normal saves being rejected by empty legacy metadata.",
               "Organized and documented game and port source."
-            ]
-          }
-        },
-        "experimental": {
-          "tag": "v2.2-E1",
-          "date": "2026-10-04",
-          "assets": {
-            "3dsx": {
-              "name": "tmc-3ds-v2.2-E1.3dsx",
-              "size": 4983032
-            },
-            "cia": {
-              "name": "tmc-3ds-v2.2-E1.cia",
-              "size": 3625920
-            },
-            "sums": {
-              "name": "SHA256SUMS.txt",
-              "size": 261
-            }
-          },
-          "notes": {
-            "es": [
-              "Versión de prueba anterior a la 2.2."
-            ],
-            "en": [
-              "Test build that predates 2.2."
             ]
           }
         }
@@ -2518,20 +2498,20 @@
       "folder": "/3ds/StarHaven/",
       "releases": {
         "stable": {
-          "tag": "v1.3.13",
-          "date": "2026-11-05",
+          "tag": "v1.3.14",
+          "date": "2026-11-13",
           "assets": {
             "cia": {
               "name": "StarHaven.cia",
-              "size": 10568640,
-              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.13/StarHaven.cia",
-              "sha256": "49499222821c2bd22f3d8926de7c26b81a0df68d37b36e62c457d2ee671c2b4d"
+              "size": 10601408,
+              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.14/StarHaven.cia",
+              "sha256": "82f66bbd6e306c22f457d0f58a0164a186d15c7fd1c27b85f2bc352f11c6b18c"
             },
             "3dsx": {
               "name": "StarHaven.3dsx",
-              "size": 14255432,
-              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.13/StarHaven.3dsx",
-              "sha256": "b44a779c7f7032df7b7f74ed44d40b548b71591dd46a4b29e4ec95d2fcacdbec"
+              "size": 14316876,
+              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.14/StarHaven.3dsx",
+              "sha256": "7041d08723d65196789b3308774b475489c97c6d5308d93c59eb21487c721660"
             }
           },
           "notes": {
@@ -3115,6 +3095,32 @@
               "size": 26426080,
               "url": "https://github.com/AleFunky/gd3ds/releases/download/v1.1/GeometryDash3DS.3dsx",
               "sha256": "2442c04be6a2142d2334d98843960541014cf3b460298d89d5c8e93265b9b14a"
+            }
+          },
+          "notes": {
+            "es": [
+              "Consulta el historial completo en GitHub."
+            ],
+            "en": [
+              "Read the full changelog on GitHub."
+            ]
+          }
+        },
+        "experimental": {
+          "tag": "nightly-2.1",
+          "date": "2026-10-02",
+          "assets": {
+            "cia": {
+              "name": "GeometryDash3DS.cia",
+              "size": 48026560,
+              "url": "https://github.com/AleFunky/gd3ds/releases/download/nightly-2.1/GeometryDash3DS.cia",
+              "sha256": "9d40fd001ec6029fa2434932e55ca11ae9073e9c19ada215c6ecfca431df57ac"
+            },
+            "3dsx": {
+              "name": "GeometryDash3DS.3dsx",
+              "size": 48452692,
+              "url": "https://github.com/AleFunky/gd3ds/releases/download/nightly-2.1/GeometryDash3DS.3dsx",
+              "sha256": "e77f34ecdcf53fa072aba66ac6aafa08900ce8df3f5eef5073ca4e7f7a7de581"
             }
           },
           "notes": {
@@ -4711,6 +4717,32 @@
               "Read the full changelog on GitHub."
             ]
           }
+        },
+        "experimental": {
+          "tag": "git",
+          "date": "2026-11-15",
+          "assets": {
+            "cia": {
+              "name": "Universal-Updater.cia",
+              "size": 2474944,
+              "url": "https://github.com/Universal-Team/Universal-Updater/releases/download/git/Universal-Updater.cia",
+              "sha256": "732ab9759324ba96bc6c13dfd9ec9b84c83808d6a73b12a596f4273af40c76ef"
+            },
+            "3dsx": {
+              "name": "Universal-Updater.3dsx",
+              "size": 3009884,
+              "url": "https://github.com/Universal-Team/Universal-Updater/releases/download/git/Universal-Updater.3dsx",
+              "sha256": "a88e07265b50efee272ab794a452ff88daff41a12e7e8e66cbb274317b58e00c"
+            }
+          },
+          "notes": {
+            "es": [
+              "Consulta el historial completo en GitHub."
+            ],
+            "en": [
+              "Read the full changelog on GitHub."
+            ]
+          }
         }
       },
       "install": {
@@ -5213,20 +5245,20 @@
       "icon": "assets/community/recorder/icon.webp",
       "releases": {
         "stable": {
-          "tag": "v0.11.4-beta",
-          "date": "2026-11-10",
+          "tag": "v1.3.0",
+          "date": "2026-11-16",
           "assets": {
             "cia": {
               "name": "3ds-recorder.cia",
-              "size": 2831296,
-              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v0.11.4-beta/3ds-recorder.cia",
-              "sha256": "7187d34588c23d4c49eec15ec67f41d9e1230daad561d8d803edfff0a23e9562"
+              "size": 2876352,
+              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.3.0/3ds-recorder.cia",
+              "sha256": "b3d814853c8270e2dedb0da385795730271340c3d6e72c414c3d48f491ad5b99"
             },
             "3dsx": {
               "name": "3ds-recorder.3dsx",
-              "size": 2928360,
-              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v0.11.4-beta/3ds-recorder.3dsx",
-              "sha256": "a98ed1796fc42626835377a1f984ddb3526aece6230d824e8634333807482c49"
+              "size": 2989804,
+              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.3.0/3ds-recorder.3dsx",
+              "sha256": "9b026c8eb7d4348117b1c5c1b08deba0a7a86e9cc78a30b19631c77992a7e307"
             }
           },
           "notes": {

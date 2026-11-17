@@ -348,7 +348,10 @@
     "forge.invalid": "El código no es correcto.",
     "forge.storage": "No se pudo guardar la activación.",
     "forge.ready": "Forja activada",
-    "status.unknown": "Desconocido"
+    "status.unknown": "Desconocido",
+    "native.retryIn": "Reintentar · {s} s",
+    "native.retry": "Reintentar",
+    "native.update": "Actualizar"
   },
   "en": {
     "section.home": "Store",
@@ -699,7 +702,10 @@
     "forge.invalid": "The code is incorrect.",
     "forge.storage": "Could not save activation.",
     "forge.ready": "Forge unlocked",
-    "status.unknown": "Unknown"
+    "status.unknown": "Unknown",
+    "native.retryIn": "Retry · {s} s",
+    "native.retry": "Retry",
+    "native.update": "Update"
   },
   "pt": {
     "section.home": "Loja",
@@ -1039,7 +1045,10 @@
     "update.available": "Atualização disponível",
     "update.confirmTitle": "Atualizar a loja",
     "update.prompt": "A loja será atualizada para a versão",
-    "status.unknown": "Desconhecido"
+    "status.unknown": "Desconhecido",
+    "native.retryIn": "Tentar de novo · {s} s",
+    "native.retry": "Tentar de novo",
+    "native.update": "Atualizar"
   },
   "it": {
     "section.home": "Negozio",
@@ -1379,7 +1388,10 @@
     "update.available": "Aggiornamento disponibile",
     "update.confirmTitle": "Aggiorna il negozio",
     "update.prompt": "Il negozio si aggiornerà alla versione",
-    "status.unknown": "Sconosciuto"
+    "status.unknown": "Sconosciuto",
+    "native.retryIn": "Riprova · {s} s",
+    "native.retry": "Riprova",
+    "native.update": "Aggiorna"
   },
   "fr": {
     "section.home": "Boutique",
@@ -1719,7 +1731,10 @@
     "update.available": "Mise à jour disponible",
     "update.confirmTitle": "Mettre la boutique à jour",
     "update.prompt": "La boutique passera à la version",
-    "status.unknown": "Inconnu"
+    "status.unknown": "Inconnu",
+    "native.retryIn": "Réessayer · {s} s",
+    "native.retry": "Réessayer",
+    "native.update": "Mettre à jour"
   },
   "de": {
     "section.home": "Shop",
@@ -2059,7 +2074,10 @@
     "update.available": "Update verfügbar",
     "update.confirmTitle": "Store aktualisieren",
     "update.prompt": "Der Store wird auf diese Version aktualisiert",
-    "status.unknown": "Unbekannt"
+    "status.unknown": "Unbekannt",
+    "native.retryIn": "Erneut · {s} s",
+    "native.retry": "Erneut versuchen",
+    "native.update": "Aktualisieren"
   },
   "ru": {
     "section.home": "Магазин",
@@ -2399,7 +2417,10 @@
     "update.available": "Доступно обновление",
     "update.confirmTitle": "Обновить магазин",
     "update.prompt": "Магазин будет обновлён до версии",
-    "status.unknown": "Неизвестно"
+    "status.unknown": "Неизвестно",
+    "native.retryIn": "Повтор · {s} с",
+    "native.retry": "Повторить",
+    "native.update": "Обновить"
   },
   "ja": {
     "section.home": "ストア",
@@ -2739,6 +2760,9 @@
     "update.available": "更新があります",
     "update.confirmTitle": "ストアを更新",
     "update.prompt": "次のバージョンに更新します",
-    "status.unknown": "不明"
+    "status.unknown": "不明",
+    "native.retryIn": "再試行 · {s} 秒",
+    "native.retry": "再試行",
+    "native.update": "更新"
   }
 }

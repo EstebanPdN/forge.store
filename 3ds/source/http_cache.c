@@ -119,10 +119,20 @@ static void trim_cache(void) {
     unsigned count = 0;
     char oldest[256] = {0};
     uint64_t oldest_time = UINT64_MAX;
+    // Counting names is cheap; opening every entry is not (seconds on an SD card) and
+    // kept the prefetch worker busy past the exit deadline when a game was launched.
+    while ((e = readdir(d)))
+        if (strlen(e->d_name) == 64)
+            count++;
+    if (count < CACHE_FILES) {
+        closedir(d);
+        return;
+    }
+    rewinddir(d);
     while ((e = readdir(d))) {
+        bg_wait();  // parks here, between files, while the store is leaving
         if (strlen(e->d_name) != 64)
             continue;
-        count++;
         char path[256];
         snprintf(path, sizeof path, CACHE_DIR "/%.64s", e->d_name);
         FILE *f = fopen(path, "rb");
@@ -141,7 +151,7 @@ static void trim_cache(void) {
         }
     }
     closedir(d);
-    if (count >= CACHE_FILES && oldest[0]) {
+    if (oldest[0]) {
         remove(oldest);
         char meta[272];
         snprintf(meta, sizeof meta, "%s.meta", oldest);

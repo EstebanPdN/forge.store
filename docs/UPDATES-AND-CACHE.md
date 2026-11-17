@@ -55,6 +55,28 @@ restart and interrupted-write recovery still require physical-console qualificat
 
 Old builds that predate this updater need one manual CIA/3DSX installation to gain it.
 
+## Catalog synchronization
+
+Three layers keep the catalog on the releases each repository publishes, with no manual step:
+
+1. **Repository.** The `Sync catalog releases` GitHub Action (`.github/workflows/sync-catalog.yml`)
+   runs every 30 minutes, on demand and on a `port-released` repository dispatch. It runs
+   `tools/sync-releases.py`, which follows every listed repository, and commits
+   `catalog/forge-store.json` with its bundled copy when something changed.
+2. **Store, from the repository.** `catalog_remote.c` reads that file from
+   raw.githubusercontent.com (no API rate limit) on launch and every 30 minutes. It keeps the
+   last copy on the SD card for offline launches and adopts newer releases and install plans
+   for the apps the store ships. Art and text stay bundled.
+3. **Store, from each repository.** `catalog_sync.c` cycles through the repositories' release
+   lists every 30 minutes; GitHub answers unchanged lists with 304. A rate limit pauses it for
+   ten minutes instead of stopping it.
+
+The newest release is stable; the newest pre-release is experimental only when it is newer
+than stable. Neither layer moves a channel back to an older date. Installed apps update
+through the normal status (`Update to …`), and every installed app also offers **Update** to
+switch between stable and experimental. A failed download asks GitHub again for that app,
+then retries after a 10-second countdown, up to five times.
+
 ## Persistent GitHub responses
 
 `http_cache.c` stores bounded response bodies under `sdmc:/3ds/forge-store/http-v1/`, keyed by

@@ -1,5 +1,14 @@
 # Changelog
 
+## forge.store 1.1
+
+- Fix a crash when opening a game from the store: a background cache cleanup could still be reading the SD card while the store closed.
+- The catalog follows GitHub by itself: a GitHub Action updates it every 30 minutes, and the store checks it on launch and every 30 minutes, so new and removed releases appear without a store update.
+- Installed apps show **Update** next to **Open**, to switch between the stable and experimental versions at any time.
+- A failed download offers **Retry** with a 10-second countdown and retries by itself up to five times, after asking GitHub again for the current release.
+- The Legend of Zelda: A Link to the Past now offers v4.1 (stable) and v4.2-E2 (experimental); the deleted v4.1-E6 build returned 404.
+- The progress ring of the installation screen no longer draws a dot at its end.
+
 ## forge.store 1.0
 
 - New installation screen: a progress card with the game icon inside the ring, a large percentage, the current step and the download speed.

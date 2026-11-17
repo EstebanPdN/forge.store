@@ -1,0 +1,38 @@
+name: Sync catalog releases
+# Keeps catalog/forge-store.json (and the copy bundled in the store) on the releases each
+# listed repository publishes. The store reads this file on launch and every 30 minutes.
+on:
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch:
+  repository_dispatch:
+    types: [port-released]
+permissions:
+  contents: write
+concurrency:
+  group: sync-catalog
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Follow every repository's releases
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 tools/sync-releases.py
+      - name: Check
+        run: python3 tools/check-repository.py
+      - name: Commit when something changed
+        run: |
+          if git diff --quiet -- catalog/forge-store.json 3ds/romfs/catalog.json; then
+            echo "Catalog already current"; exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add catalog/forge-store.json 3ds/romfs/catalog.json
+          git commit -m 'Sync catalog with published releases'
+          git push
