@@ -12,7 +12,8 @@ typedef struct {
 
 typedef struct {
     json_t *j;
-    const char *id, *title, *full, *author, *category, *status, *repo, *platform, *fx, *folder, *updated;
+    const char *id, *title, *full, *author, *category, *status, *repo, *platform, *fx, *folder;
+    char updated[11];  // newest release date, a copy: release objects are replaced by syncs
     int year, progress, stars, icon;
     u32 color;
     bool universal, dev, needs_rom, needs_data, stereo, old_ok, pixel_icon;
@@ -115,6 +116,8 @@ void catalog_universal(bool enabled);
 // generation per launch, retaining old JSON for completed job metadata readers.
 bool catalog_apply_universal(json_t *apps);
 extern int BUILTIN_APPS;
+/** Recompute the newest release date after a sync replaced or added releases. */
+void app_refresh_updated(App *a);
 
 /** Main-thread visible working set; bundled sheets remain bounded (7 today).
  * Begin, request every visible app, end. Nothing visible is evicted mid-batch. */

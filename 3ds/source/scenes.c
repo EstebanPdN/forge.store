@@ -186,7 +186,8 @@ static void button_round(float x,float y,float w,float h,const char *label,const
 // Draw and touch geometry share the space reserved for translated action labels.
 enum { CONFIRM_CANCEL_W=92, CONFIRM_INSTALL_X=114, CONFIRM_INSTALL_W=190,
        INSTALL_BROWSE_W=211, INSTALL_CANCEL_X=221, INSTALL_CANCEL_W=94,
-       DETAIL_OPEN_W=140, DETAIL_UPDATE_X=149, INSTALL_RETRY_X=110 };
+       DETAIL_OPEN_W=140, DETAIL_UPDATE_X=149, INSTALL_RETRY_X=110,
+       LANG_SHEET_Y=50 /* language sheet: title, 4 rows, 14 px below the last */ };
 
 static bool hit(float x, float y, float w, float h) {
     return IN.touch_up && !IN.dragged && IN.start_x >= x && IN.start_x < x + w && IN.start_y >= y && IN.start_y < y + h &&
@@ -2753,7 +2754,7 @@ static void set_change(int dir) {
 static void settings_update(void) {
     settings_top_sync();
     if (lang_open) {
-        if (IN.down & KEY_B || hit(0, 0, 320, 4)) {
+        if (IN.down & KEY_B || hit(0, 0, 320, LANG_SHEET_Y)) {
             lang_open = false;
             sfx("back");
             return;
@@ -2765,7 +2766,7 @@ static void settings_update(void) {
         }
         bool pick = IN.down & KEY_A;
         for (int i = 0; i < 8; i++)
-            if (hit(i%2?165.6f:16,40+(i/2)*36,i%2?138.4f:145.6f,32))
+            if (hit(i%2?165.6f:16,LANG_SHEET_Y+36+(i/2)*36,i%2?138.4f:145.6f,32))
                 lang_focus = i, pick = true;
         if (pick) {
             S.lang = lang_order[lang_focus];
@@ -3153,9 +3154,10 @@ static void settings_bottom(float sa) {
         rrect(315, by, 3, bh, 1.5f, C(TH.line, .2f * sa));
     }
     if (lang_open) {
-        float p = ease_out(span(NOW, lang_t, .42f)), y = 4 + 240 * (1 - p);
+        float p = ease_out(span(NOW, lang_t, .42f)), y = LANG_SHEET_Y + (240 - LANG_SHEET_Y) * (1 - p);
         rect(0, 0, 320, 240, C(0x0a1216, .42f * sa * p));
-        rrect(6, y, 308, 230, 14, C(TH.surface, sa));
+        // A sheet risen from the bottom edge: its lower corners stay below the screen.
+        rrect(6, y, 308, 240 - LANG_SHEET_Y + 20, 14, C(TH.surface, sa));
         rrect(147, y + 5, 26, 3, 1.5f, C(TH.line, .2f * sa));
         text_style(T("settings.lang"),16,y+15,12,900,0,C(TH.ink,sa),AL_LEFT);
         const char *en[] = {"Spanish", "English", "Portuguese", "Italian", "French", "German", "Russian", "Japanese"};

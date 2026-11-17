@@ -192,6 +192,21 @@ static void search_and_releases(void) {
     puts("PASS search/releases: real catalog suggestions, composed/decomposed Latin/Cyrillic/Japanese/Hangul, trim/localized tagline/ranking, invalid releases, actual channels/status, format fallback");
 }
 
+// Syncs replace release objects; the Home order must follow them and never read freed text.
+static void release_order(void){
+    NAPPS=2;
+    APPS[0]=(App){.id="old",.category="forge",.j=J("{\"releases\":{\"stable\":{\"tag\":\"v1\",\"date\":\"2026-01-01\"}}}")};
+    APPS[1]=(App){.id="new",.category="forge",.j=J("{\"releases\":{\"stable\":{\"tag\":\"v1\",\"date\":\"2026-03-01\"}}}")};
+    app_refresh_updated(&APPS[0]);app_refresh_updated(&APPS[1]);
+    App *out[2];CHECK(catalog_filter("forge",out,2)==2);same(out[0]->id,"new");
+    // As live_release_merge/catalog_remote do: a new object replaces (and frees) the old release.
+    json_object_set_new(json_object_get(APPS[0].j,"releases"),"stable",J("{\"tag\":\"v2\",\"date\":\"2026-11-12\"}"));
+    json_object_set_new(json_object_get(APPS[0].j,"releases"),"experimental",J("{\"tag\":\"v3-E1\",\"date\":\"2026-11-14\"}"));
+    app_refresh_updated(&APPS[0]);same(APPS[0].updated,"2026-11-14");
+    CHECK(catalog_filter("forge",out,2)==2);same(out[0]->id,"old");same(out[1]->id,"new");
+    json_decref(APPS[0].j);json_decref(APPS[1].j);NAPPS=0;
+    puts("PASS release order follows replaced releases (copied dates)");
+}
 static void live_universal(void){
     CHECK(catalog_load());int original_total=NAPPS;catalog_universal(true);original_total=NAPPS;
     App *known=&APPS[BUILTIN_APPS];int icon=known->icon;const char *old_title=known->title;json_t *apps=json_array(),*update=json_deep_copy(known->j),*added=json_deep_copy(known->j);
@@ -222,4 +237,4 @@ static void gallery_cache(void) {
  app_free_shots(&a);CHECK(a.shot_thumbs.state==SHEET_EMPTY);for(int k=0;k<3;k++)CHECK(a.shot_index[k]==-1);
  puts("PASS bounded gallery: current/previous/next, sparse bottoms, warm video return, cleanup");
 }
-int main(void) {persistence();requirements();search_and_releases();live_universal();gallery_cache();printf("PASS catalog production host tests: %d assertions (ASan + UBSan)\n",assertions);return 0;}
+int main(void) {persistence();requirements();search_and_releases();release_order();live_universal();gallery_cache();printf("PASS catalog production host tests: %d assertions (ASan + UBSan)\n",assertions);return 0;}

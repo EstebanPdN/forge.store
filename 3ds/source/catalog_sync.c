@@ -14,7 +14,7 @@ bool catalog_sync_pump(void){
     const int slot=4;bool changed=false;
     if(waiting_app>=0){char error[160];char *body=reader_take_slot(slot,error,sizeof error);
         if(!body)return false;
-        if(!error[0]){json_t *releases=json_loads(body,0,NULL);if(releases){changed=live_release_merge(APPS[waiting_app].j,releases);json_decref(releases);}}
+        if(!error[0]){json_t *releases=json_loads(body,0,NULL);if(releases){changed=live_release_merge(APPS[waiting_app].j,releases);if(changed)app_refresh_updated(&APPS[waiting_app]);json_decref(releases);}}
         else if(strstr(error,"rate limit")||strstr(error,"retry later"))limited_until=NOW+600;
         free(body);waiting_app=-1;next_at=NOW+1;
     }

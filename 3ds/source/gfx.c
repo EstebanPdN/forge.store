@@ -773,7 +773,11 @@ void scissor(int screen_w, float x, float y, float w, float h) {
     y += DRAW_Y;
     int l = (int)fmaxf(0, SCR_H - (y + h)), t = (int)fmaxf(0, screen_w - (x + w));
     int r = (int)fminf(SCR_H, SCR_H - y), b = (int)fminf(screen_w, screen_w - x);
-    C3D_SetScissor(GPU_SCISSOR_NORMAL, l, t, r, b);
+    // A region pushed off screen (a page sliding away) has r <= l or b <= t; the GPU
+    // would then stop clipping and the page's scrolled content would cover the next
+    // scene. Clip everything instead: invert-scissor the whole framebuffer.
+    if (r <= l || b <= t) C3D_SetScissor(GPU_SCISSOR_INVERT, 0, 0, SCR_H, screen_w);
+    else C3D_SetScissor(GPU_SCISSOR_NORMAL, l, t, r, b);
 }
 
 void scissor_off(void) {

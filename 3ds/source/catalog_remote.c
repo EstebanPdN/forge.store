@@ -140,6 +140,7 @@ static bool apply(json_t *remote) {
             json_object_set(a->j, "progress", progress);
             changed = true;
         }
+        app_refresh_updated(a);  // releases may have been replaced: never keep a pointer into them
         json_t *plan = json_object_get(r, "install");
         if (json_is_object(plan) && json_object_size(plan) && !json_equal(plan, json_object_get(a->j, "install")))
             if (!json_object_set(a->j, "install", plan)) changed = true;

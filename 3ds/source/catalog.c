@@ -25,7 +25,7 @@ static const int ICON_PX[4] = {20, 32, 40, 64};
 static Sheet ICON_SZ[4];
 json_t *CATALOG;
 static json_t *INSTALLED, *BANNERS, *SHOTS, *STRINGS;
-static const char *release_update_date(json_t *app);
+static void release_update_date(json_t *app, char out[11]);
 static json_t *load_saved_object(const char *path);
 
 Settings S = {.dark = false, .music = true, .sfx = true, .cia = true, .volume = 0.8f, .lang = 1};
@@ -306,7 +306,7 @@ bool catalog_load(void) {
         memset(a, 0, sizeof *a);
         for (int k=0;k<3;k++) a->shot_index[k]=-1;
         a->j = v;
-        a->updated = release_update_date(v);
+        release_update_date(v, a->updated);
         a->icon = NAPPS++;
         a->id = json_string_value(json_object_get(v, "id"));
         a->title = json_string_value(json_object_get(v, "title"));
@@ -358,7 +358,7 @@ bool catalog_load(void) {
             break;
         App *a = &APPS[NAPPS];
         a->j = v;
-        a->updated = release_update_date(v);
+        release_update_date(v, a->updated);
         a->universal = true;
         a->icon = NAPPS++;
         a->id = json_string_value(json_object_get(v, "id"));
@@ -535,7 +535,7 @@ static bool in_cat(App *a, const char *cat) {
     return false;
 }
 
-static const char *release_update_date(json_t *app) {
+static void release_update_date(json_t *app, char out[11]) {
     const char *best = "", *key;
     json_t *release;
     json_object_foreach(json_object_get(app, "releases"), key, release) {
@@ -546,12 +546,13 @@ static const char *release_update_date(json_t *app) {
             if (i != 4 && i != 7 && !isdigit((unsigned char)date[i])) valid = false;
         if (valid && strncmp(date, best, 10) > 0) best = date;
     }
-    return best;
+    snprintf(out, 11, "%.10s", best);
 }
+void app_refresh_updated(App *a) { if (a) release_update_date(a->j, a->updated); }
 
 static int latest_first(const void *lhs, const void *rhs) {
     const App *a = *(App *const *)lhs, *b = *(App *const *)rhs;
-    int date = strncmp(b->updated ? b->updated : "", a->updated ? a->updated : "", 10);
+    int date = strncmp(b->updated, a->updated, 10);
     return date ? date : strcmp(a->id ? a->id : "", b->id ? b->id : "");
 }
 
@@ -1825,7 +1826,7 @@ bool catalog_apply_universal(json_t *apps){
     json_array_foreach(apps,k,v){const char *id=json_string_value(json_object_get(v,"id"));App *a=NULL;
         for(int i=BUILTIN_APPS;i<total_apps;i++)if(!strcmp(APPS[i].id,id)){a=&APPS[i];break;}
         if(!a){if(total_apps>=MAX_APPS)continue;a=&APPS[total_apps++];memset(a,0,sizeof *a);a->icon=-1;added++;}else updated++;
-        a->j=v;a->retired=false;a->id=id;a->title=json_string_value(json_object_get(v,"title"));a->full=a->title;a->author=json_string_value(json_object_get(v,"author"));a->repo=json_string_value(json_object_get(v,"repo"));a->category="universal";a->status="released";a->folder="/3ds/";a->universal=true;a->old_ok=true;a->pixel_icon=true;a->updated=release_update_date(v);a->stars=json_integer_value(json_object_get(v,"stars"));a->has_stars=json_is_integer(json_object_get(v,"stars"));a->featured=json_is_true(json_object_get(v,"featured"));a->color=hexcolor(json_string_value(json_object_get(v,"color")));a->fx=json_string_value(json_object_get(json_object_get(v,"banner"),"fx"));a->mid.i=a->logo.i=-1;
+        a->j=v;a->retired=false;a->id=id;a->title=json_string_value(json_object_get(v,"title"));a->full=a->title;a->author=json_string_value(json_object_get(v,"author"));a->repo=json_string_value(json_object_get(v,"repo"));a->category="universal";a->status="released";a->folder="/3ds/";a->universal=true;a->old_ok=true;a->pixel_icon=true;release_update_date(v,a->updated);a->stars=json_integer_value(json_object_get(v,"stars"));a->has_stars=json_is_integer(json_object_get(v,"stars"));a->featured=json_is_true(json_object_get(v,"featured"));a->color=hexcolor(json_string_value(json_object_get(v,"color")));a->fx=json_string_value(json_object_get(json_object_get(v,"banner"),"fx"));a->mid.i=a->logo.i=-1;
     }catalog_universal(S.universal);printf("Universal-DB applied: %d updated, %d added\n",updated,added);return true;
 }
 void catalog_request_icon(App *app){
