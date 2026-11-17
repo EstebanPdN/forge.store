@@ -4,17 +4,23 @@
 #include "network.h"
 #include "reader_cache.h"
 #include <time.h>
+#include "site_progress.h"
 // The repository's catalog is kept current by a scheduled GitHub Action that follows
-// every listed repository. The store reads that file from raw.githubusercontent.com
+// every listed repository and my website's Progress page. The store reads that file from raw.githubusercontent.com
 // (no API rate limit) on launch and every 30 minutes, and adopts newer releases and
 // install plans for the apps it already ships. Art and text stay bundled.
 #define URL "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/catalog/forge-store.json"
 #define CACHE DATA_DIR "/catalog-remote.cache"
 #define LIMIT (2u * 1024u * 1024u)
 #define PERIOD 1800.f
+#define SITE "https://estebanpdn.github.io/"
 static Thread worker;
 static bool stop, ready, from_cache_done;
 static json_t *result;
+static SiteProgress site[SITE_PROGRESS_MAX];  // worker writes before ready, main reads after
+static int site_count;
+static bool site_done;
+static char note[128] = "idle";  // last outcome, for the test log
 static float next_at;
 typedef struct { char *data; size_t length, capacity; } Buffer;
 static bool stopped(void) { return __atomic_load_n(&stop, __ATOMIC_ACQUIRE); }
@@ -49,36 +55,53 @@ static json_t *parse(const char *data, size_t length) {
     }
     return j;
 }
+// One bounded HTTPS GET into a NUL-terminated buffer; NULL on any failure.
+static char *fetch(const char *url, size_t *length) {
+    CURL *c = curl_easy_init();
+    Buffer b = {0};
+    if (!c) return NULL;
+    network_options(c);
+    curl_easy_setopt(c, CURLOPT_URL, url);
+    curl_easy_setopt(c, CURLOPT_NOSIGNAL, 1L);
+    curl_easy_setopt(c, CURLOPT_CONNECTTIMEOUT, 6L);
+    curl_easy_setopt(c, CURLOPT_TIMEOUT, 30L);
+    curl_easy_setopt(c, CURLOPT_ACCEPT_ENCODING, "");
+    curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, receive);
+    curl_easy_setopt(c, CURLOPT_WRITEDATA, &b);
+    curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
+    curl_easy_setopt(c, CURLOPT_XFERINFOFUNCTION, progress);
+    long code = 0;
+    CURLcode rc = curl_easy_perform(c);
+    curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &code);
+    curl_easy_cleanup(c);
+    if (rc != CURLE_OK || code != 200 || !b.data || stopped()) {
+        snprintf(note, sizeof note, "%.48s: curl %d http %ld", url + 8, (int)rc, code);
+        free(b.data);
+        return NULL;
+    }
+    *length = b.length;
+    return b.data;
+}
 static void run(void *ctx) {
     bool cache_only = ctx != NULL;
+    size_t n = 0;
     if (cache_only) {
-        size_t n = 0;
         char *cached = reader_cache_load(CACHE, (uint64_t)time(NULL), UINT64_MAX, LIMIT, &n);
         if (cached) { result = parse(cached, n); free(cached); }
     } else {
-        CURL *c = curl_easy_init();
-        Buffer b = {0};
-        if (c) {
-            network_options(c);
-            curl_easy_setopt(c, CURLOPT_URL, URL);
-            curl_easy_setopt(c, CURLOPT_NOSIGNAL, 1L);
-            curl_easy_setopt(c, CURLOPT_CONNECTTIMEOUT, 6L);
-            curl_easy_setopt(c, CURLOPT_TIMEOUT, 30L);
-            curl_easy_setopt(c, CURLOPT_ACCEPT_ENCODING, "");
-            curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, receive);
-            curl_easy_setopt(c, CURLOPT_WRITEDATA, &b);
-            curl_easy_setopt(c, CURLOPT_NOPROGRESS, 0L);
-            curl_easy_setopt(c, CURLOPT_XFERINFOFUNCTION, progress);
-            long code = 0;
-            CURLcode rc = curl_easy_perform(c);
-            curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &code);
-            curl_easy_cleanup(c);
-            if (rc == CURLE_OK && code == 200 && b.data && !stopped()) {
-                result = parse(b.data, b.length);
-                if (result) { bg_wait(); reader_cache_save(CACHE, (uint64_t)time(NULL), b.data, b.length, LIMIT); }
-            }
+        char *body = fetch(URL, &n);
+        if (body) {
+            result = parse(body, n);
+            if (result) { bg_wait(); reader_cache_save(CACHE, (uint64_t)time(NULL), body, n, LIMIT); }
+            free(body);
         }
-        free(b.data);
+        // My website's Progress page is the source of development percentages; once per launch.
+        if (!site_done && !stopped()) {
+            char *page = fetch(SITE, &n);
+            if (page) { site_count = site_progress_parse(page, n, site, SITE_PROGRESS_MAX); free(page);
+                snprintf(note, sizeof note, "catalog=%s site cards=%d", result ? "ok" : "failed", site_count); }
+            site_done = true;
+        }
     }
     __atomic_store_n(&ready, true, __ATOMIC_RELEASE);
 }
@@ -108,10 +131,33 @@ static bool apply(json_t *remote) {
                 if (!json_object_set(have, channel, release)) changed = true;
             }
         }
+        // Development percentages: the Action copies them from my website, so an offline
+        // or failed website read still gets the last synchronized value.
+        json_t *progress = json_object_get(r, "progress");
+        if (a->progress >= 0 && json_is_integer(progress) && json_integer_value(progress) >= 0 &&
+            json_integer_value(progress) <= 100 && json_integer_value(progress) != a->progress) {
+            a->progress = (int)json_integer_value(progress);
+            json_object_set(a->j, "progress", progress);
+            changed = true;
+        }
         json_t *plan = json_object_get(r, "install");
         if (json_is_object(plan) && json_object_size(plan) && !json_equal(plan, json_object_get(a->j, "install")))
             if (!json_object_set(a->j, "install", plan)) changed = true;
     }
+    return changed;
+}
+// Apps name their card with "progressCard" (e.g. "port-worms") in the catalog.
+static bool apply_progress(void) {
+    bool changed = false;
+    for (int i = 0; i < site_count; i++)
+        for (int k = 0; k < BUILTIN_APPS; k++) {
+            const char *card = json_string_value(json_object_get(APPS[k].j, "progressCard"));
+            if (!card || strcmp(card, site[i].card) || APPS[k].progress == site[i].value) continue;
+            APPS[k].progress = site[i].value;
+            json_object_set_new(APPS[k].j, "progress", json_integer(site[i].value));
+            changed = true;
+        }
+    site_count = 0;  // applied once
     return changed;
 }
 bool catalog_remote_pump(bool may_apply) {
@@ -128,6 +174,7 @@ bool catalog_remote_pump(bool may_apply) {
     if (!may_apply || installing || !__atomic_load_n(&ready, __ATOMIC_ACQUIRE)) return false;
     if (worker) { if (!thread_done(&worker)) return false; }
     bool changed = result && apply(result);
+    changed |= apply_progress();
     json_decref(result);
     result = NULL;
     __atomic_store_n(&ready, false, __ATOMIC_RELEASE);
@@ -141,3 +188,4 @@ void catalog_remote_exit(void) {
     json_decref(result);
     result = NULL;
 }
+const char *catalog_remote_status(void) { return note; }

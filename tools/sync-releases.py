@@ -6,17 +6,45 @@ non-draft release is stable, the newest pre-release is experimental only when it
 newer than stable, and asset names are re-tagged from the known ones. A deleted
 pre-release therefore never stays in the catalog that ships with the store.
 
+It also copies development percentages from the Progress page of my website
+(https://estebanpdn.github.io/) into every app that names its card with "progressCard";
+the store reads the same page once per launch (3ds/source/site_progress.h).
+
 Usage: python3 tools/sync-releases.py [--check]
 Needs an authenticated `gh`. Writes catalog/forge-store.json and 3ds/romfs/catalog.json.
 """
-import json, pathlib, re, subprocess, sys
+import json, pathlib, re, subprocess, sys, urllib.request
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 CATALOG = ROOT / 'catalog' / 'forge-store.json'
 BUNDLED = ROOT / '3ds' / 'romfs' / 'catalog.json'
 TAG = re.compile(r'^[A-Za-z0-9._+-]{1,120}$')
-GENERIC = {'es': ['Consulta el historial completo en GitHub.'],
-           'en': ['Read the full changelog on GitHub.']}
+GENERIC = {
+    'es': ['Consulta el historial completo en GitHub.'],
+    'en': ['Read the full changelog on GitHub.'],
+    'pt': ['Veja o histórico completo no GitHub.'],
+    'it': ['Leggi il changelog completo su GitHub.'],
+    'fr': ['Consultez l’historique complet sur GitHub.'],
+    'de': ['Den vollständigen Changelog gibt es auf GitHub.'],
+    'ru': ['Полный список изменений — на GitHub.'],
+    'ja': ['変更履歴の全文は GitHub をご覧ください。'],
+}
+
+
+SITE = 'https://estebanpdn.github.io/'
+CARD = re.compile(r'class="progress-card ([^" ]+)[^>]*>(.*?)(?=class="progress-card |\Z)', re.S)
+
+
+def site_progress():
+    """card -> percentage, same rules as site_progress.h (first card wins, 0..100)."""
+    req = urllib.request.Request(SITE, headers={'User-Agent': 'forge.store-catalog-sync'})
+    html = urllib.request.urlopen(req, timeout=30).read().decode('utf-8', 'replace')
+    out = {}
+    for card, body in CARD.findall(html):
+        m = re.search(r'aria-valuenow="(\d{1,3})"', body)
+        if m and int(m.group(1)) <= 100 and card not in out:
+            out[card] = int(m.group(1))
+    return out
 
 
 def releases(repo):
@@ -103,6 +131,15 @@ def main():
         if log:
             print(app['id'], app['repo'])
             print('\n'.join(log))
+    progress = site_progress()
+    for app in data['apps']:
+        card = app.get('progressCard')
+        if card in progress and app.get('progress') != progress[card]:
+            print(app['id'], f'progress: {app.get("progress")} -> {progress[card]} ({card})')
+            app['progress'] = progress[card]
+            changed = True
+        elif card and card not in progress:
+            print(app['id'], f'progress card {card} not found on the website; kept {app.get("progress")}')
     if check:
         raise SystemExit(1 if changed else 0)
     if changed:

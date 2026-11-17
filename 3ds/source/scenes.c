@@ -3633,6 +3633,7 @@ void scenes_test_log(FILE *file){
     for(unsigned i=0;i<media_count();i++){MediaItem m;if(media_item(i,&m))fprintf(file,"media item=%s/%s state=%d bytes=%u/%u attempts=%u error=%s\n",m.appid,m.id,m.state,m.received,m.total,m.attempts,m.error);}
     fprintf(file,"package state=%d items=%u ready=%u bytes=%llu/%llu\n",PKG.state,PKG.items,PKG.ready,(unsigned long long)PKG.received,(unsigned long long)PKG.bytes);
     fprintf(file,"catalog apps=%d universal=%s\n",NAPPS,universal_sync_status());
+    fprintf(file,"remote %s\n",catalog_remote_status());fprintf(file,"progress");for(int i=0;i<BUILTIN_APPS;i++)if(APPS[i].progress>=0)fprintf(file," %s=%d",APPS[i].id,APPS[i].progress);fprintf(file,"\n");
     if(dapp){fprintf(file,"gallery app=%s thumbs=%d fullscreen=%d slots=",dapp->id,sheet_ok(&dapp->shot_thumbs),shot_fullscreen);for(int k=0;k<3;k++)fprintf(file,"%d:%d/%d,",dapp->shot_index[k],sheet_ok(&dapp->shots_t[k]),sheet_ok(&dapp->shots_b[k]));fprintf(file,"\n");}
     static const char *kinds[]={"intro","home","detail","install","settings","search","downloads","sd","github"};
     fprintf(file,"view kind=%s scroll=%.3f video_time=%.3f\n",kinds[scene],scene==SC_DETAIL?dscroll:scene==SC_GITHUB?gh_scroll:0,video_time());

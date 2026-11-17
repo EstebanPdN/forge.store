@@ -43,7 +43,7 @@ static bool merge_channel(json_t *releases,const char *channel,json_t *live){
     json_t *updated=json_deep_copy(known);if(!updated){json_decref(assets);return false;}
     char date[11];snprintf(date,sizeof date,"%.10s",s(live,"published_at"));
     json_object_set_new(updated,"tag",json_string(tag));json_object_set_new(updated,"date",json_string(date));json_object_set_new(updated,"assets",assets);
-    json_object_set_new(updated,"notes",json_pack("{s:[s],s:[s]}","es","Versión publicada en GitHub (notas en el repositorio).","en","Published on GitHub (notes in the repository)."));
+    json_object_set_new(updated,"notes",json_pack("{s:[s],s:[s],s:[s],s:[s],s:[s],s:[s],s:[s],s:[s]}","es","Consulta el historial completo en GitHub.","en","Read the full changelog on GitHub.","pt","Veja o histórico completo no GitHub.","it","Leggi il changelog completo su GitHub.","fr","Consultez l’historique complet sur GitHub.","de","Den vollständigen Changelog gibt es auf GitHub.","ru","Полный список изменений — на GitHub.","ja","変更履歴の全文は GitHub をご覧ください。"));
     bool ok=json_object_set_new(releases,channel,updated)==0;return ok;
 }
 bool live_release_merge(json_t *app,json_t *github){

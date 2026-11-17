@@ -39,6 +39,17 @@ def paths(value):
     elif isinstance(value,list):
         for v in value:paths(v)
 paths(cat)
+# Store text is localized in all eight interface languages (Universal-DB text is not ours).
+LANGS={'es','en','pt','it','fr','de','ru','ja'}
+def locales(value,where):
+    if isinstance(value,dict):
+        if value and set(value)<=LANGS and 'en' in value:
+            check(set(value)==LANGS,f'Catalog text missing {sorted(LANGS-set(value))} at {where}')
+            return
+        for k,v in value.items():locales(v,f'{where}/{k}')
+    elif isinstance(value,list):
+        for i,v in enumerate(value):locales(v,f'{where}/{i}')
+locales(cat,'')
 # Every curated public repository must have offline reader data. Universal-DB is separate.
 reader=json.loads((ROOT/'assets/reader-data/manifest.json').read_text())
 readers={(r['url'],r['accept']) for r in reader['responses']}

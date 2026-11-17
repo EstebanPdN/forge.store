@@ -1,5 +1,5 @@
-name: Sync catalog releases
-# Keeps catalog/forge-store.json (and the copy bundled in the store) on the releases each
+name: Sync catalog releases and progress
+# Keeps catalog/forge-store.json (and the copy bundled in the store) on my website's progress and the releases each
 # listed repository publishes. The store reads this file on launch and every 30 minutes.
 on:
   schedule:

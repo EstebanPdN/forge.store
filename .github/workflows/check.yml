@@ -18,6 +18,7 @@ jobs:
         run: |
           python3 3ds/tests/run-audio-gain.py
           python3 3ds/tests/run-update-icon.py
+          python3 3ds/tests/run-site-progress.py
           python3 3ds/tests/run-music-stream.py
           python3 3ds/tests/run-reader-cache-fs.py
       - name: JavaScript syntax

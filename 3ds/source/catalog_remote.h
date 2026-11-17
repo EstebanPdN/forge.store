@@ -6,3 +6,4 @@ bool catalog_remote_pump(bool may_apply);
 void catalog_remote_now(void);   // check again as soon as possible (e.g. after a 404)
 void catalog_remote_stop(void);  // shutdown: request only
 void catalog_remote_exit(void);
+const char *catalog_remote_status(void);  // test log only

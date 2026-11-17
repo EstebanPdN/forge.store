@@ -71,6 +71,11 @@ Three layers keep the catalog on the releases each repository publishes, with no
    lists every 30 minutes; GitHub answers unchanged lists with 304. A rate limit pauses it for
    ten minutes instead of stopping it.
 
+Development percentages come from the Progress page of my website
+(https://estebanpdn.github.io/). Apps name their card with `progressCard` (for example
+`port-worms`); the store reads the page once per launch with `site_progress.h`, and the
+Action copies the same values into the catalog for offline launches.
+
 The newest release is stable; the newest pre-release is experimental only when it is newer
 than stable. Neither layer moves a channel back to an older date. Installed apps update
 through the normal status (`Update to …`), and every installed app also offers **Update** to
