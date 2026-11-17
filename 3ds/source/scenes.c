@@ -845,6 +845,27 @@ static int detail_parent = SC_HOME, install_parent = SC_DETAIL;
 static void open_settings(void);
 static void open_search(void);
 static void open_install(Job *j);
+// One wording for download progress everywhere (store update included): "42 % · 1.6 MB/s · ~18 s".
+static void fmt_eta(char *out, size_t n, float seconds) {
+    if (seconds < 60) snprintf(out, n, "~%d s", seconds < 1 ? 1 : (int)ceilf(seconds));
+    else if (seconds < 3600) snprintf(out, n, "~%d min", (int)ceilf(seconds / 60));
+    else snprintf(out, n, "~%d h", (int)ceilf(seconds / 3600));
+}
+/** Speed and remaining time while bytes arrive; false (and empty) otherwise. */
+static bool job_rate(Job *j, char *out, size_t n) {
+    *out = 0;
+    if (!j || j->state != JOB_RUNNING || j->speed <= 1 || j->cur < 0 || j->cur >= j->nsteps || !j->steps[j->cur].bytes) return false;
+    char rate[24], left[24];
+    fmt_size(rate, sizeof rate, j->speed);
+    fmt_eta(left, sizeof left, (j->total_bytes > j->done_bytes ? j->total_bytes - j->done_bytes : 0) / j->speed);
+    snprintf(out, n, "%s/s · %s", rate, left);
+    return true;
+}
+static void job_progress_line(Job *j, char *out, size_t n) {
+    char rate[64];
+    if (job_rate(j, rate, sizeof rate)) snprintf(out, n, "%d %% · %s", (int)(job_progress(j) * 100), rate);
+    else snprintf(out, n, "%d %%", (int)(job_progress(j) * 100));
+}
 static int retry_count;  // automatic download retries, see install_retry()
 
 static void home_move(u32 k) {
@@ -2221,7 +2242,7 @@ static void detail_bottom(float sa) {
         rrect(5, 209, 280, 26, 13, C(TH.surface, a));
         snprintf(lbl, sizeof lbl, "%s", T(j && j->state == JOB_QUEUED ? "status.queued" : "status.downloading"));
         text(lbl, 16, 211, 10, C(TH.ink, a), AL_LEFT);
-        snprintf(lbl, sizeof lbl, "%d %%", (int)(p * 100));
+        if (j) job_progress_line(j, lbl, sizeof lbl); else snprintf(lbl, sizeof lbl, "%d %%", (int)(p * 100));
         text_dyn(lbl, 274, 211, 10, C(TH.ink, a), AL_RIGHT);
         rrect(16, 225, 258, 4, 2, C(TH.surface3, a));
         rrect(16, 225, fmaxf(4, 258 * p), 4, 2, C(FORGE, a));
@@ -2521,10 +2542,7 @@ static void install_top(float sa) {
     char line[96], a1[24], a2[24];
     bool speed = st && st->bytes && ij->state == JOB_RUNNING && ij->speed > 1;
     if (speed) {
-        fmt_size(a1, sizeof a1, ij->speed);
-        float eta = (ij->total_bytes - ij->done_bytes) / fmaxf(ij->speed, 1);
-        snprintf(a2, sizeof a2, eta < 60 ? "%.0f s" : "%.0f min", eta < 60 ? eta : eta / 60);
-        snprintf(line, sizeof line, "%s/s · %s", a1, a2);
+        job_rate(ij, line, sizeof line);
     } else {
         fmt_size(a1, sizeof a1, (double)ij->done_bytes);
         fmt_size(a2, sizeof a2, (double)ij->total_bytes);
@@ -3527,7 +3545,7 @@ void scenes_test_view(const char *name) {
                     j->release=app_release(j->app,false);j->cia=true;j->serial=i+1;j->state=states[i];j->warnings=i==3;
                     if(!strcmp(name,"downloads-history")&&i<2)j->state=JOB_DONE;
                     snprintf(j->tag,sizeof j->tag,"%s",jstr(j->release,"tag"));j->total_bytes=7312320;j->done_bytes=i?7312320:4387392;
-                    j->nsteps=1;j->weight[0]=j->wtotal=1;j->steps[0].state=j->state==JOB_RUNNING?STEP_ACTIVE:STEP_PENDING;j->steps[0].progress=i?0:.4f;
+                    j->nsteps=1;j->weight[0]=j->wtotal=1;j->steps[0].state=j->state==JOB_RUNNING?STEP_ACTIVE:STEP_PENDING;j->steps[0].progress=i?0:.4f;j->steps[0].bytes=true;j->speed=i?0:1677721.f;
                     tvars(j->steps[0].label,sizeof j->steps[0].label,T("install.step.download"),"name","zelda3-3ds.cia",NULL,NULL);
                 }
             }

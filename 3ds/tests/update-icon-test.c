@@ -87,5 +87,29 @@ int main(int argc, char **argv) {
     update_icon_set(&forge,UI_CHECK,.72f);
     for(int i=0;i<=12;i++){char name[32];snprintf(name,sizeof name,"forge-check-%02d",i);picture(dir,name,&forge,.72f+i*.04f);}
     pixels_at(&forge,1.3f,before);pixels_at(&direct,2,after);assert(!memcmp(before,after,sizeof before));
+    // The arrow is a mirror image around x = 20 in every pose, and each diagonal of the
+    // check advances exactly one pixel per row with a constant width (no kinks).
+    for (int i = 0; i < 240; i++) {
+        UpdateIconFrame frame; uint8_t p[40][40];
+        update_icon_shape(i % 2 ? UI_DOWNLOADING : UI_DOWNLOAD, i * .011f, &frame);
+        update_icon_raster(&frame, p);
+        for (int y = 0; y < 40; y++) for (int x = 1; x < 40; x++) assert(p[y][x] == p[y][40 - x]);
+    }
+    {
+        UpdateIconFrame frame; uint8_t p[40][40];
+        update_icon_shape(UI_CHECK, 0, &frame); update_icon_raster(&frame, p);
+        int prev_right = -1;
+        for (int y = 12; y <= 26; y++) {  // long stroke: rightmost run steps left by one
+            int r = -1; for (int x = 39; x >= 0; x--) if (p[y][x]) { r = x; break; }
+            if (prev_right >= 0) assert(r == prev_right - 1);
+            prev_right = r;
+        }
+        for (int y = 21; y <= 25; y++) {  // short stroke: 5 px wide, one step right per row
+            int l = 0; while (!p[y][l]) l++;
+            int n = 0; while (p[y][l + n]) n++;
+            int pl = 0; while (!p[y - 1][pl]) pl++;
+            assert(l == pl + 1 && (n == 5 || y >= 24));
+        }
+    }
     printf("PASS: %d pixel masks, 49 state transitions, interruption continuity, crisp strokes, hammer and download motion.\n", frames);
 }

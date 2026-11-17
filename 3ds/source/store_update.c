@@ -31,6 +31,10 @@ float store_update_progress(void) {
     uint32_t n = __atomic_load_n(&total, __ATOMIC_RELAXED);
     return n ? (float)__atomic_load_n(&received, __ATOMIC_RELAXED) / n : 0;
 }
+void store_update_bytes(uint32_t *got, uint32_t *all) {
+    *got = __atomic_load_n(&received, __ATOMIC_RELAXED);
+    *all = __atomic_load_n(&total, __ATOMIC_RELAXED);
+}
 static bool stopped(void) { return __atomic_load_n(&cancelled, __ATOMIC_ACQUIRE); }
 void store_update_poll(void) {
     int expected = UPDATE_CHECKING;

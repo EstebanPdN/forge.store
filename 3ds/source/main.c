@@ -516,6 +516,35 @@ static void update_mark(float cx,float cy) {
         C2D_DrawRectSolid(left+start,top+y,.5f,x-start,1,color);
     }
 }
+// Download speed: sampled twice a second and smoothed, so the estimate reads steadily.
+static float update_speed, update_sample_t = -1;
+static uint32_t update_sample_bytes;
+static void update_speed_tick(StoreUpdateState state) {
+    if (state != UPDATE_DOWNLOADING || update_fixture >= 0) { update_sample_t = -1; update_speed = 0; return; }
+    uint32_t got, all; store_update_bytes(&got, &all);
+    if (update_sample_t < 0 || got < update_sample_bytes) { update_sample_t = NOW; update_sample_bytes = got; return; }
+    float dt = NOW - update_sample_t;
+    if (dt < .5f) return;
+    float now_speed = (got - update_sample_bytes) / dt;
+    update_speed = update_speed > 0 ? update_speed * .7f + now_speed * .3f : now_speed;
+    update_sample_t = NOW; update_sample_bytes = got;
+}
+static void update_detail_line(StoreUpdateState state, float p, char *out, size_t n) {
+    snprintf(out, n, "%d %%", (int)(p * 100));
+    if (state != UPDATE_DOWNLOADING) return;
+    uint32_t got, all;
+    float speed = update_speed;
+    if (update_fixture >= 0) { all = 49456064; got = (uint32_t)(all * p); speed = 1.6f * 1024 * 1024; }
+    else store_update_bytes(&got, &all);
+    if (speed < 1 || !all) return;
+    char rate[24], left[24];
+    fmt_size(rate, sizeof rate, speed);
+    float eta = (all > got ? all - got : 0) / speed;
+    if (eta < 60) snprintf(left, sizeof left, "~%d s", eta < 1 ? 1 : (int)ceilf(eta));
+    else snprintf(left, sizeof left, "~%d min", (int)ceilf(eta / 60));
+    size_t used = strlen(out);
+    snprintf(out + used, n - used, " · %s/s · %s", rate, left);
+}
 static void update_screen(bool top) {
     scenes_draw_background(top);
     StoreUpdateState state=update_seen==(StoreUpdateState)-1?UPDATE_CHECKING:update_seen;
@@ -549,13 +578,14 @@ static void update_screen(bool top) {
     if(progress){
         float p=update_fixture>=0?.42f:clampf(store_update_progress(),0,1),by=y+64+h+12;
         rrect(60,by,280,5,2.5f,rgb(TH.surface3,1));rrect(60,by,fmaxf(1,280*p),5,2.5f,rgb(FORGE,1));
-        char percent[20];snprintf(percent,sizeof percent,"%d %%",(int)(p*100));
-        text(percent,200,by+9,11,rgb(TH.ink_soft,1),AL_CENTER);
+        char detail[96];update_detail_line(state,p,detail,sizeof detail);
+        text_dyn(detail,200,by+9,11,rgb(TH.ink_soft,1),AL_CENTER);
     }
 }
 static void update_boot(void){
     store_update_poll();
     StoreUpdateState state=update_state();
+    update_speed_tick(state);
     // A fast response still gives the rotating mark time to read as a check.
     if(NOW-update_gate_started<.9f)state=UPDATE_CHECKING;
     if(state!=update_seen){

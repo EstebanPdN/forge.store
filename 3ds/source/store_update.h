@@ -17,6 +17,8 @@ StoreUpdateState store_update_state(void);
 // Main-thread deadline also bounds checks when the platform resolver is blocked.
 void store_update_poll(void);
 float store_update_progress(void);
+// Bytes of the current transfer, for speed and remaining time on the main thread.
+void store_update_bytes(uint32_t *received, uint32_t *total);
 // Valid after acquiring UPDATE_AVAILABLE. Remains immutable until shutdown.
 const char *store_update_version(void);
 // Main thread: the worker cannot download/install before one explicit decision.

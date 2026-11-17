@@ -119,17 +119,19 @@ static inline void update_icon_raster(const UpdateIconFrame *frame,
     memset(pixels, 0, UPDATE_ICON_SIZE * UPDATE_ICON_SIZE);
     for (int part = 0; part < UPDATE_ICON_PARTS; part++) {
         for (int i = 1; i < UPDATE_ICON_POINTS; i++) {
-            // Quantize vertices before coverage: all final runs occupy whole LCD pixels.
-            int ax = (int)roundf(frame->p[part][i - 1].x), ay = (int)roundf(frame->p[part][i - 1].y);
-            int bx = (int)roundf(frame->p[part][i].x), by = (int)roundf(frame->p[part][i].y);
-            int left = (ax < bx ? ax : bx) - 2, right = (ax > bx ? ax : bx) + 2;
-            int top = (ay < by ? ay : by) - 2, bottom = (ay > by ? ay : by) + 2;
-            int dx = bx - ax, dy = by - ay, length = dx * dx + dy * dy;
+            // Exact geometry, binary coverage: rounding the 17 points of a polyline one
+            // by one put kinks into straight strokes, and rounding half away from zero
+            // made the two wings of the arrow differ. Each pixel is still fully on or off.
+            float ax = frame->p[part][i - 1].x, ay = frame->p[part][i - 1].y;
+            float bx = frame->p[part][i].x, by = frame->p[part][i].y;
+            int left = (int)floorf(fminf(ax, bx)) - 2, right = (int)ceilf(fmaxf(ax, bx)) + 2;
+            int top = (int)floorf(fminf(ay, by)) - 2, bottom = (int)ceilf(fmaxf(ay, by)) + 2;
+            float dx = bx - ax, dy = by - ay, length = dx * dx + dy * dy;
             for (int y = top; y <= bottom; y++) for (int x = left; x <= right; x++) {
                 if ((unsigned)x >= UPDATE_ICON_SIZE || (unsigned)y >= UPDATE_ICON_SIZE) continue;
-                float t = length ? fminf(1, fmaxf(0, ((x - ax) * dx + (y - ay) * dy) / (float)length)) : 0;
+                float t = length > 1e-6f ? fminf(1, fmaxf(0, ((x - ax) * dx + (y - ay) * dy) / length)) : 0;
                 float ex = x - (ax + t * dx), ey = y - (ay + t * dy);
-                if (ex * ex + ey * ey <= 2.25f) pixels[y][x] = 1;
+                if (ex * ex + ey * ey <= 2.25f + 1e-4f) pixels[y][x] = 1;
             }
         }
     }

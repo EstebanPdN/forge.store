@@ -396,10 +396,7 @@ static void downloads_top(float a) {
         if (p > 0) rrect(75,130,fmaxf(5,304*p),5,2.5f, C(FORGE, a));
         char b[96], bytes[24], total[24];
         snprintf(b, sizeof b, "%d %%", (int)(p * 100)); text_style(b,75,138,10,800,0,C(TH.ink_soft,a),AL_LEFT);
-        if (j && j->speed > 0) {
-            fmt_size(bytes, sizeof bytes, j->speed);
-            unsigned seconds = j->total_bytes > j->done_bytes ? (j->total_bytes - j->done_bytes) / j->speed : 0;
-            snprintf(b, sizeof b, "%s/s · %u:%02u", bytes, seconds / 60, seconds % 60);
+        if (job_rate(j, b, sizeof b)) {
         } else {
             fmt_size(bytes, sizeof bytes, j ? (double)j->done_bytes : (double)PKG.received);
             fmt_size(total, sizeof total, j ? (double)j->total_bytes : (double)PKG.bytes);
@@ -443,7 +440,9 @@ static void downloads_bottom(float a) {
         text_fit_style(ap?ap->title:T("media.package"),42,y+5,11,600,fmaxf(0,right_x-49),C(TH.ink,a));
         char sub[256];
         if (j) {
-            if (j->state == JOB_RUNNING) snprintf(sub, sizeof sub, "%d %% · %s", (int)(job_progress(j) * 100), j->cur >= 0 && j->cur < j->nsteps ? j->steps[j->cur].label : job_label(j));
+            char rate[64];
+            if (j->state == JOB_RUNNING && job_rate(j, rate, sizeof rate)) snprintf(sub, sizeof sub, "%d %% · %s", (int)(job_progress(j) * 100), rate);
+            else if (j->state == JOB_RUNNING) snprintf(sub, sizeof sub, "%d %% · %s", (int)(job_progress(j) * 100), j->cur >= 0 && j->cur < j->nsteps ? j->steps[j->cur].label : job_label(j));
             else if(j->state==JOB_QUEUED){char total[24];fmt_size(total,sizeof total,j->total_bytes);snprintf(sub,sizeof sub,"%s · %s · %s",j->tag,j->cia?"CIA":"3DSX",total);}
             else snprintf(sub,sizeof sub,"%s · %s · %s",j->tag,j->cia?"CIA":"3DSX",T(j->experimental?"channel.experimental":"channel.stable"));
         }else package_detail(sub,sizeof sub);
