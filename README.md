@@ -22,7 +22,7 @@
   <a href="#license-and-legal-notice"><img src="docs/badges/license.svg" alt="Component-specific licenses" height="22"></a>
 </p>
 
-<p align="center"><img src="docs/images/store-preview.png" alt="forge.store on Nintendo 3DS: the game banner above the touch-screen catalog" width="600"></p>
+<p align="center"><img src="docs/images/forge-store-hero.png" alt="forge.store, the Nintendo 3DS store: the store home on the top screen and the touch-screen catalog below" width="900"></p>
 
 <p align="center">
   <a href="https://estebanpdn.github.io/"><img src="docs/images/website.svg" alt="Visit Esteban’s Forge" width="142" height="46"></a>
