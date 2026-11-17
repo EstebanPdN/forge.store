@@ -1,8 +1,22 @@
 # Verification record
 
-Publication candidate: **2026.11.12.12**, native C implementation. This is a development
-build, not a claim of complete parity or hardware qualification. Exact public binary hashes
-and the source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+Publication candidate: **1.0** (internal build 2026111602), native C implementation. This is not
+a claim of complete parity or hardware qualification. Exact public binary hashes and the
+source/media fingerprints are in [`builds/3ds/manifest.json`](../builds/3ds/manifest.json).
+
+## forge.store 1.0
+
+- **Compilation:** `zsh 3ds/build.sh` with `FORGE_DEBUG=0`; packaged with `tools/package-build.py`.
+  The CIA embeds the static HOME banner from 2026.11.12.14 byte for byte
+  (BNR SHA-256 `448c3804…`), the banner that works on my console.
+- **Host tests:** catalog, install integrity, Forge Mode, reader images, store network, reader
+  priority, audio gain, music stream, texture stream, reader cache, update icon, FileView,
+  media, HOME banner and icon-atlas checks all pass. `tools/check-repository.py` passes.
+- **Emulator (Azahar):** the new installation screen was reviewed while queued, downloading,
+  installed and failed, plus a complete real-time installation fixture (`install-live`)
+  captured at a fixed 60 fps clock. The regenerated icon atlases were inspected at every size.
+- **Physical console:** not yet tested for 1.0. Installation, HOME, sleep and sound on
+  hardware still need confirmation.
 
 ## HOME facing anchor candidate — 2026.11.12.12
 

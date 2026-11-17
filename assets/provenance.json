@@ -100,8 +100,8 @@
     },
     {
       "path": "assets/community/anemone/icon.webp",
-      "bytes": 2158,
-      "sha256": "b81ccf4369bcca4decb660525f19971d49fcf0deb50750385561d8da346c5f58",
+      "bytes": 25590,
+      "sha256": "f07f4d6b7d8beb2dc8fe04ceb4f4c0d33d96dd561a9724ad0fc61effe7404b04",
       "source_context": "https://raw.githubusercontent.com/astronautlevel2/Anemone3DS/master/meta/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -324,9 +324,9 @@
     },
     {
       "path": "assets/community/gd3ds/icon.webp",
-      "bytes": 4184,
-      "sha256": "8cef9cb221d00f1628b7752a30bae8afd64e28c29afee87db1c29b82a05d2ab3",
-      "source_context": "https://raw.githubusercontent.com/AleFunky/gd3ds/master/resources/icon.png",
+      "bytes": 32652,
+      "sha256": "dca8365c03e6115248218b2e368268ba0152bd6ecda8e39587b061a66d83994c",
+      "source_context": "https://apps.apple.com/app/id625334537",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -422,9 +422,9 @@
     },
     {
       "path": "assets/community/mkwii/icon.webp",
-      "bytes": 7540,
-      "sha256": "af17d82511b5dbba5d7166893057b8696088973cd913956b8bd14050d6408b2d",
-      "source_context": "https://raw.githubusercontent.com/Epic0522/MarioKartWii-3DS-Redux/main/tools/release/artwork/icon.png",
+      "bytes": 35052,
+      "sha256": "18456b43c99690819da8ccd3cd8413132e4b5ff37cd35a05945d4db91e9d9ae7",
+      "source_context": "https://www.mariowiki.com/File:Mario_Artwork_-_Mario_Kart_Wii.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -541,8 +541,8 @@
     },
     {
       "path": "assets/community/recorder/icon.webp",
-      "bytes": 636,
-      "sha256": "52395676060b1c5fbed7e6d348431a0c8d8887a4d17352f67c1532fbe7f6f5fa",
+      "bytes": 6902,
+      "sha256": "1145550d44c325df28643d61cb19826a6d3e096bc2c243e90145442f8e7f1757",
       "source_context": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/app/assets/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -618,8 +618,8 @@
     },
     {
       "path": "assets/community/snes9x/icon.webp",
-      "bytes": 2170,
-      "sha256": "7017cf66b3ef8e09e000f50bf04e278fcff9dd0fcc7a46ad97ced2d1cf24e884",
+      "bytes": 17528,
+      "sha256": "3e3962c40cc8ff77de5040db4bd7c18665e20eea4d18ce59024070cdfc6a3888",
       "source_context": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/resources/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -674,22 +674,15 @@
     },
     {
       "path": "assets/community/sources.json",
-      "bytes": 33578,
-      "sha256": "cc570ee15813cb68415809229786e4d4fb6b723ebd3306d5406aea0266fc6181",
+      "bytes": 35371,
+      "sha256": "6934ee995f808ce1a08a0315e69be921fd8903005c3e6af1c9f10769dc1afbf0",
       "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
-      "path": "assets/community/starhaven/hero.webp",
-      "bytes": 8508,
-      "sha256": "01d5803e5d8c080bed1c7b524734fb6436001182d202160e173af3fbe001598e",
-      "source_context": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/cia/banner.png",
-      "rights": "No blanket reuse license; see LICENSE.md."
-    },
-    {
       "path": "assets/community/starhaven/icon.webp",
-      "bytes": 2742,
-      "sha256": "1493d36e4f91b80b29f0b049fc000181f646af2621ff90558a5659f949d6a46f",
+      "bytes": 17212,
+      "sha256": "4defa1929f4fcacbaba9a57dfe8dbbbc0e3d09414a61141430dd22b098a5b079",
       "source_context": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/cia/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -758,8 +751,8 @@
     },
     {
       "path": "assets/community/universal/icon.webp",
-      "bytes": 1536,
-      "sha256": "9e50d449020c9acd520f5004800375d1a9ca3108c90f6f5f1fa310a1744caab8",
+      "bytes": 6608,
+      "sha256": "db836589d0a10a0ae09d63cf1fbf22687e9cc3db5eea1930241417aa3c6da48f",
       "source_context": "https://raw.githubusercontent.com/Universal-Team/Universal-Updater/master/app/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },

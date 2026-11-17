@@ -13,7 +13,7 @@ if any(p.stat().st_mtime>oldest for p in watched):raise SystemExit('Source chang
 dest.mkdir(parents=True,exist_ok=True)
 build_number=int(re.search(r'#define STORE_BUILD (\d+)',(ROOT/'3ds/source/store_version.h').read_text())[1])
 display_version=re.search(r'#define STORE_VERSION "([^"]+)"',(ROOT/'3ds/source/store_version.h').read_text())[1]
-manifest={'store_build':build_number,'version':display_version,'kind':'development build; no GitHub release','debug_dumps':False,'dump_upload':False,'files':{},'source_sha256':{},'media_manifest_sha256':hashlib.sha256((ROOT/'3ds/romfs/media.json').read_bytes()).hexdigest()}
+manifest={'store_build':build_number,'version':display_version,'kind':'public build','debug_dumps':False,'dump_upload':False,'files':{},'source_sha256':{},'media_manifest_sha256':hashlib.sha256((ROOT/'3ds/romfs/media.json').read_bytes()).hexdigest()}
 for name in ['forge-store.cia','forge-store.3dsx']:
     shutil.copy2(source/name,dest/name)
     data=(dest/name).read_bytes()

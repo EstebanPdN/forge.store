@@ -2449,7 +2449,6 @@
           "#34336c",
           "#e7b546"
         ],
-        "heroIcon": "assets/community/starhaven/hero.webp",
         "cardIcon": true,
         "bg": "assets/community/starhaven/shot-1-top.webp",
         "bgPos": "50% 50%"

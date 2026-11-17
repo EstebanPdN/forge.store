@@ -145,7 +145,116 @@ def animations(data):
     return result
 
 
+def resource_table(data):
+    """DATA has 16 count/pointer pairs, including FogAnimations and Emitters."""
+    assert len(data)>=156 and data[20:24]==b'DATA', 'DATA resource table'
+    end=20+struct.unpack_from('<I',data,24)[0]
+    assert 156<=end<=len(data), 'DATA resource table bounds'
+    result=[]
+    for i in range(16):
+        field=28+i*8
+        count,relative=struct.unpack_from('<Ii',data,field)
+        if count==0:
+            assert relative==0, 'empty DATA resource has a pointer'
+        else:
+            target=field+4+relative
+            assert relative and 156<=target<=end-12, 'missing/overlapping DATA resource slot'
+            assert data[target:target+4]==b'DICT', 'DATA resource does not target a dictionary'
+            size,actual=struct.unpack_from('<II',data,target+4)
+            assert count==actual and size==12+16*(count+1), 'DATA resource count mismatch'
+            assert target+size<=end, 'DATA resource exceeds block'
+        result.append(count)
+    assert result[0]==1 and result[1]==3 and ((result[9],result[10]) in ((0,0),(1,0),(0,1))), 'unexpected model/texture/animation resources'
+    assert result[14:]==[0,0], 'unexpected fog animation or emitter'
+    return result
+
+
+def require_static(data):
+    """Production recovery policy after animated test 20 froze physical HOME."""
+    assert not any(resource_table(data)[9:]), 'Animated HOME banners are rejected for the recovery build'
+    return True
+
+
+def pose_animations(data):
+    def ptr(p):
+        v=struct.unpack_from('<i',data,p)[0];q=p+v
+        assert v and 0<=q<len(data), 'pose animation pointer'
+        return q
+    tracks={}
+    for p in range(0,len(data)-40,4):
+        if data[p:p+4]!=b'CANM':continue
+        group=ptr(p+12)
+        assert data[group:data.index(b'\0',group)]==b'MaterialAnimation', 'pose animation target'
+        duration=struct.unpack_from('<f',data,p+20)[0];assert duration==312, 'pose duration'
+        table=ptr(p+28);count=struct.unpack_from('<I',data,table+8)[0];assert count==27, 'pose member count'
+        for i in range(1,count+1):
+            m=ptr(table+12+16*i+12);flags=struct.unpack_from('<I',data,m)[0];n=ptr(m+4);name=data[n:data.index(b'\0',n)].decode()
+            assert name.startswith('Materials["Pose') and name.endswith('.MaterialColor.Constant0'), 'pose material binding'
+            assert struct.unpack_from('<I',data,m+16)[0]==6 and flags==7, 'RGBA pose flags'
+            curve=ptr(m+32);segment=ptr(curve+20)
+            assert struct.unpack_from('<I',data,curve+16)[0]==1, 'pose curve segment'
+            first,last,fmt,count=struct.unpack_from('<2fII',data,segment)
+            assert (first,last,fmt>>5,count)==(0.,312.,6,121), 'pose curve layout'
+            keys=[struct.unpack_from('<2f',data,segment+20+8*j) for j in range(count)]
+            assert all(math.isfinite(t) and math.isfinite(v) and 0<=v<=1 for t,v in keys), 'pose opacity bounds'
+            assert all(keys[j][0]<keys[j+1][0] for j in range(count-1)), 'pose key order'
+            assert abs(keys[0][1]-keys[-1][1])<1e-6, 'pose loop'
+            tracks[name]=[v for t,v in keys]
+    assert len(tracks)==27, 'missing pose animation'
+    for k in range(121):
+        weights=[tracks[f'Materials["Pose{p:02d}_0"].MaterialColor.Constant0'][k] for p in range(9)]
+        assert abs(math.prod(1-v for v in weights))<1e-6 and sum(v>1e-6 for v in weights)<=2, 'pose blend weights'
+        for p in range(9):
+            assert all(abs(tracks[f'Materials["Pose{p:02d}_{part}"].MaterialColor.Constant0'][k]-weights[p])<1e-6 for part in (1,2)), 'pose parts disagree'
+    return dict(poses=9,members=27,keys=121,loop_frames=312,source_over_coverage_opaque=True)
+
+
+def inspect_fresh(data,bones,tables,resources):
+    assert resources[9] in (0,1) and not any(resources[10:]), 'fresh banner has unexpected animation resources'
+    required={'ForgeBackdrop','ForgeWordmark','ForgeMedallion'}
+    assert required<=set(bones), 'missing fresh scene nodes'
+    for n in required:
+        b=bones[n]
+        assert b['mode']==5 and b['trs']==(1.,1.,1.,0.,0.,0.,0.,0.,0.), 'fresh rigid node must have identity rest and facing mode'
+    def ptr(p):
+        v=struct.unpack_from('<i',data,p)[0];q=p+v;assert v and 0<=q<len(data), 'fresh animation pointer';return q
+    def name(p):
+        q=ptr(p);return data[q:data.index(b'\0',q)].decode()
+    mesh_count=0
+    for p in range(0,len(data)-116,4):
+        if data[p:p+8]==b'\0\0\0\x01SOBJ':
+            assert name(p+112) in required, 'unbound fresh mesh';mesh_count+=1
+    assert mesh_count==6, 'fresh mesh count'
+    if resources[9]==0:
+        assert b'CANM' not in data, 'static banner contains animation'
+        return dict(profile='fresh-static-front',bytes=len(data),sha256=hashlib.sha256(data).hexdigest(),meshes=mesh_count,dictionaries=len(tables),resource_slots=16,rotation_tracks=0,translation_tracks=0,all_rendered_rest_transforms_identity=True,hardware_tested=False)
+    p=data.find(b'CANM');assert p>=0 and name(p+12)=='SkeletalAnimation'
+    assert struct.unpack_from('<f',data,p+20)[0]==240 and struct.unpack_from('<I',data,p+16)[0]==1, 'fresh animation loop'
+    table=ptr(p+28);assert struct.unpack_from('<I',data,table+8)[0]==1
+    m=ptr(table+40);flags=struct.unpack_from('<I',data,m)[0]
+    assert name(m+4)=='ForgeMedallion' and struct.unpack_from('<I',data,m+16)[0]==5
+    assert flags&0x400000 and struct.unpack_from('<I',data,m+44)[0]==0, 'Rotation W absence'
+    sparse=flags==0x7f0000
+    if sparse:
+        assert data[m+20:m+48]==bytes(28), 'sparse animation contains scale/rotation payload'
+    else:
+        assert flags&0xfc0==0xfc0, 'scales/rotations must be constant'
+        assert struct.unpack_from('<6f',data,m+20)==(1.,1.,1.,0.,0.,0.), 'fresh rotation or scale'
+    tracks=[]
+    for field in (m+48,m+52,m+56):
+        curve=ptr(field);assert struct.unpack_from('<I',data,curve+16)[0]==1
+        seg=ptr(curve+20);start,end,fmt,count=struct.unpack_from('<2fII',data,seg)
+        assert (start,end,fmt>>5,count)==(0.,240.,6,121), 'fresh translation curve'
+        keys=[struct.unpack_from('<2f',data,seg+20+8*i) for i in range(count)]
+        assert all(math.isfinite(t) and math.isfinite(v) and abs(v)<.25 for t,v in keys)
+        assert abs(keys[0][1]-keys[-1][1])<1e-6 and all(keys[i][0]<keys[i+1][0] for i in range(count-1)), 'fresh closed keys'
+        tracks.append(keys)
+    assert all([t for t,v in a]==[t for t,v in tracks[0]] for a in tracks)
+    return dict(profile='fresh-starfox-sparse' if sparse else 'fresh-starfox-translation',bytes=len(data),sha256=hashlib.sha256(data).hexdigest(),meshes=mesh_count,dictionaries=len(tables),resource_slots=16,rotation_tracks=0,translation_tracks=3,keys_per_track=121,loop_frames=240,all_rendered_rest_transforms_identity=True,hardware_tested=False)
+
+
 def inspect(data):
+    resources = resource_table(data)
     tables = dictionaries(data)
     def u32(p): return struct.unpack_from('<I', data, p)[0]
     def name(p):
@@ -169,7 +278,32 @@ def inspect(data):
             if own_name != key.decode():
                 continue
             assert p+216 <= len(data), 'bone bounds'
-            bones[key.decode()] = dict(mode=u32(p+212), trs=struct.unpack_from('<9f', data, p+32), parent=name(p+16+struct.unpack_from('<i',data,p+16)[0]) if struct.unpack_from('<i',data,p+16)[0] else '')
+            bones[key.decode()] = dict(offset=p, mode=u32(p+212), trs=struct.unpack_from('<9f', data, p+32), parent=name(p+16+struct.unpack_from('<i',data,p+16)[0]) if struct.unpack_from('<i',data,p+16)[0] else '')
+    if 'ForgeTurnCoin' in bones:
+        assert resources[9:]==[1]+[0]*6, 'continuous rigid turn resources'
+        coin=bones['ForgeTurnCoin'];assert coin['parent']=='COMMON' and coin['mode']==0
+        order=['Scene root','COMMON','ForgeTurnCoin','ForgeBackdrop','ForgeWordmark']
+        assert list(bones)==order, 'opaque-first bone dictionary order'
+        def linked(n,field):
+            p=bones[n]['offset']+field;rel=struct.unpack_from('<i',data,p)[0]
+            return name(p+rel) if rel else ''
+        assert linked('COMMON',20)=='ForgeTurnCoin' and linked('ForgeTurnCoin',28)=='ForgeBackdrop' and linked('ForgeBackdrop',28)=='ForgeWordmark' and linked('ForgeWordmark',28)=='', 'opaque-first hierarchy links'
+        assert all(abs(x-y)<1e-5 for x,y in zip(coin['trs'],(1.,1.,1.,0.,0.,0.,0.,3.8,0.))), 'central vertical axis'
+        for n in ('ForgeBackdrop','ForgeWordmark'):
+            b=bones[n];assert b['parent']=='COMMON' and b['mode']==5 and b['trs']==(1.,1.,1.,0.,0.,0.,0.,0.,0.)
+        def ptr(p):
+            q=p+struct.unpack_from('<i',data,p)[0];assert 0<=q<len(data);return q
+        p=data.find(b'CANM');assert name(p+12)=='SkeletalAnimation' and u32(p+16)==1 and struct.unpack_from('<f',data,p+20)[0]==270.
+        table=ptr(p+28);assert u32(table+8)==1;m=ptr(table+40)
+        assert name(m+4)=='ForgeTurnCoin' and u32(m)==0x400a00 and u32(m+16)==5, 'Minish-style continuous transform'
+        assert u32(m+32)==u32(m+40)==u32(m+44)==0, 'no X/Z/W rotation'
+        for field,values in ((20,(1.,1.)),(24,(1.,1.)),(28,(1.,1.)),(36,(0.,math.tau)),(48,(0.,0.)),(52,(3.8,3.8)),(56,(0.,0.))):
+            c=ptr(m+field);assert struct.unpack_from('<2f',data,c)==(0.,270.) and u32(c+16)==1
+            seg=ptr(c+20);assert struct.unpack_from('<2fII',data,seg)==(0.,270.,196,2)
+            t0,v0,t1,v1=struct.unpack_from('<4f',data,seg+20);assert (t0,t1)==(0.,270.) and abs(v0-values[0])<1e-6 and abs(v1-values[1])<1e-6
+        return dict(profile='diagnostic-continuous-central-3d',bytes=len(data),sha256=hashlib.sha256(data).hexdigest(),meshes=7,triangles=324,rotation_tracks=1,constant_pivot_translation_curves=3,scale_curves=3,loop_frames=270,centered_above_wordmark=True,hardware_tested=False)
+    if 'ForgeMedallion' in bones:
+        return inspect_fresh(data,bones,tables,resources)
     assert bones.get('Medallion',{}).get('parent') == 'Scene root', 'use a direct rigid mesh node'
     meshes = []
     for p in range(0, len(data)-116, 4):
@@ -178,16 +312,17 @@ def inspect(data):
         target = name(p+112)
         assert target in bones, ('mesh has no resolved bone', target, hex(p))
         b = bones[target]
-        assert b['mode'] == (0 if target == 'Medallion' else 5), ('unexpected billboard mode', target, b['mode'])
-        expected=(1.,1.,1.,0.,0.,0.,-8.61,1.,.735) if target=='Medallion' else (1.,1.,1.,0.,0.,0.,0.,0.,0.)
+        assert b['mode'] == (0 if target == 'Medallion' and resources[9] else 5), ('unexpected billboard mode', target, b['mode'])
+        expected=(1.,1.,1.,0.,0.,0.,-8.61,1.,.735) if target=='Medallion' and resources[9] else (1.,1.,1.,0.,0.,0.,0.,0.,0.)
         assert all(abs(a-b)<1e-5 for a,b in zip(b['trs'],expected)), ('unexpected rest transform',target,b['trs'])
         meshes.append(target)
     assert meshes, 'no meshes'
     return dict(bytes=len(data), sha256=hashlib.sha256(data).hexdigest(),
-                dictionaries=len(tables), dictionary_keys=sum(len(t)-1 for t in tables),
+                resource_slots=len(resources), dictionaries=len(tables), dictionary_keys=sum(len(t)-1 for t in tables),
                 meshes=len(meshes), rendered_bones=sorted(set(meshes)),
                 skeletal_animations=animations(data),
-                all_mesh_links_resolve=True, medallion_billboard_off=True,
+                material_poses=pose_animations(data) if resources[10] else None,
+                all_mesh_links_resolve=True, medallion_billboard_off=bool(resources[9]),
                 medallion_local_pivot=True, hardware_tested=False)
 
 
@@ -302,11 +437,13 @@ if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('path', type=Path)
     ap.add_argument('--cia',type=Path,help='Verify ExeFS hashes and the banner actually included in this CIA')
+    ap.add_argument('--require-static',action='store_true',help='Reject all animation resources for production recovery')
     a = ap.parse_args()
     data = a.path.read_bytes()
     audio=None
     if data[:4] == b'CBMD':
         data, sound = unpack_banner(data);audio,_=audio_info(sound)
+    if a.require_static:require_static(data)
     report=inspect(data);report['textures']=textures(data);report['audio']=audio
     if a.cia:report['package']=verify_cia(a.cia,a.path.read_bytes())
     print(json.dumps(report, indent=2))

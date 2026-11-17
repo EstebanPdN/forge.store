@@ -3,34 +3,42 @@
     "app": "starhaven",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/cia/icon.png",
-    "sha256": "7ddf2fb3980fc0d84239588f3cc64df77a860b47f70a175b63d30e847e3866bb",
+    "sha256": "4defa1929f4fcacbaba9a57dfe8dbbbc0e3d09414a61141430dd22b098a5b079",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/starhaven/icon.webp"
+    "output": "assets/community/starhaven/icon.webp",
+    "originalSourceSha256": "7ddf2fb3980fc0d84239588f3cc64df77a860b47f70a175b63d30e847e3866bb",
+    "derivation": "AI-assisted restoration of the original 48px icon (Codex image generation); direction in docs/ART-DIRECTION.md."
   },
   {
     "app": "mkwii",
     "kind": "icon",
-    "url": "https://raw.githubusercontent.com/Epic0522/MarioKartWii-3DS-Redux/main/tools/release/artwork/icon.png",
-    "sha256": "3c10edeca7338906e006345d9f8516104d2fca79a481ce87c0e0e54ad826947d",
+    "url": "https://www.mariowiki.com/File:Mario_Artwork_-_Mario_Kart_Wii.png",
+    "sha256": "18456b43c99690819da8ccd3cd8413132e4b5ff37cd35a05945d4db91e9d9ae7",
     "size": [
-      64,
-      64
+      512,
+      512
     ],
-    "output": "assets/community/mkwii/icon.webp"
+    "output": "assets/community/mkwii/icon.webp",
+    "originalSourceSha256": "3c10edeca7338906e006345d9f8516104d2fca79a481ce87c0e0e54ad826947d",
+    "originalUrl": "https://raw.githubusercontent.com/Epic0522/MarioKartWii-3DS-Redux/main/tools/release/artwork/icon.png",
+    "derivation": "Square crop of the official 2546×2168 Mario Kart Wii Mario artwork (same pose as the repository icon) over a sky-blue gradient with a soft shadow."
   },
   {
     "app": "gd3ds",
     "kind": "icon",
-    "url": "https://raw.githubusercontent.com/AleFunky/gd3ds/master/resources/icon.png",
-    "sha256": "9cc8c2fea374f5a95115f18e609a1357d3f1e470af6adba26e7f463d1a925c2b",
+    "url": "https://apps.apple.com/app/id625334537",
+    "sha256": "dca8365c03e6115248218b2e368268ba0152bd6ecda8e39587b061a66d83994c",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/gd3ds/icon.webp"
+    "output": "assets/community/gd3ds/icon.webp",
+    "originalSourceSha256": "9cc8c2fea374f5a95115f18e609a1357d3f1e470af6adba26e7f463d1a925c2b",
+    "originalUrl": "https://raw.githubusercontent.com/AleFunky/gd3ds/master/resources/icon.png",
+    "derivation": "Official 1024×1024 Geometry Dash App Store icon, 10 px edge trim, resized to 512×512."
   },
   {
     "app": "ctrquake",
@@ -47,12 +55,14 @@
     "app": "snes9x",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/resources/icon.png",
-    "sha256": "d082c76277840e23478f7cf9f501784563c8c8c152b839de276c7f49691814de",
+    "sha256": "3e3962c40cc8ff77de5040db4bd7c18665e20eea4d18ce59024070cdfc6a3888",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/snes9x/icon.webp"
+    "output": "assets/community/snes9x/icon.webp",
+    "originalSourceSha256": "d082c76277840e23478f7cf9f501784563c8c8c152b839de276c7f49691814de",
+    "derivation": "AI-assisted restoration of the original 48px icon (Codex image generation); direction in docs/ART-DIRECTION.md."
   },
   {
     "app": "daedalus",
@@ -97,34 +107,40 @@
     "app": "universal",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/Universal-Team/Universal-Updater/master/app/icon.png",
-    "sha256": "5c871a14a07ed93628e6dcc4c95ed63992f011424fb49d3fbf8416033cd28683",
+    "sha256": "db836589d0a10a0ae09d63cf1fbf22687e9cc3db5eea1930241417aa3c6da48f",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/universal/icon.webp"
+    "output": "assets/community/universal/icon.webp",
+    "originalSourceSha256": "5c871a14a07ed93628e6dcc4c95ed63992f011424fb49d3fbf8416033cd28683",
+    "derivation": "AI-assisted restoration of the original 48px icon (Codex image generation); direction in docs/ART-DIRECTION.md."
   },
   {
     "app": "anemone",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/astronautlevel2/Anemone3DS/master/meta/icon.png",
-    "sha256": "d3850723dae020ee1e7d6336d908dd5652e74dc412f61d6553453ae05cf1a665",
+    "sha256": "f07f4d6b7d8beb2dc8fe04ceb4f4c0d33d96dd561a9724ad0fc61effe7404b04",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/anemone/icon.webp"
+    "output": "assets/community/anemone/icon.webp",
+    "originalSourceSha256": "d3850723dae020ee1e7d6336d908dd5652e74dc412f61d6553453ae05cf1a665",
+    "derivation": "AI-assisted restoration of the original 48px icon (Codex image generation); direction in docs/ART-DIRECTION.md."
   },
   {
     "app": "recorder",
     "kind": "icon",
     "url": "https://raw.githubusercontent.com/BolgarMaxym97/3ds-recorder/main/app/assets/icon.png",
-    "sha256": "2cab6e29ebb94e4906a4569880018d4a81678805cb93c2ef269614bda6e9fc7b",
+    "sha256": "1145550d44c325df28643d61cb19826a6d3e096bc2c243e90145442f8e7f1757",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
-    "output": "assets/community/recorder/icon.webp"
+    "output": "assets/community/recorder/icon.webp",
+    "originalSourceSha256": "2cab6e29ebb94e4906a4569880018d4a81678805cb93c2ef269614bda6e9fc7b",
+    "derivation": "AI-assisted restoration of the original 48px icon (Codex image generation); direction in docs/ART-DIRECTION.md."
   },
   {
     "app": "starhaven",

@@ -62,3 +62,25 @@ The original mGBA handheld icon stays unchanged. The separate wordmark is saved 
 > High-resolution clean vector-like edges; preserve the intentional square-letter style
 > without blurry pixels. Transparent background. No handheld, no screen,
 > no scattered background squares, no extra words. Wide tightly framed standalone wordmark.
+
+## Community icon refresh — 1.0
+
+Seven community icons now use 512×512 sources instead of 48–64px originals. The native
+packers sample them once into the existing 20/32/40/44/48/64px atlases, so texture sizes and
+memory budgets stay the same. Exact sources and hashes are in `assets/community/sources.json`.
+
+AI-assisted restorations with Codex image generation, using the existing icon as reference.
+Shared direction: faithful remake at 512×512, full-bleed square, no rounded corners or
+margins (the store masks them), bold shapes that stay readable at 20–64px, no added text.
+
+- `snes9x`: grey SNES-style controller on a dark background with the red/white “3DS” lettering.
+- `recorder`: dark tile with a two-screen outline, red record dot above and grey pill below.
+- `universal`: blue isometric down-arrow on navy, as in the Universal-Updater icon.
+- `anemone`: bold white “A” on a blue sky with clouds.
+- `starhaven`: polished faceted gold star on an indigo-purple night sky with small sparkles.
+
+Higher-resolution originals instead of restorations:
+
+- `mkwii`: square crop of the official Mario Kart Wii Mario artwork (2546×2168), the same
+  pose as the repository icon, over a sky-blue gradient.
+- `gd3ds`: the official Geometry Dash App Store icon (1024×1024), trimmed and resized.

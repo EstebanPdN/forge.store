@@ -14,7 +14,7 @@ OUT="$D/build"
 OBJ="$OUT/obj"
 mkdir -p "$OBJ"
 cd "$D"
-python3 "$D/tools/home_banner_validate.py" meta/banner.cgfx > "$OUT/home-banner-model.json"
+python3 "$D/tools/home_banner_validate.py" meta/banner.cgfx --require-static > "$OUT/home-banner-model.json"
 if [[ $1 == --pack ]]; then
   tools/.venv/bin/python -I tools/pack.py "$P"
 fi
@@ -66,6 +66,6 @@ for o in $OBJS; do [[ -f "$o" ]] || { echo "missing $o"; exit 1; }; done
   -f visible,allow3d,recordusage,extendedbanner -i meta/icon.png -o "$OUT/icon.icn" >/dev/null
 (cd "$D" && "$T/makerom" -f cia -o "$OUT/forge-store.cia" -elf "$OUT/forge-store.elf" -rsf forge-store.rsf \
   -icon "$OUT/icon.icn" -banner "$OUT/banner.bnr" -target t)
-python3 "$D/tools/home_banner_validate.py" "$OUT/banner.bnr" --cia "$OUT/forge-store.cia" > "$OUT/home-banner-package.json"
+python3 "$D/tools/home_banner_validate.py" "$OUT/banner.bnr" --cia "$OUT/forge-store.cia" --require-static > "$OUT/home-banner-package.json"
 python3 "$D/tools/build-manifest.py"
 ls -la "$OUT/forge-store.3dsx" "$OUT/forge-store.cia"

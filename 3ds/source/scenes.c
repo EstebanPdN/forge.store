@@ -2249,6 +2249,40 @@ static int ij_state_seen;
 static json_t *install_missing_req;
 static float install_check_y=-1000;
 static float ilog_scroll, ilog_target;
+static float install_open_t, install_shown_p, install_step_t;
+static int install_step_seen;
+static bool install_live; // test.txt fixture only: plays a whole installation in real time
+static float install_live_scale = 1;
+static void install_live_tick(void) {
+    static const float dur9[9] = {.45f, .45f, .45f, 4.6f, .55f, .9f, .4f, .4f, .4f}, dur7[7] = {.35f, .3f, 2.3f, .4f, .55f, .2f, .25f};
+    const float *dur = ij->nsteps == 7 ? dur7 : dur9;
+    const int dl = ij->nsteps == 7 ? 2 : 3;
+    float t = (NOW - install_open_t - .7f) / install_live_scale;
+    if (t < 0) return;
+    int cur = 0;
+    while (cur < ij->nsteps && t >= dur[cur]) t -= dur[cur++];
+    if (cur >= ij->nsteps) {
+        for (int i = 0; i < ij->nsteps; i++) ij->steps[i].state = STEP_DONE, ij->steps[i].progress = 1;
+        ij->cur = ij->nsteps; ij->done_bytes = ij->total_bytes; ij->speed = 0; ij->state = JOB_DONE; install_live = false;
+        return;
+    }
+    float k = clampf(t / dur[cur], 0, 1);
+    for (int i = 0; i < ij->nsteps; i++) {
+        ij->steps[i].state = i < cur ? STEP_DONE : i == cur ? STEP_ACTIVE : STEP_PENDING;
+        ij->steps[i].progress = i < cur ? 1 : i == cur ? k : 0;
+    }
+    ij->cur = cur;
+    float bytes = cur > dl ? 1 : cur == dl ? k : 0;
+    ij->done_bytes = (u64)(ij->total_bytes * bytes);
+    ij->speed = cur == dl ? (ij->total_bytes / (dur[dl] * install_live_scale)) * (1 + .06f * sinf(NOW * 3)) : 0;
+}
+static u32 mix_rgb(u32 a, u32 b, float t) {
+    t = clampf(t, 0, 1);
+    u32 out = 0;
+    for (int sh = 0; sh <= 16; sh += 8)
+        out |= (u32)lroundf(lerpf((a >> sh) & 255, (b >> sh) & 255, t)) << sh;
+    return out;
+}
 static bool ilog_manual;
 static float install_row_h(const JobStep *s) {
     float h=text_wrap_h_style(s->label,11,600,242)+6;
@@ -2283,12 +2317,14 @@ static void open_install(Job *j) {
     install_parent = scene;
     done_t = -1;
     ij_state_seen = -1; ilog_scroll=ilog_target=0; ilog_manual=false;
+    install_open_t = NOW; install_shown_p = job_progress(j); install_step_seen = j->cur; install_step_t = NOW - 1;
     next_scene = SC_INSTALL;
     trans_phase = 1;
     trans_t = NOW;
 }
 
 static void install_update(void) {
+    if (install_live) install_live_tick();
     bool running = ij->state == JOB_QUEUED || ij->state == JOB_RUNNING;
     if(IN.repeat & (KEY_UP|KEY_DOWN)) { ilog_manual=true; ilog_target+=IN.repeat&KEY_DOWN?34:-34; }
     if(IN.touching && !IN.touch_down && IN.start_y>=36 && IN.start_y<200) {
@@ -2303,6 +2339,11 @@ static void install_update(void) {
     }
     ilog_target=clampf(ilog_target,0,fmaxf(0,total-view));
     ilog_scroll=lerpf(ilog_scroll,ilog_target,1-expf(-DT*18));
+    install_shown_p = lerpf(install_shown_p, job_progress(ij), 1 - expf(-DT * 7));
+    if (ij->cur != install_step_seen) {
+        if (running && ij->cur > install_step_seen) sfx("move");
+        install_step_seen = ij->cur; install_step_t = NOW;
+    }
     if (!running && done_t < 0) {
         install_missing_req=ij->warnings&&!ij->uninstall?app_missing_requirement_view(ij->app):NULL;
         done_t = NOW;
@@ -2310,7 +2351,7 @@ static void install_update(void) {
         else if (ij->state == JOB_DONE) {
             sfx("anvil");
             sfx("complete");
-            fx_burst(200, 96, 90);
+            fx_burst(83, 120, 90);
         } else
             sfx("error");
     }
@@ -2340,7 +2381,6 @@ static void install_top(float sa) {
     App *a = ij->app;
     if(sheet_ok(&install_backdrop))draw_img(sheet_img(&install_backdrop,0),0,0,1,1,sa);
     else {if(sheet_ok(&a->bg))draw_img(sheet_img(&a->bg,0),-20,-12,1.1f,1.1f,sa);rect(0,0,TOP_W,SCR_H,C(0,.55f*sa));}
-    float p = job_progress(ij);
     fx_draw(0, sa);
     char title[96];
     bool done = ij->state == JOB_DONE, fail = ij->state == JOB_FAILED || ij->state == JOB_CANCELLED;
@@ -2353,35 +2393,100 @@ static void install_top(float sa) {
     else
         snprintf(title, sizeof title, "%s %s", T("install.title"), a->title);
     float chips_w=0;const char *chiplabels[]={ij->tag,ij->cia?"CIA":"3DSX",T(ij->experimental?"channel.experimental":"channel.stable")};
-    for(int i=0;i<3;i++)chips_w+=text_style_w(chiplabels[i],9,600,0)+13;
-    text_fit_style(title,10,36,13,700,fmaxf(120,372-chips_w),C(0xffffff,sa));
-    float cxchips=390-chips_w;for(int i=0;i<3;i++)cxchips+=chip(cxchips,36,chiplabels[i],NULL,C(0xffffff,1),C(0,.45f),sa)+3;
-    // Ring
-    float cx = 200 + EYE * 2, cy = 110;
-    const float radius = 58;
-    ring(cx, cy, radius, 6, 0, 2 * M_PI, C(0xffffff, .14f * sa));
-    u32 rc = done ? (ij->warnings ? 0xf2b632 : 0x5cc29f) : fail ? 0x777777 : 0xff8a3c;
-    if (p > .005f)
-        ring(cx, cy, radius, 6, -M_PI / 2, -M_PI / 2 + 2 * M_PI * p, C(rc, sa));
-    float pop = done ? 1 + .18f * sinf(clampf((NOW - done_t) / .7f, 0, 1) * M_PI) : 1;
-    rrect(cx - 34 * pop, cy - 34 * pop, 68 * pop, 68 * pop, 15, C(0xffffff, .92f * sa));
-    icon_at(a, cx - 32 * pop, cy - 32 * pop, 64, pop, sa);
+    for(int i=0;i<3;i++)chips_w+=chip_width(chiplabels[i],NULL);
+    // Title and chips sit under the card, on the same left/right lines as the status pills.
+    float title_in = ease_out(span(NOW, install_open_t + .3f, .4f)), ty = 213 + roundf((1 - title_in) * 8);
+    text_fit_style(title,11,ty,14,800,fmaxf(120,373-chips_w),C(0xffffff,sa*title_in));
+    float cxchips=392-chips_w-6;for(int i=0;i<3;i++)cxchips+=chip(cxchips,ty+1,chiplabels[i],NULL,C(0xffffff,1),C(0,.45f),sa*title_in)+3;
+    // Progress card: ring and icon on the left, percentage, current step and speed on the right.
+    enum { CARD_X=8, CARD_Y=36, CARD_W=384, CARD_H=168, CARD_SPLIT=150 };
+    float enter = ease_out(span(NOW, install_open_t, .5f));
+    bool failed = ij->state == JOB_FAILED;
+    float shake = failed && done_t >= 0 ? roundf(sinf((NOW - done_t) * 42) * 4 * (1 - span(NOW, done_t, .5f))) : 0;
+    float ox = shake, oy = roundf((1 - enter) * 16), ca = sa * enter;
+    float since_done = done_t >= 0 ? NOW - done_t : 99;
+    float flash = done && !ij->uninstall ? 1 - ease_out(since_done / .9f) : 0;
+    rrect(CARD_X+ox,CARD_Y+oy,CARD_W,CARD_H,12,C(0x120a04,.46f*ca));
+    u32 edge = done ? mix_rgb(0xffe0a6, ij->warnings ? 0xf2b632 : 0x5cc29f, flash) : failed ? mix_rgb(0xffe0a6, 0xff7a6e, 1 - span(NOW, done_t, .8f)) : 0xffe0a6;
+    rrect_outline(CARD_X+ox,CARD_Y+oy,CARD_W,CARD_H,12,1,C(edge,(.30f+.5f*flash)*ca));
+    // Shine sweep across the card when an installation finishes.
+    if (done && !ij->uninstall && since_done < 1.1f) {
+        float sx = CARD_X - 60 + ease_inout(since_done / 1.1f) * (CARD_W + 120);
+        scissor(TOP_W, CARD_X + ox, CARD_Y + oy, CARD_W, CARD_H);
+        // Soft band: 2 px columns with a bell-shaped opacity, slanted by offsetting each row group.
+        for (int i = -12; i <= 12; i++) {
+            float w = expf(-(i * i) / 40.0f) * .13f * ca;
+            for (int r = 0; r < CARD_H; r += 8) rect(sx + i * 2 + (CARD_H - r) * .35f, CARD_Y + oy + r, 2, 8, C(0xffffff, w));
+        }
+        scissor_off();
+    }
+    float shown = clampf(done ? fmaxf(install_shown_p, 1) : install_shown_p, 0, 1);
+    float cx = CARD_X + 75 + EYE * 2 + ox, cy = CARD_Y + CARD_H / 2 + oy;
+    const float radius = 56;
+    float ring_in = ease_out(span(NOW, install_open_t + .08f, .55f));
+    ring(cx, cy, radius, 7, 0, 2 * M_PI, C(0xffffff, .16f * ca));
+    u32 gold = 0xffbe3b;
+    u32 rc = done ? mix_rgb(gold, ij->warnings ? 0xf2b632 : 0x5cc29f, span(NOW, done_t, .45f)) : fail ? 0x777777 : gold;
+    float sweep = 2 * M_PI * shown * ring_in;
+    if (ij->state == JOB_QUEUED || (ij->state == JOB_RUNNING && shown < .005f)) {
+        float h = NOW * 4.2f;
+        ring(cx, cy, radius, 7, h, h + 1.3f, C(gold, .75f * ca));
+    } else if (sweep > .01f) {
+        ring(cx, cy, radius, 7, -M_PI / 2, -M_PI / 2 + sweep, C(rc, ca));
+        if (ij->state == JOB_RUNNING) {
+            // Glowing head that breathes while bytes keep arriving.
+            float ang = -M_PI / 2 + sweep, hx = cx + cosf(ang) * radius, hy = cy + sinf(ang) * radius;
+            float pulse = .5f + .5f * sinf(NOW * 6);
+            circle(hx, hy, 7 + 2 * pulse, C(gold, (.18f + .12f * pulse) * ca));
+            circle(hx, hy, 4.5f, C(0xfff1c8, ca));
+        }
+    }
+    if (done) {
+        // Mint halo that expands out of the ring once.
+        float k = span(NOW, done_t, .7f);
+        if (k < 1) ring(cx, cy, radius + 4 + 18 * ease_out(k), 3 * (1 - k) + .5f, 0, 2 * M_PI, C(rc, .6f * (1 - k) * ca));
+    }
+    float pop = done ? 1 + .14f * sinf(clampf(since_done / .7f, 0, 1) * M_PI) : 1;
+    float icon_in = ease_back(span(NOW, install_open_t + .12f, .45f));
+    if (!done) pop = icon_in < 1 ? fmaxf(.01f, icon_in) : 1;
+    rrect(cx - 36 * pop, cy - 36 * pop, 72 * pop, 72 * pop, 16 * pop, C(0xffffff, .94f * ca));
+    icon_at(a, cx - 32 * pop, cy - 32 * pop, 64, pop, ca);
     if (done) {
         float k = ease_back(span(NOW, done_t + .16f, .52f));
-        circle(cx + 32, cy + 32, 11 * k, C(0xffffff, sa));
-        circle(cx + 32, cy + 32, 9 * k, C(ij->warnings ? AMBER : MINT, sa));
-        draw_icon(ij->warnings ? "warn" : "check", cx + 32, cy + 32, 12 * k, C(0xffffff, sa));
+        circle(cx + 34, cy + 34, 11 * k, C(0xffffff, ca));
+        circle(cx + 34, cy + 34, 9 * k, C(ij->warnings ? AMBER : MINT, ca));
+        draw_icon(ij->warnings ? "warn" : "check", cx + 34, cy + 34, 12 * k, C(0xffffff, ca));
+    } else if (failed) {
+        float k = ease_back(span(NOW, done_t + .1f, .45f));
+        circle(cx + 34, cy + 34, 11 * k, C(0xffffff, ca));
+        circle(cx + 34, cy + 34, 9 * k, C(DANGER, ca));
+        draw_icon("close", cx + 34, cy + 34, 10 * k, C(0xffffff, ca));
     }
+    float div_in = ease_out(span(NOW, install_open_t + .14f, .45f));
+    float dh = (CARD_H - 36) * div_in;
+    rect(CARD_X + CARD_SPLIT + ox, CARD_Y + CARD_H / 2 - dh / 2 + oy, 1, dh, C(0xffe0a6, .22f * ca));
+    const float rx0 = CARD_X + CARD_SPLIT + 18 + ox, rw = CARD_X + CARD_W - 16 - (CARD_X + CARD_SPLIT + 18), my = CARD_Y + CARD_H / 2 + oy;
+    // Right column items slide in one after another.
+    float e0 = ease_out(span(NOW, install_open_t + .14f, .4f)), e1 = ease_out(span(NOW, install_open_t + .22f, .4f)),
+          e2 = ease_out(span(NOW, install_open_t + .30f, .4f)), e3 = ease_out(span(NOW, install_open_t + .38f, .4f));
     char pct[16];
-    snprintf(pct, sizeof pct, "%d %%", (int)roundf(p * 100));
-    text_ex(pct,200,178,22, 800, 1, -.5f, C(0xffffff, sa), AL_CENTER);
+    snprintf(pct, sizeof pct, "%d %%", (int)roundf(shown * 100));
+    u32 pct_col = done ? mix_rgb(0xffffff, 0xbff0dc, flash) : 0xffffff;
+    text_ex(pct, roundf(rx0 + (1 - e0) * 12), my - 50, 30, 800, FONT_BRAND, -.5f, C(pct_col, ca * e0), AL_LEFT);
     JobStep *st = ij->cur < ij->nsteps ? &ij->steps[ij->cur] : NULL;
+    float step_k = ease_out(span(NOW, install_step_t, .32f));
+    float lx = roundf(rx0 + (1 - e1) * 12 + (1 - step_k) * 8), la = ca * e1 * step_k;
+    const float label_y = my - 6;
     if (fail && ij->error[0])
-        text_fit(ij->error,10,204,10,380,C(0xffb0a8,sa));
-    else if (st && !done)
-        text_fit_style(st->label,20,205,10,800,360,C(0xffffff,sa));
+        text_fit(ij->error, lx, label_y, 11, rw, C(0xffb0a8, la));
+    else if (done)
+        text_fit_style(a->title, lx, label_y, 11, 700, rw, C(0xffffff, la));
+    else if (st)
+        text_fit_style(st->label, lx, label_y, 11, 700, rw, C(0xffffff, la));
+    rect(rx0, my + 18, roundf(rw * e2), 1, C(0xffe0a6, .22f * ca));
     char line[96], a1[24], a2[24];
-    if (st && st->bytes && ij->state == JOB_RUNNING && ij->speed > 1) {
+    bool speed = st && st->bytes && ij->state == JOB_RUNNING && ij->speed > 1;
+    if (speed) {
         fmt_size(a1, sizeof a1, ij->speed);
         float eta = (ij->total_bytes - ij->done_bytes) / fmaxf(ij->speed, 1);
         snprintf(a2, sizeof a2, eta < 60 ? "%.0f s" : "%.0f min", eta < 60 ? eta : eta / 60);
@@ -2391,7 +2496,13 @@ static void install_top(float sa) {
         fmt_size(a2, sizeof a2, (double)ij->total_bytes);
         snprintf(line, sizeof line, "%s / %s", a1, a2);
     }
-    if(!ij->uninstall)text_style(line,200,221,10,700,0,C(0xffffff,.9f*sa),AL_CENTER);
+    if (!ij->uninstall) {
+        float sx3 = roundf(rx0 + (1 - e3) * 12);
+        // The download arrow nudges down while transferring, like the Downloads list.
+        float bob = speed || ij->state == JOB_RUNNING ? roundf(1.5f * sinf(NOW * 5)) : 0;
+        draw_icon(done ? "check" : fail ? "close" : "download", sx3 + 6, my + 37 + bob, 12, C(done ? 0xbff0dc : 0xffffff, .92f * ca * e3));
+        text_fit_style(line, sx3 + 19, my + 30, 11, 700, rw - 19, C(0xffffff, .92f * ca * e3));
+    }
     if (done) {
         float f = 1 - ease_out(span(NOW, done_t, .7f));
         if (f > 0)
@@ -3414,7 +3525,25 @@ void scenes_test_view(const char *name) {
         if(fixture.state==JOB_FAILED)snprintf(fixture.error,sizeof fixture.error,"HTTP 404: asset not found");
         for(int i=0;i<9;i++){char key[80];snprintf(key,sizeof key,"install.step.%s",keys[i]);tvars(fixture.steps[i].label,sizeof fixture.steps[i].label,T(key),vars[i],values[i],NULL,NULL);fixture.weight[i]=1;fixture.steps[i].bytes=i==3;fixture.steps[i].state=i<fixture.cur?STEP_DONE:i==fixture.cur?(fixture.state==JOB_FAILED?STEP_ERROR:fixture.state==JOB_RUNNING?STEP_ACTIVE:STEP_PENDING):STEP_PENDING;fixture.steps[i].progress=i<fixture.cur?1:i==fixture.cur?.6f:0;}
         if(fixture.warnings)fixture.steps[7].state=STEP_WARN;
-        open_install(&fixture);scene=SC_INSTALL;trans_phase=0;done_t=NOW-5;return;
+        install_live=!strncmp(name,"install-live",12);install_live_scale=1;
+        if(install_live&&name[12]==':'){
+            char id[64]={0};float secs=0;sscanf(name+13,"%63[^:]:%f",id,&secs);
+            for(int i=0;i<NAPPS;i++)if(!strcmp(APPS[i].id,id)){fixture.app=&APPS[i];break;}
+            fixture.release=app_release(fixture.app,false);snprintf(fixture.tag,sizeof fixture.tag,"%s",json_string_value(json_object_get(fixture.release,"tag")));
+            json_t *as=app_asset(fixture.app,fixture.release,"cia");const char *an=json_string_value(json_object_get(as,"name"));
+            char folder[96];const char *slash=strrchr(fixture.app->repo,'/');snprintf(folder,sizeof folder,"/3ds/%s/",slash?slash+1:fixture.app->id);
+            char *suffix=strstr(folder,"-3ds/");if(suffix)strcpy(suffix,"/");
+            const char *k7[]={"resolve","mkdir","download","verify","installCia","delete","dsp"},*v7[]={"repo","path","name",NULL,NULL,"name",NULL};
+            const char *x7[]={fixture.app->repo,folder,an,NULL,NULL,an,NULL};
+            fixture.nsteps=7;fixture.wtotal=0;
+            for(int i=0;i<7;i++){char key[80];snprintf(key,sizeof key,"install.step.%s",k7[i]);tvars(fixture.steps[i].label,sizeof fixture.steps[i].label,T(key),v7[i],x7[i],NULL,NULL);fixture.steps[i].bytes=i==2;fixture.weight[i]=i==2?8:1;fixture.wtotal+=fixture.weight[i];}
+            fixture.total_bytes=json_integer_value(json_object_get(as,"size"));
+            if(secs>0)install_live_scale=secs/4.35f;
+        }
+        if(install_live){fixture.state=JOB_RUNNING;fixture.cur=0;fixture.done_bytes=0;fixture.warnings=false;
+            if(fixture.nsteps==9){fixture.weight[3]=10;fixture.wtotal=18;}
+            for(int i=0;i<fixture.nsteps;i++){fixture.steps[i].state=i?STEP_PENDING:STEP_ACTIVE;fixture.steps[i].progress=0;}}
+        open_install(&fixture);scene=SC_INSTALL;trans_phase=0;done_t=install_live?-1:NOW-5;return;
     }
     char fixture_id[136]={0};const char *fixture_tab=NULL;
     if(!strncmp(name,"app:",4)){const char *sep=strrchr(name+4,':');if(sep&&sep-name-4>0&&sep-name-4<(int)sizeof fixture_id){memcpy(fixture_id,name+4,sep-name-4);fixture_tab=sep+1;}}

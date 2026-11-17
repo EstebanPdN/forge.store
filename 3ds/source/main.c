@@ -277,6 +277,7 @@ static void perf_draw(void) {
 // One command per line, "frame:command": kA (press a key: A B X Y L R S=start E=select U D
 // I=left T=right), t160,62 (tap), h160,62,30 (hold), d10,100,300,100,20 (drag), sname
 // (save both screens to shots/name.raw), q (quit).
+// c fixes the clock at 1/60 s per frame; rname,120 saves shots/name0000..0119 on consecutive frames.
 // b82,0 overrides battery percent/charging for visual review; b-1 restores hardware.
 typedef struct {
     int frame;
@@ -288,6 +289,7 @@ static Cmd cmds[256];
 static int ncmds;
 static char shot_name[40];
 static bool quit_req;
+static bool test_fixed_clock;
 static void update_test_view(int state);
 
 static void test_load(void) {
@@ -302,6 +304,7 @@ static void test_load(void) {
         c->frame = atoi(line);
         c->cmd = colon[1];
         if (c->cmd == 'k' || c->cmd == 's' || c->cmd == 'v') sscanf(colon + 2, "%39s", c->name);
+        else if (c->cmd == 'r') sscanf(colon + 2, "%31[^,],%d", c->name, &c->a[0]);
         else sscanf(colon + 2, "%d,%d,%d,%d,%d", &c->a[0], &c->a[1], &c->a[2], &c->a[3], &c->a[4]);
         ncmds++;
     }
@@ -367,6 +370,12 @@ static u32 script_apply(int frame, bool *touch, int *tx, int *ty) {
                 break;
             case 's':
                 if (f == 0) snprintf(shot_name, sizeof shot_name, "%s", c->name);
+                break;
+            case 'r':
+                if (f >= 0 && f < c->a[0]) snprintf(shot_name, sizeof shot_name, "%s%04d", c->name, f);
+                break;
+            case 'c':
+                if (f == 0) test_fixed_clock = true;
                 break;
             case 'q':
                 if (f >= 0) quit_req = true;
@@ -699,7 +708,7 @@ int main(int argc, char **argv) {
         u64 now = svcGetSystemTick();
         float real_dt = (now - last) / (float)SYSCLOCK_ARM11;
         last = now;
-        DT = clampf(real_dt, 0, 1 / 20.0f);  // long pauses (keyboard, HOME) don't skip animations
+        DT = test_fixed_clock ? 1 / 60.0f : clampf(real_dt, 0, 1 / 20.0f);  // long pauses (keyboard, HOME) don't skip animations
         NOW += DT;
 
         read_input(frame);

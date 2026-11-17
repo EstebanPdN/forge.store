@@ -1,13 +1,14 @@
 <h1 align="center">forge.store</h1>
 
 <p align="center">
-  <strong>Esteban’s Forge. On your Nintendo 3DS.</strong><br>
-  A native homebrew storefront and its web design reference, made for two small screens.
+  <strong>Every Forge port. One place on your 3DS.</strong><br>
+  Esteban’s Forge homebrew store, made natively for Nintendo 3DS.
 </p>
 
 <p align="center">
   <a href="#download-and-installation">Download</a> ·
   <a href="#features">Features</a> ·
+  <a href="#controls">Controls</a> ·
   <a href="#documentation">Documentation</a> ·
   <a href="CHANGELOG.md">Changelog</a> ·
   <a href="CONTRIBUTING.md">Contribute</a> ·
@@ -15,13 +16,13 @@
 </p>
 
 <p align="center">
-  <a href="docs/VERIFICATION.md"><img src="docs/badges/status.svg" alt="Development build" height="22"></a>
+  <a href="https://github.com/EstebanPdN/forge.store/releases/tag/v1.0"><img src="docs/badges/status.svg" alt="Release v1.0" height="22"></a>
   <a href="docs/INSTALLING.md"><img src="docs/badges/platform.svg" alt="Old and New Nintendo 3DS" height="22"></a>
   <a href="docs/MEDIA.md"><img src="docs/badges/resources.svg" alt="Store resources: 16.04 MB" height="22"></a>
-  <a href="LICENSE.md"><img src="docs/badges/license.svg" alt="Component-specific licenses" height="22"></a>
+  <a href="#license-and-legal-notice"><img src="docs/badges/license.svg" alt="Component-specific licenses" height="22"></a>
 </p>
 
-<p align="center"><img src="docs/images/store-preview.png" alt="forge.store running in the Nintendo 3DS emulator: the game banner above the touch-screen catalog" width="600"></p>
+<p align="center"><img src="docs/images/store-preview.png" alt="forge.store on Nintendo 3DS: the game banner above the touch-screen catalog" width="600"></p>
 
 <p align="center">
   <a href="https://estebanpdn.github.io/"><img src="docs/images/website.svg" alt="Visit Esteban’s Forge" width="142" height="46"></a>
@@ -29,102 +30,124 @@
   <a href="https://www.patreon.com/c/EstebanPdN"><img src="docs/images/patreon.svg" alt="Support EstebanPdN on Patreon" width="216" height="46"></a>
 </p>
 
-**Development build, published directly in this repository. No GitHub release has been created.**
-The application targets Old and New Nintendo 3DS. Automated tests and emulator checks are
-recorded in [Verification](docs/VERIFICATION.md); physical-console HOME/sleep, installation,
-launch and sustained audio/video performance still need confirmation.
+Native Nintendo 3DS store for my ports and for the community homebrew I use every day.
+Browse banners, screenshots and trailers, read each project’s GitHub page, then download,
+install and launch it without leaving the console.
 
 This project was developed with the help of [OpenAI Codex](https://openai.com/codex/) and [Claude Code](https://claude.com/product/claude-code). Learn more about the development process [here](AI_DEVELOPMENT.md).
 
-## Download and installation
-
-| Format | Download | Where it goes |
-| --- | --- | --- |
-| CIA | [forge-store.cia](https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.cia) | Install with FBI to the HOME Menu. |
-| 3DSX | [forge-store.3dsx](https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.3dsx) | Copy to `/3ds/forge-store/` and open in Homebrew Launcher. |
-| Integrity | [SHA256SUMS](builds/3ds/SHA256SUMS) · [build manifest](builds/3ds/manifest.json) | Verify the downloaded file before installing. |
-
-On first entering the store, the app automatically downloads the **16.04 MB Store resources
-package** in the background. Downloads shows one package with combined progress. Each video
-becomes playable after its own file passes SHA-256 verification; navigation remains available.
-No account or token is needed. See [Installation](docs/INSTALLING.md) for controls and cache management.
-
-Every launch checks for a store update before the introduction. When a newer build is found,
-the touch screen shows its version: **Yes** downloads and installs it; **No** fades to black
-and closes the store. An unavailable check continues to the introduction. Builds without the
-updater need one manual update first. Public GitHub pages and common
-images are also cached and refreshed in the background. See [Updates and cache](docs/UPDATES-AND-CACHE.md).
-
-Game installations are separate from this package. Some ports require files supplied by the
-player; no ROMs, game data archives, DSP firmware, saves or memory dumps are included here.
+No ROMs, game data, DSP firmware or saves are included. Ports that need your own game
+files tell you exactly which file to place on the SD card.
 
 ## Features
 
 <table>
   <tr>
-    <td width="50%" valign="top"><strong>Built for two screens</strong><br>400 × 240 top screen, 320 × 240 touch screen, crisp type, shared tab animations, light and dark themes, and eight interface languages.</td>
-    <td width="50%" valign="top"><strong>Browse the Forge</strong><br>Curated ports and community apps, search, layered banners, screenshots, trailers, requirements and release history.</td>
+    <td width="50%" valign="top"><strong>All my ports</strong><br>Every Esteban’s Forge port with its banner, screenshots, trailer, requirements and release history.</td>
+    <td width="50%" valign="top"><strong>Community homebrew</strong><br>Curated emulators and tools, plus optional Universal-DB integration and search.</td>
   </tr>
   <tr>
-    <td valign="top"><strong>Install and manage</strong><br>Download queue, staged installs, integrity checks, supported rollback, SD browser, requirement detection, uninstall and application launch.</td>
-    <td valign="top"><strong>Resources that stay ready</strong><br>Small native-resolution videos, verified persistent cache, automatic background downloads, explicit retry and asynchronous cache cleanup.</td>
+    <td width="50%" valign="top"><strong>Look before you install</strong><br>A native GitHub reader for READMEs, releases, images and repository details.</td>
+    <td width="50%" valign="top"><strong>Download, install, play</strong><br>Download queue, verified installs, rollback, uninstall, SD browser and direct launch.</td>
   </tr>
   <tr>
-    <td valign="top"><strong>Read without leaving</strong><br>A native GitHub reader for READMEs, releases, images and repository information. Optional Universal-DB integration.</td>
-    <td valign="top"><strong>One visual reference</strong><br>The web V2 design shares catalog, art, sound and layout decisions with the C application. Original web V1 is preserved.</td>
+    <td width="50%" valign="top"><strong>Made for two screens</strong><br>400×240 above, 320×240 touch below, crisp native type, light and dark themes and eight languages.</td>
+    <td width="50%" valign="top"><strong>Keep it current</strong><br>Built-in store updates on every launch and verified background downloads for previews.</td>
   </tr>
 </table>
 
-The web reference uses a **simulated SD card and installer**. Native installs use the console’s
-real filesystem and services. Visual parity is an ongoing measured target, not a claim that
-every state or every GitHub document renders identically.
+<a id="installation"></a>
 
-## Run the web reference
+## Download and installation
 
-Requires Python 3. No npm install or web build is needed.
+<p>
+  <a href="https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.cia"><img src="docs/images/download-cia.svg" alt="Download forge.store CIA" width="210" height="46"></a>
+  <a href="https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.3dsx"><img src="docs/images/download-3dsx.svg" alt="Download Homebrew Launcher 3DSX" width="210" height="46"></a>
+</p>
 
-```sh
-python3 tools/serve.py 8642
-```
+**Stable: [v1.0](https://github.com/EstebanPdN/forge.store/releases/tag/v1.0).**
 
-Open `http://localhost:8642`. Use **Resolución 3DS** for native resolution and the pixel
-magnifier to inspect both screens. Keyboard controls follow Azahar: arrows, A/Enter, S/Esc
-for B, Q/W for L/R, Z for X, X for Y, M for START and N for SELECT.
-See [Web reference](docs/WEB.md). The preserved V1 is at `versions/v1/`.
+<img align="right" src="docs/images/forge-store-qr.png" alt="QR code for the forge.store CIA" width="160">
 
-## Build the application
+1. **CIA:** open FBI, choose **Remote Install → Scan QR Code** and scan the code on the
+   right, or copy the CIA to your SD card and install it from FBI.
+2. **3DSX:** copy `forge-store.3dsx` to `sdmc:/3ds/forge-store/` and open it from the
+   Homebrew Launcher.
+3. Launch **forge.store**, choose a theme and enter the store.
+4. With Wi-Fi on, the **Store resources** package (16.04 MB of trailers) downloads in the
+   background. You can browse and install while it finishes.
 
-Install devkitARM, libctru, Citro2D/Citro3D, the documented 3DS portlibs, CMake, Python 3
-and zsh. The reviewed RomFS assets are included, so a normal build needs no browser,
-HandBrake, proprietary game files or access to another project.
+Keep at least 100 MB free for the store and its resources; each game needs its own space.
+Compare your download with [SHA256SUMS](builds/3ds/SHA256SUMS) before installing.
+The buttons and QR code always point to the newest build in this repository. Each
+[GitHub release](https://github.com/EstebanPdN/forge.store/releases) keeps its own CIA, 3DSX and QR code.
 
-```sh
-zsh 3ds/build.sh
-```
+**Updates are built in.** Every launch checks for a newer store build. Choose **Yes** to
+download and install it, or **No** to close the store. See [Updates and cache](docs/UPDATES-AND-CACHE.md).
 
-Outputs go to `3ds/build/`. The default build disables RAM/VRAM dumps and has no dump-upload
-endpoint. Use `FORGE_DEBUG=1` only for local testing. Read [Building](docs/BUILDING.md)
-for dependencies, asset generation and test commands.
+## Controls
+
+| Input | Action |
+| --- | --- |
+| D-Pad / Touch screen | Navigate |
+| A | Open / Confirm |
+| B | Back |
+| L / R | Change tabs |
+| X | Open the GitHub page of the selected game |
+| Y / START / SELECT | Scene shortcuts, always shown on the touch screen |
+| Video: A · ◀ ▶ · Y · B | Pause · Seek · Mute · Return |
+
+Drag the category strip sideways to reveal more tabs. In Captures, tap an image to view
+it at full size. See the [installation guide](docs/INSTALLING.md) for everything else.
 
 ## Documentation
 
-- [Documentation index](docs/README.md) — installation, architecture, media and maintenance.
-- [Architecture](docs/ARCHITECTURE.md) — module ownership, data flow and thread lifetimes.
-- [Media pipeline](docs/MEDIA.md) — HandBrake encoding, format, download contract and verification.
-- [Updates and cache](docs/UPDATES-AND-CACHE.md) — startup updates, incremental GitHub requests and prefetch.
-- [Verification](docs/VERIFICATION.md) — what was tested and what still needs hardware.
-- [Asset credits](docs/ASSET-CREDITS.md) · [Third-party notices](docs/legal/THIRD_PARTY_NOTICES.md).
-- [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) · [Changelog](CHANGELOG.md).
+| Guide | Purpose |
+| --- | --- |
+| [Installing and using](docs/INSTALLING.md) | CIA/3DSX, first start, controls, game files and cleanup. |
+| [Updates and cache](docs/UPDATES-AND-CACHE.md) | Startup updates, GitHub cache and prefetch. |
+| [Building](docs/BUILDING.md) | Toolchain, build command, tests and asset generation. |
+| [Architecture](docs/ARCHITECTURE.md) | Source layout, data flow and thread lifetimes. |
+| [Web reference](docs/WEB.md) | The browser version of the interface used as the visual reference. |
+| [Verification](docs/VERIFICATION.md) | What has been tested and what still needs hardware. |
+| [All documentation](docs/README.md) | Media, HOME banner, credits and notices. |
+
+To build it yourself, install devkitARM, libctru, Citro2D/Citro3D and the documented
+portlibs, then run `zsh 3ds/build.sh`. Outputs go to `3ds/build/`.
 
 ## Community and bug reports
 
-Use [GitHub Issues](https://github.com/EstebanPdN/forge.store/issues) or
-[join Discord](https://discord.gg/BjbzfRYpV). Include the build hash, console model,
-CIA/3DSX format and steps to reproduce. Do not attach RAM/VRAM dumps, tokens, ROMs or
-personal SD contents to a public report.
+[Join the project Discord](https://discord.gg/BjbzfRYpV) for updates, support and
+suggestions. Report reproducible problems through
+[GitHub issues](https://github.com/EstebanPdN/forge.store/issues), including your
+console model, CIA or 3DSX, when you installed the store and the steps to reproduce it. Never attach tokens,
+ROMs, memory dumps or personal SD contents to a public report.
+
+## Credits
+
+- The authors of every community app in the catalog; each detail page links to its
+  original repository, and its artwork is listed in the [asset register](docs/ASSET-CREDITS.md).
+- [Universal-Team](https://github.com/Universal-Team) — Universal-DB.
+- [devkitPro](https://github.com/devkitPro) — devkitARM, libctru, Citro2D and Citro3D.
+- libwebp, NanoSVG, Theora, libjpeg-turbo, curl, mbedTLS, Jansson, libarchive and the other
+  libraries in the [third-party notices](docs/legal/THIRD_PARTY_NOTICES.md).
+- The Nintendo 3DS homebrew community — tools, documentation and testing.
+- EstebanPdN — store design, native application and catalog, with help from Codex and Claude Code.
 
 ## License and legal notice
 
 [Rights and licenses](LICENSE.md) are component-specific. Third-party software keeps its
-original license. Game imagery and trademarks belong to their respective owners; attribution
-is not a grant of reuse rights. This is an unofficial homebrew project, unaffiliated with Nintendo.
+original license. Game names, imagery and trademarks belong to their respective owners;
+attribution is not a grant of reuse rights.
+
+This is an unofficial homebrew project, unaffiliated with Nintendo.
+
+---
+
+<p align="center">
+  <a href="https://estebanpdn.github.io/">Esteban’s Forge</a> ·
+  <a href="https://discord.gg/BjbzfRYpV">Discord</a> ·
+  <a href="#documentation">Documentation</a> ·
+  <a href="#license-and-legal-notice">License and notices</a><br>
+  <sub>An independent fan project. Game names and content belong to their respective owners.</sub>
+</p>

@@ -1,5 +1,19 @@
 # Changelog
 
+## forge.store 1.0
+
+- New installation screen: a progress card with the game icon inside the ring, a large percentage, the current step and the download speed.
+- Replace the pixelated 48px icons of Snes9x, 3DS Recorder, Universal-Updater, Anemone3DS and Star Haven with clean 512px AI-assisted restorations.
+- Use higher-resolution originals for Mario Kart Wii Redux (official Mario Kart Wii artwork) and Geometry Dash 3DS (official app icon).
+- Star Haven’s banner now uses its new icon instead of a separate 96px sprite.
+- Regenerate every icon size (20–64px) from the current sources, so the earlier PSX3D, DaedalusX64, PicoDrive, Checkpoint, Nimbus and FourthTube restorations now appear everywhere, not only on the Home grid.
+- Rewrite the README and installation guide, with a QR code for installing the CIA from FBI.
+- First numbered release: the store now shows version 1.0.
+
+## Static HOME banner recovery — 2026.11.12.14
+
+- Restore the static, front-facing HOME banner from test 19, which works on my console. The animated banner of 2026.11.12.13 froze HOME and is withdrawn.
+
 ## HOME facing anchor candidate — 2026.11.12.12
 
 - Separate the medallion’s local wobble from HOME scene rotation with a camera-facing parent. This candidate passes resource checks; physical HOME behavior remains unverified.

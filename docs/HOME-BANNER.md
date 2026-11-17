@@ -1,97 +1,67 @@
-# Native HOME banner
+# Native HOME banner recovery
 
-The CIA packages `3ds/meta/banner.cgfx`, with the shared Forge icon, horizontal
-English wordmark and subtitle, and an oval background that fades from 35% of its
-radius to its transparent edge. `3ds/meta/banner.png` is the previous flat reference.
-The application screens and runtime code are unchanged.
+forge.store 2026.11.12.14 restores the entire static banner from test 19,
+which I confirmed works on my physical console. The final full-store CIA
+contains that exact BNR byte for byte, including the original three-second audio.
+The 3D medallion faces forward; there are no animation resources. Its original
+smaller oval/background is deliberately restored unchanged for recovery.
 
-Read [HOME banner engineering guide](HOME-BANNER-GUIDE.md) before changing this resource.
-Test revisions 13 and 14 froze physical HOME when selected, as reported by the user. Its
-previous pivot explanation was a hypothesis, not a verified cause or fix.
+**Rejected:** I reported that animated full store 2026.11.12.13 froze the
+console. Its intended test-20 banner was present in the delivered CIA. Matching
+Starfox curves/channels and passing Azahar/SPICA did not prevent that failure.
+Do not recommend the version-13 QR or describe its animation as fixed.
 
-Test 15 keeps test 14’s geometry, timing and direct rigid node. Its only model change
-is the missing Rotation-W absence bit in CANM. An independent SPICA reader fails on
-the original and succeeds on the corrected animation; the guide records the precise
-experiment. Both CIA builders set `extendedbanner` and the gate checks the embedded
-SMDH. **Physical HOME remains unconfirmed.** Do not reuse either rejected QR.
+Read [HOME banner engineering guide](HOME-BANNER-GUIDE.md) before any changes.
+The exact animation-related hardware cause is still unknown. This is a rollback
+to the known working resource, not another animation experiment.
 
-The intended motion remains a 5.2-second ±24° Y rotation with the welcome screen's
-cubic-bezier(.42,0,.58,1) timing. It has no authored vertical bob or scale change.
+## Selected resource and package
 
-The complete composition is uniformly enlarged by 5% about its center. The wordmark
-baseline is raised 12 texture pixels to separate its descenders from the subtitle.
-The title is about 19% larger than the initial lettering, with both font weights sharing one baseline. Its
-512×128 RGBA4 texture is explicitly restored after conversion, avoiding the converter's
-256px width cap. This is pre-rasterized lettering, not a claim of hardware pixel-perfect
-sampling; HOME owns final projection/filtering.
+- CGFX: 258,904 bytes, SHA-256 `07df21c7250d09efefda7fac67e179f79873ded2cdc96e1d842ee26202a3272f`.
+- Whole BNR SHA-256: `448c3804b04d7e041022c6eeeb3acd3e0b0a590aa9149108d3bfa62165eca3e0`.
+- Full CIA: 49,447,872 bytes, SHA-256 `30db77fdd9294975461eaa9408e0ce2a81c5350dea06b327ed044ebd7b33112c`.
+- Full store title ID `000400000F0F5E00`; static test-19 title ID `000400000F0F5F00`.
+- Six rigid meshes / 244 triangles; forward face and identity facing bones.
+- Three textures / 229,376 bytes: RGB565 logo, RGBA4 lettering, LA8 oval.
+- Zero skeletal, material or other animation resources.
+- Stereo PCM16, 32 kHz, 96,000 samples per channel, nonlooping, three seconds.
 
-## Resource budget
+## Production recovery gate
 
-- 292 authored triangles, six serialized meshes / draws, three rigid rendered bones.
-- Three textures: 128×128 RGB565 logo, 512×128 RGBA4 lettering, 256×128 LA8 oval.
-- Texture payload: 229,376 bytes (224 KiB). LA8 preserves 256 alpha levels for the
-  white oval; RGBA8 is not used. The text has a separate baseline and clear gap.
-- CGFX: 263,432 bytes, below the 524,288-byte HOME limit.
-- Animation: one member, one scalar curve, 313 keys per authored track,
-  312 native frames, matching endpoints and strictly positive scales.
-- Audio: the original welcome sound, stereo PCM16, 32 kHz, exactly 96,000 samples
-  per channel / three seconds, nonlooping, with a half-second fade out.
-
-These are resource bounds, **not measured frame times**. No runtime blur, video
-stream, texture upload loop, allocation loop or application worker is introduced.
-HOME owns drawing and audio playback. Only physical HOME testing can establish
-performance, stereo comfort and selection/suspend behaviour on Old and New 3DS.
-
-## Regeneration
-
-Normal builds need only the checked-in CGFX/WAV and the standard toolchain.
-Authoring additionally needs Pillow, fonttools and gltflib 1.0.13 in the existing
-`3ds/tools/.venv`, FFmpeg, and an external MIT-licensed pycgfx checkout at
-`6c2e0cd53a5f4c3265b9aa9a1f30806f8291116e`.
+`3ds/build.sh` now uses `--require-static` for both the CGFX and packaged BNR.
+Any animation resource stops the normal build. The actual failed version-13
+resource is rejected by this policy. Source/render previews do not override it.
 
 ```sh
-git clone https://github.com/skyfloogle/pycgfx.git 3ds/build/home-banner/pycgfx
-git -C 3ds/build/home-banner/pycgfx checkout 6c2e0cd53a5f4c3265b9aa9a1f30806f8291116e
-3ds/tools/.venv/bin/python 3ds/tools/make-home-banner.py \
-  --pycgfx 3ds/build/home-banner/pycgfx
-```
-
-The generator writes into `3ds/build/home-banner/generated/`. Review its model,
-textures, audio and report before copying `banner.cgfx` and `banner.wav` to
-`3ds/meta/`. The converter stays external and unmodified. The wrapper rebuilds
-its sorted bone dictionary, fills explicit mesh-to-bone names, configures unlit
-materials and encodes the LA8 oval in PICA's 8×8 Morton order.
-
-```sh
-zsh 3ds/build.sh
+FORGE_DEBUG=0 zsh 3ds/build.sh
 python3 3ds/tests/test-home-banner.py
-python3 3ds/tests/run-install-integrity.py
 ```
 
-The standard build checks serialized dictionary traversal, bone bindings,
-non-singular transforms, curve values, supported textures and audio bounds. It
-then verifies the CIA's ExeFS header/file SHA-256 hashes and compares its embedded
-banner byte-for-byte with the selected BNR. The tests also reject damaged
-resources and compare the packaged PCM samples with the input WAV.
+Do not regenerate the approved recovery asset just to make another preview. Its
+bytes were recovered and compared against the immutable test-19 CIA. Diagnostic
+motion experiments remain available separately but are not production inputs.
 
-## Evidence, 2026-11-12
+## Evidence
 
-- Compilation/package: passed with `zsh 3ds/build.sh`, no asset-wide `--pack`.
-  The SDK linker reports its existing `crtn.o` GNU-stack note warning.
-- Host: fifteen banner checks and 27 production installer scenario groups passed.
-- Preview: rendered from the same glTF geometry, textures and animation in
-  Blender at the HOME camera; GIF/MP4 are design evidence, not HOME captures.
-- Emulator HOME: not validated. Launching a 3DSX would not exercise this resource.
-- Physical Old/New 3DS: not validated. Select the icon for several complete loops,
-  switch repeatedly between titles, check sound ends at three seconds, test 3D
-  off/on and sleep/resume on both models before declaring it lag-free.
-- Version 2026.11.12.9 packages this banner in the distributable CIA alongside the
-  existing store fixes and refreshed emulator artwork. The build validates the embedded
-  banner and ExeFS hashes before packaging.
+- Compilation: full native store passed, no `--pack`; existing SDK GNU-stack warning.
+- Host: nine banner/package/policy checks passed, including rejection of an
+  animation resource. ExeFS hashes, SMDH `0x125`, store title ID, and exact BNR
+  equality with test 19 were verified in the full CIA.
+- Independent SPICA: complete scene read passed; front-facing geometry and zero animations.
+- Production installer, texture queue, music and video harness results are recorded
+  under `3ds/build/home-banner/store14-*.log` separately from emulator evidence.
+  The first video run failed a seek PCM assertion at `video-test.c:357`; no
+  decoder code was changed. A complete repeat with preserved fixtures passed
+  ASan/UBSan, TSan and all seven encoded previews. The initial failure is retained
+  as an intermittent host result, not silently counted as a pass.
+- Emulator HOME: Azahar 2126.2, isolated real EUR HOME; three leave/return
+  selection cycles passed on the full store. The installed BNR was compared with
+  test 19, and launching reached Welcome and the main catalog.
+- Physical console: static test 19 works by user report; full recovery 14 pending.
+  The preceding animated full store 13 is a failed physical result.
 
-Local build reports are `3ds/build/home-banner-model.json` and
-`3ds/build/home-banner-package.json`; private logs stay in `.local/home-banner/`.
+The immutable local delivery image is `3ds/build/store-recovery-14/`. Private
+logs/captures stay in `.local/`. No website or GitHub release deployment is involved.
 
-Format references: [pycgfx](https://github.com/skyfloogle/pycgfx),
-[CBMD](https://www.3dbrew.org/wiki/CBMD),
-[texture formats](https://github.com/skyfloogle/pycgfx/blob/6c2e0cd53a5f4c3265b9aa9a1f30806f8291116e/cgfx/txob.py).
+Manual recovery CIA/manifest: `builds/banner-test/store-recovery-14/`. The old
+store-13 manifest is marked rejected. No official updater manifest is changed.

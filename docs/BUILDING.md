@@ -80,7 +80,7 @@ FORGE_DEBUG=1 zsh 3ds/build.sh
 Set `FORGE_AZAHAR` to your Azahar executable if it is not at the runner's macOS default.
 Use `--new3ds` for the New model, and `--seed-media` only for an explicitly labeled cached
 playback test. A real first-download test must start without a seeded cache. The runner
-creates an isolated SD/profile; it never runs against the user's SD. It may copy the locally
+creates an isolated SD/profile; it never runs against your SD card. It may copy the locally
 available DSP firmware into that isolated profile, but that firmware is never published.
 
 SELECT dumps in debug builds contain private memory. Keep them local. An upload endpoint
