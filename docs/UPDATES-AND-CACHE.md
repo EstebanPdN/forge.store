@@ -71,6 +71,13 @@ Three layers keep the catalog on the releases each repository publishes, with no
    lists every 30 minutes; GitHub answers unchanged lists with 304. A rate limit pauses it for
    ten minutes instead of stopping it.
 
+The Action also keeps what the store needs to recognize apps installed without it: each
+release's CIA title and version (read from the first bytes of its CIA), the Universal-DB entry
+of the same repository (title IDs, installed files and the name Universal-Updater records it
+under) and, for 3DSX packages, the `.3dsx` paths inside their zip. A pinned release that its
+author keeps replacing under the same tag (`rolling`) is followed by file name without its
+build id, with the new hashes.
+
 Development percentages come from the Progress page of my website
 (https://estebanpdn.github.io/). Apps name their card with `progressCard` (for example
 `port-worms`); the store reads the page once per launch with `site_progress.h`, and the
@@ -81,6 +88,54 @@ than stable. Neither layer moves a channel back to an older date. Installed apps
 through the normal status (`Update to …`), and every installed app also offers **Update** to
 switch between stable and experimental. A failed download asks GitHub again for that app,
 then retries after a 10-second countdown, up to five times.
+
+## Interrupted installations
+
+Every installation stages its files in `sdmc:/3ds/forge-store/install-transaction/`. Before
+it changes a live file it writes `recovery.json` (format 2): each path with its staged and
+backup names, what will be published or removed, the CIA title with its old and new
+versions, and a transaction id. Folders it creates are listed in `dirs.txt`;
+`cia-started` and `cia-finished` mark the AM installation. The installed record carries the
+same transaction id and is the commit point.
+
+A power cut, a crash or closing the store can leave that folder behind. `tx_recover()` settles
+it at launch and before the next installation, from the SD alone:
+
+- **Committed** (the record has the transaction id; for an uninstallation, the record is gone):
+  backups are removed and the installation is complete.
+- **Not committed:** published files are removed, backups go back to their paths, created
+  folders are removed when empty and the CIA title returns to its previous version (deleted
+  when it was new, reinstalled from its kept package when it was replaced).
+- **No package to return to** (a CIA installed with FBI or Universal-Updater, then updated
+  here): once AM committed the new title, the update is completed instead.
+- **No readable inventory:** nothing was published yet, so the staged files are deleted.
+- Anything that cannot be settled safely (backups without an inventory, paths outside the
+  rules) is moved to `install-transaction-kept-N` and never deleted.
+
+Undoing is the exact inverse of publishing: a new file goes back to its staged name before the
+previous one returns, and staged files are deleted only after the inventory. The SD therefore
+reads the same way at every step, and an installation that fails in the middle of a session,
+even when its own cleanup fails too, is settled by the next installation without restarting.
+Recovery is silent. `3ds/tests/run-install-recovery.py` cuts the power before every SD and AM
+mutation of real installations, updates and uninstallations (also with the record commit or AM
+failing, so the cut lands inside the rollback), then cuts it again at every mutation of the
+recovery itself, and checks that each one ends at the previous or the new version.
+
+## Apps installed without forge.store
+
+`detect.c` scans once Home is ready, after every installation and after catalog changes:
+AM's SD title list, the files each app is known by (`detect.files`, then every `.3dsx` its
+own 3DSX plan writes; `%3DSX%/x.3dsx` is also looked for in `/3ds/x/`), and
+`sdmc:/3ds/Universal-Updater/MetaData.json`. An app found this way shows **Installed** and
+can be opened and updated, but not uninstalled here (forge.store has no inventory of it).
+It shows **Update** when Universal-Updater installed an older entry (its own rule, compared
+at the precision both dates have) or when the installed CIA's title version is below the one
+the current release ships. The devkitPro template ID `0xFF3FF` never identifies an app.
+
+Updating a CIA installed some other way has no original package to go back to. AM only
+replaces the title once the new package is verified; from then on the update is completed
+instead of undone. Such a replacement is allowed only for a title the app's catalog entry
+or an earlier installation names.
 
 ## Persistent GitHub responses
 

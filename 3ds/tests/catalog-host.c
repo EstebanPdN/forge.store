@@ -95,6 +95,17 @@ static void persistence(void) {
     CHECK(json_object_set_new(hash,"title:0004000001234567",json_string("title"))==0);
     CHECK(installed_commit_manifest(&a,"v2",true,true,files,dirs,hash));version(&a,"v2");
     CHECK(installed_commit(&a,"v3",false,false,NULL,NULL));version(&a,"v3");
+    // The installer's commit point: the saved record names the transaction that wrote it.
+    CHECK(installed_commit_transaction(&a,"v3",false,false,NULL,NULL,NULL,"tx-1"));
+    json_t *saved=installed_saved();
+    CHECK(!strcmp(json_string_value(json_object_get(json_object_get(saved,"fixture"),"transaction")),"tx-1"));
+    json_decref(saved);
+    CHECK(installed_commit_transaction(&a,"v3",false,false,NULL,NULL,NULL,"tx-2"));
+    saved=installed_saved();
+    CHECK(!strcmp(json_string_value(json_object_get(json_object_get(saved,"fixture"),"transaction")),"tx-2"));
+    // Memory and disk agree once the commit returns.
+    CHECK(json_equal(json_object_get(saved,"fixture"),installed_record(&a)));
+    json_decref(saved);
     json_t *r=installed_record(&a);
     CHECK(json_is_true(json_object_get(r,"cia")));
     CHECK(json_array_size(json_object_get(r,"files"))==2);

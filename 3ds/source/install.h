@@ -35,6 +35,13 @@ typedef struct {
     char error[128];
     int warnings;
     json_t *files, *dirs, *hashes, *record;
+    // Identifies this installation in its recovery inventory and in the installed record:
+    // after an interruption, a matching record means it was committed.
+    char transaction[40];
+    // CIA titles known to belong to this app (record and catalog), copied on the main thread.
+    // Only these may be replaced without the package forge.store installed before.
+    u64 known_titles[8];
+    int nknown;
 } Job;
 
 void install_init(void);

@@ -1,5 +1,6 @@
 // Catalog, localization, settings and the installed-apps record.
 #include "catalog.h"
+#include "detect_rules.h"
 #include "install.h"
 #include "remote_image.h"
 #include "rom_find.h"
@@ -1614,6 +1615,7 @@ bool path_exists_cached(const char *path) {
 void path_cache_clear(void) { memset(pcache, 0, sizeof pcache); }
 
 void installed_load(void) {
+    save_init();  // before any worker may read the saved record (installed_saved)
     json_t *j = load_saved_object(DATA_DIR "/installed.json");
     json_decref(INSTALLED);
     INSTALLED = j ? j : json_object();
@@ -1641,7 +1643,8 @@ static bool merge_strings(json_t *out, json_t *in) {
 }
 
 // Arguments are borrowed. Do not publish new metadata to readers until it is saved.
-bool installed_commit_manifest(App *a, const char *version, bool experimental, bool cia, json_t *files, json_t *dirs, json_t *hashes) {
+bool installed_commit_transaction(App *a, const char *version, bool experimental, bool cia, json_t *files, json_t *dirs,
+                                  json_t *hashes, const char *transaction) {
     if (!a || !a->id || !*a->id || !version || !*version ||
         (files && !json_is_array(files)) || (dirs && !json_is_array(dirs)) || (hashes && !json_is_object(hashes))) return false;
     json_t *old = installed_record(a);
@@ -1668,6 +1671,8 @@ bool installed_commit_manifest(App *a, const char *version, bool experimental, b
     json_t *fields = json_pack("{s:s,s:b,s:b,s:s,s:s,s:s}", "version", version, "experimental", experimental,
                               "cia", cia || was_cia, "channel", experimental ? "experimental" : "stable",
                               "format", cia ? "cia" : "3dsx", "date", date);
+    // The installer's recovery compares this with an interrupted transaction's inventory.
+    if (fields && transaction && *transaction && json_object_set_new(fields, "transaction", json_string(transaction))) ok = false;
     if (ok) ok = fields && json_object_update(r, fields) == 0 &&
                  json_object_set(r, "files", all_files) == 0 && json_object_set(r, "dirs", all_dirs) == 0 &&
                  json_object_set(r, "formats", formats) == 0 && json_object_set(next, a->id, r) == 0;
@@ -1687,8 +1692,20 @@ bool installed_commit_manifest(App *a, const char *version, bool experimental, b
     return ok;
 }
 
+bool installed_commit_manifest(App *a, const char *version, bool experimental, bool cia, json_t *files, json_t *dirs, json_t *hashes) {
+    return installed_commit_transaction(a, version, experimental, cia, files, dirs, hashes, NULL);
+}
+
 bool installed_commit(App *a, const char *version, bool experimental, bool cia, json_t *files, json_t *dirs) {
     return installed_commit_manifest(a, version, experimental, cia, files, dirs, NULL);
+}
+
+json_t *installed_saved(void) {
+    save_init();
+    LightLock_Lock(&save_lock);
+    json_t *j = load_saved_object(DATA_DIR "/installed.json");
+    LightLock_Unlock(&save_lock);
+    return j;
 }
 
 void installed_set(App *a, const char *version, bool experimental, bool cia, json_t *files) {
@@ -1781,12 +1798,24 @@ bool app_launch_path(App *a, char *out, size_t n) {
     return false;
 }
 
+bool app_found(App *a) { return a && (a->found_title || a->found_path); }
+
+bool app_found_outdated(App *a) {
+    return app_found(a) && detect_outdated(a->j, a->uu_updated, a->found_title, a->found_version);
+}
+
+int app_title_ids(App *a, u64 *out, int max) { return a ? detect_titles(a->j, out, max) : 0; }
+
 AppStatus app_status(App *a) {
     if (!a) return ST_AVAILABLE;
     if (install_busy(a)) return ST_BUSY;
     if (a->dev) return ST_DEV;
     const char *v = app_installed_version(a);
-    if (!v || !*v) return ST_AVAILABLE;
+    if (!v || !*v) {
+        if (!app_found(a)) return ST_AVAILABLE;
+        if (app_found_outdated(a)) return ST_UPDATE;
+        return app_missing_requirement(a) ? ST_NEEDS_FILE : ST_INSTALLED;
+    }
     json_t *e = installed_record(a);
     const char *channel = json_string_value(json_object_get(e, "channel"));
     bool experimental = channel ? !strcmp(channel, "experimental") : json_is_true(json_object_get(e, "experimental"));

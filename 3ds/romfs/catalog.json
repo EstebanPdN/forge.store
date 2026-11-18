@@ -470,7 +470,9 @@
               "快適化設定の妖精がハート10個分を回復するように変更。",
               "新しいランダマイザーシードのダンジョンアイテム配置を修正。"
             ]
-          }
+          },
+          "ciaTitle": "0004000005a13e00",
+          "ciaVersion": 1024
         },
         "experimental": {
           "tag": "v4.2-E2",
@@ -533,7 +535,9 @@
               "WIDEをマスターソードの森とトライフォースの間まで拡張。",
               "パレットのフェード、橋の岸辺、途切れた岩を修正。"
             ]
-          }
+          },
+          "ciaTitle": "0004000005a13e00",
+          "ciaVersion": 1024
         }
       },
       "requires": [
@@ -960,7 +964,18 @@
             ]
           }
         }
-      ]
+      ],
+      "detect": {
+        "ids": [
+          369165,
+          368958
+        ],
+        "files": [
+          "%3DSX%/zelda3-3ds-v4.1.3dsx",
+          "%3DSX%/zelda3-3ds-v4.2-E2.3dsx"
+        ],
+        "uu": "zelda-alttp-3ds"
+      }
     },
     {
       "id": "minish",
@@ -1251,7 +1266,9 @@
               "空の旧メタデータで通常のセーブが拒否される問題を修正。",
               "ゲームと移植のソースを整理し、ドキュメントを追加。"
             ]
-          }
+          },
+          "ciaTitle": "0004000005a22d00",
+          "ciaVersion": 3072
         }
       },
       "requires": [
@@ -1547,7 +1564,16 @@
             ]
           }
         }
-      ]
+      ],
+      "detect": {
+        "ids": [
+          369197
+        ],
+        "files": [
+          "%3DSX%/tmc-3ds-v2.2.3dsx"
+        ],
+        "uu": "zelda-tmc-3ds"
+      }
     },
     {
       "id": "mk64",
@@ -1862,7 +1888,9 @@
               "Cスティックで×2–5ターボ、後方視点、SELECTの動作設定。",
               "ゲーム内での安定版・試験版アップデートとPC用抽出ツール。"
             ]
-          }
+          },
+          "ciaTitle": "0004000005a27000",
+          "ciaVersion": 8192
         },
         "experimental": {
           "tag": "v2.1-E2",
@@ -1906,7 +1934,9 @@
             "ja": [
               "チョコマウンテンのスタート時に本体がフリーズすることがあるGPU頂点レイアウトのエラーを修正。"
             ]
-          }
+          },
+          "ciaTitle": "0004000005a27000",
+          "ciaVersion": 9216
         }
       },
       "requires": [
@@ -2198,7 +2228,17 @@
           }
         }
       ],
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          369264
+        ],
+        "files": [
+          "%3DSX%/mk64-3ds-v2.0.3dsx",
+          "%3DSX%/mk64-3ds-v2.1-E2.3dsx"
+        ],
+        "uu": "mario-kart-64-3ds"
+      }
     },
     {
       "id": "doom",
@@ -2463,7 +2503,9 @@
             "ja": [
               "初回リリース。"
             ]
-          }
+          },
+          "ciaTitle": "0004000005a2d000",
+          "ciaVersion": 1024
         }
       },
       "requires": [],
@@ -2547,7 +2589,15 @@
           }
         ]
       },
-      "releasePinned": true
+      "releasePinned": true,
+      "detect": {
+        "ids": [
+          369360
+        ],
+        "files": [
+          "/3ds/legend-of-doom/legend-of-doom-3ds.3dsx"
+        ]
+      }
     },
     {
       "id": "starwing",
@@ -2825,7 +2875,9 @@
               "初期設定でオリジナル速度、補間、60 FPS上限。",
               "Old 3DSの互換性に関する注意を表示。"
             ]
-          }
+          },
+          "ciaTitle": "0004000005f58b00",
+          "ciaVersion": 87
         },
         "experimental": {
           "tag": "v1.2-E2",
@@ -2894,7 +2946,9 @@
               "立体視の背景の奥行きを調整。",
               "注意：このビルドではHOMEで本体がフリーズすることがあります。"
             ]
-          }
+          },
+          "ciaTitle": "0004000005f58b00",
+          "ciaVersion": 90
         }
       },
       "requires": [
@@ -3088,7 +3142,12 @@
             ]
           }
         }
-      ]
+      ],
+      "detect": {
+        "ids": [
+          390539
+        ]
+      }
     },
     {
       "id": "mutiny",
@@ -3339,7 +3398,9 @@
               "リアルタイムのミニマップ付き2画面インターフェース。",
               "START + SELECTで全武器のテスト対戦を開始。"
             ]
-          }
+          },
+          "ciaTitle": "000400000f4d1100",
+          "ciaVersion": 0
         }
       },
       "requires": [],
@@ -3389,6 +3450,11 @@
           {
             "type": "dumpDsp"
           }
+        ]
+      },
+      "detect": {
+        "ids": [
+          1002769
         ]
       }
     },
@@ -4289,7 +4355,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "00040000092b9900",
+          "ciaVersion": 1086
         }
       },
       "requires": [
@@ -4345,7 +4413,12 @@
         ]
       },
       "sourceUrl": "https://github.com/SecondaryLifer/StarHaven",
-      "verifiedAt": "2026-11-12"
+      "verifiedAt": "2026-11-12",
+      "detect": {
+        "ids": [
+          600985
+        ]
+      }
     },
     {
       "id": "dk64",
@@ -4427,19 +4500,19 @@
       "releases": {
         "stable": {
           "tag": "rolling",
-          "date": "2026-11-12",
+          "date": "2026-11-15",
           "assets": {
             "cia": {
-              "name": "DK64Recompiled3D-3ds-4f7a7b5.cia",
+              "name": "DK64Recompiled3D-3ds.cia",
               "size": 5843904,
-              "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-4f7a7b5.cia",
-              "sha256": "20eb220ad51d12e479e9b44d9435748ac0979f12211bed2fdf0280a23d98c625"
+              "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds.cia",
+              "sha256": "c8290d22772ef99d468b4fc7a765be6f04c75462add3e4759900c7cdca7721bc"
             },
             "3dsx": {
-              "name": "DK64Recompiled3D-3ds-4f7a7b5.zip",
-              "size": 4172214,
-              "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-4f7a7b5.zip",
-              "sha256": "aca39dc296aded4eb5a53bc253b38288d8d015f89d1dbc82f9303dea073ce1b5"
+              "name": "DK64Recompiled3D-3ds-2dde0a3.zip",
+              "size": 4171831,
+              "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-2dde0a3.zip",
+              "sha256": "d594d89c01121e6863dcee7a8e298cd3db7855c0aa8b952ee870bfccfe1e42e5"
             }
           },
           "notes": {
@@ -4467,7 +4540,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000f534e00",
+          "ciaVersion": 0
         }
       },
       "install": {
@@ -4475,15 +4550,15 @@
           {
             "type": "downloadRelease",
             "asset": "cia",
-            "output": "%TMP%/DK64Recompiled3D-3ds-4f7a7b5.cia"
+            "output": "%TMP%/DK64Recompiled3D-3ds.cia"
           },
           {
             "type": "installCia",
-            "file": "%TMP%/DK64Recompiled3D-3ds-4f7a7b5.cia"
+            "file": "%TMP%/DK64Recompiled3D-3ds.cia"
           },
           {
             "type": "deleteFile",
-            "file": "%TMP%/DK64Recompiled3D-3ds-4f7a7b5.cia"
+            "file": "%TMP%/DK64Recompiled3D-3ds.cia"
           },
           {
             "type": "requireFile",
@@ -4493,21 +4568,21 @@
         "3dsx": [
           {
             "type": "downloadUrl",
-            "name": "DK64Recompiled3D-3ds-4f7a7b5.zip",
-            "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-4f7a7b5.zip",
-            "output": "%TMP%/DK64Recompiled3D-3ds-4f7a7b5.zip",
-            "size": 4172214,
-            "sha256": "aca39dc296aded4eb5a53bc253b38288d8d015f89d1dbc82f9303dea073ce1b5"
+            "name": "DK64Recompiled3D-3ds-2dde0a3.zip",
+            "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-2dde0a3.zip",
+            "output": "%TMP%/DK64Recompiled3D-3ds-2dde0a3.zip",
+            "size": 4171831,
+            "sha256": "d594d89c01121e6863dcee7a8e298cd3db7855c0aa8b952ee870bfccfe1e42e5"
           },
           {
             "type": "extractFile",
-            "file": "%TMP%/DK64Recompiled3D-3ds-4f7a7b5.zip",
+            "file": "%TMP%/DK64Recompiled3D-3ds-2dde0a3.zip",
             "input": "^3ds/DK64",
             "output": "/3ds/DK64"
           },
           {
             "type": "deleteFile",
-            "file": "%TMP%/DK64Recompiled3D-3ds-4f7a7b5.zip"
+            "file": "%TMP%/DK64Recompiled3D-3ds-2dde0a3.zip"
           },
           {
             "type": "requireFile",
@@ -4521,7 +4596,15 @@
         "platform": "N64",
         "year": 1999
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          1004366
+        ],
+        "files": [
+          "/3ds/DK64/DK64.3dsx"
+        ]
+      }
     },
     {
       "id": "banjo",
@@ -4603,19 +4686,19 @@
       "releases": {
         "stable": {
           "tag": "rolling",
-          "date": "2026-11-12",
+          "date": "2026-11-14",
           "assets": {
             "cia": {
-              "name": "BanjoRecompiled3D-3ds-374eeb3.cia",
-              "size": 7422912,
-              "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-374eeb3.cia",
-              "sha256": "dd75c4d76639faea8d99895037b4e8dedd6a72f415acf81f2494ccd352703693"
+              "name": "BanjoRecompiled3D-3ds.cia",
+              "size": 7482304,
+              "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds.cia",
+              "sha256": "1275952f7279d8e2725f71588eecc73f1119c309869ddf8576daa3618a68d370"
             },
             "3dsx": {
-              "name": "BanjoRecompiled3D-3ds-374eeb3.zip",
-              "size": 5446627,
-              "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-374eeb3.zip",
-              "sha256": "abf7b7f3c1bdb3431278d08ef1ad9eda0928fb8a46a87b1c735148bda7b1999b"
+              "name": "BanjoRecompiled3D-3ds-b11010f.zip",
+              "size": 5499606,
+              "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-b11010f.zip",
+              "sha256": "edd4f324a37fc898736e8b969e0431a033d75fdc5c693059e41a594af05442ab"
             }
           },
           "notes": {
@@ -4643,7 +4726,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000f5b4e00",
+          "ciaVersion": 0
         }
       },
       "install": {
@@ -4651,15 +4736,15 @@
           {
             "type": "downloadRelease",
             "asset": "cia",
-            "output": "%TMP%/BanjoRecompiled3D-3ds-374eeb3.cia"
+            "output": "%TMP%/BanjoRecompiled3D-3ds.cia"
           },
           {
             "type": "installCia",
-            "file": "%TMP%/BanjoRecompiled3D-3ds-374eeb3.cia"
+            "file": "%TMP%/BanjoRecompiled3D-3ds.cia"
           },
           {
             "type": "deleteFile",
-            "file": "%TMP%/BanjoRecompiled3D-3ds-374eeb3.cia"
+            "file": "%TMP%/BanjoRecompiled3D-3ds.cia"
           },
           {
             "type": "requireFile",
@@ -4669,21 +4754,21 @@
         "3dsx": [
           {
             "type": "downloadUrl",
-            "name": "BanjoRecompiled3D-3ds-374eeb3.zip",
-            "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-374eeb3.zip",
-            "output": "%TMP%/BanjoRecompiled3D-3ds-374eeb3.zip",
-            "size": 5446627,
-            "sha256": "abf7b7f3c1bdb3431278d08ef1ad9eda0928fb8a46a87b1c735148bda7b1999b"
+            "name": "BanjoRecompiled3D-3ds-b11010f.zip",
+            "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-b11010f.zip",
+            "output": "%TMP%/BanjoRecompiled3D-3ds-b11010f.zip",
+            "size": 5499606,
+            "sha256": "edd4f324a37fc898736e8b969e0431a033d75fdc5c693059e41a594af05442ab"
           },
           {
             "type": "extractFile",
-            "file": "%TMP%/BanjoRecompiled3D-3ds-374eeb3.zip",
+            "file": "%TMP%/BanjoRecompiled3D-3ds-b11010f.zip",
             "input": "^3ds/BanjoRecomp",
             "output": "/3ds/BanjoRecomp"
           },
           {
             "type": "deleteFile",
-            "file": "%TMP%/BanjoRecompiled3D-3ds-374eeb3.zip"
+            "file": "%TMP%/BanjoRecompiled3D-3ds-b11010f.zip"
           },
           {
             "type": "requireFile",
@@ -4697,7 +4782,15 @@
         "platform": "N64",
         "year": 1998
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          1006414
+        ],
+        "files": [
+          "/3ds/BanjoRecomp/BanjoRecomp.3dsx"
+        ]
+      }
     },
     {
       "id": "goemon",
@@ -4778,19 +4871,19 @@
       "releases": {
         "stable": {
           "tag": "rolling",
-          "date": "2026-11-12",
+          "date": "2026-11-14",
           "assets": {
             "cia": {
-              "name": "Goemon64Recompiled3D-3ds-b0e40a6.cia",
+              "name": "Goemon64Recompiled3D-3ds.cia",
               "size": 5422016,
-              "url": "https://github.com/oneup03/Goemon64Recomp3D/releases/download/rolling/Goemon64Recompiled3D-3ds-b0e40a6.cia",
-              "sha256": "ef05ece7886daa81377e4e5cf2f7dec48f79389a5c254fcffa0ad8db6c22d004"
+              "url": "https://github.com/oneup03/Goemon64Recomp3D/releases/download/rolling/Goemon64Recompiled3D-3ds.cia",
+              "sha256": "441982c9ad903ebcbb623ffcdc6476f010ca971fa0e0ffb9fd1067522b812733"
             },
             "3dsx": {
-              "name": "Goemon64Recompiled3D-3ds-b0e40a6.zip",
-              "size": 3730563,
-              "url": "https://github.com/oneup03/Goemon64Recomp3D/releases/download/rolling/Goemon64Recompiled3D-3ds-b0e40a6.zip",
-              "sha256": "5f7e31249e48d8589c19b13efa7e0cdf66a2968a16620ac3dc9e951256364e69"
+              "name": "Goemon64Recompiled3D-3ds-3f1013a.zip",
+              "size": 3730693,
+              "url": "https://github.com/oneup03/Goemon64Recomp3D/releases/download/rolling/Goemon64Recompiled3D-3ds-3f1013a.zip",
+              "sha256": "40706133820361f6273e037ff6d991eed5e7b287f1b6055e601482674494e3ec"
             }
           },
           "notes": {
@@ -4818,7 +4911,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000f564e00",
+          "ciaVersion": 0
         }
       },
       "install": {
@@ -4826,15 +4921,15 @@
           {
             "type": "downloadRelease",
             "asset": "cia",
-            "output": "%TMP%/Goemon64Recompiled3D-3ds-b0e40a6.cia"
+            "output": "%TMP%/Goemon64Recompiled3D-3ds.cia"
           },
           {
             "type": "installCia",
-            "file": "%TMP%/Goemon64Recompiled3D-3ds-b0e40a6.cia"
+            "file": "%TMP%/Goemon64Recompiled3D-3ds.cia"
           },
           {
             "type": "deleteFile",
-            "file": "%TMP%/Goemon64Recompiled3D-3ds-b0e40a6.cia"
+            "file": "%TMP%/Goemon64Recompiled3D-3ds.cia"
           },
           {
             "type": "requireFile",
@@ -4844,21 +4939,21 @@
         "3dsx": [
           {
             "type": "downloadUrl",
-            "name": "Goemon64Recompiled3D-3ds-b0e40a6.zip",
-            "url": "https://github.com/oneup03/Goemon64Recomp3D/releases/download/rolling/Goemon64Recompiled3D-3ds-b0e40a6.zip",
-            "output": "%TMP%/Goemon64Recompiled3D-3ds-b0e40a6.zip",
-            "size": 3730563,
-            "sha256": "5f7e31249e48d8589c19b13efa7e0cdf66a2968a16620ac3dc9e951256364e69"
+            "name": "Goemon64Recompiled3D-3ds-3f1013a.zip",
+            "url": "https://github.com/oneup03/Goemon64Recomp3D/releases/download/rolling/Goemon64Recompiled3D-3ds-3f1013a.zip",
+            "output": "%TMP%/Goemon64Recompiled3D-3ds-3f1013a.zip",
+            "size": 3730693,
+            "sha256": "40706133820361f6273e037ff6d991eed5e7b287f1b6055e601482674494e3ec"
           },
           {
             "type": "extractFile",
-            "file": "%TMP%/Goemon64Recompiled3D-3ds-b0e40a6.zip",
+            "file": "%TMP%/Goemon64Recompiled3D-3ds-3f1013a.zip",
             "input": "^3ds/Goemon64",
             "output": "/3ds/Goemon64"
           },
           {
             "type": "deleteFile",
-            "file": "%TMP%/Goemon64Recompiled3D-3ds-b0e40a6.zip"
+            "file": "%TMP%/Goemon64Recompiled3D-3ds-3f1013a.zip"
           },
           {
             "type": "requireFile",
@@ -4872,7 +4967,15 @@
         "platform": "N64",
         "year": 1997
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          1005134
+        ],
+        "files": [
+          "/3ds/Goemon64/Goemon64.3dsx"
+        ]
+      }
     },
     {
       "id": "mkwii",
@@ -5070,7 +5173,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000bb41c00",
+          "ciaVersion": 1024
         },
         "experimental": {
           "tag": "nightly-2.1",
@@ -5114,7 +5219,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000bb41c00",
+          "ciaVersion": 1024
         }
       },
       "install": {
@@ -5145,6 +5252,15 @@
       "origin": {
         "platform": "Android / iOS",
         "year": 2013
+      },
+      "detect": {
+        "ids": [
+          767004
+        ],
+        "files": [
+          "%3DSX%/GeometryDash3DS.3dsx"
+        ],
+        "uu": "Geometry Dash 3DS"
       }
     },
     {
@@ -5266,7 +5382,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000ff12800",
+          "ciaVersion": 2048
         }
       },
       "install": {
@@ -5323,7 +5441,16 @@
         "platform": "PC",
         "year": 1998
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          1044776
+        ],
+        "files": [
+          "%3DSX%/Xash3DS.3dsx"
+        ],
+        "uu": "Xash3DS"
+      }
     },
     {
       "id": "ctrquake",
@@ -5458,7 +5585,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000ff12300",
+          "ciaVersion": 0
         }
       },
       "requires": [
@@ -5511,7 +5640,16 @@
       },
       "sourceUrl": "https://github.com/masterfeizz/ctrQuake",
       "verifiedAt": "2026-11-12",
-      "iconBackground": "#d5b88c"
+      "iconBackground": "#d5b88c",
+      "detect": {
+        "ids": [
+          1044771
+        ],
+        "files": [
+          "%3DSX%/ctrQuake.3dsx"
+        ],
+        "uu": "ctrQuake"
+      }
     },
     {
       "id": "openlara",
@@ -5844,7 +5982,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "0004000000384900",
+          "ciaVersion": 2048
         }
       },
       "install": {
@@ -5874,6 +6014,15 @@
       "stars": 92,
       "origin": {
         "platform": "SNES"
+      },
+      "detect": {
+        "ids": [
+          14409
+        ],
+        "files": [
+          "%3DSX%/snes9x_3ds.3dsx"
+        ],
+        "uu": "Snes9x (updated fork)"
       }
     },
     {
@@ -5971,7 +6120,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000daed300",
+          "ciaVersion": 2048
         }
       },
       "install": {
@@ -6039,7 +6190,16 @@
       "origin": {
         "platform": "N64"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          896723
+        ],
+        "files": [
+          "%3DSX%/DaedalusX64.3dsx"
+        ],
+        "uu": "DaedalusX64-3DS"
+      }
     },
     {
       "id": "mgba",
@@ -6239,7 +6399,13 @@
       "sourceUrl": "https://github.com/mgba-emu/mgba",
       "verifiedAt": "2026-11-12",
       "releasePinned": true,
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          6686
+        ],
+        "uu": "mGBA"
+      }
     },
     {
       "id": "psx3d",
@@ -6378,7 +6544,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000c3d3d00",
+          "ciaVersion": 5125
         }
       },
       "install": {
@@ -6409,7 +6577,12 @@
       "origin": {
         "platform": "PS1"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          802109
+        ]
+      }
     },
     {
       "id": "picodrive",
@@ -6575,7 +6748,16 @@
       "origin": {
         "platform": "Mega Drive"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          14412
+        ],
+        "files": [
+          "%3DSX%/picodrive_3ds.3dsx"
+        ],
+        "uu": "PicoDrive"
+      }
     },
     {
       "id": "retroarch",
@@ -6701,7 +6883,16 @@
       "origin": {
         "platform": "Multi-system"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          764928
+        ],
+        "files": [
+          "/retroarch/assets/ctr/bottom_menu.png"
+        ],
+        "uu": "RetroArch"
+      }
     },
     {
       "id": "checkpoint",
@@ -6838,7 +7029,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000bcfff00",
+          "ciaVersion": 5168
         }
       },
       "requires": [],
@@ -6872,7 +7065,16 @@
       "origin": {
         "platform": "3DS"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          774143
+        ],
+        "files": [
+          "%3DSX%/Checkpoint.3dsx"
+        ],
+        "uu": "Checkpoint"
+      }
     },
     {
       "id": "nimbus",
@@ -7032,7 +7234,16 @@
       "origin": {
         "platform": "3DS"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          868562
+        ],
+        "files": [
+          "/3ds/nimbus.3dsx"
+        ],
+        "uu": "Nimbus"
+      }
     },
     {
       "id": "3dsdl",
@@ -7172,7 +7383,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "0004000003d5d100",
+          "ciaVersion": 2319
         }
       },
       "install": {
@@ -7203,7 +7416,12 @@
       "origin": {
         "platform": "3DS"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          251345
+        ]
+      }
     },
     {
       "id": "universal",
@@ -7300,7 +7518,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "0004000004391700",
+          "ciaVersion": 3137
         },
         "experimental": {
           "tag": "git",
@@ -7344,7 +7564,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "0004000004391700",
+          "ciaVersion": 3137
         }
       },
       "install": {
@@ -7374,6 +7596,11 @@
       "stars": 1332,
       "origin": {
         "platform": "3DS"
+      },
+      "detect": {
+        "ids": [
+          276759
+        ]
       }
     },
     {
@@ -7471,7 +7698,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000bf74d00",
+          "ciaVersion": 84
         }
       },
       "install": {
@@ -7502,7 +7731,16 @@
       "origin": {
         "platform": "3DS"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          784205
+        ],
+        "files": [
+          "%3DSX%/FourthTube.3dsx"
+        ],
+        "uu": "FourthTube"
+      }
     },
     {
       "id": "anemone",
@@ -7640,7 +7878,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000bafe000",
+          "ciaVersion": 3073
         }
       },
       "requires": [],
@@ -7673,6 +7913,15 @@
       "verifiedAt": "2026-11-12",
       "origin": {
         "platform": "3DS"
+      },
+      "detect": {
+        "ids": [
+          765920
+        ],
+        "files": [
+          "%3DSX%/Anemone3DS.3dsx"
+        ],
+        "uu": "Anemone3DS"
       }
     },
     {
@@ -7763,7 +8012,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "0004000000df1100",
+          "ciaVersion": 0
         }
       },
       "install": {
@@ -7787,7 +8038,13 @@
       "origin": {
         "platform": "3DS"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          57105
+        ],
+        "uu": "wumiibo"
+      }
     },
     {
       "id": "fbi",
@@ -7924,7 +8181,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000f800100",
+          "ciaVersion": 2145
         }
       },
       "requires": [],
@@ -7958,7 +8217,12 @@
       "origin": {
         "platform": "3DS"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          1015809
+        ]
+      }
     },
     {
       "id": "recorder",
@@ -8098,7 +8362,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000b3da300",
+          "ciaVersion": 1072
         }
       },
       "install": {
@@ -8128,6 +8394,11 @@
       "stars": 26,
       "origin": {
         "platform": "3DS"
+      },
+      "detect": {
+        "ids": [
+          736675
+        ]
       }
     },
     {
@@ -8224,7 +8495,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000ae5e700",
+          "ciaVersion": 1027
         }
       },
       "install": {
@@ -8255,7 +8528,16 @@
       "origin": {
         "platform": "3DS"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          714215
+        ],
+        "files": [
+          "%3DSX%/AzaharArticSetup.3dsx"
+        ],
+        "uu": "Artic Setup Tool"
+      }
     },
     {
       "id": "ftpd",
@@ -8351,7 +8633,9 @@
             "ja": [
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
-          }
+          },
+          "ciaTitle": "000400000beef500",
+          "ciaVersion": 3105
         }
       },
       "install": {
@@ -8382,7 +8666,18 @@
       "origin": {
         "platform": "3DS"
       },
-      "pixelIcon": false
+      "pixelIcon": false,
+      "detect": {
+        "ids": [
+          782069
+        ],
+        "files": [
+          "%3DSX%/ftpd-classic.3dsx",
+          "%3DSX%/ftpd.3dsx",
+          "%NDS%/ftpd.nds"
+        ],
+        "uu": "ftpd"
+      }
     },
     {
       "id": "butterscotch",
@@ -8501,7 +8796,9 @@
               "Chapter 2のカクつきを軽減し、音声、テクスチャー、セーブを修正。",
               "Cスティックに対応し、アプリ終了時の問題を修正。"
             ]
-          }
+          },
+          "ciaTitle": "0004000000efad00",
+          "ciaVersion": 0
         }
       },
       "install": {
@@ -8544,7 +8841,12 @@
       "origin": {
         "platform": "PC · GameMaker"
       },
-      "pixelIcon": true
+      "pixelIcon": true,
+      "detect": {
+        "ids": [
+          61357
+        ]
+      }
     }
   ]
 }

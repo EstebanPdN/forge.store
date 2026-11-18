@@ -6,7 +6,7 @@
 #include "reader_cache.h"
 #include <time.h>
 #define LIMIT (4u*1024u*1024u)
-#define CACHE DATA_DIR "/universal-v2.cache"
+#define CACHE DATA_DIR "/universal-v3.cache"  // v3: detection fields (detect.c)
 static Thread worker;
 static bool started,ready,stop,paused,applied;
 static json_t *result;
@@ -32,7 +32,8 @@ static json_t *fetch(const char *url){
     free(b.data);curl_easy_cleanup(c);return j;
 }
 static void run(void *ctx){
-    (void)ctx;size_t n=0;time_t now=time(NULL);char *cached=reader_cache_load(CACHE,(uint64_t)now,21600,LIMIT,&n);
+    (void)ctx;size_t n=0;time_t now=time(NULL);remove(DATA_DIR "/universal-v2.cache");  // 1.0's conversion, without detection
+    char *cached=reader_cache_load(CACHE,(uint64_t)now,21600,LIMIT,&n);
     if(cached){result=json_loadb(cached,n,JSON_REJECT_DUPLICATES,NULL);free(cached);if(!json_is_array(result)||!json_array_size(result)||json_array_size(result)>MAX_APPS){json_decref(result);result=NULL;}else goto done;}
     json_t *full=fetch("https://db.universal-team.net/data/full.json"),*store=NULL;
     if(full&&!stopped())store=fetch("https://db.universal-team.net/unistore/universal-db.unistore");

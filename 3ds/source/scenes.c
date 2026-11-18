@@ -5,6 +5,8 @@
 #include "fx.h"
 #include "gfx.h"
 #include "install.h"
+#include "detect.h"
+#include "detect_rules.h"
 #include "network.h"
 #include "video.h"
 #include "media.h"
@@ -260,7 +262,12 @@ static AppStatus app_status_view(App *a) {
     if(a==test_installed_app&&!install_busy(a))return ST_INSTALLED;
     if(install_busy(a))return ST_BUSY;
     const char *version=app_installed_version(a);
-    if(!version||!*version)return a->dev?ST_DEV:ST_AVAILABLE;
+    if(!version||!*version){
+        // Installed some other way (FBI, Universal-Updater): same marks, no uninstall.
+        if(a->dev||!app_found(a))return a->dev?ST_DEV:ST_AVAILABLE;
+        if(app_found_outdated(a))return ST_UPDATE;
+        return app_missing_requirement_view(a)?ST_NEEDS_FILE:ST_INSTALLED;
+    }
     json_t *record=installed_record(a);
     const char *channel=json_string_value(json_object_get(record,"channel"));
     bool exp=channel?!strcmp(channel,"experimental"):json_is_true(json_object_get(record,"experimental"));
@@ -1329,8 +1336,16 @@ static void launch_app(App *app) {
         Result rc=AM_GetTitleInfo(MEDIATYPE_SD,1,&id,&entry);
         if(R_SUCCEEDED(rc)) { aptSetChainloader(id,MEDIATYPE_SD); launch_begin(); return; }
     }
+    // Found on the console (detect.c): its own title, else its .3dsx.
+    AM_TitleEntry found;
+    if(app->found_title && R_SUCCEEDED(AM_GetTitleInfo(MEDIATYPE_SD,1,&app->found_title,&found))) {
+        aptSetChainloader(app->found_title,MEDIATYPE_SD); launch_begin(); return;
+    }
     char path[1024];
-    if(app_launch_path(app,path,sizeof path)) {
+    bool have=app_launch_path(app,path,sizeof path);
+    if(!have && app->found_path && detect_ends(app->found_path,".3dsx") && strlen(app->found_path)<sizeof path)
+        snprintf(path,sizeof path,"%s",app->found_path),have=true;
+    if(have) {
         HblLaunchResult result=hbl_launch(path);
         if(result==HBL_LAUNCH_OK){launch_begin();return;}
         char message[112];snprintf(message,sizeof message,"Homebrew Launcher · %.86s",path);toast(message,AMBER);
@@ -1533,10 +1548,11 @@ static void detail_update(void) {
         return;
     }
     AppStatus st = app_status_view(dapp);
-    bool removable=st==ST_INSTALLED || st==ST_NEEDS_FILE || st==ST_UPDATE;
+    // Only what forge.store installed (it has the inventory) can be uninstalled here.
+    bool removable=(st==ST_INSTALLED || st==ST_NEEDS_FILE || st==ST_UPDATE) && installed_record(dapp);
     bool installed_view=st==ST_INSTALLED||st==ST_NEEDS_FILE;
     bool tap_action=hit(5,205,installed_view?DETAIL_OPEN_W:removable?250:280,28);
-    if(installed_view && hit(DETAIL_UPDATE_X,205,255-DETAIL_UPDATE_X,28)) {
+    if(installed_view && hit(DETAIL_UPDATE_X,205,(removable?255:285)-DETAIL_UPDATE_X,28)) {
         if(app_release(dapp,false)) open_sheet(); else sfx("error");
         return;
     }
@@ -2221,6 +2237,7 @@ static void detail_bottom(float sa) {
     a = sa;
     // Action bar
     AppStatus st = app_status_view(dapp);
+    bool removable=(st==ST_INSTALLED || st==ST_NEEDS_FILE || st==ST_UPDATE) && installed_record(dapp);
     char lbl[96], size[24];
     if(json_is_true(json_object_get(dapp->j,"nativeUnsupported"))) {
         button_round(5,205,280,28,"Universal-Updater · GitHub","github",NULL,BTN_SURFACE,a);
@@ -2231,12 +2248,12 @@ static void detail_bottom(float sa) {
     } else if (st == ST_UPDATE) {
         json_t *rel = app_release(dapp, sheet_exp);
         tvars(lbl, sizeof lbl, T("action.update"), "v", json_string_value(json_object_get(rel, "tag")), NULL, NULL);
-        button_round(5,205,250,28,lbl,"update",dtab==1 && shot_i<0?NULL:"A",BTN_PRIMARY,a);
+        button_round(5,205,removable?250:280,28,lbl,"update",dtab==1 && shot_i<0?NULL:"A",BTN_PRIMARY,a);
     } else if (st == ST_INSTALLED || st == ST_NEEDS_FILE) {
         // Installed: open it, or pick another build (stable or experimental) to switch to.
         snprintf(lbl,sizeof lbl,"%s",T("action.open"));
         button_round(5,205,DETAIL_OPEN_W,28,lbl,"play",NULL,BTN_MINT,a);
-        button_round(DETAIL_UPDATE_X,205,255-DETAIL_UPDATE_X,28,T("native.update"),"update",NULL,BTN_SURFACE,a);
+        button_round(DETAIL_UPDATE_X,205,(removable?255:285)-DETAIL_UPDATE_X,28,T("native.update"),"update",NULL,BTN_SURFACE,a);
     } else if (st == ST_BUSY) {
         Job *j = install_job(dapp);
         float p = j ? job_progress(j) : 0;
@@ -2261,7 +2278,7 @@ static void detail_bottom(float sa) {
         button_round(289,205,26,28,NULL,"github",NULL,BTN_SURFACE,a);
         draw_badge("X",305,223,a);
     }
-    if(st==ST_INSTALLED || st==ST_NEEDS_FILE || st==ST_UPDATE) button_round(259,205,26,28,NULL,"trash",NULL,BTN_SURFACE,a);
+    if(removable) button_round(259,205,26,28,NULL,"trash",NULL,BTN_SURFACE,a);
     if(uninstall_on) {
         rect(0,0,320,240,C(0x0a1216,.55f*a)); glass(6,64,308,124,12,a);
         text_fit(T("action.uninstall"),16,78,14,288,C(TH.ink,a));
@@ -2949,7 +2966,7 @@ static void console_sheet(float a) {
     snprintf(bot_s, sizeof bot_s, "320×240 %s", T("console.touch"));
     int installed = 0;
     for (int i = 0; i < NAPPS; i++)
-        installed += app_installed_version(&APPS[i]) != NULL;
+        installed += app_installed_version(&APPS[i]) != NULL || app_found(&APPS[i]);
     snprintf(apps, sizeof apps, "%d", installed);
     const char *facts[][2] = {
         {"console.cpu", IS_NEW3DS ? "ARM11 ×4 · 804 MHz" : "ARM11 ×2 · 268 MHz"},
@@ -3186,6 +3203,8 @@ static void settings_bottom(float sa) {
 
 static void job_done(Job *j) {
     file_view_refresh();rom_find_refresh();
+    // What is on the console changed: look again (an uninstalled app is forgotten at once).
+    if(j->uninstall&&j->state==JOB_DONE)detect_forget(j->app->id);else detect_request();
     bool watching = scene == SC_INSTALL && ij == j;
     if (watching)
         return;
@@ -3260,8 +3279,9 @@ void scenes_update(void) {
     github_prefetch_start();
     github_prefetch_pause(scene==SC_GITHUB||install_active()!=NULL||video_active()||forge_mode_state()==FORGE_CHECKING);
     bool catalog_changed=false;
-    if(!test_freeze_media&&media_started){catalog_changed=catalog_remote_pump(true);catalog_changed|=catalog_sync_pump();catalog_changed|=universal_sync_pump(scene==SC_HOME||scene==SC_SEARCH||scene==SC_SETTINGS);}
+    if(!test_freeze_media&&media_started){catalog_changed=catalog_remote_pump(true);catalog_changed|=catalog_sync_pump();catalog_changed|=universal_sync_pump(scene==SC_HOME||scene==SC_SEARCH||scene==SC_SETTINGS);detect_pump();}
     if(catalog_changed){
+        detect_request();
         requirement_views_rebuild();
         App *selected=nlist&&sel<nlist?list[sel]:NULL;
         home_list();if(selected)for(int i=0;i<nlist;i++)if(list[i]==selected){sel=i;break;}
@@ -3635,6 +3655,9 @@ void scenes_test_log(FILE *file){
     for(unsigned i=0;i<media_count();i++){MediaItem m;if(media_item(i,&m))fprintf(file,"media item=%s/%s state=%d bytes=%u/%u attempts=%u error=%s\n",m.appid,m.id,m.state,m.received,m.total,m.attempts,m.error);}
     fprintf(file,"package state=%d items=%u ready=%u bytes=%llu/%llu\n",PKG.state,PKG.items,PKG.ready,(unsigned long long)PKG.received,(unsigned long long)PKG.bytes);
     fprintf(file,"catalog apps=%d universal=%s\n",NAPPS,universal_sync_status());
+    fprintf(file,"detect %s found",detect_status());
+    for(int i=0;i<NAPPS;i++)if(app_found(&APPS[i]))fprintf(file," %s:%s%s",APPS[i].id,APPS[i].found_title?"title":"file",app_found_outdated(&APPS[i])?":outdated":"");
+    fprintf(file,"\n");
     fprintf(file,"remote %s\n",catalog_remote_status());fprintf(file,"progress");for(int i=0;i<BUILTIN_APPS;i++)if(APPS[i].progress>=0)fprintf(file," %s=%d",APPS[i].id,APPS[i].progress);fprintf(file,"\n");
     if(dapp){fprintf(file,"gallery app=%s thumbs=%d fullscreen=%d slots=",dapp->id,sheet_ok(&dapp->shot_thumbs),shot_fullscreen);for(int k=0;k<3;k++)fprintf(file,"%d:%d/%d,",dapp->shot_index[k],sheet_ok(&dapp->shots_t[k]),sheet_ok(&dapp->shots_b[k]));fprintf(file,"\n");}
     static const char *kinds[]={"intro","home","detail","install","settings","search","downloads","sd","github"};

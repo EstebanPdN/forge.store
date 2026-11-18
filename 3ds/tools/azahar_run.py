@@ -105,7 +105,7 @@ def main():
         body=a.seed_universal.read_bytes()
         assert isinstance(json.loads(body),list)
         stamp=calendar.timegm(time.localtime())
-        (sd/'universal-v2.cache').write_bytes(struct.pack('<4sQII',b'FGH2',stamp,len(body),zlib.crc32(body))+body)
+        (sd/'universal-v3.cache').write_bytes(struct.pack('<4sQII',b'FGH2',stamp,len(body),zlib.crc32(body))+body)
     if a.settings:
         (sd / 'settings.json').write_text(a.settings)
     fw = Path.home() / 'Library/Application Support/Azahar/sdmc/3ds/dspfirm.cdc'

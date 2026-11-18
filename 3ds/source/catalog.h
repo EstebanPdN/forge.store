@@ -27,6 +27,11 @@ typedef struct {
     Sheet shots_t[3], shots_b[3];
     int shot_index[3];
     Sheet shot_thumbs;
+    // On the console without a forge.store record (detect.c; main thread).
+    u64 found_title;       // its CIA title, 0 = none
+    u16 found_version;     // that title's version
+    char *found_path;      // a listed file that is present (sdmc:/...), NULL = none
+    char uu_updated[17];   // Universal-Updater installed the entry updated at this time
 } App;
 
 typedef struct {
@@ -75,6 +80,12 @@ u32 app_download_size(App *a, bool cia, bool experimental);
 // Installed apps: sdmc:/3ds/forge-store/installed.json
 typedef enum { ST_AVAILABLE, ST_INSTALLED, ST_UPDATE, ST_DEV, ST_BUSY, ST_NEEDS_FILE } AppStatus;
 AppStatus app_status(App *a);
+/** Present on the console without a forge.store record (found by detect.c). */
+bool app_found(App *a);
+/** Found, and older than the catalog's current stable version. */
+bool app_found_outdated(App *a);
+/** CIA titles this app is known to use (catalog "detect.ids"); never a shared template ID. */
+int app_title_ids(App *a, u64 *out, int max);
 const char *app_installed_version(App *a);
 void installed_load(void);
 /** Main thread only. Borrowed read-only record, valid until the next successful
@@ -90,6 +101,12 @@ void installed_set(App *a, const char *version, bool experimental, bool cia, jso
  * hashes is a borrowed path -> SHA256 object, or NULL. */
 bool installed_commit_manifest(App *a, const char *version, bool experimental, bool cia,
                                json_t *files, json_t *dirs, json_t *hashes);
+/** Same, also recording the installer's transaction id (see installed_saved). */
+bool installed_commit_transaction(App *a, const char *version, bool experimental, bool cia, json_t *files,
+                                  json_t *dirs, json_t *hashes, const char *transaction);
+/** Any thread: the durable installed.json as the next launch will load it (new reference,
+ * NULL if unreadable). Taken under the save lock, so never half of a commit. */
+json_t *installed_saved(void);
 /** Main thread, synchronous durable metadata removal. No file/title deletion. */
 bool installed_forget(App *a);
 void installed_remove(App *a);

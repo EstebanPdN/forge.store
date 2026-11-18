@@ -18,9 +18,11 @@
 #ifndef FORGE_INSTALL_HOST_TEST
 #include <mbedtls/sha256.h>
 #endif
+#include <dirent.h>
 #include <limits.h>
 #include <stdarg.h>
 #include <sys/stat.h>
+#include <time.h>
 #include <unistd.h>
 
 #define SOC_SIZE 0x100000
@@ -63,7 +65,18 @@ void tvars(char *out, size_t n, const char *tmpl, const char *k1, const char *v1
 
 // All application writes are staged. Only tx_publish touches existing files, and it
 // keeps the previous bytes until the durable installed-record commit succeeds.
+//
+// Interruption (power, crash, closing during a download) can leave this folder behind.
+// tx_recover settles it from what is on the SD alone: the inventory written before the
+// first live change, the CIA markers and the saved installed record. Uncommitted work is
+// undone (the previous version is kept); committed work is completed. The next install
+// therefore always starts from an empty folder.
 #define TX_DIR DATA_DIR "/install-transaction"
+#define TX_JOURNAL TX_DIR "/recovery.json"
+#define TX_DIRS TX_DIR "/dirs.txt"              // folders this installation created
+#define TX_CIA_STARTED TX_DIR "/cia-started"    // AM may have replaced the title from here on
+#define TX_CIA_FINISHED TX_DIR "/cia-finished"  // AM committed the new title
+#define TX_KEPT DATA_DIR "/install-transaction-kept-"
 #define PATH_CAP 512
 #define FILE_LIMIT 0x7fffffffULL // stdio/newlib signed offsets on this target
 #define TX_LIMIT 4096
@@ -80,6 +93,10 @@ typedef struct {
     JobStep *cia_step;
     u64 title_id;
     bool had_title, cia_attempted;
+    // The title was installed without forge.store's copy of its package: it cannot be
+    // put back, so once AM commits the new title the installation is completed instead.
+    bool no_restore;
+    u16 old_version, new_version;
     char cia_cache[PATH_CAP];
 } Transaction;
 static Transaction tx;
@@ -141,12 +158,25 @@ static bool sd_path(char *out, size_t n, const char *p) {
            strcmp(out, DATA_DIR "/installed.json") && strcmp(out, DATA_DIR "/settings.json");
 }
 
+static bool durable_close(FILE *f);
+
+// Folders are created outside the staging folder, so recovery needs their names too.
+static bool note_dir(const char *path) {
+    FILE *f = fopen(TX_DIRS, "ab");
+    if (!f) return false;
+    bool ok = fprintf(f, "%s\n", path) > 0;
+    return durable_close(f) && ok;
+}
+
 static bool make_dir(const char *path, bool track) {
     struct stat st;
     if (!stat(path, &st)) return S_ISDIR(st.st_mode);
     if (errno != ENOENT) return false;
     // Reserve the rollback record before creating anything.
-    if (track && json_array_append_new(tx.dirs, json_string(path))) return false;
+    if (track) {
+        if (json_array_append_new(tx.dirs, json_string(path))) return false;
+        if (!note_dir(path)) { json_array_remove(tx.dirs, json_array_size(tx.dirs) - 1); return false; }
+    }
     if (!mkdir(path, 0777)) return true;
     if (track) json_array_remove(tx.dirs, json_array_size(tx.dirs) - 1);
     return false;
@@ -218,10 +248,25 @@ static bool durable_close(FILE *f) {
     return ok;
 }
 
+static void tx_recover(void);
+static bool tx_clear(bool inventory_first);
+
+static void tx_new_id(char *out, size_t n) {
+    static u32 counter;
+    snprintf(out, n, "%llx-%llx-%lx", (unsigned long long)time(NULL), (unsigned long long)svcGetSystemTick(),
+             (unsigned long)++counter);
+}
+
 static bool tx_begin(Job *j) {
     memset(&tx, 0, sizeof tx);
-    if (!mkdirs(DATA_DIR, false) || mkdir(TX_DIR, 0777))
-        return fail(j, "Install recovery files exist or SD unavailable: " TX_DIR);
+    if (!mkdirs(DATA_DIR, false)) return fail(j, "SD card unavailable");
+    if (mkdir(TX_DIR, 0777)) {
+        // An earlier installation was interrupted or could not finish cleaning up. Settle it
+        // first (undo, or complete when it was committed) so this one starts fresh.
+        tx_recover();
+        if (mkdir(TX_DIR, 0777)) return fail(j, "Cannot prepare " TX_DIR);
+    }
+    tx_new_id(j->transaction, sizeof j->transaction);
     tx.dirs = json_array();
     j->files = json_array();
     j->dirs = json_array();
@@ -233,11 +278,17 @@ static bool tx_finish(Job *j, bool success) {
     bool ok = true;
     for (int i = tx.count - 1; i >= 0; --i) {
         TxFile *e = &tx.files[i];
-        if (!success) {
-            if (e->published && remove(e->path) && errno != ENOENT) ok = false;
-            if (e->had_old && rename(e->backup, e->path)) ok = false;
-        } else if (e->had_old && remove(e->backup)) ok = false;
-        if (remove(e->stage) && errno != ENOENT) ok = false;
+        if (success) {
+            if (e->had_old && remove(e->backup) && errno != ENOENT) ok = false;
+            if (remove(e->stage) && errno != ENOENT) ok = false;
+        } else {
+            // The exact inverse of tx_publish: the new file goes back to its staged name before
+            // the previous one returns. At every step the SD reads the way recovery expects (a
+            // staged file present means "not published"), so a cut here never loses either file.
+            bool back = !e->published || !rename(e->path, e->stage) || errno == ENOENT;
+            if (!back) ok = false;
+            else if (e->had_old && rename(e->backup, e->path)) ok = false;
+        }
     }
     if (!success) {
         for (size_t i = json_array_size(tx.dirs); i > 0; --i) {
@@ -245,28 +296,55 @@ static bool tx_finish(Job *j, bool success) {
             if (rmdir(dir) && errno != ENOENT && errno != ENOTEMPTY) ok = false;
         }
     }
-    if (ok) {
-        remove(TX_DIR "/recovery.json");
-        if (rmdir(TX_DIR)) ok = false;
-    }
-    if (!ok) fail(j, "SD recovery required; backups retained in " TX_DIR);
+    // Completed: the backups are gone, the inventory goes last. Rolled back: nothing is
+    // published any more, so the inventory goes first and the staged files after it.
+    if (ok) ok = tx_clear(!success);
+    // Whatever is left is settled from the SD before the next installation (tx_recover).
+    if (!ok) fail(j, "SD cleanup incomplete; it is retried before the next installation");
     free(tx.files); json_decref(tx.dirs);
     memset(&tx, 0, sizeof tx);
     return ok;
 }
 
+// Replaces or creates its live path (deleted intermediates and %TMP% never do).
+static bool tx_publishes(const TxFile *e) {
+    return !e->deleted && !e->remove_live && strncmp(e->path, DATA_DIR "/tmp/", strlen(DATA_DIR "/tmp/"));
+}
+
 static bool tx_publish(Job *j) {
-    // Keep a human-readable recovery inventory on SD before the first live rename.
-    json_t *manifest = json_array();
-    if (!manifest) return fail(j, "Out of memory");
+    // Every file that will reach a live path is staged now. The inventory promises it, and
+    // recovery reads a missing staged file as one already moved into place.
     for (int i = 0; i < tx.count; ++i) {
-        TxFile *e = &tx.files[i];
-        if (json_array_append_new(manifest, json_pack("{s:s,s:s,s:s,s:b}", "path", e->path,
-              "stage", e->stage, "backup", e->backup, "deleted", e->deleted))) {
-            json_decref(manifest); return fail(j, "Out of memory");
-        }
+        struct stat st;
+        if (tx_publishes(&tx.files[i]) && (stat(tx.files[i].stage, &st) || !S_ISREG(st.st_mode)))
+            return fail(j, "Missing staged file");
     }
-    FILE *journal = fopen(TX_DIR "/recovery.json", "wb");
+    // Keep a human-readable recovery inventory on SD before the first live rename.
+    json_t *files = json_array();
+    json_t *manifest = files ? json_pack("{s:i,s:s,s:s,s:s,s:O}", "format", 2, "kind", j->uninstall ? "uninstall" : "install",
+                                         "app", j->app && j->app->id ? j->app->id : "", "transaction", j->transaction,
+                                         "files", files) : NULL;
+    bool built = manifest != NULL;
+    if (built && tx.title_id) {
+        char title[17];
+        snprintf(title, sizeof title, "%016llx", (unsigned long long)tx.title_id);
+        built = !json_object_set_new(manifest, "title", json_string(title)) &&
+                !json_object_set_new(manifest, "hadTitle", json_boolean(tx.had_title)) &&
+                !json_object_set_new(manifest, "restore", json_boolean(!tx.no_restore)) &&
+                !json_object_set_new(manifest, "oldVersion", json_integer(tx.old_version)) &&
+                !json_object_set_new(manifest, "newVersion", json_integer(tx.new_version));
+    }
+    for (int i = 0; built && i < tx.count; ++i) {
+        TxFile *e = &tx.files[i];
+        built = !json_array_append_new(files, json_pack("{s:s,s:s,s:s,s:b,s:b}", "path", e->path, "stage", e->stage,
+                                                        "backup", e->backup, "publish", tx_publishes(e), "remove", e->remove_live));
+    }
+    // An uninstallation also removes the folders its installation created, once empty.
+    if (built && j->uninstall && json_is_array(json_object_get(j->record, "dirs")))
+        built = !json_object_set(manifest, "dirs", json_object_get(j->record, "dirs"));
+    json_decref(files);
+    if (!built) { json_decref(manifest); return fail(j, "Out of memory"); }
+    FILE *journal = fopen(TX_JOURNAL, "wb");
     bool saved = journal && json_dumpf(manifest, journal, JSON_INDENT(2)) == 0;
     if (journal && !durable_close(journal)) saved = false;
     json_decref(manifest);
@@ -558,6 +636,12 @@ static void tx_abandon(void) {
     free(tx.files); json_decref(tx.dirs); memset(&tx, 0, sizeof tx);
 }
 
+static bool title_known(Job *j, u64 id) {
+    for (int i = 0; i < j->nknown && i < 8; i++)
+        if (j->known_titles[i] == id) return true;
+    return false;
+}
+
 static bool cia_prepare(Job *j) {
     if (!tx.cia_path[0]) return true;
     TxFile *source = tx_find(tx.cia_path);
@@ -568,13 +652,22 @@ static bool cia_prepare(Job *j) {
     if (!cia_info(input, &info) || (info.titleID >> 32) != 0x00040000)
         return fail(j, "Invalid CIA or unsupported non-application title");
     tx.title_id = info.titleID;
+    tx.new_version = info.version;
     if (!title_present(tx.title_id, &tx.had_title)) return fail(j, "Cannot inspect installed titles");
     snprintf(tx.cia_cache, sizeof tx.cia_cache, DATA_DIR "/cia-cache/%016llx.cia", (unsigned long long)info.titleID);
     if (tx.had_title) {
         AM_TitleInfo backup, current;
-        if (!cia_info(tx.cia_cache, &backup) || backup.titleID != info.titleID ||
-            R_FAILED(AM_GetTitleInfo(MEDIATYPE_SD, 1, &tx.title_id, &current)) || backup.version != current.version)
-            return fail(j, "Safe CIA update needs the original package; use FBI for this existing title");
+        if (R_FAILED(AM_GetTitleInfo(MEDIATYPE_SD, 1, &tx.title_id, &current))) return fail(j, "Cannot inspect installed titles");
+        tx.old_version = current.version;
+        // forge.store keeps the package it installed, to put that version back when this one
+        // fails after AM. A title installed some other way (FBI, Universal-Updater) has none:
+        // AM only replaces it once the new package is verified, and from then on the update
+        // is completed instead of undone.
+        tx.no_restore = !cia_info(tx.cia_cache, &backup) || backup.titleID != info.titleID || backup.version != current.version;
+        // Homebrew title IDs can be shared by unrelated software: replace only one this app
+        // is known to use (its catalog entry or an earlier installation).
+        if (tx.no_restore && !title_known(j, tx.title_id))
+            return fail(j, "Another installed title uses this CIA's title ID; it was not replaced");
     }
     struct stat st;
     if (stat(input, &st) || !free_space((u64)st.st_size)) return fail(j, "Insufficient SD space for CIA recovery copy");
@@ -597,6 +690,280 @@ static bool cia_restore(Job *j) {
     bool ok = install_cia(&restore, &step, cache->backup);
     if (!ok) fail(j, "CIA restore failed; original package retained in " TX_DIR);
     return ok;
+}
+
+static bool title_state(u64 id, bool *present, u16 *version) {
+    *version = 0;
+    if (!title_present(id, present)) return false;
+    AM_TitleInfo info;
+    if (*present) {
+        if (R_FAILED(AM_GetTitleInfo(MEDIATYPE_SD, 1, &id, &info))) return false;
+        *version = info.version;
+    }
+    return true;
+}
+
+// AM commits a CIA atomically: after a reported failure the title is the previous one or,
+// rarely, the new one. Only a visible change needs the previous version put back.
+static bool tx_title_changed(void) {
+    bool present;
+    u16 version;
+    if (!title_state(tx.title_id, &present, &version)) return true;
+    return tx.had_title ? !present || version != tx.old_version : present;
+}
+
+static bool tx_mark(const char *path) {
+    FILE *f = fopen(path, "wb");
+    return f && durable_close(f);
+}
+
+// ---- recovery of an interrupted installation ----------------------------------------------
+static bool exists(const char *p) {
+    struct stat st;
+    return !stat(p, &st);
+}
+
+// Only names this installer gives its files: TX_DIR/NNNN.new or NNNN.old.
+static bool tx_own_file(const char *p, const char *suffix) {
+    size_t n = strlen(TX_DIR "/");
+    if (!p || strncmp(p, TX_DIR "/", n) || strlen(p) != n + 8) return false;
+    for (int i = 0; i < 4; i++)
+        if (p[n + i] < '0' || p[n + i] > '9') return false;
+    return !strcmp(p + n + 4, suffix);
+}
+
+// A live path an installation may change (the rule tx_file applies).
+static bool tx_live_path(const char *p) {
+    size_t n = strlen(DATA_DIR "/");
+    if (!safe_path(p) || !strcmp(p, "sdmc:/")) return false;
+    return strncmp(p, DATA_DIR "/", n) || !strncmp(p + n, "tmp/", 4) || !strncmp(p + n, "cia-cache/", 10);
+}
+
+typedef struct {
+    const char *path, *stage, *backup;
+    bool publish, remove;
+} TxEntry;
+
+// The inventory lives on the SD: act on it only when every entry has the shape we write.
+static bool tx_entry(json_t *v, bool legacy, TxEntry *e) {
+    e->path = json_string_value(json_object_get(v, "path"));
+    e->stage = json_string_value(json_object_get(v, "stage"));
+    e->backup = json_string_value(json_object_get(v, "backup"));
+    if (!tx_live_path(e->path) || !tx_own_file(e->stage, ".new") || !tx_own_file(e->backup, ".old")) return false;
+    if (legacy) {  // version 1.0: deleted intermediates and %TMP% were never published
+        e->publish = !json_is_true(json_object_get(v, "deleted")) && strncmp(e->path, DATA_DIR "/tmp/", strlen(DATA_DIR "/tmp/"));
+        e->remove = false;
+    } else {
+        e->publish = json_is_true(json_object_get(v, "publish"));
+        e->remove = json_is_true(json_object_get(v, "remove"));
+    }
+    return true;
+}
+
+// Some saved record already holds this exact file (its SHA-256 matches).
+static bool saved_describes(json_t *saved, const char *path) {
+    char hash[65];
+    volatile bool never = false;
+    JobStep step = {0};
+    bool hashed = false;
+    const char *id;
+    json_t *record;
+    json_object_foreach(saved, id, record) {
+        const char *want = json_string_value(json_object_get(json_object_get(record, "hashes"), path));
+        if (!want || strlen(want) != 64) continue;
+        if (!hashed && !(hashed = sha256_file(path, hash, &step, &never))) return false;
+        if (!strcasecmp(hash, want)) return true;
+    }
+    return false;
+}
+
+// Puts the previous bytes back. A published entry's staged file existed when the inventory
+// was written, so a missing one was moved to its live path: that file is the new version.
+// Like tx_finish, it moves the new file back to its staged name first and deletes nothing:
+// a cut during recovery leaves a state the next recovery reads the same way.
+static bool tx_undo(const TxEntry *e, bool legacy, json_t *saved) {
+    bool backup = exists(e->backup);
+    // 1.0 inventories have no commit id: a record already describing the live file means that
+    // installation was committed and only its cleanup was cut short.
+    if (legacy && backup && exists(e->path) && saved_describes(saved, e->path))
+        return !remove(e->backup) || errno == ENOENT;
+    // 1.0 inventories cannot tell a new file from an untouched one: only a path with a backup
+    // certainly changed. Anything else is left exactly as it is.
+    bool replaced = legacy ? backup : e->publish && !exists(e->stage);
+    if (replaced && exists(e->path) && rename(e->path, e->stage)) return false;
+    return !backup || !rename(e->backup, e->path);
+}
+
+// Removes the folders this installation created, deepest first, when they are empty again.
+static void tx_drop_created_dirs(void) {
+    FILE *f = fopen(TX_DIRS, "rb");
+    if (!f) return;
+    enum { MAX_DIRS = 64 };
+    char (*lines)[PATH_CAP] = malloc(MAX_DIRS * sizeof *lines);  // the worker's stack is small
+    int count = 0;
+    while (lines && count < MAX_DIRS && fgets(lines[count], PATH_CAP, f)) {
+        lines[count][strcspn(lines[count], "\r\n")] = 0;
+        if (safe_path(lines[count]) && strcmp(lines[count], "sdmc:/") && strcmp(lines[count], "sdmc:/3ds") &&
+            strcmp(lines[count], DATA_DIR))
+            count++;
+    }
+    fclose(f);
+    while (count--) rmdir(lines[count]);  // never recursive: a folder with anything in it stays
+    free(lines);
+}
+
+// Removes the staging folder's own files (staged, backups, inventory, markers) and the
+// folder. After a completion the inventory goes last, so a cut never strands a backup without
+// it; after an undo it goes first, so the staged new files never look published. The CIA
+// markers are part of the decision and always outlive the inventory.
+static int tx_clear_rank(const char *name, bool inventory_first) {
+    bool inventory = !strcmp(name, "recovery.json");
+    bool marker = !strcmp(name, "cia-started") || !strcmp(name, "cia-finished");
+    if (inventory_first) return inventory ? 0 : 1;
+    return inventory ? 1 : marker ? 2 : 0;
+}
+
+static bool tx_clear(bool inventory_first) {
+    DIR *d = opendir(TX_DIR);
+    if (!d) return errno == ENOENT;
+    char (*names)[64] = NULL;
+    int count = 0, cap = 0;
+    bool ok = true;
+    struct dirent *e;
+    while ((e = readdir(d))) {
+        if (!strcmp(e->d_name, ".") || !strcmp(e->d_name, "..")) continue;
+        if (strlen(e->d_name) >= 64) { ok = false; continue; }
+        if (count == cap) {
+            int grown = cap ? cap * 2 : 32;
+            void *more = grown <= 4 * TX_LIMIT + 64 ? realloc(names, grown * sizeof *names) : NULL;
+            if (!more) { ok = false; break; }
+            names = more;
+            cap = grown;
+        }
+        strcpy(names[count++], e->d_name);
+    }
+    closedir(d);
+    char path[PATH_CAP];
+    for (int pass = 0; pass < 3; pass++)
+        for (int i = 0; i < count; i++) {
+            if (tx_clear_rank(names[i], inventory_first) != pass) continue;
+            snprintf(path, sizeof path, TX_DIR "/%s", names[i]);
+            if (remove(path) && errno != ENOENT) ok = false;
+        }
+    free(names);
+    if (ok && rmdir(TX_DIR) && errno != ENOENT) ok = false;
+    return ok;
+}
+
+static bool tx_has_backup(void) {
+    DIR *d = opendir(TX_DIR);
+    if (!d) return false;
+    bool found = false;
+    struct dirent *e;
+    while (!found && (e = readdir(d))) {
+        size_t n = strlen(e->d_name);
+        found = n > 4 && !strcmp(e->d_name + n - 4, ".old");
+    }
+    closedir(d);
+    return found;
+}
+
+static void remove_dirs(json_t *dirs);
+
+// Decides from the SD alone. The installed record is the commit point: an installation is
+// complete once its record carries the inventory's transaction id, an uninstallation once
+// its record is gone. Anything earlier is undone, so the previous version stays.
+static bool tx_settle(json_t *journal, bool *completed) {
+    bool legacy = json_is_array(journal);
+    json_t *list = legacy ? journal : json_object_get(journal, "files");
+    if (!json_is_array(list) || (!legacy && json_integer_value(json_object_get(journal, "format")) != 2)) return false;
+    size_t count = json_array_size(list);
+    TxEntry *entries = calloc(count ? count : 1, sizeof *entries);
+    if (!entries) return false;
+    for (size_t i = 0; i < count; i++)
+        if (!tx_entry(json_array_get(list, i), legacy, &entries[i])) { free(entries); return false; }
+    json_t *saved = installed_saved();
+    bool forward = false, drop_title = false, reinstall = false, ok = true;
+    u64 title = 0;
+    if (!legacy) {
+        const char *kind = json_string_value(json_object_get(journal, "kind"));
+        const char *app = json_string_value(json_object_get(journal, "app"));
+        const char *id = json_string_value(json_object_get(journal, "transaction"));
+        const char *hex = json_string_value(json_object_get(journal, "title"));
+        bool uninstall = kind && !strcmp(kind, "uninstall");
+        json_t *record = app && *app ? json_object_get(saved, app) : NULL;
+        const char *committed_id = json_string_value(json_object_get(record, "transaction"));
+        // An unreadable record never counts as committed: then nothing is deleted.
+        forward = saved && app && *app && (uninstall ? !record : id && *id && committed_id && !strcmp(committed_id, id));
+        char *end = NULL;
+        title = hex && strlen(hex) == 16 ? strtoull(hex, &end, 16) : 0;
+        if (title && (*end || (title >> 32) != 0x00040000)) title = 0;
+        if (!forward && title) {
+            bool present, had = json_is_true(json_object_get(journal, "hadTitle"));
+            bool restore = json_is_true(json_object_get(journal, "restore"));
+            bool started = exists(TX_CIA_STARTED), finished = exists(TX_CIA_FINISHED);
+            u16 version, before = (u16)json_integer_value(json_object_get(journal, "oldVersion"));
+            u16 after = (u16)json_integer_value(json_object_get(journal, "newVersion"));
+            if (!title_state(title, &present, &version)) { json_decref(saved); free(entries); return false; }
+            bool touched = started || finished;
+            if (uninstall) reinstall = had && !present;  // deleted: put it back from its restored package
+            else if (!had) drop_title = touched && present && version == after;
+            else if (restore) reinstall = touched && !(present && version == before && before != after);
+            // No package to go back to: once AM committed, complete the update instead.
+            else forward = finished || (started && present && version == after && after != before);
+        }
+    }
+    if (forward) {
+        // A commit always follows a complete publication; anything else is not ours to guess.
+        for (size_t i = 0; i < count; i++)
+            if (entries[i].publish && exists(entries[i].stage)) ok = false;
+        for (size_t i = count; ok && i-- > 0;) {
+            if (remove(entries[i].backup) && errno != ENOENT) ok = false;
+            if (remove(entries[i].stage) && errno != ENOENT) ok = false;
+        }
+        if (ok) remove_dirs(json_object_get(journal, "dirs"));
+    } else {
+        for (size_t i = count; i-- > 0;)
+            if (!tx_undo(&entries[i], legacy, saved)) ok = false;
+        if (ok) tx_drop_created_dirs();
+        if (ok && drop_title) AM_DeleteUserTitle(MEDIATYPE_SD, title);
+        if (ok && reinstall) {
+            char package[PATH_CAP];
+            snprintf(package, sizeof package, DATA_DIR "/cia-cache/%016llx.cia", (unsigned long long)title);
+            Job restore = {0};
+            JobStep step = {0};
+            if (!install_cia(&restore, &step, package)) printf("Recovery: CIA restore failed: %s\n", restore.error);
+        }
+    }
+    json_decref(saved);
+    free(entries);
+    *completed = forward;
+    return ok;
+}
+
+static void tx_recover(void) {
+    struct stat st;
+    if (stat(TX_DIR, &st)) return;
+    bool ok = S_ISDIR(st.st_mode), completed = false;
+    if (ok) {
+        json_t *journal = json_load_file(TX_JOURNAL, JSON_REJECT_DUPLICATES, NULL);
+        // Without a readable inventory nothing was published (it is durable before the first
+        // live change); backups would contradict that, so then nothing is guessed.
+        if (journal) ok = tx_settle(journal, &completed);
+        else if ((ok = !tx_has_backup())) tx_drop_created_dirs();
+        json_decref(journal);
+        if (ok) ok = tx_clear(!completed);
+    }
+    if (ok) return;  // silent: the next installation simply starts fresh
+    // Keep what could not be settled for inspection, out of the next installation's way.
+    char kept[96];
+    for (int n = 1; n < 100; n++) {
+        snprintf(kept, sizeof kept, TX_KEPT "%d", n);
+        if (exists(kept)) continue;
+        if (rename(TX_DIR, kept)) kept[0] = 0;
+        break;
+    }
+    printf("Recovery: an interrupted installation could not be settled; kept as %s\n", kept[0] ? kept : "(not moved)");
 }
 
 // ---- archives ----------------------------------------------------------------------------------
@@ -913,6 +1280,32 @@ static bool run_step(Job *j, JobStep *st) {
     return false;
 }
 
+// AM committed the new title, but it is not recorded. Put the previous version back; with no
+// package to restore it from, keep the verified new version complete instead.
+static void tx_after_title(Job *j) {
+    if (tx.no_restore) {
+        tx_finish(j, true);
+        fail(j, "Installed; its installed record could not be saved");
+        j->state = JOB_FAILED;
+        return;
+    }
+    bool restored = cia_restore(j);
+    if (restored) restored = tx_finish(j, false);
+    else tx_abandon();  // settled from the SD before the next installation
+    j->state = j->cancel && restored ? JOB_CANCELLED : JOB_FAILED;
+}
+
+static bool removable_dir(const char *dir) {
+    return safe_path(dir) && strcmp(dir, "sdmc:/") && strcmp(dir, "sdmc:/3ds") && strcmp(dir, DATA_DIR);
+}
+
+static void remove_dirs(json_t *dirs) {
+    for (size_t i = json_array_size(dirs); i > 0; --i) {
+        const char *dir = json_string_value(json_array_get(dirs, i - 1));
+        if (removable_dir(dir)) rmdir(dir);  // never recursive: a folder with anything in it stays
+    }
+}
+
 static void finish_record(Job *j) {
     // The JSON record belongs to the main thread. Retain backups until its
     // synchronous commit acknowledges success; shutdown can still cancel here.
@@ -921,16 +1314,12 @@ static void finish_record(Job *j) {
         svcSleepThread(1000000);
     bool saved = __atomic_load_n(&j->commit_ack, __ATOMIC_ACQUIRE) && j->commit_ok;
     __atomic_store_n(&j->commit_pending, false, __ATOMIC_RELEASE);
+    if (!saved && tx.cia_attempted && !j->uninstall) { tx_after_title(j); return; }
+    // Before the inventory goes: an interruption after this still completes the removal.
+    if (saved && j->uninstall) remove_dirs(json_object_get(j->record, "dirs"));
     bool restored = saved || cia_restore(j);
     bool cleaned = restored && tx_finish(j, saved);
     if (!restored) tx_abandon();
-    if (saved && j->uninstall) {
-        json_t *dirs = json_object_get(j->record, "dirs");
-        for (size_t i = json_array_size(dirs); i > 0; --i) {
-            const char *dir = json_string_value(json_array_get(dirs, i - 1));
-            if (safe_path(dir) && strcmp(dir, "sdmc:/") && strcmp(dir, "sdmc:/3ds") && strcmp(dir, DATA_DIR)) rmdir(dir);
-        }
-    }
     if (saved && !cleaned) j->warnings++;
     j->progress = saved ? 1 : j->progress;
     j->state = saved ? JOB_DONE : (j->cancel && cleaned ? JOB_CANCELLED : JOB_FAILED);
@@ -974,6 +1363,7 @@ static void run_uninstall(Job *j) {
                 fail(j, "Original CIA required for safe uninstall"); goto failed;
             }
             tx.had_title = true;
+            tx.old_version = tx.new_version = current.version;
         }
     }
     json_t *hashes = json_object_get(j->record, "hashes"), *v;
@@ -1072,26 +1462,29 @@ static void run(Job *j) {
     }
     if (tx.cia_path[0]) {
         tx.cia_attempted = true;
-        if (!install_cia(j, tx.cia_step, tx.cia_cache)) {
-            bool restored = cia_restore(j);
-            if (restored) restored = tx_finish(j, false);
-            else tx_abandon();
+        // The markers tell recovery whether AM may have replaced the title.
+        bool marked = tx_mark(TX_CIA_STARTED);
+        if (!marked) fail(j, "SD write failed");
+        bool installed = marked && install_cia(j, tx.cia_step, tx.cia_cache);
+        if (installed) tx_mark(TX_CIA_FINISHED);
+        else if (!tx_title_changed()) {
+            bool restored = tx_finish(j, false);
             j->state = j->cancel && restored ? JOB_CANCELLED : JOB_FAILED; return;
         }
         char title[32];
         snprintf(title, sizeof title, "title:%016llx", (unsigned long long)tx.title_id);
-        if (json_array_append_new(j->files, json_string(title))) {
-            if (cia_restore(j)) tx_finish(j, false);
-            else tx_abandon();
-            j->state = JOB_FAILED; return;
+        if (!installed || json_array_append_new(j->files, json_string(title))) {
+            if (!j->error[0]) fail(j, "Out of memory");
+            tx_after_title(j);
+            return;
         }
     }
     finish_record(j);
-
 }
 
 static void worker_main(void *arg) {
     (void)arg;
+    tx_recover();  // an installation interrupted last time (power, crash) is settled first
     while (!quit) {
         LightEvent_Wait(&wake);
         for (;;) {
@@ -1256,6 +1649,10 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
     memset(j, 0, sizeof *j);
     j->serial = ++job_serial;
     j->app = a;
+    // Titles this app is known to use: an earlier installation's, then the catalog's.
+    u64 recorded = record_title(installed_record(a));
+    if (recorded) j->known_titles[j->nknown++] = recorded;
+    j->nknown += app_title_ids(a, j->known_titles + j->nknown, 8 - j->nknown);
     j->cia = cia;
     j->experimental = app_release_experimental(a, selected);
     j->release = json_deep_copy(selected);
@@ -1367,7 +1764,8 @@ void install_poll(void (*on_done)(Job *)) {
         Job *j = &jobs[i];
         if (__atomic_load_n(&j->commit_pending, __ATOMIC_ACQUIRE) && !j->commit_ack) {
             j->commit_ok = !j->cancel && (j->uninstall ? installed_forget(j->app) :
-                installed_commit_manifest(j->app, j->tag, j->experimental, j->cia, j->files, j->dirs, j->hashes));
+                installed_commit_transaction(j->app, j->tag, j->experimental, j->cia, j->files, j->dirs, j->hashes,
+                                             j->transaction));
             if (!j->commit_ok) fail(j, "Cannot save installed record; reverting files");
             __atomic_store_n(&j->commit_ack, true, __ATOMIC_RELEASE);
         }

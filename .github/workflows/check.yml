@@ -21,6 +21,10 @@ jobs:
           python3 3ds/tests/run-site-progress.py
           python3 3ds/tests/run-music-stream.py
           python3 3ds/tests/run-reader-cache-fs.py
+      - name: Recognizing apps installed without the store (production detect.c)
+        run: |
+          sudo apt-get install -y --no-install-recommends libjansson-dev > /dev/null
+          python3 3ds/tests/run-detect.py
       - name: JavaScript syntax
         run: |
           while IFS= read -r -d '' file; do

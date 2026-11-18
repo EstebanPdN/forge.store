@@ -18,6 +18,7 @@
 #include "remote_image.h"
 #include "universal_sync.h"
 #include "catalog_remote.h"
+#include "detect.h"
 #include "dsp_dump.h"
 #include "debug_dump.h"
 #include "store_update.h"
@@ -797,6 +798,7 @@ int main(int argc, char **argv) {
     media_shutdown();
     universal_sync_stop();
     catalog_remote_stop();
+    detect_stop();
     remote_image_stop();
     install_stop();
     scenes_stop();
@@ -805,6 +807,7 @@ int main(int argc, char **argv) {
     // ...then each one is collected within the shared deadline.
     universal_sync_exit();
     catalog_remote_exit();
+    detect_exit();
     video_exit();
     debug_exit_trace("video");
     remote_image_exit();

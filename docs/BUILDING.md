@@ -50,6 +50,8 @@ CommonCrypto, so the full queue suite is macOS-specific.
 python3 tools/check-repository.py
 python3 3ds/tests/catalog-host.py
 python3 3ds/tests/run-install-integrity.py
+python3 3ds/tests/run-install-recovery.py
+python3 3ds/tests/run-detect.py
 python3 3ds/tests/run-forge-mode.py
 python3 3ds/tests/run-reader-image.py
 python3 3ds/tests/run-store-network.py

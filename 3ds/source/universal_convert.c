@@ -1,4 +1,5 @@
 #include "universal_convert.h"
+#include "detect_rules.h"
 #include <ctype.h>
 #include <math.h>
 #include <stdbool.h>
@@ -76,6 +77,16 @@ static json_t *notes(const char *markdown){
     }if(!json_array_size(a))json_array_append_new(a,json_string("—"));return a;
 }
 static void darker(char out[8],const char *hex,double amount){unsigned n=0x556070;if(strlen(hex)==7&&hex[0]=='#')sscanf(hex+1,"%x",&n);unsigned r=(unsigned)floor((n>>16)*(1-amount)+.5),g=(unsigned)floor(((n>>8)&255)*(1-amount)+.5),b=(unsigned)floor((n&255)*(1-amount)+.5);snprintf(out,8,"#%02x%02x%02x",r&255,g&255,b&255);}
+// Recognizing an installation made without forge.store (detect.c), from the same entry
+// fields Universal-Updater reads: its title IDs, installed files and update time.
+static void detection(json_t *r,json_t *info){
+    json_t *ids=json_array(),*files=json_array();size_t i;json_t *v;
+    json_array_foreach(json_object_get(info,"title_ids"),i,v)if(json_is_integer(v)&&json_array_size(ids)<8)json_array_append(ids,v);
+    json_array_foreach(json_object_get(info,"installed_files"),i,v)if(json_is_string(v)&&json_string_length(v)<160&&json_array_size(files)<8)json_array_append(files,v);
+    if(json_array_size(ids)||json_array_size(files)){json_t *d=json_object();if(json_array_size(ids))json_object_set(d,"ids",ids);if(json_array_size(files))json_object_set(d,"files",files);json_object_set_new(r,"detect",d);}
+    json_decref(ids);json_decref(files);
+    char stamp[DETECT_STAMP];if(detect_stamp(s(info,"last_updated"),stamp))put(r,"updatedAt",stamp);
+}
 static json_t *convert(json_t *item,json_t *entry){
     const char *slug=s(item,"slug"),*title=s(item,"title");if(!*slug||strlen(slug)>128||!*title||strlen(title)>512)return NULL;
     for(const char *p=slug;*p;p++)if(!(isalnum((unsigned char)*p)||*p=='-'||*p=='_'||*p=='.'))return NULL;
@@ -101,7 +112,8 @@ static json_t *convert(json_t *item,json_t *entry){
     const char *notice=s(json_object_get(entry,"info"),"preinstall_message");if(*notice)json_object_set_new(r,"notice",json_pack("{s:s}","en",notice));
     char date[11];snprintf(date,sizeof date,"%.10s",*s(item,"updated")?s(item,"updated"):"2025-01-01");json_int_t size=0;json_t *first=json_object_iter_value(json_object_iter(install));size_t i;json_t *v;bool known=true;json_array_foreach(first,i,v)if(!strcmp(s(v,"type"),"downloadUrl")){json_t *n=json_object_get(v,"size");known&=json_is_integer(n);size+=json_integer_value(n);}
     json_t *rel=json_pack("{s:s,s:s,s:{}}","tag",*s(item,"version")?s(item,"version"):"latest","date",date,"assets");json_object_set_new(rel,"size",size_json(known?size:-1));json_t *ns=json_object();json_object_set_new(ns,"en",notes(s(item,"update_notes_md")));json_object_set_new(rel,"notes",ns);
-    json_t *rels=json_object();json_object_set_new(rels,"stable",rel);json_object_set_new(r,"releases",rels);json_object_set_new(r,"requires",json_array());json_object_set_new(r,"install",install);if(unsupported)json_object_set_new(r,"nativeUnsupported",json_true());return r;
+    json_t *rels=json_object();json_object_set_new(rels,"stable",rel);json_object_set_new(r,"releases",rels);json_object_set_new(r,"requires",json_array());json_object_set_new(r,"install",install);if(unsupported)json_object_set_new(r,"nativeUnsupported",json_true());
+    detection(r,json_object_get(entry,"info"));return r;
 }
 json_t *universal_convert(json_t *full,json_t *store){
     json_t *entries=json_object_get(store,"storeContent");if(!json_is_array(full)||json_array_size(full)>2048||!json_is_array(entries)||json_array_size(entries)>2048)return NULL;

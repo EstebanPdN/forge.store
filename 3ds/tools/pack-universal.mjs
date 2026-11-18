@@ -7,6 +7,14 @@ const apps=artOnly?JSON.parse(await readFile(new URL('romfs/universal.json',root
 if(!artOnly){
 const store=await (await fetch('https://db.universal-team.net/unistore/universal-db.unistore')).json();
 const supported=new Set(['downloadFile','downloadRelease','extractFile','installCia','deleteFile','mkdir','move','rmdir']);
+// Native detection data, as 3ds/source/universal_convert.c detection() writes it.
+const stamp=v=>{if(typeof v!=='string'||!/^\d{4}-\d\d-\d\d/.test(v))return null;const m=v.slice(10).replace(/^\D*/,'').match(/^\d\d:\d\d/);return m?`${v.slice(0,10)}T${m[0]}`:v.slice(0,10);};
+const detection=(app,info={})=>{
+ const ids=(Array.isArray(info.title_ids)?info.title_ids:[]).filter(Number.isInteger).slice(0,8);
+ const files=(Array.isArray(info.installed_files)?info.installed_files:[]).filter(f=>typeof f==='string'&&Buffer.byteLength(f)<160).slice(0,8);
+ if(ids.length||files.length){app.detect={};if(ids.length)app.detect.ids=ids;if(files.length)app.detect.files=files;}
+ const at=stamp(info.last_updated);if(at)app.updatedAt=at;
+};
 for(const a of apps){
  const entry=store.storeContent.find(e=>e.info.title===a.title);
  for(const [format,steps] of Object.entries(a.install)){
@@ -22,6 +30,7 @@ for(const a of apps){
    if(s.type==='extractFile'){const dst=steps.filter(x=>x.type==='extractFile')[ei++];if(dst&&s.input)dst.input=s.input;}
   }
  }
+ detection(a,entry?.info);
 }
 await writeFile(new URL('romfs/universal.json',root),JSON.stringify({updated:new Date().toISOString(),apps}));
 }

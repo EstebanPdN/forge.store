@@ -7,8 +7,8 @@
 #include "site_progress.h"
 // The repository's catalog is kept current by a scheduled GitHub Action that follows
 // every listed repository and my website's Progress page. The store reads that file from raw.githubusercontent.com
-// (no API rate limit) on launch and every 30 minutes, and adopts newer releases and
-// install plans for the apps it already ships. Art and text stay bundled.
+// (no API rate limit) on launch and every 30 minutes, and adopts newer releases, install
+// plans and detection data for the apps it already ships. Art and text stay bundled.
 #define URL "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/catalog/forge-store.json"
 #define CACHE DATA_DIR "/catalog-remote.cache"
 #define LIMIT (2u * 1024u * 1024u)
@@ -141,6 +141,10 @@ static bool apply(json_t *remote) {
             changed = true;
         }
         app_refresh_updated(a);  // releases may have been replaced: never keep a pointer into them
+        // What identifies the app when it was installed some other way (detect.c).
+        json_t *detect = json_object_get(r, "detect");
+        if (json_is_object(detect) && !json_equal(detect, json_object_get(a->j, "detect")))
+            if (!json_object_set(a->j, "detect", detect)) changed = true;
         json_t *plan = json_object_get(r, "install");
         if (json_is_object(plan) && json_object_size(plan) && !json_equal(plan, json_object_get(a->j, "install")))
             if (!json_object_set(a->j, "install", plan)) changed = true;
