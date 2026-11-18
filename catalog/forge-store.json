@@ -6404,9 +6404,6 @@
         "ids": [
           6686
         ],
-        "files": [
-          "%3DSX%/mgba.3dsx"
-        ],
         "uu": "mGBA"
       }
     },
@@ -7243,7 +7240,6 @@
           868562
         ],
         "files": [
-          "%3DSX%/nimbus.3dsx",
           "/3ds/nimbus.3dsx"
         ],
         "uu": "Nimbus"
