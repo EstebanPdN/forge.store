@@ -8321,20 +8321,20 @@
       "icon": "assets/community/recorder/icon.webp",
       "releases": {
         "stable": {
-          "tag": "v1.3.0",
-          "date": "2026-11-16",
+          "tag": "v1.4.0",
+          "date": "2026-11-18",
           "assets": {
             "cia": {
               "name": "3ds-recorder.cia",
-              "size": 2876352,
-              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.3.0/3ds-recorder.cia",
-              "sha256": "b3d814853c8270e2dedb0da385795730271340c3d6e72c414c3d48f491ad5b99"
+              "size": 2892736,
+              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.4.0/3ds-recorder.cia",
+              "sha256": "08d8d20766818b85568187c9507d531ab290787b6be4a8f325e1dc89bc5c025d"
             },
             "3dsx": {
               "name": "3ds-recorder.3dsx",
-              "size": 2989804,
-              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.3.0/3ds-recorder.3dsx",
-              "sha256": "9b026c8eb7d4348117b1c5c1b08deba0a7a86e9cc78a30b19631c77992a7e307"
+              "size": 3012300,
+              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.4.0/3ds-recorder.3dsx",
+              "sha256": "a5599dea51ba492d65fb561307cfb0d64d6132d666e0f754820e59858191e691"
             }
           },
           "notes": {
@@ -8345,26 +8345,26 @@
               "Read the full changelog on GitHub."
             ],
             "pt": [
-              "Leia o changelog completo no GitHub."
+              "Veja o histórico completo no GitHub."
             ],
             "it": [
               "Leggi il changelog completo su GitHub."
             ],
             "fr": [
-              "Consultez le journal complet sur GitHub."
+              "Consultez l’historique complet sur GitHub."
             ],
             "de": [
-              "Das vollständige Changelog findest du auf GitHub."
+              "Den vollständigen Changelog gibt es auf GitHub."
             ],
             "ru": [
               "Полный список изменений — на GitHub."
             ],
             "ja": [
-              "詳しい更新履歴はGitHubでご覧ください。"
+              "変更履歴の全文は GitHub をご覧ください。"
             ]
           },
           "ciaTitle": "000400000b3da300",
-          "ciaVersion": 1072
+          "ciaVersion": 1088
         }
       },
       "install": {
