@@ -10,6 +10,7 @@
 #include <string.h>
 #include <strings.h>
 #include <sys/stat.h>
+#include <unistd.h>
 #include <zlib.h>
 
 #ifdef ROM_FIND_HOST_TEST
@@ -37,9 +38,11 @@ static bool listed(json_t *list, const char *name) {
 
 static bool name_accepted(json_t *rule, const char *name) {
     if (name[0] == '.' || listed(json_object_get(rule, "skip"), name)) return false;
-    if (listed(json_object_get(rule, "names"), name)) return true;
+    json_t *names = json_object_get(rule, "names"), *ext = json_object_get(rule, "ext");
+    if (!names && !ext) return true;
+    if (listed(names, name)) return true;
     const char *dot = strrchr(name, '.');
-    return dot && dot != name && listed(json_object_get(rule, "ext"), dot + 1);
+    return dot && dot != name && listed(ext, dot + 1);
 }
 
 static bool size_accepted(json_t *rule, uint64_t size) {
@@ -130,11 +133,24 @@ static bool content_ok(json_t *rule, const char *path, uint64_t size, bool cache
     return ok;
 }
 
-static bool rule_scan(json_t *rule, char *out, size_t out_size, bool cached) {
-    const char *dir = json_string_value(json_object_get(rule, "dir"));
-    if (!dir || dir[0] != '/' || strstr(dir, "..") || strchr(dir, ':') || strchr(dir, '\\')) return false;
+/** One file against one rule: its name, size and contents. */
+static bool file_ok(json_t *rule, const char *path, const char *name, bool cached) {
+    struct stat st;
+    return name_accepted(rule, name) && !stat(path, &st) && S_ISREG(st.st_mode) &&
+           size_accepted(rule, (uint64_t)st.st_size) && content_ok(rule, path, (uint64_t)st.st_size, cached);
+}
+
+static bool safe_dir(const char *dir) {
+    return dir && dir[0] == '/' && !strstr(dir, "..") && !strchr(dir, ':') && !strchr(dir, '\\');
+}
+
+// "dir" ending in "/*/" means every folder directly inside: /3ds/butterscotch/<any game>/.
+static bool folder_scan(json_t *rule, const char *dir, char *out, size_t out_size, bool cached) {
+    if (!safe_dir(dir)) return false;
     char folder[PATH_MAX_LEN], path[PATH_MAX_LEN + 260];
-    int n = snprintf(folder, sizeof folder, "%s%s", ROM_FIND_ROOT, dir);
+    size_t dl = strlen(dir);
+    bool any_folder = dl >= 3 && !strcmp(dir + dl - 3, "/*/");
+    int n = snprintf(folder, sizeof folder, "%s%.*s", ROM_FIND_ROOT, (int)(any_folder ? dl - 2 : dl), dir);
     if (n < 2 || (size_t)n >= sizeof folder) return false;
     if (folder[n - 1] != '/') folder[n++] = '/', folder[n] = 0;
     folder[n - 1] = 0;  // opendir wants no trailing slash
@@ -144,11 +160,18 @@ static bool rule_scan(json_t *rule, char *out, size_t out_size, bool cached) {
     bool found = false;
     struct dirent *e;
     while (!found && !stopping() && (e = readdir(d))) {
-        if (!name_accepted(rule, e->d_name)) continue;
-        struct stat st;
+        if (e->d_name[0] == '.') continue;
+        if (any_folder) {
+            char sub[PATH_MAX_LEN];
+            int len = snprintf(sub, sizeof sub, "%.*s%s/", (int)(dl - 2), dir, e->d_name);
+            struct stat st;
+            snprintf(path, sizeof path, "%s%s", folder, e->d_name);
+            if (len > 0 && (size_t)len < sizeof sub && !strchr(e->d_name, '*') && !stat(path, &st) && S_ISDIR(st.st_mode))
+                found = folder_scan(rule, sub, out, out_size, cached);
+            continue;
+        }
         int len = snprintf(path, sizeof path, "%s%s", folder, e->d_name);
-        if (len < 0 || (size_t)len >= out_size || stat(path, &st) || !S_ISREG(st.st_mode)) continue;
-        if (!size_accepted(rule, (uint64_t)st.st_size) || !content_ok(rule, path, (uint64_t)st.st_size, cached)) continue;
+        if (len < 0 || (size_t)len >= out_size || !file_ok(rule, path, e->d_name, cached)) continue;
         strcpy(out, path);
         found = true;
     }
@@ -156,12 +179,98 @@ static bool rule_scan(json_t *rule, char *out, size_t out_size, bool cached) {
     return found;
 }
 
+static bool rule_scan(json_t *rule, char *out, size_t out_size, bool cached) {
+    json_t *dirs = json_object_get(rule, "dir"), *dir;
+    if (!json_is_array(dirs)) return folder_scan(rule, json_string_value(dirs), out, out_size, cached);
+    size_t i;
+    json_array_foreach(dirs, i, dir)
+        if (!stopping() && folder_scan(rule, json_string_value(dir), out, out_size, cached)) return true;
+    return false;
+}
+
+// ---- placing a ROM where a port reads it -------------------------------------------------------
+// Some ports open one fixed name in .z64 byte order (the N64 recompilations: <folder>/DK64.z64).
+// A ROM found under another name or byte order is copied there; the player's file is never
+// moved or deleted. One copy at a time: the scan worker and an installation may both look.
+static bool placing;
+
+static int n64_order(const unsigned char h[4]) {
+    uint32_t w = (uint32_t)h[0] << 24 | (uint32_t)h[1] << 16 | (uint32_t)h[2] << 8 | h[3];
+    return w == 0x80371240u ? 0 : w == 0x37804012u ? 1 : w == 0x40123780u ? 2 : -1;
+}
+
+static bool copy_as(const char *from, const char *to, bool to_z64) {
+    char part[PATH_MAX_LEN + 8];
+    if (snprintf(part, sizeof part, "%s.part", to) >= (int)sizeof part) return false;
+    FILE *in = fopen(from, "rb"), *out = in ? fopen(part, "wb") : NULL;
+    unsigned char *buf = out ? malloc(65536) : NULL;
+    bool ok = buf != NULL;
+    int order = 0;
+    for (size_t n, total = 0; ok && !stopping() && (n = fread(buf, 1, 65536, in)) > 0; total += n) {
+        if (!total) order = to_z64 && n >= 4 ? n64_order(buf) : 0;
+        if (order > 0 && n % 4) ok = false;  // dumps are whole words
+        for (size_t i = 0; ok && order > 0 && i < n; i += 4) {
+            unsigned char w[4] = {buf[i], buf[i + 1], buf[i + 2], buf[i + 3]};
+            if (order == 1) buf[i] = w[1], buf[i + 1] = w[0], buf[i + 2] = w[3], buf[i + 3] = w[2];
+            else buf[i] = w[3], buf[i + 1] = w[2], buf[i + 2] = w[1], buf[i + 3] = w[0];
+        }
+        ok = ok && fwrite(buf, 1, n, out) == n;
+#ifndef ROM_FIND_HOST_TEST
+        bg_wait();
+#endif
+    }
+    ok = ok && !stopping() && in && !ferror(in);
+    free(buf);
+    if (in) fclose(in);
+    if (out && fclose(out)) ok = false;
+    if (ok) ok = !rename(part, to);
+    if (!ok && out) remove(part);
+    return ok;
+}
+
+static int file_order(const char *path) {
+    unsigned char h[4];
+    FILE *f = fopen(path, "rb");
+    int order = f && fread(h, 1, 4, f) == 4 ? n64_order(h) : -1;
+    if (f) fclose(f);
+    return order;
+}
+
+/** `found` satisfies a rule; afterwards `found` is where the port reads it, or false. */
+static bool place(const char *target, char *found, size_t size) {
+    char to[PATH_MAX_LEN], from[PATH_MAX_LEN + 260], old[PATH_MAX_LEN + 8];
+    if (!safe_dir(target) || target[strlen(target) - 1] == '/' ||
+        snprintf(to, sizeof to, "%s%s", ROM_FIND_ROOT, target) >= (int)sizeof to || strlen(to) >= size) return false;
+    size_t n = strlen(to);
+    bool z64 = n > 4 && !strcasecmp(to + n - 4, ".z64"), same = !strcasecmp(found, to);
+    if (same && (!z64 || file_order(to) <= 0)) return true;
+    if (__atomic_exchange_n(&placing, true, __ATOMIC_ACQUIRE)) return false;  // the other caller is copying it
+    snprintf(from, sizeof from, "%s", found);
+    bool ok = true, moved = false;
+    struct stat st;
+    if (!stat(to, &st)) {
+        // Something else has the port's name (another ROM, or this one in another byte
+        // order): it stays beside, as <name>.old, and goes back if the copy fails.
+        snprintf(old, sizeof old, "%s.old", to);
+        ok = moved = access(old, F_OK) && !rename(to, old);
+        if (same) snprintf(from, sizeof from, "%s", old);
+    }
+    ok = ok && copy_as(from, to, z64);
+    if (!ok && moved) rename(old, to);
+    __atomic_store_n(&placing, false, __ATOMIC_RELEASE);
+    if (ok) strcpy(found, to);
+    return ok;
+}
+
 static bool scan(json_t *rules, char *path, size_t size, bool *derived, bool cached) {
     size_t i; json_t *rule;
     char found[PATH_MAX_LEN + 260];
+    size_t cap = path && size < sizeof found ? size : sizeof found;
     json_array_foreach(rules, i, rule) {
-        if (stopping() || !rule_scan(rule, found, path && size < sizeof found ? size : sizeof found, cached)) continue;
-        if (path) strcpy(path, found);
+        if (stopping() || !rule_scan(rule, found, cap, cached)) continue;
+        const char *to = json_string_value(json_object_get(rule, "placeAs"));
+        if (to && !place(to, found, cap)) continue;
+        if (path) snprintf(path, size, "%s", found);
         if (derived) *derived = json_is_true(json_object_get(rule, "derived"));
         return true;
     }

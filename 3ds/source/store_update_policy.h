@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
+#include <strings.h>
 #include <stdio.h>
 #include "store_version.h"
 static inline void store_update_version_label(json_t *root,int64_t build,char *out,size_t cap) {
@@ -33,4 +34,24 @@ static inline bool store_update_metadata(json_t *root, bool homebrew, uint64_t *
     *bytes = json_integer_value(size);
     memcpy(hash, sha, 65);
     return true;
+}
+
+// The Homebrew Launcher shows a folder of /3ds/ as an app, with its icon, only when it
+// holds <folder>.3dsx or boot.3dsx. A release download keeps its versioned name
+// (forge-store-v1.1.3dsx), which hides the icon behind a plain folder.
+#define STORE_HOME_3DSX DATA_DIR "/forge-store.3dsx"
+static inline bool store_update_misnamed(const char *executable) {
+    size_t dir = strlen(DATA_DIR "/"), n = strlen(executable);
+    return n > dir + 5 && !strncasecmp(executable, DATA_DIR "/", dir) && !strchr(executable + dir, '/') &&
+           !strcasecmp(executable + n - 5, ".3dsx") && strcasecmp(executable, STORE_HOME_3DSX);
+}
+// Until 1.1 the previous build was kept next to the executable as a launchable
+// <name>.forge-previous.3dsx: the launcher listed it as a second, identical forge.store
+// that offered the same update again. The backup is now <executable>.previous.
+static inline bool store_update_stale_backup(const char *name, const char *executable_name) {
+    size_t n = strlen(name), e = strlen(executable_name);
+    const char legacy[] = ".forge-previous.3dsx", now[] = ".previous";
+    if (n > sizeof legacy - 1 && !strcasecmp(name + n - (sizeof legacy - 1), legacy))
+        return strcasecmp(name, executable_name) != 0;
+    return n == e + sizeof now - 1 && !strncasecmp(name, executable_name, e) && !strcasecmp(name + e, now);
 }

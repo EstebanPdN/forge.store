@@ -1,21 +1,21 @@
 {
-  "store_build": 2026111705,
-  "version": "1.1",
+  "store_build": 2026111801,
+  "version": "1.2",
   "kind": "public build",
   "debug_dumps": false,
   "dump_upload": false,
   "files": {
     "forge-store.cia": {
-      "bytes": 50254784,
-      "sha256": "0a391dca9bbdbcb427a2287fb62fce4cdab40ae609d75c4a419b7938a5ab7277"
+      "bytes": 50271168,
+      "sha256": "341e10ca2fd476fcee9187d1203dbfe136ebfb369e62fa727b859fae07008031"
     },
     "forge-store.3dsx": {
-      "bytes": 50565848,
-      "sha256": "f32451c6e49a7ef78e41bcda4a7a8ca125ebe1c59b86a6423d76797a9fcb1ba7"
+      "bytes": 50586896,
+      "sha256": "a436b58369e5dd7ed518f4cf0a20d7b9b095303928ea2715133c500c0a98550c"
     }
   },
   "source_sha256": {
-    "3ds/build.sh": "a373f9ce42bc17bc47579b5511f34af19a807155f4682548da6fc27c2c8f8839",
+    "3ds/build.sh": "043d16562bca5c0df7e5b2ab73a829a002a90b929e8d18cbfcb9e173c37243eb",
     "3ds/forge-store.rsf": "d5c35328fd045cd26ac97f39d3a50578eb025422fb365a5ef1f1d71848f2139d",
     "3ds/source/audio.c": "1c896122750c0614a2463acf774db0aeb74ba79a3e7935708541df93e6e46846",
     "3ds/source/audio.h": "1f6e74bfabbe12c83c579ee8a591a3d3ad762ed411f7ad4fcbe2aedd68e0fb09",
@@ -64,8 +64,8 @@
     "3ds/source/image_round.h": "86c3d588bccac3851cfe83f1ca1b1a23fbb775de77afa3c3c1b93f93c4c4fa10",
     "3ds/source/install.c": "8864978066a3fc30fdae8f88b514e5cc093befd40260a6394f9d4ee42052bccf",
     "3ds/source/install.h": "030b2a3ed365d33035e7f28c51f6fe5ea4e88f27da6e1b0262f29f4afbd125a1",
-    "3ds/source/install_plan.c": "b39ff49a1eebe812e73b285d41416d45995848389d588948ddd7c77b98c20261",
-    "3ds/source/install_plan.h": "b95cef70aed6e246ae69ea97360a873c8f7a46c23c05ff5c768c4174768375b0",
+    "3ds/source/install_plan.c": "486371c350c8c11216fe72351bb381da8da1a9a701d322321cfff395d462c186",
+    "3ds/source/install_plan.h": "9983e9f3760d6f4a09f744b4227956b9f6452b31df7f5140d419a79e6d568590",
     "3ds/source/live_release.c": "ad769c3231cbaeb55b0730bfd0856c538839273d78eff82ba92ebb8420d87cd6",
     "3ds/source/live_release.h": "6505981226b6cf28594e86121c4dcb67547d216fd8396b1d1871368b54d719b2",
     "3ds/source/main.c": "9e51ef449bc38eabfbfe367c8bbe1d3a27a01659f953b8ddd79fd85e99e62835",
@@ -81,17 +81,17 @@
     "3ds/source/reader_image.h": "1fd985691f7886da843fb55e926e6994ce7a1861c4ef72b780612340334af96f",
     "3ds/source/remote_image.c": "99132073af48f6b9af776a7a39dbe11a6c89a892ac7b27a96701e4e383a91755",
     "3ds/source/remote_image.h": "9ca93c5848ed351bd74b936c924106c22fa221bc79fe3e6848c162cae59d6d20",
-    "3ds/source/rom_find.c": "5ec637933cf129e4d83080c1a828d2ef84677e9c0fdcbdd80caf1aeb9e4da28e",
-    "3ds/source/rom_find.h": "b365312615dbfb24af6a30085709dc9a7f7a93fa72d3049985f86a2cc9750df7",
-    "3ds/source/scenes.c": "79b3a62e770984e3e18ad85d0cb4a8fb7226ad9efbeb00391081d3eca8b54792",
+    "3ds/source/rom_find.c": "be03ef628cf47ac47492aa5e32c95c3d19a65e73c777170e77e27d60dd491eb8",
+    "3ds/source/rom_find.h": "57d26254776dcc8911e6a4e138d66b2f1108908aaf792c63cabbca042768ba7c",
+    "3ds/source/scenes.c": "8976588e1344f35b9832afcfc1ee2e337d3c46b1a5ba09a343b3ab3948d14cbf",
     "3ds/source/scenes.h": "bdacb79d60a3443058ae577018917fbc71a794487eba94ec6d8b750d710e9eef",
     "3ds/source/sd_usage.c": "546e020a18071bf5ea6e31fedea8c7267d96e62f2b64203158dad26d6e4dcb94",
     "3ds/source/sd_usage.h": "8757e3b3afbb761b13c046f4c82fa80816969d6117240f07451b580e045c76df",
     "3ds/source/site_progress.h": "929fd113e703a69cb46405930b5695772d47448322c3c3261f3341ffbc7f9587",
-    "3ds/source/store_update.c": "b34f80a922f64824d6ae30331d3446e89199fc8f146ade3d62666e66d2b0ed5a",
+    "3ds/source/store_update.c": "a08a04351dc7da211073aa76f5ff1b90b731817ac7258789565f0d6998d08e6e",
     "3ds/source/store_update.h": "485082bef11611b07ecdd4074a488a4ae8e2b54fc56e5bcee28513bb8c1f566d",
-    "3ds/source/store_update_policy.h": "3629c4f11e1cb4b203df0781a32cf4643e913509d51b19a4b315929c6ea9997b",
-    "3ds/source/store_version.h": "7c75345963fe098d70e7272ce5a2e5c95d3d6f6a119041074764a1dd626adef3",
+    "3ds/source/store_update_policy.h": "2aa92b9e941872d30a79f9008de109b97ebe2f310e9a17748dafc7836a93df73",
+    "3ds/source/store_version.h": "1cbb96ca97da454e02d1fccf57620b968053408cfb25ce085a3c4a8867e5a2ac",
     "3ds/source/texture_stream.inc": "ef13c05a66f9763d2bb4da54d98b4050029641027fe111969bfdbf6d2eb7528d",
     "3ds/source/universal_convert.c": "32ab7b60d898505d2e3cd7d3c5d4b59652db79404d715a2922f1c60d23b3ecbe",
     "3ds/source/universal_convert.h": "68d29a6d59d066637ba90b03ebd6fbd582d728e4b973a4812934ff0c105249c3",

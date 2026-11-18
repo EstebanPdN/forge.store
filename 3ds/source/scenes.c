@@ -1211,10 +1211,12 @@ static InstallPlan detail_plan;
 static App *detail_plan_app;
 static bool detail_plan_cia,detail_plan_exp;
 static FileView detail_plan_views[PLAN_MAX];
+static unsigned detail_plan_scan;  // the ROM scan the tree shows: a newer one may have found files elsewhere
+static const char *detail_plan_found(json_t *req){return rom_find_path(req,NULL);}
 static void detail_plan_update(void) {
-    if(detail_plan_app!=dapp || detail_plan_cia!=sheet_cia || detail_plan_exp!=sheet_exp) {
-        install_plan_build(&detail_plan,app_install_steps(dapp,sheet_cia),json_object_get(app_release(dapp,sheet_exp),"assets"),json_object_get(dapp->j,"requires"),!IS_NEW3DS);
-        detail_plan_app=dapp;detail_plan_cia=sheet_cia;detail_plan_exp=sheet_exp;
+    if(detail_plan_app!=dapp || detail_plan_cia!=sheet_cia || detail_plan_exp!=sheet_exp || detail_plan_scan!=rom_find_completed()) {
+        install_plan_build(&detail_plan,app_install_steps(dapp,sheet_cia),json_object_get(app_release(dapp,sheet_exp),"assets"),json_object_get(dapp->j,"requires"),!IS_NEW3DS,detail_plan_found);
+        detail_plan_app=dapp;detail_plan_cia=sheet_cia;detail_plan_exp=sheet_exp;detail_plan_scan=rom_find_completed();
         file_view_plan_begin();
         memset(detail_plan_views,0,sizeof detail_plan_views);
         for(int i=0;i<detail_plan.count;i++) {

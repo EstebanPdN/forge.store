@@ -5,6 +5,7 @@
 #include <mbedtls/sha256.h>
 #include <sys/stat.h>
 #include <sys/statvfs.h>
+#include <dirent.h>
 #include <unistd.h>
 
 #define UPDATE_BASE "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/"
@@ -116,9 +117,9 @@ static bool install_cia(const char *path, uint64_t bytes) {
         fclose(f);
         return false;
     }
-    // AM's overwrite transaction is finalized only after every byte was written.
-    // Never delete the existing title to make room for an update.
-    r = AM_StartCiaInstallOverwrite(&output, MEDIATYPE_SD);
+    // The import AM commits on finish, as FBI and Universal-Updater update themselves; it is
+    // finalized only after every byte was written. Never delete the existing title to make room.
+    r = AM_StartCiaInstall(MEDIATYPE_SD, &output);
     bool ok = R_SUCCEEDED(r);
     uint64_t offset = 0;
     while (ok && offset < bytes && !stopped()) {
@@ -137,13 +138,17 @@ static bool install_cia(const char *path, uint64_t bytes) {
     ok = ok && !stopped() && !ferror(f) && offset == bytes;
     fclose(f);
     free(buffer);
-    if (output) {
-        if (ok)
-            ok = R_SUCCEEDED(AM_FinishCiaInstall(output));
-        if (!ok)
-            AM_CancelCIAInstall(output);
+    if (!output)
+        return false;
+    if (!ok || R_FAILED(AM_FinishCiaInstall(output))) {
+        AM_CancelCIAInstall(output);
+        return false;
     }
-    return ok;
+    // Done means the title database now holds the downloaded version, not only that AM
+    // accepted the bytes: otherwise the next start offers the same update again.
+    u64 title = STORE_TITLE_ID;
+    AM_TitleInfo installed;
+    return R_SUCCEEDED(AM_GetTitleInfo(MEDIATYPE_SD, 1, &title, &installed)) && installed.version == info.version;
 }
 static bool install_homebrew(const char *staged) {
     // Only replace the actual launched executable, never an inferred SD path.
@@ -161,23 +166,45 @@ static bool install_homebrew(const char *staged) {
     if (!ok || stopped())
         return false;
     char backup[1024];
-    snprintf(backup, sizeof backup, "%.*s.forge-previous.3dsx", (int)(strlen(executable) - 5), executable);
-    // A stale backup is retained until another complete verified update is available.
+    snprintf(backup, sizeof backup, "%s.previous", executable);
+    // Not a .3dsx: the launcher must not list the old build. The next start removes it.
     if (access(executable, F_OK))
         return false;
     if (!access(backup, F_OK) && unlink(backup))
         return false;
     if (rename(executable, backup))
         return false;
-    // libctru cannot atomically overwrite a file on FAT. Keep a launchable backup
-    // until the following successful update, including if power is lost here.
+    // libctru cannot atomically overwrite a file on FAT. If power is lost here, the
+    // previous build is still on the SD card under the backup name.
     if (rename(staged, executable)) {
         rename(backup, executable);
         return false;
     }
     return true;
 }
+// Worker, before the check. The running 3DSX may be renamed: its RomFS handle stays open,
+// as when an update replaces it. `executable` is read again only after UPDATE_DONE.
+static void tidy_homebrew(void) {
+    if (!homebrew || strncmp(executable, "sdmc:/", 6) || strlen(executable) > 980)
+        return;
+    if (store_update_misnamed(executable) && access(STORE_HOME_3DSX, F_OK) && !rename(executable, STORE_HOME_3DSX))
+        snprintf(executable, sizeof executable, "%s", STORE_HOME_3DSX);
+    char folder[1024], path[1300];
+    const char *name = strrchr(executable, '/') + 1;
+    snprintf(folder, sizeof folder, "%.*s", (int)(name - executable - 1), executable);
+    DIR *d = opendir(folder);
+    if (!d)
+        return;
+    struct dirent *e;
+    while (!stopped() && (e = readdir(d)))
+        if (store_update_stale_backup(e->d_name, name)) {
+            snprintf(path, sizeof path, "%s/%s", folder, e->d_name);
+            unlink(path);
+        }
+    closedir(d);
+}
 static void run(void *unused) {
+    tidy_homebrew();
     CURL *c = request(UPDATE_BASE "update.json");
     if (!c) {
         publish(UPDATE_OFFLINE);

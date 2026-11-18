@@ -1954,7 +1954,7 @@
           },
           "path": "/3ds/MK64/mk64.z64",
           "size": 12582912,
-          "accept": "Mario Kart 64.z64, mk64.z64, baserom.us.z64",
+          "accept": "*.z64, *.v64, *.n64",
           "hashes": [
             {
               "label": "USA",
@@ -2036,11 +2036,107 @@
                 },
                 {
                   "at": 59,
-                  "any": [
-                    "NKTE"
+                  "hex": [
+                    "4e4b5445"
                   ]
                 }
               ]
+            },
+            {
+              "dir": "/3ds/MK64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                12582912
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 59,
+                  "hex": [
+                    "4e4b5445"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/MK64/Mario Kart 64.z64"
+            },
+            {
+              "dir": "/3ds/MK64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                12582912
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "37804012"
+                  ]
+                },
+                {
+                  "at": 58,
+                  "hex": [
+                    "4e"
+                  ]
+                },
+                {
+                  "at": 60,
+                  "hex": [
+                    "544b"
+                  ]
+                },
+                {
+                  "at": 63,
+                  "hex": [
+                    "45"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/MK64/Mario Kart 64.z64"
+            },
+            {
+              "dir": "/3ds/MK64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                12582912
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "40123780"
+                  ]
+                },
+                {
+                  "at": 56,
+                  "hex": [
+                    "4e"
+                  ]
+                },
+                {
+                  "at": 61,
+                  "hex": [
+                    "45544b"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/MK64/Mario Kart 64.z64"
             }
           ]
         }
@@ -4046,7 +4142,15 @@
             "de": "Mit Worms3DExtractor für macOS aus deiner Disc-Kopie erstellt (ca. 999 MB).",
             "ru": "Создается в Worms3DExtractor для macOS из копии вашего диска (около 999 МБ).",
             "ja": "お手持ちのディスクのコピーから、macOS用Worms3DExtractorで作成します（約999 MB）。"
-          }
+          },
+          "detect": [
+            {
+              "dir": "/3ds/worms3ds/",
+              "names": [
+                "assets.worms"
+              ]
+            }
+          ]
         }
       ],
       "install": null
@@ -4385,7 +4489,196 @@
             "de": "Lege deine ROM in den Ordner /3ds/StarHaven/.",
             "ru": "Положите ROM в папку /3ds/StarHaven/.",
             "ja": "ROMを/3ds/StarHaven/フォルダに入れてください。"
-          }
+          },
+          "detect": [
+            {
+              "dir": [
+                "/3ds/StarHaven/",
+                "/roms/n64/",
+                "/roms/",
+                "/n64/",
+                "/3ds/",
+                "/"
+              ],
+              "minSize": 41943040,
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 59,
+                  "hex": [
+                    "4e4d5145"
+                  ]
+                }
+              ]
+            },
+            {
+              "dir": [
+                "/3ds/StarHaven/",
+                "/roms/n64/",
+                "/roms/",
+                "/n64/",
+                "/3ds/",
+                "/"
+              ],
+              "minSize": 41943040,
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "37804012"
+                  ]
+                },
+                {
+                  "at": 58,
+                  "hex": [
+                    "4e"
+                  ]
+                },
+                {
+                  "at": 60,
+                  "hex": [
+                    "514d"
+                  ]
+                },
+                {
+                  "at": 63,
+                  "hex": [
+                    "45"
+                  ]
+                }
+              ]
+            },
+            {
+              "dir": [
+                "/3ds/StarHaven/",
+                "/roms/n64/",
+                "/roms/",
+                "/n64/",
+                "/3ds/",
+                "/"
+              ],
+              "minSize": 41943040,
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "40123780"
+                  ]
+                },
+                {
+                  "at": 56,
+                  "hex": [
+                    "4e"
+                  ]
+                },
+                {
+                  "at": 61,
+                  "hex": [
+                    "45514d"
+                  ]
+                }
+              ]
+            },
+            {
+              "dir": [
+                "/3ds/StarHaven/",
+                "/roms/n64/",
+                "/roms/",
+                "/n64/",
+                "/3ds/",
+                "/"
+              ],
+              "minSize": 41943040,
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 59,
+                  "hex": [
+                    "4e4d5150"
+                  ]
+                }
+              ]
+            },
+            {
+              "dir": [
+                "/3ds/StarHaven/",
+                "/roms/n64/",
+                "/roms/",
+                "/n64/",
+                "/3ds/",
+                "/"
+              ],
+              "minSize": 41943040,
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "37804012"
+                  ]
+                },
+                {
+                  "at": 58,
+                  "hex": [
+                    "4e"
+                  ]
+                },
+                {
+                  "at": 60,
+                  "hex": [
+                    "514d"
+                  ]
+                },
+                {
+                  "at": 63,
+                  "hex": [
+                    "50"
+                  ]
+                }
+              ]
+            },
+            {
+              "dir": [
+                "/3ds/StarHaven/",
+                "/roms/n64/",
+                "/roms/",
+                "/n64/",
+                "/3ds/",
+                "/"
+              ],
+              "minSize": 41943040,
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "40123780"
+                  ]
+                },
+                {
+                  "at": 56,
+                  "hex": [
+                    "4e"
+                  ]
+                },
+                {
+                  "at": 61,
+                  "hex": [
+                    "50514d"
+                  ]
+                }
+              ]
+            }
+          ],
+          "accept": "*.z64, *.v64, *.n64"
         }
       ],
       "install": {
@@ -4465,7 +4758,7 @@
             "ja": "お手持ちのN64 ROM（USA版）"
           },
           "path": "/3ds/DK64/DK64.z64",
-          "accept": "*.z64",
+          "accept": "*.z64, *.v64, *.n64",
           "help": {
             "es": "Usa CIA en Old 3DS para disponer de más memoria.",
             "en": "Use CIA on Old 3DS for additional memory.",
@@ -4475,7 +4768,140 @@
             "de": "Auf Old 3DS die CIA nutzen, für mehr Speicher.",
             "ru": "Нужна CIA-версия на Old 3DS: так больше памяти.",
             "ja": "Old 3DSでは、より多くのメモリを使えるCIA版を使用してください。"
-          }
+          },
+          "detect": [
+            {
+              "dir": "/3ds/DK64/",
+              "names": [
+                "DK64.z64"
+              ],
+              "sizes": [
+                33554432
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "444f4e4b4559204b4f4e47203634"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "4500"
+                  ]
+                }
+              ]
+            },
+            {
+              "dir": "/3ds/DK64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                33554432
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "444f4e4b4559204b4f4e47203634"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "4500"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/DK64/DK64.z64"
+            },
+            {
+              "dir": "/3ds/DK64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                33554432
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "37804012"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "4f444b4e59454b204e4f20473436"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "0045"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/DK64/DK64.z64"
+            },
+            {
+              "dir": "/3ds/DK64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                33554432
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "40123780"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "4b4e4f444b20594520474e4f"
+                  ]
+                },
+                {
+                  "at": 46,
+                  "hex": [
+                    "3436"
+                  ]
+                },
+                {
+                  "at": 60,
+                  "hex": [
+                    "0045"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/DK64/DK64.z64"
+            }
+          ]
         }
       ],
       "compat": {
@@ -4651,7 +5077,7 @@
             "ja": "お手持ちのN64 ROM（USA版）"
           },
           "path": "/3ds/BanjoRecomp/BK.z64",
-          "accept": "*.z64",
+          "accept": "*.z64, *.v64, *.n64",
           "help": {
             "es": "Usa CIA en Old 3DS para disponer de más memoria.",
             "en": "Use CIA on Old 3DS for additional memory.",
@@ -4661,7 +5087,146 @@
             "de": "Auf Old 3DS die CIA nutzen, für mehr Speicher.",
             "ru": "Нужна CIA-версия на Old 3DS: так больше памяти.",
             "ja": "Old 3DSでは、より多くのメモリを使えるCIA版を使用してください。"
-          }
+          },
+          "detect": [
+            {
+              "dir": "/3ds/BanjoRecomp/",
+              "names": [
+                "BK.z64"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "42616e6a6f2d4b617a6f6f6965"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "4500"
+                  ]
+                }
+              ]
+            },
+            {
+              "dir": "/3ds/BanjoRecomp/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "42616e6a6f2d4b617a6f6f6965"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "4500"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/BanjoRecomp/BK.z64"
+            },
+            {
+              "dir": "/3ds/BanjoRecomp/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "37804012"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "61426a6e2d6f614b6f7a696f"
+                  ]
+                },
+                {
+                  "at": 45,
+                  "hex": [
+                    "65"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "0045"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/BanjoRecomp/BK.z64"
+            },
+            {
+              "dir": "/3ds/BanjoRecomp/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "40123780"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "6a6e6142614b2d6f696f6f7a"
+                  ]
+                },
+                {
+                  "at": 47,
+                  "hex": [
+                    "65"
+                  ]
+                },
+                {
+                  "at": 60,
+                  "hex": [
+                    "0045"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/BanjoRecomp/BK.z64"
+            }
+          ]
         }
       ],
       "compat": {
@@ -4837,7 +5402,7 @@
             "ja": "お手持ちのN64 ROM（USA版）"
           },
           "path": "/3ds/Goemon64/mnsg.us.z64",
-          "accept": "*.z64",
+          "accept": "*.z64, *.v64, *.n64",
           "help": {
             "es": "Usa CIA en Old 3DS para disponer de más memoria.",
             "en": "Use CIA on Old 3DS for additional memory.",
@@ -4847,7 +5412,140 @@
             "de": "Auf Old 3DS die CIA nutzen, für mehr Speicher.",
             "ru": "Нужна CIA-версия на Old 3DS: так больше памяти.",
             "ja": "Old 3DSでは、より多くのメモリを使えるCIA版を使用してください。"
-          }
+          },
+          "detect": [
+            {
+              "dir": "/3ds/Goemon64/",
+              "names": [
+                "mnsg.us.z64"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "4d5953544943414c204e494e4a41"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "4500"
+                  ]
+                }
+              ]
+            },
+            {
+              "dir": "/3ds/Goemon64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "80371240"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "4d5953544943414c204e494e4a41"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "4500"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/Goemon64/mnsg.us.z64"
+            },
+            {
+              "dir": "/3ds/Goemon64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "37804012"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "594d545343494c414e204e49414a"
+                  ]
+                },
+                {
+                  "at": 62,
+                  "hex": [
+                    "0045"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/Goemon64/mnsg.us.z64"
+            },
+            {
+              "dir": "/3ds/Goemon64/",
+              "ext": [
+                "z64",
+                "v64",
+                "n64"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "hex": [
+                    "40123780"
+                  ]
+                },
+                {
+                  "at": 32,
+                  "hex": [
+                    "5453594d4c4143494e494e20"
+                  ]
+                },
+                {
+                  "at": 46,
+                  "hex": [
+                    "414a"
+                  ]
+                },
+                {
+                  "at": 60,
+                  "hex": [
+                    "0045"
+                  ]
+                }
+              ],
+              "placeAs": "/3ds/Goemon64/mnsg.us.z64"
+            }
+          ]
         }
       ],
       "compat": {
@@ -5317,7 +6015,23 @@
             "de": "Kopiere den Ordner valve aus deiner Half-Life-Installation nach /xash3d/.",
             "ru": "Скопируйте папку valve из установленной Half-Life в /xash3d/.",
             "ja": "Half-Lifeのインストール先にあるvalveフォルダを/xash3d/にコピーしてください。"
-          }
+          },
+          "detect": [
+            {
+              "dir": "/xash3d/valve/",
+              "names": [
+                "pak0.pak"
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "any": [
+                    "PACK"
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ],
       "compat": {
@@ -5614,7 +6328,23 @@
             "de": "Kopiere pak0.pak (und pak1.pak, falls vorhanden) in den Ordner id1.",
             "ru": "Скопируйте pak0.pak (и pak1.pak, если есть) в папку id1.",
             "ja": "pak0.pak（あればpak1.pakも）をid1フォルダにコピーしてください。"
-          }
+          },
+          "detect": [
+            {
+              "dir": "/3ds/ctrQuake/id1/",
+              "names": [
+                "pak0.pak"
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "any": [
+                    "PACK"
+                  ]
+                }
+              ]
+            }
+          ]
         }
       ],
       "install": {
@@ -5799,7 +6529,7 @@
             "ru": "Уровни из вашего Tomb Raider",
             "ja": "お手持ちのTomb Raiderのレベル"
           },
-          "path": null,
+          "path": "/3ds/OpenLara/",
           "help": {
             "es": "Coloca los datos como indica el README de OpenLara.",
             "en": "Place the data as the OpenLara README explains.",
@@ -5809,7 +6539,35 @@
             "de": "Lege die Daten ab, wie in der README von OpenLara beschrieben.",
             "ru": "Разместите данные так, как описано в README OpenLara.",
             "ja": "OpenLaraのREADMEの説明どおりにデータを配置してください。"
-          }
+          },
+          "example": "DATA/GYM.PHD",
+          "detect": [
+            {
+              "dir": "/3ds/OpenLara/",
+              "names": [
+                "GYM.PHD",
+                "assault.TR2"
+              ]
+            },
+            {
+              "dir": "/3ds/OpenLara/DATA/",
+              "names": [
+                "GYM.PHD",
+                "GYM.SAT",
+                "ASSAULT.TR2",
+                "ASSAULT.PSX",
+                "JUNGLE.TR2",
+                "JUNGLE.PSX",
+                "angkor1.tr4"
+              ]
+            },
+            {
+              "dir": "/3ds/OpenLara/PSXDATA/",
+              "names": [
+                "GYM.PSX"
+              ]
+            }
+          ]
         }
       ],
       "install": {
@@ -8729,7 +9487,7 @@
             "ru": "Подготовленные данные вашей игры",
             "ja": "前処理済みのゲームデータ"
           },
-          "path": null,
+          "path": "/3ds/butterscotch/",
           "help": {
             "es": "Usa ctr-cache-preprocess.exe v1.3. Copia cada juego preprocesado a /3ds/butterscotch/<juego>/, con su data.win y su carpeta cache.",
             "en": "Use ctr-cache-preprocess.exe v1.3. Copy each preprocessed game to /3ds/butterscotch/<game>/, including data.win and its cache folder.",
@@ -8739,7 +9497,16 @@
             "de": "Nutze ctr-cache-preprocess.exe v1.3. Kopiere jedes vorbereitete Spiel nach /3ds/butterscotch/<game>/, inklusive data.win und dem Cache-Ordner.",
             "ru": "Используйте ctr-cache-preprocess.exe v1.3. Скопируйте каждую подготовленную игру в /3ds/butterscotch/<game>/ вместе с data.win и папкой кэша.",
             "ja": "ctr-cache-preprocess.exe v1.3を使用してください。前処理した各ゲームを、data.winとキャッシュフォルダごと/3ds/butterscotch/<game>/にコピーします。"
-          }
+          },
+          "example": "game/data.win",
+          "detect": [
+            {
+              "dir": "/3ds/butterscotch/*/",
+              "names": [
+                "data.win"
+              ]
+            }
+          ]
         }
       ],
       "shots": [],

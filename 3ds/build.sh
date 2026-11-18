@@ -64,8 +64,14 @@ for o in $OBJS; do [[ -f "$o" ]] || { echo "missing $o"; exit 1; }; done
 "$T/bannertool" makebanner -ci meta/banner.cgfx -a meta/banner.wav -o "$OUT/banner.bnr" >/dev/null
 "$T/bannertool" makesmdh -s "forge.store" -l "forge.store · ports for Nintendo 3DS" -p "Esteban's Forge" \
   -f visible,allow3d,recordusage,extendedbanner -i meta/icon.png -o "$OUT/icon.icn" >/dev/null
+# Title version from STORE_VERSION ("1.2" -> major<<10 | minor<<4 | micro): the self-update
+# checks that AM holds the downloaded version before it reports the update as done.
+VERSION=$(sed -n 's/^#define STORE_VERSION "\(.*\)"/\1/p' source/store_version.h)
+[[ $VERSION =~ '^[0-9]+\.[0-9]+(\.[0-9]+)?$' ]] || { echo "STORE_VERSION must be major.minor[.micro]" >&2; exit 1; }
+PARTS=(${(s:.:)VERSION})
+(( PARTS[1] < 64 && PARTS[2] < 64 && ${PARTS[3]:-0} < 16 )) || { echo "STORE_VERSION out of range" >&2; exit 1; }
 (cd "$D" && "$T/makerom" -f cia -o "$OUT/forge-store.cia" -elf "$OUT/forge-store.elf" -rsf forge-store.rsf \
-  -icon "$OUT/icon.icn" -banner "$OUT/banner.bnr" -target t)
+  -icon "$OUT/icon.icn" -banner "$OUT/banner.bnr" -target t -ver $(( PARTS[1] << 10 | PARTS[2] << 4 | ${PARTS[3]:-0} )))
 python3 "$D/tools/home_banner_validate.py" "$OUT/banner.bnr" --cia "$OUT/forge-store.cia" --require-static > "$OUT/home-banner-package.json"
 python3 "$D/tools/build-manifest.py"
 ls -la "$OUT/forge-store.3dsx" "$OUT/forge-store.cia"

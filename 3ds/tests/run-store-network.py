@@ -49,7 +49,7 @@ static int mbedtls_sha256_finish_ret(mbedtls_sha256_context*c,unsigned char*p){C
  flags=['clang','-g','-O1','-fsanitize=address,undefined','-Wno-deprecated-declarations','-I'+temp,'-I/opt/homebrew/include','-L/opt/homebrew/lib','-ljansson','-lcurl','-lz','-lpthread']
  subprocess.run(flags+[str(p/'updater.c'),'-o',str(p/'updater')],check=True)
  env={**os.environ,'TEST_PORT':str(server.server_port)}
- cases=[('current',0,1),('older',0,1),('malformed',0,2),('huge',0,2),('size',0,2),('large-size',0,2),('bad-hex',0,2),('missing-file',0,2),('deadline',0,2),('cancelled',0,2),('hash',0,6),('truncated',0,6),('wrong-title',0,6),('valid',3,6),('valid',1,6),('valid',2,6),('valid',0,5),('hb-valid',0,5),('hb-bad',0,6),('hb-missing',0,6),('decline',0,8),('cancel-wait',0,8),('bad-version',0,5)]
+ cases=[('current',0,1),('older',0,1),('malformed',0,2),('huge',0,2),('size',0,2),('large-size',0,2),('bad-hex',0,2),('missing-file',0,2),('deadline',0,2),('cancelled',0,2),('hash',0,6),('truncated',0,6),('wrong-title',0,6),('valid',3,6),('valid',1,6),('valid',2,6),('valid',0,5),('valid',4,6),('hb-valid',0,5),('hb-rename',0,5),('hb-keep',0,5),('hb-bad',0,6),('hb-missing',0,6),('decline',0,8),('cancel-wait',0,8),('bad-version',0,5)]
  for case,fault,want in cases:
   state.update(case=case,calls=0);subprocess.run([str(p/'updater'),case,str(fault),str(want)],cwd=p,env=env,check=True)
   if case in ['decline','cancel-wait']:assert state['calls']==1,(case,state)

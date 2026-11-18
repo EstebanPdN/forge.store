@@ -1,14 +1,20 @@
 // Finds a user file (ROM, data built from it) the way the port itself does: any file name
 // the port accepts, recognised by size, header bytes or CRC-32. The rules are the
 // requirement's "detect" array in the catalog; each entry is one alternative:
-//   dir     folder on the SD card ("/3ds/Starwing/")
+//   dir     folder on the SD card ("/3ds/Starwing/"), or a list of folders searched in order;
+//           "/3ds/butterscotch/*/" is every folder directly inside
 //   names   exact file names, or
-//   ext     extensions without the dot (any name); both ignore case, like the SD card
+//   ext     extensions without the dot (any name); both ignore case, like the SD card.
+//           Without either, any name: the size and header bytes decide
 //   skip    names the port ignores; names starting with "." are always ignored
 //   sizes / minSize   accepted file sizes
 //   magic   [{at, any:[text...]} or {at, hex:[bytes...]}]  header bytes
 //   crc32   {any:[hex...], tail:N}  CRC-32 of the last N bytes (whole file without tail)
 //   derived true when the file is data the port built: it starts without the ROM
+//   placeAs the one file the port opens ("/3ds/DK64/DK64.z64"): what the rule finds is copied
+//           there, in .z64 byte order when the name ends in .z64, and the found path is that one.
+//           The player's own file is never moved or deleted; a different file already holding
+//           that name is kept beside it as <name>.old
 #pragma once
 #include <jansson.h>
 #include <stdbool.h>

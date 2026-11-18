@@ -30,6 +30,7 @@ typedef pthread_mutex_t LightLock;
 #define FS_OPEN_READ 1
 typedef struct {
     uint64_t titleID;
+    uint16_t version;
 } AM_TitleInfo;
 static inline void LightLock_Init(LightLock *l) { pthread_mutex_init(l, NULL); }
 static inline void LightLock_Lock(LightLock *l) { pthread_mutex_lock(l); }
@@ -69,8 +70,11 @@ static Result FSUSER_OpenFileDirectly(Handle *h, int a, const char *b, const cha
     *h = 1;
     return input ? 0 : -1;
 }
+static uint16_t cia_version, installed_version;
 static Result AM_GetCiaFileInfo(int media, AM_TitleInfo *info, Handle h) {
-    return fread(&info->titleID, 1, 8, input) == 8 ? 0 : -1;
+    bool ok = fread(&info->titleID, 1, 8, input) == 8 && fread(&info->version, 1, 2, input) == 2;
+    cia_version = info->version;
+    return ok ? 0 : -1;
 }
 static void FSFILE_Close(Handle h) {
     fclose(input);
@@ -80,7 +84,7 @@ static Result APT_GetProgramID(u64 *id) {
     *id = fault == 3 ? 0 : 0x000400000F0F5E00ULL;
     return 0;
 }
-static Result AM_StartCiaInstallOverwrite(Handle *h, int m) {
+static Result AM_StartCiaInstall(int m, Handle *h) {
     starts++;
     *h = 7;
     return 0;
@@ -92,7 +96,14 @@ static Result FSFILE_Write(Handle h, u32 *n, u64 offset, const void *data, size_
 }
 static Result AM_FinishCiaInstall(Handle h) {
     finishes++;
+    if (fault != 4)  // 4: AM accepts the import, but the installed title stays as it was
+        installed_version = cia_version;
     return fault == 2 ? -1 : 0;
+}
+static Result AM_GetTitleInfo(int media, u32 count, u64 *ids, AM_TitleInfo *info) {
+    info->titleID = *ids;
+    info->version = installed_version;
+    return 0;
 }
 static void AM_CancelCIAInstall(Handle h) { cancels++; }
 static void aptSetChainloader(u64 id, int media) {}

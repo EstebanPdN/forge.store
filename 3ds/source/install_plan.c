@@ -29,7 +29,7 @@ static int order(const void*a,const void*b){
  if(!ue||!ve)return ue?1:ve?-1:strcmp(x->path,y->path);
  u=ue+1;v=ve+1;}
 }
-void install_plan_build(InstallPlan*p,json_t*steps,json_t*assets,json_t*requires,bool old3ds){
+void install_plan_build(InstallPlan*p,json_t*steps,json_t*assets,json_t*requires,bool old3ds,const char*(*found)(json_t*)){
  memset(p,0,sizeof *p);size_t i;json_t*s;
  json_array_foreach(steps,i,s){const char*t=str(s,"type");
   if(!strcmp(t,"mkdir"))put(p,str(s,"directory"),true,0,-1,false);
@@ -45,6 +45,7 @@ void install_plan_build(InstallPlan*p,json_t*steps,json_t*assets,json_t*requires
  }
  json_array_foreach(requires,i,s){const char*name=str(s,"path");char full[PLAN_PATH];
   if(*name&&name[strlen(name)-1]=='/'&&*str(s,"example")){int n=snprintf(full,sizeof full,"%s%s",name,str(s,"example"));if(n>0&&n<PLAN_PATH)name=full;}
+  const char*at=found?found(s):NULL;if(at&&!strncmp(at,"sdmc:/",6)&&strlen(at+5)<PLAN_PATH)name=at+5;
   put(p,name,false,json_number_value(json_object_get(s,"size")),i,false);
  }
  int originals=p->count;

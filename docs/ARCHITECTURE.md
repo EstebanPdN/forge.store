@@ -47,7 +47,8 @@ other local projects and the one-time rendering environment.
   `github_prefetch.c` validates common public pages/images while the store is idle.
 - `gh_markup.c`, `gh_flow.c`, `gh_tables.c`, `gh_releases.c`, `remote_image.c` parse, lay out
   and render the bounded GitHub document/image subset.
-- `file_view.c`, `sd_usage.c`, `rom_find.c` perform filesystem queries away from drawing.
+- `file_view.c`, `sd_usage.c`, `rom_find.c` perform filesystem queries away from drawing. `rom_find.c`
+  also copies a found ROM to the one name a port opens (catalog `placeAs`), keeping the original.
 - `hbl_launch.c`, `dsp_dump.c`, `debug_dump.c` isolate platform-specific handoff and diagnostics.
 
 Headers document caller/thread contracts. Workers publish bounded snapshots; rendering does

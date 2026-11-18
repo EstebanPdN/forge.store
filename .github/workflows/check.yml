@@ -21,10 +21,11 @@ jobs:
           python3 3ds/tests/run-site-progress.py
           python3 3ds/tests/run-music-stream.py
           python3 3ds/tests/run-reader-cache-fs.py
-      - name: Recognizing apps installed without the store (production detect.c)
+      - name: Recognizing installed apps and ROMs (production detect.c, rom_find.c)
         run: |
-          sudo apt-get install -y --no-install-recommends libjansson-dev > /dev/null
+          sudo apt-get install -y --no-install-recommends libjansson-dev zlib1g-dev > /dev/null
           python3 3ds/tests/run-detect.py
+          python3 3ds/tests/run-rom-find.py
       - name: JavaScript syntax
         run: |
           while IFS= read -r -d '' file; do
