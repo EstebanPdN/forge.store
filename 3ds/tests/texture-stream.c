@@ -1,5 +1,6 @@
 // Real Sheet and production queue/decoder; SDK textures/events are host adapters.
 #include "gfx.h"
+#include "assets.h"
 #include <assert.h>
 #include <zlib.h>
 #include <unistd.h>
@@ -49,7 +50,17 @@ int main(void){
  assert(nqueue==QMAX&&npending==QMAX);
  loader_quit=false;assert(!pthread_create(&thread,NULL,run_loader,NULL));drain();
  for(int i=0;i<QMAX;i++){assert(many[i].state==SHEET_READY&&many[i].loads==1);sheet_free(&many[i]);}
+ // A sheet whose pack is still downloading fails quietly, asks for its pack, and loads by
+ // itself once the pack is published (no new request from the caller).
+ Sheet late={0};sheet_request(&late,"romfs:/gfx/late.ftx");drain();
+ assert(late.state==SHEET_FAILED&&late.wait_pack==1&&nwaiting==1&&asset_take_wanted()==0);
+ sheets_pump();assert(late.state==SHEET_FAILED);
+ assert(!rename("staged.fpk","packs/late-pack.fpk"));asset_pack_publish(0);
+ sheets_pump();assert(late.state==SHEET_QUEUED&&!nwaiting);drain();
+ assert(late.state==SHEET_READY&&late.arrived_ms&&late.loads==2);sheet_free(&late);
+ Sheet gone={0};sheet_prefetch(&gone,"romfs:/gfx/absent.ftx");drain();
+ assert(gone.state==SHEET_FAILED&&!gone.wait_pack&&!nwaiting&&asset_take_wanted()==-1);sheet_free(&gone);
  loader_quit=true;LightEvent_Signal(&q_event);LightEvent_Signal(&upload_event);pthread_join(thread,NULL);
  free(bytes);free(banner_bank);
- puts("PASS: production FTX/bank bounds, priority, cancellation before/after decode, reacquire, queue overflow and shutdown");
+ puts("PASS: production FTX/bank bounds, priority, cancellation before/after decode, reacquire, queue overflow, late pack arrival and shutdown");
 }

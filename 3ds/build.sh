@@ -57,7 +57,7 @@ print -r -- "$CONFIG" > "$OUT/compile-config.txt"
 for o in $OBJS; do [[ -f "$o" ]] || { echo "missing $o"; exit 1; }; done
 "$B-gcc" -specs=3dsx.specs $ARCH -g -Wl,--gc-sections $OBJS -L "$DEVKITPRO/libctru/lib" -L "$DEVKITPRO/portlibs/3ds/lib" \
   -Wl,--wrap=mbedtls_x509_time_is_past,--wrap=mbedtls_x509_time_is_future -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -larchive -ljansson -lbz2 -llzma -llz4 -lzstd -lz \
-  -ltheoradec -logg -lcitro2d -lcitro3d -lctru -lfreetype -lpng -ljpeg -lgif "$OUT/webp/libwebpdecoder.a" -lbz2 -lz -lm -Wl,-Map,"$OUT/forge-store.map" -o "$OUT/forge-store.elf"
+  -ltheoradec -lvorbisidec -logg -lcitro2d -lcitro3d -lctru -lfreetype -lpng -ljpeg -lgif "$OUT/webp/libwebpdecoder.a" -lbz2 -lz -lm -Wl,-Map,"$OUT/forge-store.map" -o "$OUT/forge-store.elf"
 "$T/smdhtool" --create "forge.store" "Ports for Nintendo 3DS" "Esteban's Forge" meta/icon.png "$OUT/forge-store.smdh"
 "$T/3dsxtool" "$OUT/forge-store.elf" "$OUT/forge-store.3dsx" --smdh="$OUT/forge-store.smdh" --romfs="$OUT/romfs"
 # CIA for the HOME Menu (banner sound: the intro's welcome chime)

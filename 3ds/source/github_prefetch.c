@@ -35,7 +35,7 @@ static void image(const char *url) {
     for (int i = 0; i < seen_count; i++)
         if (!memcmp(key, seen_images[i],sizeof key))
             return;
-    if(reader_image_bundled(url)) return;
+    if(reader_image_prepared(url)) return;
     // Compare encoded bytes on a refresh. A changed image invalidates only its
     // decoded SD copy; unchanged ETag/304 responses keep the fast path intact.
     char *before=NULL,error[160];size_t old_length=0,new_length=0;

@@ -31,5 +31,5 @@ int main(void){
 '''
 with tempfile.TemporaryDirectory(prefix='forge-cache-fs-') as temp:
  p=Path(temp);(p/'test.c').write_text(source)
- subprocess.run(['clang','-std=gnu11','-g','-O1','-fsanitize=address,undefined','-I'+str(root/'source'),str(p/'test.c'),'-lz','-o',str(p/'test')],check=True)
+ subprocess.run(['clang','-std=gnu11','-g','-O1','-fsanitize=address,undefined','-I'+str(root/'source'),'-I/opt/homebrew/include',str(p/'test.c'),str(root/'source/assets.c'),'-DASSETS_HOST_TEST','-L/opt/homebrew/lib','-ljansson','-lz','-o',str(p/'test')],check=True)
  subprocess.run([str(p/'test')],cwd=p,check=True)

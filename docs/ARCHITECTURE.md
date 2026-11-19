@@ -10,7 +10,8 @@
 | `catalog/forge-store.json` | Curated application catalog, install plans, requirements and media metadata |
 | `3ds/source/` | Native application in C; public interfaces in adjacent headers |
 | `3ds/source/vendor/`, `3ds/vendor/` | Third-party code with original notices |
-| `3ds/romfs/` | Versioned runtime assets: exact-size texture/font atlases, audio, strings and catalog snapshots |
+| `3ds/romfs/` | Versioned runtime assets: exact-size texture/font atlases, audio, strings and catalog snapshots. The build ships the interface in the CIA and the rest as resource packs |
+| `store-packs` branch | Published resource packs (append-only, content-addressed), downloaded by the store after installation |
 | `3ds/meta/`, `3ds/forge-store.rsf` | HOME Menu art and unchanged application identity |
 | `3ds/tools/`, `3ds/tests/` | Packaging, conversion, measurement and host/native test harnesses |
 | `tools/` | Web server, catalog formatting and shared asset preparation |
@@ -30,8 +31,12 @@ other local projects and the one-time rendering environment.
 - `texture_stream.inc` owns bounded FTX decode/upload handoff and the compressed banner bank.
 - `gfx.c`, `fx.c` draw pre-rasterized fonts/images, geometric UI and banner effects.
 - `audio.c` owns NDSP channels, streamed store music and UI sounds. `music_stream.h` decodes
-  lossless FPC2 into the existing read-ahead ring. Video uses channel 10.
-- `media.c` owns the resource queue, manifest, cache verification, retries and cleanup.
+  Ogg Vorbis with Tremor into the existing read-ahead ring; effects are decoded once by a
+  background worker. Video uses channel 10.
+- `media.c` owns the resource queue (resource packs first, then video previews), manifests,
+  cache verification, retries and cleanup.
+- `assets.c` resolves every `romfs:/` asset: RomFS first, then a bounded view inside an installed
+  resource pack. It reports assets whose pack is still downloading, so art loads when it arrives.
 - `reader_image.c` owns prepared README rasters and their bounded decoded SD cache.
 - `forge_mode.c` authenticates encrypted personal-resource metadata off the rendering thread.
 - `video.c` owns the bounded frame/sound rings, FVD2/FVID decoder worker and video textures.
@@ -65,9 +70,11 @@ exactly zero**: the 3DS kernel can return a positive timeout code.
    Present the introduction/theme choice and bring Home into view. Start one persistent media
    worker once Home is usable; low-priority GitHub prefetch begins during the introduction,
    after the update gate. Keep pumping queues and input.
-4. Verify each cached video or download to a private `.part` path, hash it and rename atomically.
-5. Downloads aggregates all media items into one Store resources row. Each verified item can
-   play independently while the rest continues.
+4. Download each missing resource pack, then each video, to a private `.part` path, hash it and
+   rename it atomically. A pack the screen is waiting for goes next; its art appears (fading in)
+   without any action.
+5. Downloads aggregates all packs and videos into one Store resources row. Each verified item can
+   be used independently while the rest continues.
 6. Clear requests first stop the player; after the decoder releases its file, the media worker
    removes cache files. The same session stays cleared until an explicit retry or next launch.
 7. Shutdown requests cancellation across modules before joining within a shared deadline.

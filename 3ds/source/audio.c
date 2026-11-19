@@ -1,5 +1,6 @@
-// NDSP stereo PCM at 32000 Hz. Short effects stay in linear memory; the opening
-// arrangement and music loop stream from RomFS through a few seconds of read-ahead.
+// NDSP stereo PCM at 32000 Hz from Ogg Vorbis (Tremor). Short effects are decoded once by
+// a background worker into linear memory; the opening arrangement and music loop are
+// decoded while they stream from RomFS, a few seconds ahead.
 #include "audio.h"
 #include "audio_gain.h"
 #include "music_stream.h"
@@ -16,13 +17,18 @@
 
 typedef struct {
     char name[20];
-    s16 *data;
+    s16 *data;     // linear memory, main thread only
+    s16 *decoded;  // ordinary heap, handed over by the clip worker
     u32 samples;
 } Clip;
 
 static bool ok, ducked;
 static Clip clips[24];
-static int nclips;
+// The worker decodes into ordinary memory and publishes `decoded_clips`; the main thread
+// moves one clip per frame into linear memory (linearAlloc is not thread-safe) and
+// only then makes it playable through `nclips`.
+static int nclips, decoded_clips;
+static Thread clip_thread;
 static ndspWaveBuf wb[2 + N_SFX];
 static int next_sfx;
 static float music_vol, music_target, music_speed, muffle_now = 15000, muffle_target, master_now = .8f, duck_now = 1;
@@ -52,9 +58,9 @@ static void music_reader(void *unused) {
             continue;
         }
         u32 now_gen = __atomic_load_n(&stream_gen, __ATOMIC_ACQUIRE);
-        if (!stream.file || gen != now_gen) {
+        if (!stream.open || gen != now_gen) {
             gen = now_gen;
-            if (!music_stream_open(&stream,"romfs:/audio/music-start.fpcm.gz","romfs:/audio/music.fpcm.gz")) {
+            if (!music_stream_open(&stream,"romfs:/audio/music-start.ogg","romfs:/audio/music.ogg")) {
                 __atomic_store_n(&stream_wanted, false, __ATOMIC_RELEASE);
                 continue;
             }
@@ -137,32 +143,57 @@ static Clip *find(const char *name) {
     return NULL;
 }
 
-static Clip *load(const char *name) {
-    Clip *c = find(name);
-    if (c || nclips >= 24)
-        return c;
+// Worker only. Effects play once they are published; until then they are skipped.
+static void load(const char *name) {
+    int n = __atomic_load_n(&decoded_clips, __ATOMIC_ACQUIRE);
+    if (n >= 24)
+        return;
     char path[64];
-    snprintf(path, sizeof path, "romfs:/audio/%s.pcm", name);
-    FILE *f = fopen(path, "rb");
-    if (!f)
-        return NULL;
-    fseek(f, 0, SEEK_END);
-    long size = ftell(f);
-    fseek(f, 0, SEEK_SET);
-    s16 *data = linearAlloc(size);
-    if (!data || fread(data, 1, size, f) != (size_t)size) {
-        linearFree(data);
-        fclose(f);
-        return NULL;
+    snprintf(path, sizeof path, "romfs:/audio/%s.ogg", name);
+    MusicStream stream = {0};
+    if (!music_stream_file(&stream, path))
+        return;
+    long frames = music_stream_frames(&stream);
+    s16 *data = frames > 0 && frames <= 8 * RATE ? malloc(frames * 4) : NULL;
+    long size = frames * 4, filled = 0;
+    while (data && filled < size && !__atomic_load_n(&stream_exit, __ATOMIC_ACQUIRE)) {
+        long got = music_stream_raw(&stream, (unsigned char *)data + filled, size - filled > 4096 ? 4096 : (int)(size - filled));
+        if (got <= 0) break;
+        filled += got;
     }
-    fclose(f);
+    music_stream_close(&stream);
+    if (!data || filled != size) {
+        free(data);
+        return;
+    }
     audio_gain_pcm(data, size / sizeof *data, !strncmp(name, "sfx-", 4) ? AUDIO_SFX_GAIN_Q8 : AUDIO_INTRO_GAIN_Q8);
-    DSP_FlushDataCache(data, size);
-    c = &clips[nclips++];
+    Clip *c = &clips[n];
     snprintf(c->name, sizeof c->name, "%s", name);
-    c->data = data;
+    c->decoded = data;
     c->samples = size / 4;
-    return c;
+    __atomic_store_n(&decoded_clips, n + 1, __ATOMIC_RELEASE);
+}
+// Main thread: at most one clip per frame becomes playable.
+static void adopt_clip(void) {
+    if (nclips >= __atomic_load_n(&decoded_clips, __ATOMIC_ACQUIRE))
+        return;
+    Clip *c = &clips[nclips];
+    c->data = linearAlloc(c->samples * 4);
+    if (!c->data)
+        return;  // try again next frame
+    memcpy(c->data, c->decoded, c->samples * 4);
+    DSP_FlushDataCache(c->data, c->samples * 4);
+    free(c->decoded);
+    c->decoded = NULL;
+    nclips++;
+}
+static void clip_worker(void *unused) {
+    // The introduction's sounds first, then the effects in order of first use.
+    static const char *names[] = {"intro-welcome", "intro-enter", "sfx-move", "sfx-select", "sfx-back", "sfx-open",
+                                  "sfx-close", "sfx-tab", "sfx-page", "sfx-error", "sfx-type", "sfx-toggle",
+                                  "sfx-download", "sfx-complete", "sfx-anvil", "sfx-warn", "sfx-launch"};
+    for (unsigned i = 0; i < sizeof names / sizeof *names && !__atomic_load_n(&stream_exit, __ATOMIC_ACQUIRE); i++)
+        load(names[i]);
 }
 
 static float vol_applied[2 + N_SFX];  // gain + 1 last sent to each channel (0 = none yet)
@@ -201,8 +232,13 @@ bool audio_init(void) {
         ndspChnSetFormat(ch, NDSP_FORMAT_STEREO_PCM16);
         ndspChnSetRate(ch, RATE);
     }
-    load("intro-welcome");
-    load("intro-enter");
+    __atomic_store_n(&stream_exit, false, __ATOMIC_RELEASE);
+    if (!clip_thread) {
+        s32 priority = 0x30;
+        svcGetThreadPriority(&priority, CUR_THREAD_HANDLE);
+        // Below the main thread: decoding fills the frame loop's idle time.
+        clip_thread = threadCreate(clip_worker, NULL, 64 * 1024, priority + 1, -2, false);
+    }
     audio_apply_settings();
     return true;
 }
@@ -210,13 +246,6 @@ bool audio_init(void) {
 void audio_load_rest(void) {
     if (!ok)
         return;
-    static const char *names[] = {"move", "select", "back",     "open",     "close", "tab",  "page",  "error",
-                                  "type", "toggle", "download", "complete", "anvil", "warn", "launch"};
-    for (unsigned i = 0; i < sizeof names / sizeof *names; i++) {
-        char n[20];
-        snprintf(n, sizeof n, "sfx-%s", names[i]);
-        load(n);
-    }
     if (!feeder_thread) {
         ring = malloc(RING_BLOCKS * MUSIC_BYTES);
         bool memory = ring != NULL;
@@ -230,7 +259,8 @@ void audio_load_rest(void) {
         stream_exit = stream_wanted = false;
         // Above the main thread: both spend their time asleep or waiting for the SD.
         if (memory) {
-            reader_thread = threadCreate(music_reader, NULL, 16 * 1024, priority - 1, -2, false);
+            // Tremor keeps its decode buffers on the stack.
+            reader_thread = threadCreate(music_reader, NULL, 64 * 1024, priority - 1, -2, false);
             feeder_thread = threadCreate(music_feeder, NULL, 8 * 1024, priority - 2, -2, false);
         }
         if (!reader_thread || !feeder_thread) {  // no music: both idle workers leave at once
@@ -250,15 +280,19 @@ void audio_exit(void) {
     __atomic_store_n(&stream_exit, true, __ATOMIC_RELEASE);
     __atomic_store_n(&stream_wanted, false, __ATOMIC_RELEASE);
     // A reader stuck behind a busy SD card must not hold up closing the application.
-    bool feeder = thread_reap(&feeder_thread), reader = thread_reap(&reader_thread);
+    bool feeder = thread_reap(&feeder_thread), reader = thread_reap(&reader_thread), loader = thread_reap(&clip_thread);
     for (int ch = 0; ch < 2 + N_SFX; ch++)
         ndspChnWaveBufClear(ch);
     ndspExit();
     ok = false;
-    if (!feeder || !reader)
+    if (!feeder || !reader || !loader)
         return;
-    for (int i = 0; i < nclips; i++)
+    for (int i = 0; i < decoded_clips; i++) {
         linearFree(clips[i].data);
+        free(clips[i].decoded);
+        clips[i].data = clips[i].decoded = NULL;
+    }
+    decoded_clips = 0;
     for (int i = 0; i < MUSIC_BUFFERS; i++) linearFree(music_data[i]), music_data[i] = NULL;
     free(ring);
     ring = NULL;
@@ -325,6 +359,7 @@ void music_muffle(float amount) { muffle_target = amount; }
 void audio_update(void) {
     if (!ok)
         return;
+    adopt_clip();
     if (music_vol != music_target) {
         float d = music_speed * DT;
         music_vol = music_vol < music_target ? fminf(music_target, music_vol + d) : fmaxf(music_target, music_vol - d);

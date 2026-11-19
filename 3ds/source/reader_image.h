@@ -3,5 +3,7 @@
 // Worker-only, bounded native-resolution pixels. No GPU access or network.
 bool reader_image_load(const char *url, unsigned char **rgba, int *w, int *h);
 bool reader_image_bundled(const char *url);
+/** Bundled, or in a resource pack that is still downloading: no need to fetch it separately. */
+bool reader_image_prepared(const char *url);
 void reader_image_save(const char *url, const unsigned char *rgba, int w, int h);
 void reader_image_invalidate(const char *url);

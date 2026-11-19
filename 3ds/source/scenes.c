@@ -1,4 +1,5 @@
 // All store screens. Layout numbers match the HTML prototype (native 3DS pixels).
+#include "assets.h"
 #include "scenes.h"
 #include "audio.h"
 #include "catalog.h"
@@ -323,7 +324,7 @@ static Coin COIN_EMBLEM, COIN_THEME[2];
 static void coin_load(Coin *c, const char *name, bool spin) {
     static json_t *meta;
     if (!meta)
-        meta = json_load_file("romfs:/gfx/coins.json", 0, NULL);
+        meta = asset_json("romfs:/gfx/coins.json", 0, NULL);
     json_t *m = json_object_get(meta, name);
     c->frames = json_integer_value(json_object_get(m, "wobble"));
     c->spins = json_integer_value(json_object_get(m, "spin"));
@@ -970,6 +971,9 @@ static void banner_draw(App *a, float al, float dx) {
     float px = test_freeze_media?0:sinf(NOW / 2.6f) * .7f, py = test_freeze_media?0:cosf(NOW / 3.4f) * .45f;
 #define LX(d) (px * (d) * 8.4f + EYE * (d) * 3 + dx * (d))
 #define LY(d) (py * (d) * 4.2f)
+    // Art that arrived from a resource pack while visible fades in over its fallback.
+    float arrived=a->bg.arrived_ms?clampf((osGetTime()-a->bg.arrived_ms)/350.f,0,1):1;
+    if(sheet_ok(&a->bg)&&arrived<1)rect(0,0,TOP_W,SCR_H,C(a->color,al));
     if(sheet_ok(&a->bg)) {
         float burn=test_freeze_media?0:fmodf(fmaxf(0,NOW-bn_t)/18.f,2);if(burn>1)burn=2-burn;
         burn=bezier(burn,.42f,0,.58f,1);
@@ -981,7 +985,7 @@ static void banner_draw(App *a, float al, float dx) {
         float width=bg.subtex->width*scale,height=bg.subtex->height*scale;
         float x=clampf(200-width/2+bx+LX(-.7f),400-width,0);
         float y=clampf(120-height/2+by+LY(-.7f),240-height,0);
-        draw_img(bg,x,y,scale,scale,al);
+        draw_img(bg,x,y,scale,scale,al*ease_out(arrived));
     } else {
         rect(0,0,TOP_W,SCR_H,C(a->color,al));
         if(a->universal&&a->icon<BUILTIN_APPS){const char *url=json_string_value(json_object_get(json_object_get(a->j,"banner"),"bg"));int w,h;if(remote_image_ready(url)&&remote_image_dimensions(url,&w,&h)){float scale=fmaxf(400.f/w,240.f/h)*1.14f;remote_image_draw(url,200-w*scale/2+LX(-.7f),120-h*scale/2+LY(-.7f),w*scale,h*scale,al);}}
@@ -3229,7 +3233,7 @@ void scenes_init(float intro_delay) {
     dsp_view=file_view_watch("sdmc:/3ds/dspfirm.cdc",true);
     requirement_views_rebuild();
     theme_apply();
-    profile_data=json_load_file("romfs:/profile.json",0,NULL);
+    profile_data=asset_json("romfs:/profile.json",0,NULL);
     sheet_load_now(&profile_art,"romfs:/gfx/profile.ftx");
     HOME_ICONS.crisp=true;
     sheet_load_now(&HOME_ICONS,"romfs:/gfx/icons-44.ftx");
@@ -3243,7 +3247,7 @@ void scenes_init(float intro_delay) {
     coin_load(&COIN_EMBLEM, "emblem", false);
     coin_load(&COIN_ABOUT, "about", false);
     sheet_load_now(&TILES, "romfs:/gfx/tiles.ftx");
-    json_t *tj = json_load_file("romfs:/gfx/tiles.json", 0, NULL);
+    json_t *tj = asset_json("romfs:/gfx/tiles.json", 0, NULL);
     tile_names = json_object_get(tj, "names");
     tile_pad = (int)json_integer_value(json_object_get(tj, "pad"));
     if (!S.onboarded) { // first launch: the light/dark picker

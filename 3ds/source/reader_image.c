@@ -8,6 +8,7 @@
 #include <mbedtls/sha256.h>
 #endif
 #include "reader_image.h"
+#include "assets.h"
 #include <zlib.h>
 #include <dirent.h>
 #include <sys/stat.h>
@@ -21,7 +22,11 @@ static void image_path(const char *url, bool bundled, char *path, size_t cap) {
 }
 bool reader_image_bundled(const char *url) {
     char path[256];image_path(url,true,path,sizeof path);
-    struct stat st;return stat(path,&st)==0 && S_ISREG(st.st_mode);
+    return asset_state(path,NULL)==ASSET_READY;
+}
+bool reader_image_prepared(const char *url) {
+    char path[256];image_path(url,true,path,sizeof path);
+    return asset_state(path,NULL)!=ASSET_MISSING;
 }
 void reader_image_invalidate(const char *url) {
     char path[256];image_path(url,false,path,sizeof path);remove(path);
@@ -29,7 +34,7 @@ void reader_image_invalidate(const char *url) {
 static unsigned get32(const unsigned char *p) {return p[0]|p[1]<<8|p[2]<<16|(unsigned)p[3]<<24;}
 static void put32(unsigned char *p,unsigned v) {for(int i=0;i<4;i++){p[i]=v;v>>=8;}}
 static bool read_image(const char *path,unsigned char **rgba,int *w,int *h) {
-    FILE *f=fopen(path,"rb");if(!f) return false;
+    FILE *f=asset_fopen(path);if(!f) return false;
     unsigned char head[20],*z=NULL,*pixels=NULL;bool ok=false;
     if(fread(head,1,20,f)!=20 || memcmp(head,"RIM1",4)) goto end;
     unsigned width=head[4]|head[5]<<8,height=head[6]|head[7]<<8;

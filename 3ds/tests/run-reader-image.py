@@ -4,7 +4,7 @@ import pathlib,subprocess,tempfile,zlib,struct
 root=pathlib.Path(__file__).resolve().parents[1]
 with tempfile.TemporaryDirectory(prefix='reader-image-test-') as tmp:
  p=pathlib.Path(tmp);(p/'sdmc:/3ds/forge-store').mkdir(parents=True)
- subprocess.run(['clang','-g','-O1','-std=gnu11','-fsanitize=address,undefined','-I/opt/homebrew/include',str(root/'tests/reader-image.c'),'-L/opt/homebrew/lib','-lcrypto','-lz','-o',str(p/'test')],check=True)
+ subprocess.run(['clang','-g','-O1','-std=gnu11','-fsanitize=address,undefined','-I/opt/homebrew/include',str(root/'tests/reader-image.c'),str(root/'source/assets.c'),'-DASSETS_HOST_TEST','-L/opt/homebrew/lib','-ljansson','-lcrypto','-lz','-o',str(p/'test')],check=True)
  subprocess.run([str(p/'test')],cwd=p,check=True)
 count=0
 for p in (root/'romfs/reader-art').glob('*.rimg'):

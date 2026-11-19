@@ -1,6 +1,7 @@
 #include "http_cache.h"
 #include "network.h"
 #include "reader_cache.h"
+#include "assets.h"
 #include <mbedtls/sha256.h>
 #include <sys/stat.h>
 #include <dirent.h>
@@ -99,7 +100,7 @@ static void bundled_path(const char *url,const char *accept,char *path,size_t ca
 }
 bool http_cache_bundled(const char *url,const char *accept) {
     char path[256];bundled_path(url,accept,path,sizeof path);
-    struct stat st;return !stat(path,&st)&&S_ISREG(st.st_mode);
+    return asset_state(path,NULL)==ASSET_READY;
 }
 static bool validator(const char *s) {
     if (!s || strlen(s) > 255)
@@ -185,7 +186,7 @@ bool http_cache_fresh(const char *url, const char *accept, uint32_t max_age) {
     json_t *m = json_load_file(meta, 0, NULL);
     if(!m){
         char bundled[256];bundled_path(url,accept,bundled,sizeof bundled);
-        FILE *f=fopen(bundled,"rb");unsigned char header[12];
+        FILE *f=asset_fopen(bundled);unsigned char header[12];
         if(f){bool ok=fread(header,1,12,f)==12&&!memcmp(header,"FGH2",4);fclose(f);
             if(ok){uint64_t stamp=0;for(int i=11;i>=4;i--)stamp=(stamp<<8)|header[i];
                 time_t now=time(NULL);if(now>0&&(uint64_t)now>=stamp&&(uint64_t)now-stamp<max_age)return true;}
@@ -213,7 +214,9 @@ char *http_cache_get(const char *url, const char *accept, size_t limit, bool ref
     size_t url_len=strlen(url);
     if(!strncmp(url,owned,strlen(owned)) && url_len>=7 && !strcmp(url+url_len-7,"/readme")) {
         char bundled[256];bundled_path(url,accept,bundled,sizeof bundled);
-        return reader_cache_load(bundled,UINT64_MAX-1,UINT64_MAX,limit,length);
+        char *body=reader_cache_load(bundled,UINT64_MAX-1,UINT64_MAX,limit,length);
+        // Until its resource pack arrives, the page is read like any other repository.
+        if(body||asset_state(bundled,NULL)!=ASSET_PENDING)return body;
     }
     char path[256], meta[272];
     http_cache_path(url, accept, path, sizeof path);

@@ -1,4 +1,5 @@
 #include "reader_cache.h"
+#include "assets.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,7 +8,7 @@ static uint64_t get(const unsigned char *p,int n){uint64_t v=0;for(int i=n-1;i>=
 static void put(unsigned char *p,uint64_t v,int n){for(int i=0;i<n;i++){p[i]=(unsigned char)v;v>>=8;}}
 char *reader_cache_load(const char *path,uint64_t now,uint64_t ttl,size_t limit,size_t *length){
     if(length)*length=0;
-    FILE *f=fopen(path,"rb");if(!f)return NULL;
+    FILE *f=asset_fopen(path);if(!f)return NULL;
     unsigned char header[20];char *body=NULL;
     if(fread(header,1,sizeof header,f)!=sizeof header||memcmp(header,"FGH2",4))goto end;
     uint64_t saved=get(header+4,8);size_t n=(size_t)get(header+12,4);

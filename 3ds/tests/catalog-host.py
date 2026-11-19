@@ -49,5 +49,5 @@ static inline u32 C2D_Color32(u8 r,u8 g,u8 b,u8 a) {return r | (u32)g<<8 | (u32)
         '-Wno-unused-parameter', '-Wno-missing-field-initializers',
         '-fsanitize=address,undefined', '-fno-omit-frame-pointer',
         '-I'+str(inc), '-I'+str(jansson/'include'), '-I'+str(root/'3ds/source'),
-        str(root/'3ds/tests/catalog-host.c'), '-DROM_FIND_HOST_TEST', str(root/'3ds/source/rom_find.c'), '-L'+str(jansson/'lib'), '-ljansson', '-lz', '-lm', '-o', str(exe)], check=True)
+        str(root/'3ds/tests/catalog-host.c'), '-DROM_FIND_HOST_TEST', str(root/'3ds/source/rom_find.c'), '-DASSETS_HOST_TEST', str(root/'3ds/source/assets.c'), '-L'+str(jansson/'lib'), '-ljansson', '-lz', '-lm', '-o', str(exe)], check=True)
     subprocess.run([str(exe)], cwd=work, check=True)

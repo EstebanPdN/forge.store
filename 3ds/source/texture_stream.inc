@@ -4,6 +4,12 @@
 #define BANK_LIMIT (8u*1024u*1024u)
 static Sheet *pending[QMAX], *queue[QMAX];
 static int npending, nqueue;
+// Main thread: sheets that failed only because their pack had not arrived yet. They load
+// again, in the background, as soon as a pack is installed (no restart, no user action).
+#define WAITMAX 96
+static Sheet *waiting[WAITMAX];
+static int nwaiting;
+static unsigned waiting_generation;
 static LightLock q_lock;
 static LightEvent q_event, upload_event;
 static Thread loader;
@@ -67,7 +73,13 @@ static bool decode_bytes(Sheet *s,const unsigned char *data,size_t length){
 static bool decode(Sheet *s,bool use_bank){
     u64 start=osGetTime();size_t n=0;unsigned char *owned=NULL;
     const unsigned char *data=use_bank?bank_entry(s->path,&n):NULL;
-    if(!data)data=owned=sheet_file(s->path,&n,4u*1024u*1024u+1024);
+    if(!data)data=owned=asset_read(s->path,&n,4u*1024u*1024u+1024);
+    s->wait_pack=0;
+    if(!data){
+        // Not in RomFS and its pack is still downloading: remember it, ask for it if visible.
+        int pack=-1;
+        if(asset_state(s->path,&pack)==ASSET_PENDING){s->wait_pack=(short)(pack+1);if(s->urgent)asset_want(pack);}
+    }
     bool ok=data&&decode_bytes(s,data,n);free(owned);
     s->loads++;s->decode_ms=(float)(osGetTime()-start);return ok;
 }
@@ -87,7 +99,7 @@ static bool upload_part(Sheet *s,size_t budget){
     C3D_TexFlush(&s->tex);free(s->pixels);s->pixels=NULL;return true;
 }
 bool sheet_load_now(Sheet *s,const char *path){
-    snprintf(s->path,sizeof s->path,"%s",path);s->tex_init=false;
+    snprintf(s->path,sizeof s->path,"%s",path);s->tex_init=false;s->urgent=true;
     bool ok=decode(s,false)&&upload_part(s,SIZE_MAX);s->state=ok?SHEET_READY:SHEET_FAILED;return ok;
 }
 static void loader_main(void *arg){
@@ -119,14 +131,29 @@ static void request(Sheet *s,const char *path,bool urgent){
     LightLock_Lock(&q_lock);
     if(nqueue>=QMAX){LightLock_Unlock(&q_lock);return;}
     snprintf(s->path,sizeof s->path,"%s",path);s->tex_init=false;s->copied=0;s->discard=false;
-    s->state=SHEET_QUEUED;
+    s->urgent=urgent;s->late=false;s->arrived_ms=0;s->state=SHEET_QUEUED;
     if(urgent){memmove(queue+1,queue,nqueue*sizeof *queue);queue[0]=s;}else queue[nqueue]=s;
     nqueue++;pending[npending++]=s;LightLock_Unlock(&q_lock);LightEvent_Signal(&q_event);
 }
 void sheet_request(Sheet *s,const char *path){request(s,path,true);}
 void sheet_prefetch(Sheet *s,const char *path){request(s,path,false);}
 #define PUMP_BUDGET (384u*1024u)
+static void unwait(Sheet *s){for(int i=0;i<nwaiting;i++)if(waiting[i]==s){waiting[i--]=waiting[--nwaiting];}}
+static void retry_waiting(void){
+    unsigned generation=asset_generation();
+    if(generation==waiting_generation)return;
+    waiting_generation=generation;
+    for(int i=0;i<nwaiting;i++){
+        Sheet *s=waiting[i];
+        if(s->state!=SHEET_FAILED||!s->wait_pack){waiting[i--]=waiting[--nwaiting];continue;}
+        if(asset_state(s->path,NULL)!=ASSET_READY)continue;
+        waiting[i--]=waiting[--nwaiting];
+        char path[sizeof s->path];snprintf(path,sizeof path,"%s",s->path);
+        s->state=SHEET_EMPTY;s->wait_pack=0;request(s,path,s->urgent);s->late=true;
+    }
+}
 void sheets_pump(void){
+    retry_waiting();
     size_t budget=PUMP_BUDGET;
     for(int i=0;i<npending;i++){
         Sheet *s=pending[i];SheetState state=s->state;
@@ -135,16 +162,20 @@ void sheets_pump(void){
             s->tex_init=false;
             free(s->pixels);s->pixels=NULL;s->discard=false;s->state=SHEET_EMPTY;
         }else if(state==SHEET_DECODED&&budget){
-            size_t before=s->copied;if(upload_part(s,budget))s->state=SHEET_READY;
+            size_t before=s->copied;
+            if(upload_part(s,budget)){s->state=SHEET_READY;if(s->late){s->arrived_ms=osGetTime();s->late=false;}}
             size_t used=s->copied-before;budget=used>=budget?0:budget-used;
         }
         state=s->state;
+        // Its pack may have arrived meanwhile: look again on the next frame.
+        if(state==SHEET_FAILED&&s->wait_pack&&nwaiting<WAITMAX){unwait(s);waiting[nwaiting++]=s;waiting_generation=asset_generation()-1;}
         if(state==SHEET_READY||state==SHEET_FAILED||state==SHEET_EMPTY){
             pending[i--]=pending[--npending];LightEvent_Signal(&upload_event);
         }
     }
 }
 void sheet_free(Sheet *s){
+    unwait(s);
     if(s->state==SHEET_QUEUED||s->state==SHEET_DECODED){s->discard=true;return;}
     for(int i=0;i<npending;i++)if(pending[i]==s){pending[i--]=pending[--npending];}
     if(s->tex_init)C3D_TexDelete(&s->tex);

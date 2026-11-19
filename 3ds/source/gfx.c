@@ -1,5 +1,6 @@
 // Textures, background loading, shapes and cached system-font text.
 #include "gfx.h"
+#include "assets.h"
 #include <zlib.h>
 
 Sheet UI;
@@ -76,17 +77,17 @@ static KernPair *kerning[96];
 static u32 kern_count[96];
 static void kerning_free(void){for(int i=0;i<96;i++){free(kerning[i]);kerning[i]=NULL;kern_count[i]=0;}}
 static void kerning_load(int count){
-    kerning_free();FILE*f=fopen("romfs:/gfx/kerning.bin","rb");if(!f)return;
+    kerning_free();gzFile f=gzopen("romfs:/gfx/kerning.bin","rb");if(!f)return;
     char magic[4];u16 n=0;
-    bool ok=fread(magic,1,4,f)==4&&!memcmp(magic,"KRN1",4)&&fread(&n,2,1,f)==1&&n==count;
+    bool ok=gzfread(magic,1,4,f)==4&&!memcmp(magic,"KRN1",4)&&gzfread(&n,2,1,f)==1&&n==count;
     for(int i=0;ok&&i<count;i++){
-        u32 k=0;ok=fread(&k,4,1,f)==1&&k<=100000;
+        u32 k=0;ok=gzfread(&k,4,1,f)==1&&k<=100000;
         if(!ok)break;
-        if(k){kerning[i]=malloc(k*sizeof(KernPair));ok=kerning[i]&&fread(kerning[i],sizeof(KernPair),k,f)==k;}
+        if(k){kerning[i]=malloc(k*sizeof(KernPair));ok=kerning[i]&&gzfread(kerning[i],sizeof(KernPair),k,f)==k;}
         kern_count[i]=k;
         for(u32 j=1;ok&&j<k;j++){KernPair*a=&kerning[i][j-1],*b=&kerning[i][j];if(a->left>b->left||(a->left==b->left&&a->right>=b->right))ok=false;}
     }
-    fclose(f);if(!ok)kerning_free();
+    gzclose(f);if(!ok)kerning_free();
 }
 static Sheet glyph_pages[MAX_GLYPH_PAGES];
 static struct {
@@ -116,8 +117,10 @@ static int utf8(const char *s, u32 *cp) {
 }
 
 static bool fonts_load(void) {
-    FILE *f = fopen("romfs:/gfx/fonts.bin", "rb");
+    // Stored gzip-compressed in RomFS; gzread also accepts the plain file.
+    gzFile f = gzopen("romfs:/gfx/fonts.bin", "rb");
     if (!f) return false;
+    gzbuffer(f, 65536);
     struct __attribute__((packed)) {
         char magic[4];
         u16 nstyles, npages;
@@ -130,11 +133,11 @@ static bool fonts_load(void) {
         u32 first, count;
     } fs;
     bool ok = false;
-    if (fread(&head, sizeof head, 1, f) != 1 || memcmp(head.magic, "FNT3", 4) ||
+    if (gzfread(&head, sizeof head, 1, f) != 1 || memcmp(head.magic, "FNT3", 4) ||
         !head.nstyles || head.nstyles > MAX_STYLES || !head.npages ||
         head.npages > MAX_GLYPH_PAGES || !head.nglyphs || head.nglyphs > 200000) goto done;
     for (int i = 0; i < head.nstyles; i++) {
-        if (fread(&fs, sizeof fs, 1, f) != 1 || fs.kind > 1 ||
+        if (gzfread(&fs, sizeof fs, 1, f) != 1 || fs.kind > 1 ||
             fs.first > head.nglyphs || fs.count > head.nglyphs - fs.first ||
             !isfinite(fs.size) || fs.size <= 0 || fs.size > 64 ||
             !isfinite(fs.ascent) || fs.ascent < 0 || fs.ascent > 128 ||
@@ -149,7 +152,7 @@ static bool fonts_load(void) {
         for (int c = 0; c < 96; c++) st->ascii[c] = -1;
     }
     glyphs = malloc(head.nglyphs * sizeof(Glyph));
-    if (!glyphs || fread(glyphs, sizeof(Glyph), head.nglyphs, f) != head.nglyphs) goto done;
+    if (!glyphs || gzfread(glyphs, sizeof(Glyph), head.nglyphs, f) != head.nglyphs) goto done;
     for (u32 g = 0; g < head.nglyphs; g++) {
         const Glyph *v = &glyphs[g];
         if (v->page >= head.npages || (v->w && (v->ink_insets & 15) + (v->ink_insets >> 4) >= v->w)) goto done;
@@ -174,11 +177,11 @@ static bool fonts_load(void) {
         st->mono_cell = (int)fmaxf(ceilf(st->mono_advance), right - left + 1);
     }
     u16 nicons = 0;
-    if (fread(&nicons, 2, 1, f) != 1 || nicons > 64) goto done;
+    if (gzfread(&nicons, 2, 1, f) != 1 || nicons > 64) goto done;
     for (int i = 0; i < nicons; i++) {
         u8 len = 0;
-        if (fread(&len, 1, 1, f) != 1 || !len || len >= sizeof icon_names[i] ||
-            fread(icon_names[i], 1, len, f) != len) goto done;
+        if (gzfread(&len, 1, 1, f) != 1 || !len || len >= sizeof icon_names[i] ||
+            gzfread(icon_names[i], 1, len, f) != len) goto done;
         icon_names[i][len] = 0;
         u32 k = name_hash(icon_names[i]) % 128;
         while (icon_map[k].name) k = (k + 1) % 128;
@@ -199,7 +202,7 @@ static bool fonts_load(void) {
     kerning_load(nstyles);
     ok = true;
 done:
-    fclose(f);
+    gzclose(f);
     if (!ok) {
         for (int i = 0; i < npages; i++) sheet_free(&glyph_pages[i]);
         free(glyphs); glyphs = NULL;
@@ -860,7 +863,7 @@ void gfx_init(void) {
     UI.crisp = true;
     sheet_load_now(&UI, "romfs:/gfx/ui.ftx");
     json_error_t err;
-    ui_names = json_load_file("romfs:/gfx/ui.json", 0, &err);
+    ui_names = asset_json("romfs:/gfx/ui.json", 0, &err);
     ui_map_build();
     fonts_load();
     C3D_TexInit(&shape_tex, SHAPE_W, SHAPE_H, GPU_A8);

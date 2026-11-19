@@ -1,5 +1,8 @@
 // Single persistent worker: only verified, atomically published files are playable.
+// It carries the store's resource packs first (in manifest order, or whichever pack the
+// screen is waiting for), then the video previews. Together they are "Store resources".
 #include "media.h"
+#include "assets.h"
 #ifdef MEDIA_HOST_TEST
 #include "../tests/media_host_platform.h"
 #else
@@ -30,6 +33,7 @@ typedef struct {
     MediaItem view;
     char url[384], hash[65];
     bool eligible;
+    int pack;  // resource pack index, -1 for a video
     uint64_t retry_at;
 } Entry;
 static struct {
@@ -90,32 +94,60 @@ static void received(unsigned i, unsigned bytes) {
     unlock();
 }
 // All manifest IO is worker-owned; count is published only after validation.
+// Packs come first. An installed pack (verified before it was renamed into place) is
+// complete at once; hashing tens of megabytes on every launch would only delay art.
+static unsigned load_packs(void) {
+    unsigned count = 0;
+    for (unsigned i = 0, n = asset_pack_count(); i < n && count < MEDIA_MAX_ITEMS; i++) {
+        AssetPack pack;
+        if (!asset_pack(i, &pack)) continue;
+        Entry *e = &q.entries[count++];  // invisible while q.count == 0
+        memset(e, 0, sizeof *e);
+        snprintf(e->view.appid, sizeof e->view.appid, "pack");
+        snprintf(e->view.id, sizeof e->view.id, "%s", pack.id);
+        snprintf(e->view.path, sizeof e->view.path, "%s", pack.path);
+        snprintf(e->url, sizeof e->url, "%s", pack.url);
+        snprintf(e->hash, sizeof e->hash, "%s", pack.sha256);
+        e->view.total = pack.bytes;
+        e->pack = (int)i;
+        if (asset_pack_installed(i)) {
+            e->view.state = MEDIA_COMPLETED;
+            e->view.received = pack.bytes;
+        } else {
+            e->view.state = MEDIA_QUEUED;
+            e->eligible = true;
+        }
+    }
+    return count;
+}
 static void load_manifest(void) {
+    unsigned packs = load_packs(), count = packs;
     struct stat st;
+    json_t *manifest = NULL;
     if (stat(MEDIA_MANIFEST, &st) || st.st_size > 512 * 1024 || st.st_size < 2) {
-        queue_error("Media manifest missing or too large"); goto done;
+        queue_error("Media manifest missing or too large"); goto publish;
     }
     json_error_t error;
-    json_t *manifest = json_load_file(MEDIA_MANIFEST, JSON_REJECT_DUPLICATES, &error);
+    manifest = json_load_file(MEDIA_MANIFEST, JSON_REJECT_DUPLICATES, &error);
     if (!json_is_object(manifest)) {
-        json_decref(manifest); queue_error("Invalid media manifest"); goto done;
+        queue_error("Invalid media manifest"); goto publish;
     }
-    if (json_object_size(manifest) > MEDIA_MAX_ITEMS) {
-        json_decref(manifest); queue_error("Too many media entries (maximum 128)"); goto done;
+    if (json_object_size(manifest) > MEDIA_MAX_ITEMS - packs) {
+        queue_error("Too many media entries (maximum 128)"); goto publish;
     }
-    unsigned count = 0;
     const char *key; json_t *v;
     json_object_foreach(manifest, key, v) {
         char app[49], id[49];
         const char *slash = strchr(key, '/');
         if (!slash || slash == key || (size_t)(slash - key) > 48 || strlen(slash + 1) > 48) {
-            queue_error("Invalid media manifest key"); goto invalid;
+            queue_error("Invalid media manifest key"); count = packs; goto publish;
         }
         memcpy(app, key, slash - key); app[slash - key] = 0;
         snprintf(id, sizeof id, "%s", slash + 1);
-        if (!safe_id(app) || !safe_id(id)) { queue_error("Invalid media manifest key"); goto invalid; }
+        if (!safe_id(app) || !safe_id(id) || !strcmp(app, "pack")) { queue_error("Invalid media manifest key"); count = packs; goto publish; }
         Entry *e = &q.entries[count]; // invisible while count == 0
         memset(e, 0, sizeof *e);
+        e->pack = -1;
         snprintf(e->view.appid, sizeof e->view.appid, "%s", app);
         snprintf(e->view.id, sizeof e->view.id, "%s", id);
         const char *url = json_string_value(json_object_get(v, "url"));
@@ -140,17 +172,17 @@ static void load_manifest(void) {
         }
         count++;
     }
+publish:
+    json_decref(manifest);
     lock();
-    if (q.suspended) for (unsigned i = 0; i < count; i++) {
+    // A clear requested before the manifest was read applies to the videos only.
+    if (q.suspended) for (unsigned i = packs; i < count; i++) {
         q.entries[i].eligible = false;
         q.entries[i].view.state = MEDIA_CLEARED;
     }
     q.count = count;
+    q.loading = false;
     unlock();
-invalid:
-    json_decref(manifest);
-done:
-    lock(); q.loading = false; unlock();
 }
 
 static bool valid_file(unsigned index, const Entry *job, const char *path) {
@@ -206,7 +238,7 @@ static void run_item(unsigned index) {
     char tmp[272], error[160] = {0};
     snprintf(tmp, sizeof tmp, "%s.part", job.view.path);
     bool ok = false, retryable = false, attempted = false;
-    mkdir(DATA_DIR "/cache", 0777); mkdir(MEDIA_CACHE, 0777);
+    mkdir(DATA_DIR "/cache", 0777); mkdir(MEDIA_CACHE, 0777); mkdir(DATA_DIR "/packs", 0777);
     if (valid_file(index, &job, job.view.path)) { ok = true; goto done; }
     if (interrupted()) goto done;
     // Never expose stale/corrupt content; remove only this entry's own cache path.
@@ -244,15 +276,15 @@ static void run_item(unsigned index) {
     curl_easy_cleanup(c);
     bool closed = fclose(transfer.file) == 0;
     if (interrupted()) goto done;
-    if (!closed || transfer.io_error) { snprintf(error, sizeof error, "Cannot write video to SD"); goto done; }
+    if (!closed || transfer.io_error) { snprintf(error, sizeof error, "Cannot write to SD"); goto done; }
     if (result != CURLE_OK || code != 200) {
         retryable = transient(result, code);
         snprintf(error, sizeof error, "HTTP %ld: %.130s", code, detail[0] ? detail : curl_easy_strerror(result));
         goto done;
     }
-    if (!valid_file(index, &job, tmp)) { snprintf(error, sizeof error, "Video size or SHA-256 mismatch"); goto done; }
+    if (!valid_file(index, &job, tmp)) { snprintf(error, sizeof error, "Size or SHA-256 mismatch"); goto done; }
     if (interrupted()) goto done;
-    if (rename(tmp, job.view.path)) { snprintf(error, sizeof error, "Could not save verified video"); goto done; }
+    if (rename(tmp, job.view.path)) { snprintf(error, sizeof error, "Could not save verified file"); goto done; }
     ok = true;
 done:
     remove(tmp);
@@ -260,9 +292,10 @@ done:
     Entry *e = &q.entries[index];
     if (interrupted()) {
         if (attempted && e->view.attempts) e->view.attempts--;
-        if (!LOAD(q.clear_pending)) e->view.state = MEDIA_QUEUED;
+        if (!LOAD(q.clear_pending) || e->pack >= 0) e->view.state = MEDIA_QUEUED;
         e->view.received = 0;
     } else if (ok) {
+        if (e->pack >= 0) asset_pack_publish((unsigned)e->pack);  // art waiting for it loads now
         e->view.state = MEDIA_COMPLETED;
         e->view.received = e->view.total;
         e->view.error[0] = 0;
@@ -300,12 +333,18 @@ static void clear_files(void) {
 }
 static void worker(void *unused) {
     load_manifest();
+    asset_pack_prune();
     while (!LOAD(q.stop)) {
         if (LOAD(q.clear_pending)) { clear_files(); continue; }
         int next = -1;
         if (!LOAD(q.paused)) {
             uint64_t now = now_ms();
+            int wanted = asset_take_wanted();
             lock();
+            // Art the screen is waiting for jumps the queue (it never aborts a transfer).
+            for (unsigned i = 0; wanted >= 0 && i < q.count; i++)
+                if (q.entries[i].pack == wanted && q.entries[i].eligible && q.entries[i].view.state == MEDIA_QUEUED)
+                    q.priority = (int)i;
             for (unsigned i = 0; i < q.count; i++) {
                 Entry *e = &q.entries[i];
                 if (e->eligible && (e->view.state == MEDIA_QUEUED ||
@@ -435,7 +474,9 @@ bool media_clear(void) {
     q.ready_event = false;
     q.priority = -1;
     STORE(q.clear_pending, true);
+    // Resource packs are the store's own art, not a cache: clearing keeps them.
     for (unsigned i = 0; i < q.count; i++) {
+        if (q.entries[i].pack >= 0) continue;
         q.entries[i].eligible = false;
         q.entries[i].view.state = MEDIA_CLEARED;
         q.entries[i].view.received = 0;

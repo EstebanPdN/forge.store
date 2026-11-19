@@ -32,7 +32,54 @@ static void fresh(unsigned n) {
 }
 static void start(void) { assert(media_start()); WAIT_FOR(!media_loading()); }
 static void pass(const char *name) { printf("PASS %s\n", name); test_count++; }
-int main(void) {
+
+// Resource packs share the worker: they come first, a wished-for pack jumps the queue,
+// clearing keeps them and an installed pack costs nothing on the next launch.
+static void pack_manifest(void) {
+    char hash[65]; digest(hash);
+    assert(!mkdir("romfs:", 0777) && !mkdir("packs", 0777));
+    json_t *packs = json_array();
+    for (int i = 0; i < 2; i++) {
+        char id[16], file[96], rel[32], url[256];
+        snprintf(id, sizeof id, "art-%d", i + 1);
+        snprintf(file, sizeof file, "%s-%.12s.fpk", id, hash);
+        snprintf(rel, sizeof rel, "gfx/p%d.ftx", i);
+        snprintf(url, sizeof url, "https://raw.githubusercontent.com/example/store/store-packs/%s", file);
+        json_array_append_new(packs, json_pack("{s:s,s:s,s:s,s:s,s:i,s:[[s,i,i]]}", "id", id, "file", file, "url", url,
+                                               "sha256", hash, "bytes", (int)sizeof payload, "files", rel, 0, (int)sizeof payload));
+    }
+    json_t *m = json_pack("{s:i,s:o}", "format", 1, "packs", packs);
+    assert(!json_dump_file(m, "romfs:/packs.json", 0)); json_decref(m);
+    FILE *f = fopen("packs/old-000000000000.fpk", "wb"); assert(f); fputs("stale", f); fclose(f);
+}
+static int pack_scenarios(void) {
+    for (unsigned i = 0; i < sizeof payload; i++) payload[i] = (unsigned char)(i * 17 + 3);
+    fresh(1); pack_manifest();
+    unsigned generation = asset_generation();
+    asset_want(1);  // something on screen waits for the second pack
+    start();
+    WAIT_FOR(state(0, MEDIA_COMPLETED) && state(1, MEDIA_COMPLETED) && state(2, MEDIA_COMPLETED));
+    assert(media_count() == 3 && !strcmp(item(0).appid, "pack") && !strcmp(item(2).appid, "app"));
+    assert(calls == 3 && strstr(call_order[0], "art-2") && strstr(call_order[1], "art-1") && strstr(call_order[2], "video0"));
+    assert(asset_pack_installed(0) && asset_pack_installed(1) && asset_generation() == generation + 2);
+    assert(asset_state("romfs:/gfx/p1.ftx", NULL) == ASSET_READY);
+    assert(access("packs/old-000000000000.fpk", F_OK) != 0);
+    pass("packs before videos, wished-for pack first, publication, stale pack pruned");
+    assert(media_clear()); WAIT_FOR(media_clear_poll() == 1);
+    assert(state(0, MEDIA_COMPLETED) && state(1, MEDIA_COMPLETED) && state(2, MEDIA_CLEARED));
+    assert(!access(item(0).path, F_OK) && !access(item(1).path, F_OK));
+    pass("clearing previews keeps the store's resource packs");
+    finish(); calls = 0; start();
+    assert(state(0, MEDIA_COMPLETED) && state(1, MEDIA_COMPLETED));
+    WAIT_FOR(state(2, MEDIA_COMPLETED));
+    assert(calls == 1 && strstr(call_order[0], "video0"));
+    pass("next launch: installed packs complete at once, no request");
+    finish();
+    printf("%u pack scenarios passed\n", test_count);
+    return 0;
+}
+int main(int argc, char **argv) {
+    if (argc > 1 && !strcmp(argv[1], "packs")) return pack_scenarios();
     assert(media_url_allowed("https://raw.githubusercontent.com/EstebanPdN/port/commit/assets/store-media/test.fvid"));
     assert(media_url_allowed("https://github.com/owner/repo/releases/download/v1/test.fvid"));
     assert(!media_url_allowed(NULL)&&!media_url_allowed("http://raw.githubusercontent.com/x"));

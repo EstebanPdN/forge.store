@@ -48,7 +48,14 @@ static inline u32 C2D_Color32(u8 r,u8 g,u8 b,u8 a){return r|(u32)g<<8|(u32)b<<16
  (p/'sheet.ftx').write_bytes(sheet);(p/'romfs:/gfx').mkdir(parents=True)
  bank=struct.pack('<4sII64sII',b'FBN1',1,84+len(sheet),b'demo-bg.ftx',84,len(sheet))+sheet
  (p/'romfs:/gfx/banner-bank.bin').write_bytes(bank)
+ import gzip,hashlib,json
+ (p/'packs').mkdir();(p/'staged.fpk').write_bytes(sheet)
+ entry={'id':'late','file':'late-pack.fpk','url':'https://raw.githubusercontent.com/x/y/z/late','sha256':hashlib.sha256(sheet).hexdigest(),
+        'bytes':len(sheet),'files':[['gfx/late.ftx',0,len(sheet)]]}
+ (p/'romfs:/packs.json').write_bytes(gzip.compress(json.dumps({'format':1,'packs':[entry]}).encode(),mtime=0))
  for sanitizer in ('address,undefined','thread'):
   exe=p/('test-'+sanitizer.replace(',','-'))
-  subprocess.run(['clang','-std=gnu11','-O1','-g','-fsanitize='+sanitizer,'-I'+str(p),'-I/opt/homebrew/include','-I'+str(root/'source'),str(root/'tests/texture-stream.c'),'-lpthread','-lz','-o',str(exe)],check=True)
+  subprocess.run(['clang','-std=gnu11','-O1','-g','-fsanitize='+sanitizer,'-I'+str(p),'-I/opt/homebrew/include','-I'+str(root/'source'),str(root/'tests/texture-stream.c'),str(root/'source/assets.c'),'-DASSETS_HOST_TEST','-L/opt/homebrew/lib','-ljansson','-lpthread','-lz','-o',str(exe)],check=True)
+  for leftover in (p/'packs').glob('*'):leftover.unlink()
+  (p/'staged.fpk').write_bytes(sheet)
   subprocess.run([str(exe)],cwd=p,check=True,timeout=15)

@@ -55,6 +55,35 @@ restart and interrupted-write recovery still require physical-console qualificat
 
 Old builds that predate this updater need one manual CIA/3DSX installation to gain it.
 
+## Resource packs
+
+The CIA carries what the store needs to look complete from the first second: fonts, the
+interface, every app icon, my ports' banners, music and sounds (about 11 MB). Everything else
+is downloaded after the first start, in the background, as resource packs:
+
+1. banners of the other curated apps,
+2. galleries, video posters and install backdrops, one pack per app (my ports first),
+3. Universal-DB banners, most-starred first,
+4. the bundled GitHub pages, then their images,
+
+followed by the video previews. `3ds/tools/store_packs.py` groups the files of `3ds/romfs`
+into packs of about 1 MB in that order. A pack is the plain concatenation of its files; its
+name carries the start of its SHA-256, so unchanged content keeps its name. The compact
+index (`romfs:/packs.json`) lists every file with its offset and length.
+
+- Packs are published on the `store-packs` branch, which only ever gains files. Old store
+  versions keep finding the packs they name.
+- The media worker downloads a pack to `.part`, checks its size and SHA-256 and renames it to
+  `sdmc:/3ds/forge-store/packs/`. A pack at its final name and size is trusted at the next
+  launch without hashing it again. Packs the current manifest no longer names are removed.
+- `assets.c` reads RomFS first, then a bounded view inside an installed pack. An image whose
+  pack has not arrived reports *pending*: the screen shows its normal fallback (the app's
+  colour, an empty gallery slot), asks the worker to fetch that pack next, and loads the
+  image by itself once the pack is installed. Banners fade in.
+- Until the GitHub pack arrives, bundled pages are read like any other repository.
+- Clearing the store resources removes videos only. Packs belong to the store.
+- An update downloads only the packs whose content changed.
+
 ## Catalog synchronization
 
 Three layers keep the catalog on the releases each repository publishes, with no manual step:
@@ -145,13 +174,13 @@ retains ETag, Last-Modified and the last successful validation time; a shared lo
 publication and invalidation across workers. Readers open complete files without waiting behind
 cache pruning; FAT replacement preserves the prior file until promotion succeeds.
 
-The CIA also bundles 148 public metadata, README, release and commit responses for
-the curated repositories and profile. Foreground reads use CRC-verified SD data or
-the bundled response immediately; a failed refresh falls back to the last usable copy.
+The store also prepares 148 public metadata, README, release and commit responses for
+the curated repositories and profile (a resource pack). Foreground reads use CRC-verified SD data or
+the prepared response immediately; a failed refresh falls back to the last usable copy.
 The background pass revalidates metadata, while catalog synchronization owns release refreshes
 and keeps pinned multi-file packages on their reviewed version.
 
-My repository README pages always use the bundled snapshot, ignoring SD copies and background refreshes. They change only with a store update. Their prepared artwork is included locally; missing raw images from my repositories fail immediately instead of waiting for the network. Other foreground pages use available local data immediately, regardless of age.
+My repository README pages always use the prepared snapshot, ignoring SD copies and background refreshes, once its pack is installed. They change only with a store update. Their prepared artwork is included locally; missing raw images from my repositories fail immediately instead of waiting for the network. Other foreground pages use available local data immediately, regardless of age.
 Background metadata freshness is six hours, commits one day, and READMEs/images seven days.
 Bundled timestamps also count as fresh, avoiding a first-launch request burst. Background validation uses
 `If-None-Match` or `If-Modified-Since`; a 304 updates freshness without replacing the body.
@@ -191,7 +220,7 @@ still delay content; retries do not guarantee remote availability.
 
 ## Prepared art and warm galleries
 
-The build includes 209 public README images and avatars, resized to at most 376×240 (avatars to 64×64) and stored as
+The store prepares 209 public README images and avatars (resource packs), resized to at most 376×240 (avatars to 64×64) and stored as
 CRC-checked, zlib-compressed RGBA (`RIM1`). Their original URLs and hashes are recorded in
 `assets/reader-art/manifest.json`. Those exact bundled URLs need no network request or
 PNG/WebP/SVG decode on the console. Other decoded images use an atomic SD cache capped at
@@ -215,8 +244,8 @@ After the update screen fades to black, the native loader warms the Forge banner
 starting the usual introduction. It continues when ready (minimum 0.5 seconds), with a
 six-second ceiling. It never inserts six seconds of idle time on an already ready device.
 
-`stage-romfs.py` combines the unchanged FTX payloads into one sequential `FBN1` bank
-(less than 8 MiB) held in ordinary RAM. Runtime GPU residency uses an 8 MiB LRU budget,
+`stage-romfs.py` combines the unchanged FTX payloads of my ports' banners into one sequential
+`FBN1` bank (about 1.3 MiB) held in ordinary RAM; the other banners come from resource packs. Runtime GPU residency uses an 8 MiB LRU budget,
 protects the current/previous banner, and prefetches nearby entries. Returning to a resident
 banner does not decode or read it again. Visible requests outrank speculative work; one
 decoded sheet at a time waits for upload, with a 384 KiB per-frame upload budget.
@@ -225,17 +254,19 @@ Web V2 retains decoded local images in a bounded 128-entry working set, warms Fo
 the intro and nearby/category images before hover. It also ships prepared reader HTML and
 images, so the local preview does not require GitHub to open a curated page.
 
-## Lossless music and Forge Mode
+## Music, sounds and Forge Mode
 
-The ordinary build packages the two music streams as `FPC2` inside gzip. A reversible
-second-difference predictor runs independently on the left/right PCM16 channels; gzip handles
-compression and CRC. The worker reconstructs the original 32 kHz samples before applying the
-existing audio gain. It feeds the same read-ahead ring and DSP buffers. Effects remain PCM.
+The build encodes music and sounds as Ogg Vorbis (32 kHz stereo, quality 0.4, about 80 kbit/s)
+with `3ds/tools/vorbis-encode.c`; 17 MB of PCM become 1.4 MB. The console decodes them with
+Tremor, the integer Vorbis decoder in the 3DS portlibs. The music worker decodes into the same
+read-ahead ring and DSP buffers and applies the existing gain. Effects are decoded once by a
+background worker and moved to linear memory on the main thread.
 Build 2026.11.12.5 doubles the music gain, with a smooth stereo-linked shoulder above
 PCM magnitude 24,576 that approaches 31,744. Quiet samples receive the full gain;
 transient peaks avoid hard clipping. Saved master volume, muting and video ducking still apply.
-The production-source test compares every sample across opening/loop boundaries and restarts,
-and checks truncated streams, CRC failures, empty/missing files and malformed headers.
+The production-source test checks that every encoded sound keeps its exact length, compares
+every sample across opening/loop boundaries and restarts, and rejects damaged, empty, missing
+and wrongly formatted files.
 
 Forge Mode reuses the SHA-256 states after the HMAC pads instead of hashing those pads for
 every PBKDF2 round. Its 100,000-round envelope, encrypted data and existing persistent unlock

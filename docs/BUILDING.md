@@ -10,7 +10,8 @@ Dependencies:
 
 - devkitARM and libctru; Citro2D, Citro3D and tex3ds development support.
 - 3DS portlibs: curl, mbedTLS, libarchive, Jansson, FreeType, PNG, JPEG, GIF, Theora,
-  Ogg, bzip2, LZMA, LZ4, Zstandard and zlib.
+  Tremor (`libvorbisidec`), Ogg, bzip2, LZMA, LZ4, Zstandard and zlib.
+- On the build host, libvorbis (Homebrew `libvorbis`) to encode music and sounds.
 - devkitPro tools: `3dsxtool`, `smdhtool`, `bannertool`, `makerom`.
 - Python 3, CMake and zsh on the build host.
 
@@ -26,8 +27,10 @@ zsh 3ds/build.sh
 
 Outputs: `3ds/build/forge-store.cia`, `.3dsx`, `.elf`, `.smdh`, a linker map and `manifest.json`.
 Every build rechecks the media manifest. `stage-romfs.py` creates a disposable
-`3ds/build/romfs` containing the sequential banner bank and lossless music streams; the
-checked-in RomFS inputs remain unchanged. Public builds use `FORGE_DEBUG=0` by default.
+`3ds/build/romfs` with my ports' banner bank, Ogg Vorbis sound and gzip-compressed fonts and
+JSON, and writes every other asset into resource packs in `3ds/build/store-packs` (see
+[Updates and cache](UPDATES-AND-CACHE.md#resource-packs)); the checked-in RomFS inputs remain
+unchanged. Public builds use `FORGE_DEBUG=0` by default.
 Changing compiler/debug flags invalidates cached objects. Do not share a changing executable
 with an active emulator: the runner copies an immutable execution image before launch.
 
@@ -60,6 +63,8 @@ python3 3ds/tests/run-reader-priority.py
 python3 3ds/tests/run-audio-gain.py
 python3 3ds/tests/run-music-stream.py
 python3 3ds/tests/run-texture-stream.py
+python3 3ds/tests/run-assets.py
+python3 3ds/tests/run-media-queue.py
 python3 3ds/tests/run-reader-cache-fs.py
 python3 3ds/tests/run-update-icon.py
 python3 3ds/tools/check-file-view.py
@@ -105,6 +110,8 @@ The native HOME Menu model, resource budgets and checks are documented in
 
 Before publishing a build, return to `FORGE_DEBUG=0`, rebuild, run repository checks and use
 `tools/package-build.py` to copy exactly the reviewed binaries and hashes into `builds/3ds/`.
+Publish its resource packs first with `python3 3ds/tools/store_packs.py publish` (it only adds
+new packs to the `store-packs` branch) and check them with `store_packs.py verify`.
 Increase `STORE_BUILD` and set `STORE_VERSION` in `3ds/source/store_version.h` for each published update. Packaging
 also writes the compact `update.json` used by the automatic startup check. Publish it together
 with both binaries and the full manifest; see [Updates and cache](UPDATES-AND-CACHE.md).

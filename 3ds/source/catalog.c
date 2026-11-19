@@ -1,4 +1,5 @@
 // Catalog, localization, settings and the installed-apps record.
+#include "assets.h"
 #include "catalog.h"
 #include "detect_rules.h"
 #include "install.h"
@@ -36,7 +37,7 @@ const char *LANG_NAMES[8] = {"Español", "English", "Português", "Italiano", "F
 // ---- strings ------------------------------------------------------------------------
 void strings_load(void) {
     json_error_t e;
-    STRINGS = json_load_file("romfs:/strings.json", 0, &e);
+    STRINGS = asset_json("romfs:/strings.json", 0, &e);
 }
 
 const char *T(const char *key) {
@@ -285,9 +286,9 @@ static void layer_from(Layer *l, json_t *m) {
 
 bool catalog_load(void) {
     json_error_t e;
-    CATALOG = json_load_file("romfs:/catalog.json", 0, &e);
-    BANNERS = json_load_file("romfs:/gfx/banners.json", 0, &e);
-    SHOTS = json_load_file("romfs:/gfx/shots.json", 0, &e);
+    CATALOG = asset_json("romfs:/catalog.json", 0, &e);
+    BANNERS = asset_json("romfs:/gfx/banners.json", 0, &e);
+    SHOTS = asset_json("romfs:/gfx/shots.json", 0, &e);
     if (!CATALOG)
         return false;
     size_t i;
@@ -353,7 +354,7 @@ bool catalog_load(void) {
     }
     BUILTIN_APPS = NAPPS;
     base_categories = NCATS;
-    json_t *u = json_load_file("romfs:/universal.json", 0, NULL);
+    json_t *u = asset_json("romfs:/universal.json", 0, NULL);
     json_array_foreach(json_object_get(u, "apps"), i, v) {
         if (NAPPS >= MAX_APPS)
             break;

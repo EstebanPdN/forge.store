@@ -18,6 +18,10 @@ typedef struct {
     size_t size, copied;  // upload is spread over frames: bytes already in the texture
     bool tex_init;
     bool crisp;  // baked UI pixels: nearest magnification, linear reduction
+    bool urgent;  // requested for display (not a prefetch)
+    short wait_pack;  // 1 + pack index when it failed only because that pack is still downloading
+    bool late;        // reloaded because its pack arrived while the store was open
+    u64 arrived_ms;   // osGetTime() when such a late sheet became ready: callers may fade it in
     unsigned loads;
     float decode_ms;
 } Sheet;

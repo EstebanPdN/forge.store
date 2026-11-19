@@ -1,5 +1,12 @@
 # Changelog
 
+## forge.store 1.3 (experimental)
+
+- The store installs in about 11 MB instead of 50 MB. Updates are just as small.
+- Fonts, the interface, every app icon and my ports' banners come inside; the rest arrives in the background after the first start, in the order you are most likely to see it: banners, galleries, Universal-DB art, GitHub pages and images, then videos. Opening an app fetches its art first.
+- Art that arrives while you are looking at it fades in on its own. An update only downloads the art that changed.
+- Music and sounds take 1.4 MB instead of 17 MB (Ogg Vorbis).
+
 ## forge.store 1.2
 
 - The in-app update no longer offers the same version again after it finishes. The CIA update now installs like FBI does and only reports success once the new version is really installed.
