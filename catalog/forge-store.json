@@ -2976,75 +2976,54 @@
           "ciaVersion": 87
         },
         "experimental": {
-          "tag": "v1.2-E2",
-          "date": "2026-10-22",
+          "tag": "v1.2-E3",
+          "date": "2026-11-21",
           "o3ds": true,
           "assets": {
             "3dsx": {
               "name": "Starwing-3DS.3dsx",
-              "size": 5362464
+              "size": 5352312,
+              "sha256": "cb671f33212a3553b6d3a2456a0ec33427c4b576349863ebc2d0b56406a617d1"
             },
             "cia": {
               "name": "Starwing-3DS.cia",
-              "size": 4580288
+              "size": 4453312,
+              "sha256": "def89991e18f1ee25e996b74355d72df00d648e99ec3db5f7d66c7f4bb115c92"
             },
             "sums": {
               "name": "Starwing-3DS-SHA256SUMS.txt",
-              "size": 345
+              "size": 345,
+              "sha256": "a4bb134a09b0afd5d255d8baa7c8a38c58f1c746da19a06d2b444429df3e2f77"
             }
           },
           "notes": {
             "es": [
-              "Juego experimental en Old 3DS y 2DS.",
-              "Mejoras de audio y renderizado en Old 3DS.",
-              "Ajusta la profundidad del 3D estereoscópico.",
-              "Aviso: HOME puede congelar la consola en esta versión."
+              "Consulta el historial completo en GitHub."
             ],
             "en": [
-              "Experimental gameplay on Old 3DS and 2DS.",
-              "Old 3DS audio and rendering improvements.",
-              "Adjusted stereoscopic background depth.",
-              "Warning: HOME may freeze the console in this build."
+              "Read the full changelog on GitHub."
             ],
             "pt": [
-              "Jogabilidade experimental no Old 3DS e 2DS.",
-              "Melhorias de áudio e renderização no Old 3DS.",
-              "Profundidade do fundo estereoscópico ajustada.",
-              "Aviso: HOME pode travar o console nesta build."
+              "Veja o histórico completo no GitHub."
             ],
             "it": [
-              "Gioco sperimentale su Old 3DS e 2DS.",
-              "Audio e rendering migliorati su Old 3DS.",
-              "Profondità dello sfondo stereoscopico regolata.",
-              "Attenzione: in questa build HOME può bloccare la console."
+              "Leggi il changelog completo su GitHub."
             ],
             "fr": [
-              "Jeu expérimental sur Old 3DS et 2DS.",
-              "Audio et rendu améliorés sur Old 3DS.",
-              "Profondeur de l'arrière-plan stéréoscopique ajustée.",
-              "Attention : HOME peut figer la console dans cette version."
+              "Consultez l’historique complet sur GitHub."
             ],
             "de": [
-              "Experimentelles Gameplay auf Old 3DS und 2DS.",
-              "Audio- und Rendering-Verbesserungen für Old 3DS.",
-              "Stereoskopische Hintergrundtiefe angepasst.",
-              "Achtung: HOME kann die Konsole in diesem Build einfrieren."
+              "Den vollständigen Changelog gibt es auf GitHub."
             ],
             "ru": [
-              "Экспериментальная поддержка Old 3DS и 2DS.",
-              "Улучшены звук и рендеринг на Old 3DS.",
-              "Настроена глубина фона в стереоскопическом 3D.",
-              "Внимание: в этой сборке HOME может повесить консоль."
+              "Полный список изменений — на GitHub."
             ],
             "ja": [
-              "Old 3DSと2DSで試験的にプレイ可能。",
-              "Old 3DSの音声と描画を改善。",
-              "立体視の背景の奥行きを調整。",
-              "注意：このビルドではHOMEで本体がフリーズすることがあります。"
+              "変更履歴の全文は GitHub をご覧ください。"
             ]
           },
           "ciaTitle": "0004000005f58b00",
-          "ciaVersion": 90
+          "ciaVersion": 105
         }
       },
       "requires": [
