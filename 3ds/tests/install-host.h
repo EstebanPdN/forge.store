@@ -7,6 +7,7 @@
 #include <math.h>
 #include <jansson.h>
 #include <CommonCrypto/CommonDigest.h>
+#include <CommonCrypto/CommonCryptor.h>
 #include <time.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -102,6 +103,17 @@ static void socExit(void) {}
 static void reader_exit(void) {}
 static bool dsp_dump(char*p,size_t n) {return false;}
 typedef CC_SHA256_CTX mbedtls_sha256_context;
+typedef CCCryptorRef mbedtls_aes_context;
+#define MBEDTLS_AES_ENCRYPT 1
+static void mbedtls_aes_init(mbedtls_aes_context *c) { *c = NULL; }
+static int mbedtls_aes_setkey_enc(mbedtls_aes_context *c, const u8 *key, unsigned bits) {
+    return CCCryptorCreate(kCCEncrypt,kCCAlgorithmAES,kCCOptionECBMode,key,bits/8,NULL,c);
+}
+static int mbedtls_aes_crypt_ecb(mbedtls_aes_context *c,int mode,const u8 in[16],u8 out[16]) {
+    size_t n = 0;
+    return CCCryptorUpdate(*c,in,16,out,16,&n) != kCCSuccess || n != 16;
+}
+static void mbedtls_aes_free(mbedtls_aes_context *c) { if (*c) CCCryptorRelease(*c); }
 static void mbedtls_sha256_init(mbedtls_sha256_context*c) {CC_SHA256_Init(c);}
 static int mbedtls_sha256_starts_ret(mbedtls_sha256_context*c,int n) {return !CC_SHA256_Init(c);}
 static int mbedtls_sha256_update_ret(mbedtls_sha256_context*c,const void*p,size_t n) {return !CC_SHA256_Update(c,p,(CC_LONG)n);}
@@ -117,7 +129,7 @@ static const char *host_fs_path;
 static u64 host_title;
 static uint16_t host_version = 1;
 static bool host_am_fail, host_am_file, host_am_fail_finish;
-static int host_am_starts;
+static int host_am_starts, host_am_overwrites;
 static char host_am_head[64];
 static size_t host_am_head_len;
 static void host_am_load(void) {
@@ -148,7 +160,7 @@ static Result AM_GetTitleCount(int media,u32*n) {host_am_load();*n=host_title?1:
 static Result AM_GetTitleList(u32*n,int media,u32 cap,u64*t) {host_am_load();*n=host_title?1:0;if(*n)t[0]=host_title;return 0;}
 static Result AM_GetTitleInfo(int m,u32 n,u64*t,AM_TitleInfo*i) {host_am_load();i->titleID=host_title;i->version=host_version;return host_title&&*t==host_title?0:-1;}
 static Result AM_DeleteUserTitle(int m,u64 t) {host_mutation();host_am_load();if(t==host_title)host_title=0;host_am_save();return 0;}
-static Result AM_StartCiaInstallOverwrite(Handle*h,int m) {host_am_starts++;host_am_head_len=0;*h=1;return host_am_fail?-1:0;}
+static Result AM_StartCiaInstallOverwrite(Handle*h,int m) {host_am_overwrites++;host_am_starts++;host_am_head_len=0;*h=1;return host_am_fail?-1:0;}
 static Result AM_StartCiaInstall(int m,Handle*h) {host_am_starts++;host_am_head_len=0;*h=1;return host_am_fail?-1:0;}
 static Result FSFILE_Write(Handle h,u32*w,u64 off,const void*b,size_t n,int flags) {
  if (off==0) {host_am_head_len=n<sizeof host_am_head?n:sizeof host_am_head;memcpy(host_am_head,b,host_am_head_len);}

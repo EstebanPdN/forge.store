@@ -1,6 +1,6 @@
 # Changelog
 
-## forge.store 1.3 (experimental)
+## forge.store 1.3
 
 - The store installs in about 11 MB instead of 50 MB. Updates are just as small.
 - Fonts, the interface, every app icon and my ports' banners come inside; the rest arrives in the background after the first start, in the order you are most likely to see it: banners, galleries, Universal-DB art, GitHub pages and images, then videos. Opening an app fetches its art first.

@@ -1,5 +1,7 @@
 // Catalog, localization, settings and the installed-apps record.
 #include "assets.h"
+#include "forge_mode.h"
+#include "forge_zip.h"
 #include "catalog.h"
 #include "detect_rules.h"
 #include "install.h"
@@ -1506,7 +1508,7 @@ json_t *app_release(App *a, bool experimental) {
     json_t *rel = json_object_get(a->j, "releases");
     json_t *st = valid_release(json_object_get(rel, "stable")), *ex = valid_release(json_object_get(rel, "experimental"));
     if (experimental && app_has_experimental(a)) return ex;
-    return st ? st : ex;
+    return st ? st : ex ? ex : forge_mode_build(a->id);
 }
 
 bool app_has_experimental(App *a) {
@@ -1526,6 +1528,10 @@ bool app_release_experimental(App *a, json_t *rel) {
 
 json_t *app_install_steps(App *a, bool cia) {
     json_t *steps = a ? json_object_get(json_object_get(a->j, "install"), cia ? "cia" : "3dsx") : NULL;
+    if (cia && a && !json_array_size(steps)) {
+        json_t *private=forge_mode_build(a->id);
+        if (private && app_release(a,false)==private) steps=json_object_get(private,"steps");
+    }
     return json_is_array(steps) ? steps : NULL;
 }
 bool app_has_format(App *a, bool cia) {
@@ -1550,10 +1556,16 @@ u32 app_download_size(App *a, bool cia, bool experimental) {
     if (!rel || !steps) return 0;
     uint64_t total = 0;
     size_t i; json_t *s;
+    json_t *data=forge_mode_data(a->id);
+    json_array_foreach(data,i,s) total+=(uint64_t)forge_wire_size(s);
+    if (total>UINT32_MAX) return UINT32_MAX;
     json_array_foreach(steps, i, s) {
         const char *type = json_string_value(json_object_get(s, "type"));
         json_t *bytes = NULL;
-        if (type && !strcmp(type, "downloadUrl")) bytes = json_object_get(s, "size");
+        if (type && !strcmp(type, "downloadUrl")) {
+            json_t *member=json_object_get(s,"zipMember");
+            bytes=member?json_object_get(member,"bytes"):json_object_get(s,"size");
+        }
         else if (type && !strcmp(type, "downloadRelease"))
             bytes = json_object_get(app_asset(a, rel, json_string_value(json_object_get(s, "asset"))), "size");
         json_int_t size = json_integer_value(bytes);
@@ -1805,12 +1817,21 @@ bool app_found_outdated(App *a) {
     return app_found(a) && detect_outdated(a->j, a->uu_updated, a->found_title, a->found_version);
 }
 
-int app_title_ids(App *a, u64 *out, int max) { return a ? detect_titles(a->j, out, max) : 0; }
+int app_title_ids(App *a, u64 *out, int max) {
+    int n=a?detect_titles(a->j,out,max):0;
+    const char *id=a?json_string_value(json_object_get(forge_mode_build(a->id),"forgeTitleId")):NULL;
+    if (id && n<max) {
+        u64 title=strtoull(id,NULL,16);
+        for (int i=0;i<n;i++) if (out[i]==title) return n;
+        out[n++]=title;
+    }
+    return n;
+}
 
 AppStatus app_status(App *a) {
     if (!a) return ST_AVAILABLE;
     if (install_busy(a)) return ST_BUSY;
-    if (a->dev) return ST_DEV;
+    if (a->dev && !forge_mode_build(a->id)) return ST_DEV;
     const char *v = app_installed_version(a);
     if (!v || !*v) {
         if (!app_found(a)) return ST_AVAILABLE;

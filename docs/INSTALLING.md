@@ -91,6 +91,11 @@ restarting. The code and personal download addresses never appear in logs.
 For configured ports, installation downloads missing personal files through the same
 size- and hash-checked transaction. Existing files are preserved. New personal files roll
 back with a failed install but remain on the SD card when the application is uninstalled.
+If the authenticated manifest supplies a private build for a development entry, its
+detail page shows the version and offers the CIA. Choosing Download fetches that port's
+data and installer. Large encrypted ZIP members are fetched in requests of up to
+128 MiB and decoded directly into a staged file. The installer checks the final size
+and SHA-256 before putting the file at the path the port expects.
 
 The repository contains an authenticated encrypted manifest, not game payloads or its
 decryption key. Activation stores a derived key on the local SD card (or localStorage in the

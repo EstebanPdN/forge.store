@@ -374,6 +374,7 @@ static bool tx_publish(Job *j) {
 }
 
 // ---- downloads -------------------------------------------------------------------------
+#include "forge_zip_stream.inc"
 typedef struct {
     Job *job;
     JobStep *step;
@@ -384,6 +385,9 @@ typedef struct {
     u64 last_bytes;
     u64 last_tick;
     u64 written, expected;
+    ForgeZipStream *zip;
+    const char *range;
+    u64 range_start, range_end; // offsets within this encrypted member
 } Dl;
 
 static size_t on_write(char *data, size_t size, size_t nmemb, void *user) {
@@ -401,6 +405,12 @@ static size_t on_write(char *data, size_t size, size_t nmemb, void *user) {
         return len;
     }
     if (len > FILE_LIMIT - d->written || (d->expected && len > d->expected - d->written) || !free_space(len)) return 0;
+    if (d->zip) {
+        if (len > d->range_end - d->written) return 0;
+        if (!forge_zip_write(d->zip, d->f, (u8 *)data, len)) return 0;
+        d->written += len;
+        return len;
+    }
     size_t wrote = fwrite(data, 1, len, d->f);
     d->written += wrote;
     return wrote;
@@ -414,13 +424,17 @@ static int on_progress(void *user, curl_off_t total, curl_off_t now, curl_off_t 
         return 1;
     if (!d->step)
         return 0;
+    // libcurl restarts its counter after a redirect and on each range. The
+    // write callback counts accepted payload bytes across the entire file.
+    now = (curl_off_t)d->written;
+    if (d->expected) total = (curl_off_t)d->expected;
     if (total > 0)
         d->step->progress = (float)now / total;
     d->job->done_bytes = d->base + now;
     u64 tick = svcGetSystemTick();
     if (tick - d->last_tick > SYSCLOCK_ARM11 / 2) {
         float secs = (tick - d->last_tick) / (float)SYSCLOCK_ARM11;
-        float speed = (now - d->last_bytes) / secs;
+        float speed = (d->written - d->last_bytes) / secs;
         d->job->speed = d->job->speed > 0 ? d->job->speed * 0.6f + speed * 0.4f : speed;
         d->last_tick = tick;
         d->last_bytes = now;
@@ -437,6 +451,7 @@ static CURLcode fetch(const char *url, Dl *d, char *err, size_t errn) {
     network_options(c);
     curl_easy_setopt(c, CURLOPT_TIMEOUT, 0L); // progressing installations have no total deadline
     curl_easy_setopt(c, CURLOPT_URL, url);
+    if (d->range) curl_easy_setopt(c, CURLOPT_RANGE, d->range);
     curl_easy_setopt(c, CURLOPT_PROTOCOLS_STR, "https");
     curl_easy_setopt(c, CURLOPT_REDIR_PROTOCOLS_STR, "https");
     curl_easy_setopt(c, CURLOPT_FOLLOWLOCATION, 1L);
@@ -455,13 +470,41 @@ static CURLcode fetch(const char *url, Dl *d, char *err, size_t errn) {
     curl_easy_setopt(c, CURLOPT_ERRORBUFFER, ebuf);
     d->last_tick = svcGetSystemTick();
     CURLcode r = curl_easy_perform(c);
+    if (d->range && r == CURLE_OK) {
+        long status = 0;
+        curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &status);
+        if (status != 206) r = CURLE_RANGE_ERROR;
+    }
     if (r != CURLE_OK)
-        network_error(err, errn, ebuf[0] ? ebuf : curl_easy_strerror(r));
+        network_error(err, errn, !d->range && ebuf[0] ? ebuf : curl_easy_strerror(r));
     curl_easy_cleanup(c);
     return r;
 }
 
-static bool download_to_file(Job *j, JobStep *st, const char *url, const char *path, u64 expected) {
+#ifndef FORGE_ZIP_REQUEST_MAX
+#define FORGE_ZIP_REQUEST_MAX (128u * 1024 * 1024)
+#endif
+static CURLcode fetch_member(const char *url, Dl *d, uint32_t offset, char *err, size_t errn) {
+    char range[40];
+    while (d->written < d->expected) {
+        if (quit || d->job->cancel) return CURLE_ABORTED_BY_CALLBACK;
+        d->range_start = d->written;
+        u64 remaining = d->expected - d->written;
+        d->range_end = d->written + (remaining > FORGE_ZIP_REQUEST_MAX ? FORGE_ZIP_REQUEST_MAX : remaining);
+        snprintf(range, sizeof range, "%llu-%llu", (unsigned long long)(offset + d->range_start),
+                 (unsigned long long)(offset + d->range_end - 1));
+        d->range = range;
+        CURLcode result = fetch(url, d, err, errn);
+        if (result != CURLE_OK) return result;
+        if (d->written != d->range_end) {
+            snprintf(err,errn,"Incomplete encrypted resource range");
+            return CURLE_PARTIAL_FILE;
+        }
+    }
+    return CURLE_OK;
+}
+
+static bool download_to_file(Job *j, JobStep *st, const char *url, const char *path, u64 expected, const ForgeZipMember *member) {
     if (expected > FILE_LIMIT || !free_space(expected)) return fail(j, "Insufficient SD space or file too large");
     TxFile *entry = tx_file(j, path);
     if (!entry) return false;
@@ -476,9 +519,20 @@ static bool download_to_file(Job *j, JobStep *st, const char *url, const char *p
     static char vbuf[256 * 1024];
     setvbuf(f, vbuf, _IOFBF, sizeof vbuf);
     Dl d = {.job = j, .step = st, .f = f, .base = j->done_bytes, .expected = expected};
-    CURLcode r = fetch(url, &d, j->error, sizeof j->error);
+    if (member) {
+        d.zip = malloc(sizeof *d.zip);
+        if (!d.zip || !forge_zip_begin(d.zip, member, expected)) {
+            free(d.zip); fclose(f); remove(partial);
+            return fail(j, "Cannot open encrypted resource");
+        }
+        d.expected = member->bytes;
+    }
+    CURLcode r = member ? fetch_member(url,&d,member->offset,j->error,sizeof j->error)
+                        : fetch(url,&d,j->error,sizeof j->error);
+    bool decoded = !d.zip || (d.zip->ended && d.zip->plain == expected);
+    if (d.zip) { forge_zip_end(d.zip); free(d.zip); }
     bool disk_ok = durable_close(f);
-    if (r != CURLE_OK || !disk_ok || j->cancel || !d.written || (expected && d.written != expected)) {
+    if (r != CURLE_OK || !disk_ok || !decoded || j->cancel || !d.written || (d.expected && d.written != d.expected)) {
         if (r == CURLE_OK) fail(j, "Incomplete download or unexpected size");
         if (!disk_ok)
             snprintf(j->error, sizeof j->error, "SD write failed");
@@ -542,7 +596,7 @@ static bool sha256_file(const char *path, char hex[65], JobStep *st, volatile bo
 }
 
 // ---- CIA ----------------------------------------------------------------------------------
-static bool install_cia(Job *j, JobStep *st, const char *path) {
+static bool install_cia(Job *j, JobStep *st, const char *path, bool replace_title) {
     FILE *f = fopen(path, "rb");
     if (!f) {
         snprintf(j->error, sizeof j->error, "%s", strerror(errno));
@@ -552,8 +606,9 @@ static bool install_cia(Job *j, JobStep *st, const char *path) {
     long total = ftell(f);
     if (total <= 0 || fseek(f, 0, SEEK_SET)) { fclose(f); return false; }
     Handle h;
-    Result r = AM_StartCiaInstallOverwrite(&h, MEDIATYPE_SD);
-    if (R_FAILED(r))
+    Result r = replace_title ? AM_StartCiaInstallOverwrite(&h, MEDIATYPE_SD)
+                             : AM_StartCiaInstall(MEDIATYPE_SD, &h);
+    if (replace_title && R_FAILED(r))
         r = AM_StartCiaInstall(MEDIATYPE_SD, &h);
     if (R_FAILED(r)) {
         fclose(f);
@@ -651,6 +706,9 @@ static bool cia_prepare(Job *j) {
     AM_TitleInfo info;
     if (!cia_info(input, &info) || (info.titleID >> 32) != 0x00040000)
         return fail(j, "Invalid CIA or unsupported non-application title");
+    const char *bound_title=json_string_value(json_object_get(j->release,"forgeTitleId"));
+    if (bound_title && (strtoull(bound_title,NULL,16)!=info.titleID))
+        return fail(j,"Private CIA title does not match its release");
     tx.title_id = info.titleID;
     tx.new_version = info.version;
     if (!title_present(tx.title_id, &tx.had_title)) return fail(j, "Cannot inspect installed titles");
@@ -687,7 +745,7 @@ static bool cia_restore(Job *j) {
     if (!cache || !cache->had_old) return false;
     Job restore = {0};
     JobStep step = {0};
-    bool ok = install_cia(&restore, &step, cache->backup);
+    bool ok = install_cia(&restore, &step, cache->backup, true);
     if (!ok) fail(j, "CIA restore failed; original package retained in " TX_DIR);
     return ok;
 }
@@ -932,7 +990,7 @@ static bool tx_settle(json_t *journal, bool *completed) {
             snprintf(package, sizeof package, DATA_DIR "/cia-cache/%016llx.cia", (unsigned long long)title);
             Job restore = {0};
             JobStep step = {0};
-            if (!install_cia(&restore, &step, package)) printf("Recovery: CIA restore failed: %s\n", restore.error);
+            if (!install_cia(&restore, &step, package, true)) printf("Recovery: CIA restore failed: %s\n", restore.error);
         }
     }
     json_decref(saved);
@@ -1136,7 +1194,10 @@ static bool run_step(Job *j, JobStep *st) {
         if (!sd_path(path, sizeof path, str(s, "output"))) return fail(j, "Invalid or oversized catalog path");
         json_int_t size = json_integer_value(json_object_get(s, "size"));
         if (size < 0) return fail(j, "Invalid download size");
-        if(!download_to_file(j, st, url, path, (u64)size))return false;
+        json_t *zip = json_object_get(s,"zipMember");
+        ForgeZipMember member;
+        if(zip&&(!str(s,"sha256")||!forge_zip_member(zip,&member)))return fail(j,"Invalid encrypted resource");
+        if(!download_to_file(j, st, url, path, (u64)size, zip?&member:NULL))return false;
         if(!verify_download(j,st,path,str(s,"sha256")))return false;
         if(personal){TxFile *e=tx_find(path);if(!e)return fail(j,"Missing personal-resource transaction");e->personal=true;}
         return true;
@@ -1147,7 +1208,7 @@ static bool run_step(Job *j, JobStep *st) {
         if (!sd_path(path, sizeof path, str(s, "output"))) return fail(j, "Invalid or oversized catalog path");
         json_int_t size = json_integer_value(json_object_get(asset, "size"));
         if (size < 0) return fail(j, "Invalid download size");
-        return download_to_file(j, st, url, path, (u64)size)&&verify_download(j,st,path,str(asset,"sha256"));
+        return download_to_file(j, st, url, path, (u64)size, NULL)&&verify_download(j,st,path,str(asset,"sha256"));
     }
     if (!strcmp(type, "verifySha256")) {
         if (!sd_path(path, sizeof path, str(s, "file"))) return fail(j, "Invalid or oversized catalog path");
@@ -1416,7 +1477,7 @@ static void run(Job *j) {
         json_t *asset=!strcmp(str(step,"type"),"downloadUrl")?step:app_asset(j->app,j->release,str(step,"asset"));
         weights[i] =
             j->steps[i].bytes
-                ? 1 + (float)json_integer_value(json_object_get(asset, "size")) /
+                ? 1 + (float)forge_wire_size(asset) /
                           1048576.0f
                 : (!strcmp(str(j->steps[i].raw, "type"), "installCia") ? 3 : 0.4f);
         total += weights[i];
@@ -1465,7 +1526,7 @@ static void run(Job *j) {
         // The markers tell recovery whether AM may have replaced the title.
         bool marked = tx_mark(TX_CIA_STARTED);
         if (!marked) fail(j, "SD write failed");
-        bool installed = marked && install_cia(j, tx.cia_step, tx.cia_cache);
+        bool installed = marked && install_cia(j, tx.cia_step, tx.cia_cache, tx.had_title);
         if (installed) tx_mark(TX_CIA_FINISHED);
         else if (!tx_title_changed()) {
             bool restored = tx_finish(j, false);
@@ -1621,6 +1682,12 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
             json_t *asset = !strcmp(type, "downloadUrl") ? step : app_asset(a, selected, str(step, "asset"));
             json_int_t size = json_integer_value(json_object_get(asset, "size"));
             if (size < 0 || (u64)size > FILE_LIMIT) { toast("Unsupported download size", DANGER); return NULL; }
+            if (json_is_true(json_object_get(step,"personal"))) {
+                char path[PATH_CAP];
+                struct stat existing;
+                if (sd_path(path,sizeof path,str(step,"output")) && !stat(path,&existing) && S_ISREG(existing.st_mode))
+                    continue;
+            }
             needed += (u64)size;
         }
 
@@ -1681,7 +1748,7 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
             json_t *asset = !strcmp(type, "downloadUrl") ? s : app_asset(a, j->release, str(s, "asset"));
             snprintf(tmp, sizeof tmp, "%s", str(asset, "name") ? str(asset, "name") : "download");
             tvars(st->label, sizeof st->label, T(key), "name", tmp, NULL, NULL);
-            j->total_bytes += json_integer_value(json_object_get(asset, "size"));
+            j->total_bytes += forge_wire_size(asset);
         } else if (!strcmp(type, "mkdir") || !strcmp(type, "rmdir")) {
             tvars(st->label, sizeof st->label, T(key), "path", str(s, "directory"), NULL, NULL);
         } else if (!strcmp(type, "deleteFile") || !strcmp(type, "extractFile")) {

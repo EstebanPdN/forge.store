@@ -31,6 +31,12 @@ Every build rechecks the media manifest. `stage-romfs.py` creates a disposable
 JSON, and writes every other asset into resource packs in `3ds/build/store-packs` (see
 [Updates and cache](UPDATES-AND-CACHE.md#resource-packs)); the checked-in RomFS inputs remain
 unchanged. Public builds use `FORGE_DEBUG=0` by default.
+To reproduce a personal build, set `FORGE_PERSONAL_MANIFEST` to the path of its sealed
+`FM01` file when invoking the same build command. Staging copies it to RomFS for both
+the CIA and the 3DSX. Keep the personal manifest and resulting binaries under `.local/`.
+For the preactivated personal edition, also set `FORGE_DEFAULT_ACTIVATION` to the matching
+FMK1 activation file. Both packages carry the activation and can open the personal catalog
+on first launch with a fresh SD card.
 Changing compiler/debug flags invalidates cached objects. Do not share a changing executable
 with an active emulator: the runner copies an immutable execution image before launch.
 

@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/EstebanPdN/forge.store/releases/tag/v1.2"><img src="docs/badges/status.svg" alt="Release v1.2" height="22"></a>
+  <a href="https://github.com/EstebanPdN/forge.store/releases/tag/v1.3"><img src="docs/badges/status.svg" alt="Release v1.3" height="22"></a>
   <a href="docs/INSTALLING.md"><img src="docs/badges/platform.svg" alt="Old and New Nintendo 3DS" height="22"></a>
   <a href="docs/MEDIA.md"><img src="docs/badges/resources.svg" alt="Store resources: 16.04 MB" height="22"></a>
   <a href="#license-and-legal-notice"><img src="docs/badges/license.svg" alt="Component-specific licenses" height="22"></a>
@@ -65,7 +65,7 @@ files tell you exactly which file to place on the SD card.
   <a href="https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.3dsx"><img src="docs/images/download-3dsx.svg" alt="Download Homebrew Launcher 3DSX" width="210" height="46"></a>
 </p>
 
-**Stable: [v1.2](https://github.com/EstebanPdN/forge.store/releases/tag/v1.2).**
+**Stable: [v1.3](https://github.com/EstebanPdN/forge.store/releases/tag/v1.3).**
 
 <img align="right" src="docs/images/forge-store-qr.png" alt="QR code for the forge.store CIA" width="160">
 

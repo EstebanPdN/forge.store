@@ -9,7 +9,7 @@
   zlib, which also accepts the plain files.
 Every step is deterministic: the same inputs give byte-identical outputs.
 """
-import gzip, hashlib, importlib.util, json, shutil, struct, subprocess
+import gzip, hashlib, importlib.util, json, os, shutil, struct, subprocess
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 source = ROOT / '3ds/romfs'
@@ -23,7 +23,19 @@ GZIP = ('gfx/fonts.bin', 'gfx/kerning.bin', 'catalog.json', 'strings.json', 'uni
 
 if target.exists(): shutil.rmtree(target)
 moved = {Path(m).name for m in store_packs.MOVED}
-shutil.copytree(source, target, ignore=shutil.ignore_patterns('banner', '.DS_Store', *moved))
+shutil.copytree(source, target, ignore=shutil.ignore_patterns('banner', '.DS_Store', 'forge-default.key', *moved))
+if private_manifest := os.environ.get('FORGE_PERSONAL_MANIFEST'):
+    sealed = Path(private_manifest).read_bytes()
+    if len(sealed) < 56 or len(sealed) > 56 + 16384 or sealed[:4] != b'FM01':
+        raise ValueError('Expected a sealed Forge Mode manifest')
+    (target / 'personal-assets.fme').write_bytes(sealed)
+if activation := os.environ.get('FORGE_DEFAULT_ACTIVATION'):
+    if not private_manifest:
+        raise ValueError('FORGE_DEFAULT_ACTIVATION requires FORGE_PERSONAL_MANIFEST')
+    saved = Path(activation).read_bytes()
+    if len(saved) != 68 or saved[:4] != b'FMK1' or saved[4:36] != hashlib.sha256(sealed).digest():
+        raise ValueError('Activation does not match the personal manifest')
+    (target / 'forge-default.key').write_bytes(saved)
 for folder in store_packs.MOVED:
     assert not (target / folder).exists(), folder
 

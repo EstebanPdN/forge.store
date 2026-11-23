@@ -47,6 +47,8 @@ static int test_remove(const char *p) {
 #define rename test_rename
 #define remove test_remove
 #include "../source/catalog.c"
+json_t *forge_mode_build(const char *id) { return NULL; }
+json_t *forge_mode_data(const char *id) { return NULL; }
 #undef fwrite
 #undef fflush
 #undef fsync

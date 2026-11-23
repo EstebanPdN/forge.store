@@ -444,7 +444,7 @@ static void downloads_bottom(float a) {
             if (j->state == JOB_RUNNING && job_rate(j, rate, sizeof rate)) snprintf(sub, sizeof sub, "%d %% · %s", (int)(job_progress(j) * 100), rate);
             else if (j->state == JOB_RUNNING) snprintf(sub, sizeof sub, "%d %% · %s", (int)(job_progress(j) * 100), j->cur >= 0 && j->cur < j->nsteps ? j->steps[j->cur].label : job_label(j));
             else if(j->state==JOB_QUEUED){char total[24];fmt_size(total,sizeof total,j->total_bytes);snprintf(sub,sizeof sub,"%s · %s · %s",j->tag,j->cia?"CIA":"3DSX",total);}
-            else snprintf(sub,sizeof sub,"%s · %s · %s",j->tag,j->cia?"CIA":"3DSX",T(j->experimental?"channel.experimental":"channel.stable"));
+            else snprintf(sub,sizeof sub,"%s · %s · %s",j->tag,j->cia?"CIA":"3DSX",release_channel_label(j->release,j->experimental));
         }else package_detail(sub,sizeof sub);
         text_fit_style(sub,42,y+20,10,500,fmaxf(0,right_x-49),C(TH.ink_soft,a));
         scissor(320, 0, 36, 320, 198);

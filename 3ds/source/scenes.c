@@ -265,7 +265,8 @@ static AppStatus app_status_view(App *a) {
     const char *version=app_installed_version(a);
     if(!version||!*version){
         // Installed some other way (FBI, Universal-Updater): same marks, no uninstall.
-        if(a->dev||!app_found(a))return a->dev?ST_DEV:ST_AVAILABLE;
+        if(a->dev && !forge_mode_build(a->id))return ST_DEV;
+        if(!app_found(a))return ST_AVAILABLE;
         if(app_found_outdated(a))return ST_UPDATE;
         return app_missing_requirement_view(a)?ST_NEEDS_FILE:ST_INSTALLED;
     }
@@ -1219,7 +1220,9 @@ static unsigned detail_plan_scan;  // the ROM scan the tree shows: a newer one m
 static const char *detail_plan_found(json_t *req){return rom_find_path(req,NULL);}
 static void detail_plan_update(void) {
     if(detail_plan_app!=dapp || detail_plan_cia!=sheet_cia || detail_plan_exp!=sheet_exp || detail_plan_scan!=rom_find_completed()) {
-        install_plan_build(&detail_plan,app_install_steps(dapp,sheet_cia),json_object_get(app_release(dapp,sheet_exp),"assets"),json_object_get(dapp->j,"requires"),!IS_NEW3DS,detail_plan_found);
+        json_t *steps=forge_mode_plan(dapp->id,app_install_steps(dapp,sheet_cia));
+        install_plan_build(&detail_plan,steps,json_object_get(app_release(dapp,sheet_exp),"assets"),json_object_get(dapp->j,"requires"),!IS_NEW3DS,detail_plan_found);
+        json_decref(steps);
         detail_plan_app=dapp;detail_plan_cia=sheet_cia;detail_plan_exp=sheet_exp;detail_plan_scan=rom_find_completed();
         file_view_plan_begin();
         memset(detail_plan_views,0,sizeof detail_plan_views);
@@ -1642,6 +1645,10 @@ static float chip_big(float x, float y, const char *label, float a) {
     text_style(label, x - w + 10, y + 11 - line_h(11) / 2, 11, 700, 0, C(0xffffff, a), AL_LEFT);
     return w;
 }
+static const char *release_channel_label(json_t *release, bool experimental) {
+    if (json_object_get(release,"forgeTitleId")) return "Forge Mode";
+    return T(experimental ? "channel.experimental" : "channel.stable");
+}
 static void detail_top_overlay(float sa) {
     float clean = video_active() ? 0 : ease_inout(shots_clean), full = sa;
     sa *= 1 - clean;  // header, shades and the small counter leave together
@@ -1656,7 +1663,7 @@ static void detail_top_overlay(float sa) {
     if(st==ST_INSTALLED){HEAD_CHIP(T("status.installed"),"check",C(S.dark?TH.mint:0xdcefe7,S.dark?.16f:1));chips[nc-1].fg=C(S.dark?0x8fdcc0:0x2f7a63,1);}
     if(st==ST_NEEDS_FILE){HEAD_CHIP(T("status.needsFile"),"warn",C(S.dark?AMBER:0xfff4d6,S.dark?.18f:1));chips[nc-1].fg=C(S.dark?0xffcc5c:0xa86f00,1);}
     if(st==ST_DEV){snprintf(tmp,sizeof tmp,dapp->progress>=0?"%s · %d %%":"%s",T("status.dev"),dapp->progress);HEAD_CHIP(tmp,"hammer",C(S.dark?0x9d92f0:0xece8ff,S.dark?.16f:1));chips[nc-1].fg=C(S.dark?0x9d92f0:LAV,1);}
-    if(rel){snprintf(tmp,sizeof tmp,"%s · %s",json_string_value(json_object_get(rel,"tag")),T(sheet_exp?"channel.experimental":"channel.stable"));HEAD_CHIP(tmp,sheet_exp?"sparkle":"shield",C(0,.45f));}
+    if(rel){snprintf(tmp,sizeof tmp,"%s · %s",json_string_value(json_object_get(rel,"tag")),release_channel_label(rel,sheet_exp));HEAD_CHIP(tmp,sheet_exp?"sparkle":"shield",C(0,.45f));}
     if(dapp->has_stars){fmt_stars(tmp,sizeof tmp,dapp->stars);HEAD_CHIP(tmp,"star",C(0,.45f));}
     if(!dapp->old_ok)HEAD_CHIP(T("chip.n3dsOnly"),NULL,C(0,.45f));
     if(dapp->stereo)HEAD_CHIP(json_is_string(json_object_get(json_object_get(dapp->j,"compat"),"stereo"))?"3D β":"3D","depth",C(0,.45f));
@@ -1761,7 +1768,7 @@ static float facts_box(float x, float y, float w, const char *k, const char *v, 
 static float detail_info(float y, float a) {
     float x = 10, w = 300;
     float y0 = y;
-    if(dapp->dev){
+    if(dapp->dev && !forge_mode_build(dapp->id)){
         y+=2;float body=text_wrap_h(T("detail.devBody"),11,w-18),h=63+body;
         u32 lavender=S.dark?0x9d92f0:LAV;
         rrect(x,y,w,h,10,C(lavender,.16f*a));draw_icon("hammer",x+14,y+15,12,C(lavender,a));
@@ -1805,7 +1812,7 @@ static float detail_info(float y, float a) {
     char ver[64] = "—", orig[64] = "—", stars[24];
     if (rel)
         snprintf(ver, sizeof ver, "%s · %s", json_string_value(json_object_get(rel, "tag")),
-                 T(sheet_exp ? "channel.experimental" : "channel.stable"));
+                 release_channel_label(rel,sheet_exp));
     fmt_size(size, sizeof size, app_download_size(dapp, sheet_cia, sheet_exp));
     if (dapp->platform)
         snprintf(orig, sizeof orig, dapp->year ? "%s · %d" : "%s", dapp->platform, dapp->year);
@@ -2478,7 +2485,7 @@ static void install_top(float sa) {
     else if(ij->uninstall)snprintf(title,sizeof title,"%s",T("native.uninstalling"));
     else
         snprintf(title, sizeof title, "%s %s", T("install.title"), a->title);
-    float chips_w=0;const char *chiplabels[]={ij->tag,ij->cia?"CIA":"3DSX",T(ij->experimental?"channel.experimental":"channel.stable")};
+    float chips_w=0;const char *chiplabels[]={ij->tag,ij->cia?"CIA":"3DSX",release_channel_label(ij->release,ij->experimental)};
     for(int i=0;i<3;i++)chips_w+=chip_width(chiplabels[i],NULL);
     // Title and chips sit under the card, on the same left/right lines as the status pills.
     float title_in = ease_out(span(NOW, install_open_t + .3f, .4f)), ty = 213 + roundf((1 - title_in) * 8);

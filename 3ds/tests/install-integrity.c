@@ -14,7 +14,50 @@ static void archive_fixture(const char*file,bool bad) {
  for(int i=0;i<2;i++){struct archive_entry*e=archive_entry_new();archive_entry_set_pathname(e,names[i]);archive_entry_set_filetype(e,AE_IFREG);archive_entry_set_perm(e,0644);archive_entry_set_size(e,3);assert(archive_write_header(a,e)==ARCHIVE_OK);assert(archive_write_data(a,"new",3)==3);archive_entry_free(e);}
  assert(archive_write_close(a)==ARCHIVE_OK);archive_write_free(a);
 }
+static void test_forge_zip(void) {
+    // Independent WinZip AES counter vector over raw-DEFLATE("Stream boundary fixture." x 30).
+    const u8 cipher[] = {
+        0xcc,0x9b,0x30,0xce,0x27,0xdd,0x14,0x54,0x1c,0x83,0xca,0x80,0x4a,0xd4,0xab,0xfc,
+        0x06,0x3f,0x14,0xa3,0xc2,0xf8,0x03,0x86,0xc8,0x61,0xef,0xe9,0x7b,0xe5,0x48,0x99,0x80
+    };
+    const char word[]="Stream boundary fixture.";
+    const size_t size=30*(sizeof word-1);
+    ForgeZipMember member={0};
+    for (size_t i=0;i<sizeof member.key;i++) member.key[i]=(u8)i;
+    ForgeZipStream stream;
+    FILE *file=tmpfile();assert(file);
+    assert(forge_zip_begin(&stream,&member,size));
+    for (size_t i=0;i<sizeof cipher;i++) {
+        u8 byte=cipher[i];
+        assert(forge_zip_write(&stream,file,&byte,1));
+        if (i+1<sizeof cipher) assert(!stream.ended);
+    }
+    assert(stream.ended && stream.plain==size);
+    u8 extra=0;
+    assert(!forge_zip_write(&stream,file,&extra,1));
+    rewind(file);
+    for (size_t i=0;i<size;i++) assert(fgetc(file)==word[i%(sizeof word-1)]);
+    assert(fgetc(file)==EOF);
+    forge_zip_end(&stream);
+    u8 data[sizeof cipher+1]={0};
+    memcpy(data,cipher,sizeof cipher);
+    assert(forge_zip_begin(&stream,&member,size));
+    assert(!forge_zip_write(&stream,file,data,sizeof data)); // trailing input in same callback
+    forge_zip_end(&stream);
+    memcpy(data,cipher,sizeof cipher);
+    assert(forge_zip_begin(&stream,&member,size-1));
+    assert(!forge_zip_write(&stream,file,data,sizeof cipher));
+    forge_zip_end(&stream);
+    fclose(file);
+}
 int main(void) {
+ test_forge_zip();
+ Job rate_job={0};JobStep rate_step={0};
+ Dl rate={.job=&rate_job,.step=&rate_step,.expected=100,.written=90,.last_bytes=70};
+ rate.last_tick=svcGetSystemTick()-SYSCLOCK_ARM11;
+ assert(on_progress(&rate,20,0,0,0)==0); // cURL started a new range or followed a redirect
+ assert(rate_job.done_bytes==90 && rate_step.progress>.89f && rate_step.progress<.91f);
+ assert(rate_job.speed>0 && rate_job.speed<21);
  assert(!mkdir("sdmc:",0777));assert(!mkdir("sdmc:/3ds",0777));assert(!mkdir(DATA_DIR,0777));
  const char *live="sdmc:/3ds/demo.3dsx";put(live,"old");
  char path[PATH_CAP];assert(sd_path(path,sizeof path,"%3DSX%/demo.3dsx"));assert(!strcmp(path,live));
@@ -62,10 +105,10 @@ int main(void) {
  // Mocked AM: reject an external existing title before AM overwrite when its original CIA is unavailable.
  j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","package");strcpy(tx.cia_path,"sdmc:/candidate.cia");host_title=0x0004000012345600ULL;host_am_starts=0;assert(!cia_prepare(&j));assert(!host_am_starts);assert(tx_finish(&j,false));clear_job(&j);
  // Mocked AM: new-title rollback removes only this transaction's title/cache.
- host_title=0;j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","package");tx_find("sdmc:/candidate.cia")->deleted=true;strcpy(tx.cia_path,"sdmc:/candidate.cia");assert(cia_prepare(&j));assert(tx_publish(&j));assert(hash_published(&j));tx.cia_attempted=true;assert(install_cia(&j,&step,tx.cia_cache));assert(host_title);assert(cia_restore(&j));assert(!host_title);assert(tx_finish(&j,false));clear_job(&j);
+ host_title=0;j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","package");tx_find("sdmc:/candidate.cia")->deleted=true;strcpy(tx.cia_path,"sdmc:/candidate.cia");assert(cia_prepare(&j));assert(tx_publish(&j));assert(hash_published(&j));tx.cia_attempted=true;int prior_overwrites=host_am_overwrites;assert(install_cia(&j,&step,tx.cia_cache,tx.had_title));assert(host_am_overwrites==prior_overwrites);assert(host_title);assert(cia_restore(&j));assert(!host_title);assert(tx_finish(&j,false));clear_job(&j);
  // Mocked AM: an update's old package is reinstalled and original cache bytes restored.
  assert(mkdirs(DATA_DIR "/cia-cache",false));put(DATA_DIR "/cia-cache/0004000012345600.cia","old-package");host_title=0x0004000012345600ULL;
- j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","new-package");tx_find("sdmc:/candidate.cia")->deleted=true;strcpy(tx.cia_path,"sdmc:/candidate.cia");assert(cia_prepare(&j));assert(tx_publish(&j));tx.cia_attempted=true;assert(install_cia(&j,&step,tx.cia_cache));int starts=host_am_starts;assert(cia_restore(&j));assert(host_am_starts==starts+1);assert(tx_finish(&j,false));equal(DATA_DIR "/cia-cache/0004000012345600.cia","old-package");clear_job(&j);
+ j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","new-package");tx_find("sdmc:/candidate.cia")->deleted=true;strcpy(tx.cia_path,"sdmc:/candidate.cia");assert(cia_prepare(&j));assert(tx_publish(&j));tx.cia_attempted=true;prior_overwrites=host_am_overwrites;assert(install_cia(&j,&step,tx.cia_cache,tx.had_title));assert(host_am_overwrites==prior_overwrites+1);int starts=host_am_starts;assert(cia_restore(&j));assert(host_am_starts==starts+1);assert(tx_finish(&j,false));equal(DATA_DIR "/cia-cache/0004000012345600.cia","old-package");clear_job(&j);
  // Pinned hashes bind downloaded bytes before extraction or publication.
  j=make_job();assert(tx_begin(&j));stage(&j,live,"abc");
  assert(verify_download(&j,&step,live,"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"));
@@ -82,5 +125,5 @@ int main(void) {
  j=make_job();assert(tx_begin(&j));stage(&j,personal,"replacement");tx_find(personal)->personal=true;
  assert(!tx_publish(&j));assert(tx_finish(&j,false));equal(personal,"personal");clear_job(&j);
  remove(personal);j=make_job();assert(tx_begin(&j));stage(&j,personal,"new");tx_find(personal)->personal=true;assert(tx_publish(&j));assert(tx_finish(&j,false));assert(!path_exists(personal));clear_job(&j);
- puts("install integrity: 27 scenario groups passed (isolated host fixture; AM mocked)");return 0;
+ puts("install integrity: 28 scenario groups passed (isolated host fixture; AM mocked)");return 0;
 }
