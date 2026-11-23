@@ -7,11 +7,11 @@
   "files": {
     "forge-store.cia": {
       "bytes": 10937280,
-      "sha256": "34db1fb79b5cf045aa59e4f99b35043aa90e43fdf881ce6899e7cb2a6a44ba06"
+      "sha256": "605c38f98e84dbfe63a20e1afb37cd78b421d045c488292f08dde4d7e08c5c17"
     },
     "forge-store.3dsx": {
-      "bytes": 11583296,
-      "sha256": "67c149a1413556658a71e92bbe50ae289113563073769e6def8eecb33d506440"
+      "bytes": 11582860,
+      "sha256": "514e1c22e03054b812f8014da5d1871a256659ee358263576159855ac33f3fcd"
     }
   },
   "source_sha256": {
