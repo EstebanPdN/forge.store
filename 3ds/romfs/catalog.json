@@ -2976,75 +2976,54 @@
           "ciaVersion": 87
         },
         "experimental": {
-          "tag": "v1.2-E2",
-          "date": "2026-10-22",
+          "tag": "v1.2-E3",
+          "date": "2026-11-21",
           "o3ds": true,
           "assets": {
             "3dsx": {
               "name": "Starwing-3DS.3dsx",
-              "size": 5362464
+              "size": 5352312,
+              "sha256": "cb671f33212a3553b6d3a2456a0ec33427c4b576349863ebc2d0b56406a617d1"
             },
             "cia": {
               "name": "Starwing-3DS.cia",
-              "size": 4580288
+              "size": 4453312,
+              "sha256": "def89991e18f1ee25e996b74355d72df00d648e99ec3db5f7d66c7f4bb115c92"
             },
             "sums": {
               "name": "Starwing-3DS-SHA256SUMS.txt",
-              "size": 345
+              "size": 345,
+              "sha256": "a4bb134a09b0afd5d255d8baa7c8a38c58f1c746da19a06d2b444429df3e2f77"
             }
           },
           "notes": {
             "es": [
-              "Juego experimental en Old 3DS y 2DS.",
-              "Mejoras de audio y renderizado en Old 3DS.",
-              "Ajusta la profundidad del 3D estereoscópico.",
-              "Aviso: HOME puede congelar la consola en esta versión."
+              "Consulta el historial completo en GitHub."
             ],
             "en": [
-              "Experimental gameplay on Old 3DS and 2DS.",
-              "Old 3DS audio and rendering improvements.",
-              "Adjusted stereoscopic background depth.",
-              "Warning: HOME may freeze the console in this build."
+              "Read the full changelog on GitHub."
             ],
             "pt": [
-              "Jogabilidade experimental no Old 3DS e 2DS.",
-              "Melhorias de áudio e renderização no Old 3DS.",
-              "Profundidade do fundo estereoscópico ajustada.",
-              "Aviso: HOME pode travar o console nesta build."
+              "Veja o histórico completo no GitHub."
             ],
             "it": [
-              "Gioco sperimentale su Old 3DS e 2DS.",
-              "Audio e rendering migliorati su Old 3DS.",
-              "Profondità dello sfondo stereoscopico regolata.",
-              "Attenzione: in questa build HOME può bloccare la console."
+              "Leggi il changelog completo su GitHub."
             ],
             "fr": [
-              "Jeu expérimental sur Old 3DS et 2DS.",
-              "Audio et rendu améliorés sur Old 3DS.",
-              "Profondeur de l'arrière-plan stéréoscopique ajustée.",
-              "Attention : HOME peut figer la console dans cette version."
+              "Consultez l’historique complet sur GitHub."
             ],
             "de": [
-              "Experimentelles Gameplay auf Old 3DS und 2DS.",
-              "Audio- und Rendering-Verbesserungen für Old 3DS.",
-              "Stereoskopische Hintergrundtiefe angepasst.",
-              "Achtung: HOME kann die Konsole in diesem Build einfrieren."
+              "Den vollständigen Changelog gibt es auf GitHub."
             ],
             "ru": [
-              "Экспериментальная поддержка Old 3DS и 2DS.",
-              "Улучшены звук и рендеринг на Old 3DS.",
-              "Настроена глубина фона в стереоскопическом 3D.",
-              "Внимание: в этой сборке HOME может повесить консоль."
+              "Полный список изменений — на GitHub."
             ],
             "ja": [
-              "Old 3DSと2DSで試験的にプレイ可能。",
-              "Old 3DSの音声と描画を改善。",
-              "立体視の背景の奥行きを調整。",
-              "注意：このビルドではHOMEで本体がフリーズすることがあります。"
+              "変更履歴の全文は GitHub をご覧ください。"
             ]
           },
           "ciaTitle": "0004000005f58b00",
-          "ciaVersion": 90
+          "ciaVersion": 105
         }
       },
       "requires": [
@@ -7162,9 +7141,6 @@
         "ids": [
           6686
         ],
-        "files": [
-          "%3DSX%/mgba.3dsx"
-        ],
         "uu": "mGBA"
       }
     },
@@ -8001,7 +7977,6 @@
           868562
         ],
         "files": [
-          "%3DSX%/nimbus.3dsx",
           "/3ds/nimbus.3dsx"
         ],
         "uu": "Nimbus"
@@ -9083,20 +9058,20 @@
       "icon": "assets/community/recorder/icon.webp",
       "releases": {
         "stable": {
-          "tag": "v1.4.0",
-          "date": "2026-11-18",
+          "tag": "v1.6.0",
+          "date": "2026-11-22",
           "assets": {
             "cia": {
               "name": "3ds-recorder.cia",
-              "size": 2892736,
-              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.4.0/3ds-recorder.cia",
-              "sha256": "08d8d20766818b85568187c9507d531ab290787b6be4a8f325e1dc89bc5c025d"
+              "size": 8352704,
+              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.6.0/3ds-recorder.cia",
+              "sha256": "6ff056dc71d1a0f028d569531f21fc2ea49cb8f40635796baf7fdae11fe5c289"
             },
             "3dsx": {
               "name": "3ds-recorder.3dsx",
-              "size": 3012300,
-              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.4.0/3ds-recorder.3dsx",
-              "sha256": "a5599dea51ba492d65fb561307cfb0d64d6132d666e0f754820e59858191e691"
+              "size": 8554524,
+              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.6.0/3ds-recorder.3dsx",
+              "sha256": "d9b83012c6d2ebd8b20ad4a8404fd3b62b65be975946d4969f0b0a6b7e1e7015"
             }
           },
           "notes": {
@@ -9126,7 +9101,7 @@
             ]
           },
           "ciaTitle": "000400000b3da300",
-          "ciaVersion": 1088
+          "ciaVersion": 1120
         }
       },
       "install": {
