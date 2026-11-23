@@ -9058,20 +9058,20 @@
       "icon": "assets/community/recorder/icon.webp",
       "releases": {
         "stable": {
-          "tag": "v1.6.0",
-          "date": "2026-11-22",
+          "tag": "v1.7.0",
+          "date": "2026-11-23",
           "assets": {
             "cia": {
               "name": "3ds-recorder.cia",
-              "size": 8352704,
-              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.6.0/3ds-recorder.cia",
-              "sha256": "6ff056dc71d1a0f028d569531f21fc2ea49cb8f40635796baf7fdae11fe5c289"
+              "size": 8397760,
+              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.7.0/3ds-recorder.cia",
+              "sha256": "8fe99fd7c000c9d84d7e7eae9227ef2f7583381484fbe8ea2edf57edfc160967"
             },
             "3dsx": {
               "name": "3ds-recorder.3dsx",
-              "size": 8554524,
-              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.6.0/3ds-recorder.3dsx",
-              "sha256": "d9b83012c6d2ebd8b20ad4a8404fd3b62b65be975946d4969f0b0a6b7e1e7015"
+              "size": 8619624,
+              "url": "https://github.com/BolgarMaxym97/3ds-recorder/releases/download/v1.7.0/3ds-recorder.3dsx",
+              "sha256": "bee492851eccb6921f36df11d7094a799973aa47ce6dd56b0f8389e52058d408"
             }
           },
           "notes": {
@@ -9101,7 +9101,7 @@
             ]
           },
           "ciaTitle": "000400000b3da300",
-          "ciaVersion": 1120
+          "ciaVersion": 1136
         }
       },
       "install": {
