@@ -4397,20 +4397,20 @@
       "folder": "/3ds/StarHaven/",
       "releases": {
         "stable": {
-          "tag": "v1.3.14",
-          "date": "2026-11-13",
+          "tag": "v1.3.15",
+          "date": "2026-11-23",
           "assets": {
             "cia": {
               "name": "StarHaven.cia",
-              "size": 10601408,
-              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.14/StarHaven.cia",
-              "sha256": "82f66bbd6e306c22f457d0f58a0164a186d15c7fd1c27b85f2bc352f11c6b18c"
+              "size": 10781632,
+              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.15/StarHaven.cia",
+              "sha256": "e79bc71c1add7f9a17a134af5826fe62fc3d799bc38d4f5483ef1036d0ba52d2"
             },
             "3dsx": {
               "name": "StarHaven.3dsx",
-              "size": 14316876,
-              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.14/StarHaven.3dsx",
-              "sha256": "7041d08723d65196789b3308774b475489c97c6d5308d93c59eb21487c721660"
+              "size": 14709724,
+              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.15/StarHaven.3dsx",
+              "sha256": "573eb2559c94d3866f5cd13487b0f0c2b107333f84b98c37f5c2e6923cb310fc"
             }
           },
           "notes": {
@@ -4421,26 +4421,26 @@
               "Read the full changelog on GitHub."
             ],
             "pt": [
-              "Leia o changelog completo no GitHub."
+              "Veja o histórico completo no GitHub."
             ],
             "it": [
               "Leggi il changelog completo su GitHub."
             ],
             "fr": [
-              "Consultez le journal complet sur GitHub."
+              "Consultez l’historique complet sur GitHub."
             ],
             "de": [
-              "Das vollständige Changelog findest du auf GitHub."
+              "Den vollständigen Changelog gibt es auf GitHub."
             ],
             "ru": [
               "Полный список изменений — на GitHub."
             ],
             "ja": [
-              "詳しい更新履歴はGitHubでご覧ください。"
+              "変更履歴の全文は GitHub をご覧ください。"
             ]
           },
           "ciaTitle": "00040000092b9900",
-          "ciaVersion": 1086
+          "ciaVersion": 1087
         }
       },
       "requires": [
