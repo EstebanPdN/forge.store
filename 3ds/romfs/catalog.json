@@ -6678,20 +6678,20 @@
       "icon": "assets/community/snes9x/icon.webp",
       "releases": {
         "stable": {
-          "tag": "v2.0",
-          "date": "2026-11-09",
+          "tag": "v2.1",
+          "date": "2026-11-24",
           "assets": {
             "cia": {
               "name": "snes9x_3ds.cia",
-              "size": 3855296,
-              "url": "https://github.com/matbo87/snes9x_3ds/releases/download/v2.0/snes9x_3ds.cia",
-              "sha256": "e353bb48b34de8e701f4750d542ac6bed5627290d891940d9c22510f87e7b3c8"
+              "size": 3863488,
+              "url": "https://github.com/matbo87/snes9x_3ds/releases/download/v2.1/snes9x_3ds.cia",
+              "sha256": "786d43d6051817cef9cb99d4f746c57c71803fc80670d14a1661a375eae3184b"
             },
             "3dsx": {
               "name": "snes9x_3ds.3dsx",
-              "size": 9848220,
-              "url": "https://github.com/matbo87/snes9x_3ds/releases/download/v2.0/snes9x_3ds.3dsx",
-              "sha256": "cca145096e186bbc3c6d7c068f31133251e48afbb8acd9d9a1af85f073ee5716"
+              "size": 9848188,
+              "url": "https://github.com/matbo87/snes9x_3ds/releases/download/v2.1/snes9x_3ds.3dsx",
+              "sha256": "2e362795214d88903e30ae943e6a30c45d793893d04252445a7a75affe5e2bfb"
             }
           },
           "notes": {
@@ -6702,26 +6702,26 @@
               "Read the full changelog on GitHub."
             ],
             "pt": [
-              "Leia o changelog completo no GitHub."
+              "Veja o histórico completo no GitHub."
             ],
             "it": [
               "Leggi il changelog completo su GitHub."
             ],
             "fr": [
-              "Consultez le journal complet sur GitHub."
+              "Consultez l’historique complet sur GitHub."
             ],
             "de": [
-              "Das vollständige Changelog findest du auf GitHub."
+              "Den vollständigen Changelog gibt es auf GitHub."
             ],
             "ru": [
               "Полный список изменений — на GitHub."
             ],
             "ja": [
-              "詳しい更新履歴はGitHubでご覧ください。"
+              "変更履歴の全文は GitHub をご覧ください。"
             ]
           },
           "ciaTitle": "0004000000384900",
-          "ciaVersion": 2048
+          "ciaVersion": 2064
         }
       },
       "install": {
@@ -7140,6 +7140,9 @@
       "detect": {
         "ids": [
           6686
+        ],
+        "files": [
+          "%3DSX%/mgba.3dsx"
         ],
         "uu": "mGBA"
       }
@@ -7977,6 +7980,7 @@
           868562
         ],
         "files": [
+          "%3DSX%/nimbus.3dsx",
           "/3ds/nimbus.3dsx"
         ],
         "uu": "Nimbus"
