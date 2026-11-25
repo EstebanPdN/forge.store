@@ -26,7 +26,7 @@
 
 <p align="center">
   <a href="https://estebanpdn.github.io/"><img src="docs/images/website.svg" alt="Visit Esteban’s Forge" width="142" height="46"></a>
-  <a href="https://discord.gg/BjbzfRYpV"><img src="docs/images/discord-official.svg" alt="Join our Discord community" width="166" height="46"></a>
+  <a href="https://discord.com/servers/esteban-s-forge-1533248895663210506"><img src="docs/images/discord-official.svg" alt="Join our Discord community" width="166" height="46"></a>
   <a href="https://www.patreon.com/c/EstebanPdN"><img src="docs/images/patreon.svg" alt="Support EstebanPdN on Patreon" width="216" height="46"></a>
 </p>
 
@@ -117,7 +117,7 @@ portlibs, then run `zsh 3ds/build.sh`. Outputs go to `3ds/build/`.
 
 ## Community and bug reports
 
-[Join the project Discord](https://discord.gg/BjbzfRYpV) for updates, support and
+[Join the project Discord](https://discord.com/servers/esteban-s-forge-1533248895663210506) for updates, support and
 suggestions. Report reproducible problems through
 [GitHub issues](https://github.com/EstebanPdN/forge.store/issues), including your
 console model, CIA or 3DSX, when you installed the store and the steps to reproduce it. Never attach tokens,
@@ -146,7 +146,7 @@ This is an unofficial homebrew project, unaffiliated with Nintendo.
 
 <p align="center">
   <a href="https://estebanpdn.github.io/">Esteban’s Forge</a> ·
-  <a href="https://discord.gg/BjbzfRYpV">Discord</a> ·
+  <a href="https://discord.com/servers/esteban-s-forge-1533248895663210506">Discord</a> ·
   <a href="#documentation">Documentation</a> ·
   <a href="#license-and-legal-notice">License and notices</a><br>
   <sub>An independent fan project. Game names and content belong to their respective owners.</sub>

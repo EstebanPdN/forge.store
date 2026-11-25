@@ -113,6 +113,6 @@ encryption, not access control for a public hosting service.
 | HOME, sleep, sound or launch problems | Report them with the details below. |
 
 When reporting a problem on [GitHub](https://github.com/EstebanPdN/forge.store/issues) or
-[Discord](https://discord.gg/BjbzfRYpV), include the console model, CIA or 3DSX, when you
+[Discord](https://discord.com/servers/esteban-s-forge-1533248895663210506), include the console model, CIA or 3DSX, when you
 installed the store and the steps to reproduce it. Emulator results are useful, but
 they do not replace a test on a real console.
