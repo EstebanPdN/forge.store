@@ -19,4 +19,6 @@ void audio_apply_settings(void);
 
 bool audio_available(void);
 void music_duck(bool duck);
+/** Silences the music while the lid is closed during a download. */
+void music_lid(bool closed);
 void audio_log(FILE *f);

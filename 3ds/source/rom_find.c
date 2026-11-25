@@ -310,6 +310,8 @@ void rom_find_watch(json_t *req) {
 
 unsigned rom_find_refresh(void) { return ++requested; }
 unsigned rom_find_completed(void) { return completed; }
+// Every requested scan has answered: earlier answers may predate a file the store just wrote.
+bool rom_find_settled(void) { return completed == requested && !worker; }
 bool rom_find_known(json_t *req) { Slot *s = slot_of(req); return s && s->known; }
 bool rom_find_have(json_t *req) { Slot *s = slot_of(req); return s && s->known && s->have; }
 const char *rom_find_path(json_t *req, bool *derived) {

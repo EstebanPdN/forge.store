@@ -237,7 +237,10 @@ static Job *start(Kind k) {
     json_t *s;
     json_array_foreach(j->script, i, s) j->steps[j->nsteps++].raw = s;
     j->known_titles[0] = TITLE;
-    j->nknown = k == S_CIA_EXTERNAL ? 1 : 0;  // the catalog lists this title for the app
+    // The catalog lists this title for the app (my ports' entries do); an update's record
+    // names it too. A title left by a cut after AM committed is then completed next time.
+    // (install_start_plan copies record_title() into known_titles).
+    j->nknown = k == S_CIA_EXTERNAL || k == S_CIA_UPDATE || k == S_CIA_FRESH ? 1 : 0;
     return j;
 }
 
@@ -307,12 +310,53 @@ static void mode_flags(Mode m) {
     host_am_fail_finish = m == RUN_AM_FAILS;
 }
 
+// `state` with its title line taken from `other`.
+static char *with_title_of(const char *state, const char *other) {
+    const char *t = strstr(state, "\nT "), *u = strstr(other, "\nT ");
+    assert(t && u);
+    size_t head = (size_t)(t - state) + 1, tl = strcspn(t + 1, "\n"), ul = strcspn(u + 1, "\n");
+    char *out = malloc(strlen(state) + ul + 2);
+    memcpy(out, state, head);
+    memcpy(out + head, u + 1, ul);
+    strcpy(out + head + ul, t + 1 + tl);
+    return out;
+}
+
+// Every line of `now` (folders, files and their contents) was already there before.
+static bool only_removed(const char *now, const char *before) {
+    for (const char *l = now; *l;) {
+        size_t n = strcspn(l, "\n");
+        if (l[0] != 'T' && l[0] != 'R' && l[0] != '-') {
+            bool found = false;
+            for (const char *b = before; *b && !found;) {
+                size_t m = strcspn(b, "\n");
+                found = m == n && !strncmp(b, l, n);
+                b += m + (b[m] == '\n');
+            }
+            if (!found) return false;
+        }
+        l += n + (l[n] == '\n');
+    }
+    return true;
+}
+
 // Exactly the previous version, exactly the new one or, for an update over a title installed
 // without forge.store, the new one unrecorded. A failing run can never end committed.
+// Since 1.4.2 a CIA installs while it downloads (FBI's way), before the data files take
+// their places: a cut right after AM commits leaves the new title with the previous files
+// and record, which the next installation completes. An uninstallation only ever removes.
 static bool acceptable(Kind k, Mode m, const char *now, const char *before, const char *after, const char *unrecorded) {
     if (path_exists(TX_DIR) || kept_aside()) return false;
     if (!strcmp(now, before)) return true;
-    if (k == S_CIA_EXTERNAL && m != RUN_AM_FAILS && !strcmp(now, unrecorded)) return true;
+    if (k == S_UNINSTALL) return only_removed(now, before);
+    bool cia = k == S_CIA_FRESH || k == S_CIA_UPDATE || k == S_CIA_EXTERNAL;
+    if (cia && m != RUN_AM_FAILS && !strcmp(now, unrecorded)) return true;
+    if ((k == S_CIA_FRESH || k == S_CIA_UPDATE || k == S_CIA_EXTERNAL) && m != RUN_AM_FAILS) {
+        char *mixed = with_title_of(before, after);
+        bool same = !strcmp(now, mixed);
+        free(mixed);
+        if (same) return true;
+    }
     return m == RUN_NORMAL && !strcmp(now, after);
 }
 
@@ -396,7 +440,7 @@ static int scenario(Kind k, Mode m) {
 static void in_session(void) {
     struct { Kind k; bool commit_fails, am_fails; int expect; } cases[] = {
         {S_CIA_FRESH, true, false, 0},     // record not saved: the new title is removed again
-        {S_CIA_UPDATE, true, false, 0},    // record not saved: the previous package is reinstalled
+        {S_CIA_UPDATE, true, false, 2},    // record not saved: no package is kept since 1.4.2, kept complete
         {S_CIA_EXTERNAL, true, false, 2},  // record not saved, no previous package: kept complete
         {S_CIA_UPDATE, false, true, 0},    // AM refuses the package: nothing changed
         {S_CIA_EXTERNAL, false, true, 0},
@@ -433,7 +477,8 @@ static void in_session(void) {
 // The rollback itself is made to fail (the previous file cannot be moved back), so the
 // staging folder stays behind. Installing again in the same process must settle it first.
 static void retry_same_session(void) {
-    Kind kinds[] = {S_3DSX_UPDATE, S_CIA_UPDATE};
+    // A CIA update is no longer rolled back once AM commits (no package is kept since 1.4.2).
+    Kind kinds[] = {S_3DSX_UPDATE};
     for (unsigned i = 0; i < sizeof kinds / sizeof *kinds; i++) {
         Kind k = kinds[i];
         fixture(k);
@@ -544,6 +589,6 @@ int main(void) {
     retry_same_session();
     leftovers();
     if (failed) return 1;
-    puts("PASS: every crash point ends at the previous or the new version; the next install succeeds");
+    puts("PASS: every crash point ends at the previous or the new version (a CIA cut after AM: new title, previous files); the next install succeeds");
     return 0;
 }

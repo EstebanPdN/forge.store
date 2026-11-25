@@ -51,62 +51,95 @@ static void test_forge_zip(void) {
     fclose(file);
 }
 static Job progress_job;
-static int writes;
-static void observe_am(bool finish) {
-    if(finish){
-        assert(job_percent(&progress_job)==99 && progress_job.phase==PHASE_FINISH);
-    }else{
-        assert(progress_job.phase==PHASE_WRITE);
-        assert(job_percent(&progress_job)==(writes++ ? 74 : 50));
-    }
-}
 static void test_progress(void) {
-    progress_job=(Job){.cia=true,.state=JOB_RUNNING,.phase=PHASE_STEPS,.total_bytes=100};
-    JobStep step={0};Dl dl={.job=&progress_job,.step=&step,.expected=100,.written=50};
-    assert(!on_progress(&dl,100,50,0,0) && job_percent(&progress_job)==25);
-    progress_job.unknown_size=true;progress_job.cia_percent=-1;
+    // The percentage is the bytes downloaded over the bytes to download, nothing else.
+    progress_job=(Job){.cia=true,.state=JOB_RUNNING,.phase=PHASE_STEPS,.total_bytes=200};
+    JobStep step={0};Dl dl={.job=&progress_job,.step=&step,.expected=100,.written=50,.base=100};
+    assert(!on_progress(&dl,100,50,0,0) && job_percent(&progress_job)==75);
+    dl.written=100;assert(!on_progress(&dl,100,100,0,0) && job_percent(&progress_job)==99);  // 100 % only when done
+    progress_job.unknown_size=true;
     assert(!on_progress(&dl,0,50,0,0) && job_percent(&progress_job)==-1);
-    FILE *f=fopen("half.cia","wb");assert(f && !fseek(f,524287,SEEK_SET) && fputc(0,f)==0 && !fclose(f));
-    host_am_observe=observe_am;
-    assert(install_cia(&progress_job,&step,"half.cia",false) && writes==2);
-    assert(job_percent(&progress_job)==99);
-    writes=0;host_am_fail_finish=true;
-    assert(!install_cia(&progress_job,&step,"half.cia",false));progress_job.state=JOB_FAILED;
-    assert(job_percent(&progress_job)==99);
-    host_am_fail_finish=false;host_am_observe=NULL;progress_job.cancel=true;
-    assert(!install_cia(&progress_job,&step,"half.cia",false));progress_job.state=JOB_CANCELLED;
-    assert(job_percent(&progress_job)<100);
+    progress_job.state=JOB_DONE;assert(job_percent(&progress_job)==100);
     progress_job=(Job){.state=JOB_RUNNING,.nsteps=1,.cur=0,.weight={1},.wtotal=1,.phase=PHASE_FINISH};
     progress_job.steps[0].progress=1;
     assert(job_percent(&progress_job)==99 && !strcmp(job_activity(&progress_job),"install.finalizing"));
     progress_job.state=JOB_DONE;assert(job_percent(&progress_job)==100);
-    host_title=0;
 }
 
+// FBI's header walk: header, certificates and ticket are 64-byte aligned; the TMD's title ID
+// and version follow its signature.
+static void test_cia_head(void) {
+    static u8 cia[0x3000];memset(cia,0,sizeof cia);
+    u32 sizes[4]={0x2020,0xa00,0x350,0xb34};
+    for(int i=0,at=0;i<4;i++,at+=(i==1?8:4)){u32 v=sizes[i];int o=i==0?0:i==1?8:i==2?12:16;cia[o]=v;cia[o+1]=v>>8;cia[o+2]=v>>16;cia[o+3]=v>>24;(void)at;}
+    u32 tmd=0x2040+0xa00+0x380;cia[tmd+3]=1;  // RSA-2048: 0x140-byte signature block
+    u8 id[8]={0x00,0x04,0x00,0x00,0x0f,0x53,0x65,0x00};memcpy(cia+tmd+0x140+0x4c,id,8);
+    cia[tmd+0x140+0x9c]=0x04;cia[tmd+0x140+0x9d]=0x10;
+    u64 title=0;u16 version=0;
+    assert(cia_head(cia,sizeof cia,&title,&version) && title==0x000400000F536500ULL && version==0x0410);
+    assert(!cia_head(cia,tmd+0x100,&title,&version));  // the TMD is not complete yet
+    cia[tmd+3]=9;assert(!cia_head(cia,sizeof cia,&title,&version));
+}
+
+// The CIA goes to AM in 256 KB blocks as it arrives; AM opens once, after the header.
+static void test_cia_stream(void) {
+    host_title=0;host_am_starts=0;host_am_overwrites=0;
+    Job job={.state=JOB_RUNNING,.release=json_pack("{s:s}","ciaTitle","0004000012345600")};
+    static u8 block[CIA_BLOCK];struct CiaSink sink={.j=&job,.buf=block};
+    static u8 body[CIA_BLOCK*2+1234];memset(body,'x',sizeof body);memcpy(body,"CIA:0004000012345600:3",22);
+    for(size_t at=0;at<sizeof body;at+=16384){size_t n=sizeof body-at<16384?sizeof body-at:16384;assert(cia_sink_write(&sink,body+at,n));}
+    assert(sink.open && host_am_starts==1 && sink.off==CIA_BLOCK*2);
+    assert(cia_sink_flush(&sink) && sink.off==sizeof body);
+    assert(AM_FinishCiaInstall(sink.am)==0 && host_title==0x0004000012345600ULL && host_version==3);
+    // Another app's title with the same ID is never replaced.
+    memset(&tx,0,sizeof tx);Job other={.state=JOB_RUNNING,.release=json_object()};struct CiaSink s2={.j=&other,.buf=block};
+    assert(!cia_sink_write(&s2,body,sizeof body) && strstr(other.error,"Another installed title"));
+    // The release names its title: a different CIA is refused before AM opens.
+    memset(&tx,0,sizeof tx);host_title=0;Job wrong={.state=JOB_RUNNING,.release=json_pack("{s:s}","ciaTitle","0004000099999900")};
+    struct CiaSink s3={.j=&wrong,.buf=block};host_am_starts=0;
+    assert(!cia_sink_write(&s3,body,sizeof body) && host_am_starts==0 && strstr(wrong.error,"does not match"));
+    json_decref(job.release);json_decref(other.release);json_decref(wrong.release);memset(&tx,0,sizeof tx);host_title=0;
+}
+
+// The same CIA, recorded with its SHA-256 and still installed, is not downloaded again.
 static void test_recorded_cia(void) {
-    const char *cache = DATA_DIR "/cia-cache/0004000012345600.cia";
-    assert(mkdirs(cache, true));
-    put(cache, "recorded package");
-    JobStep step = {0};
-    volatile bool cancel = false;
-    char hash[65];
-    assert(sha256_file(cache, hash, &step, &cancel));
-    const char *candidates[] = {"recorded package", "replacement with same title version", "recorded package"};
-    for (int i = 0; i < 3; i++) {
+    const char *want = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    const char *keys[] = {"title:0004000012345600", DATA_DIR "/cia-cache/0004000012345600.cia"};  // 1.4.2 / earlier
+    for (int i = 0; i < 4; i++) {
         Job job = make_job();
-        job.record = json_pack("{s:{s:s}}", "hashes", cache, hash);
+        json_decref(job.release);job.release = json_pack("{s:s}", "ciaTitle", "0004000012345600");
+        job.record = json_pack("{s:{s:s}}", "hashes", keys[i & 1], i == 3 ? "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb" : want);
         host_title = i == 2 ? 0 : 0x0004000012345600ULL;
-        host_version = 1;
-        assert(tx_begin(&job));
-        strcpy(tx.cia_path, "sdmc:/candidate.cia");
-        stage(&job, tx.cia_path, candidates[i]);
-        assert(cia_prepare(&job));
-        assert(tx.cia_unchanged == (i == 0));
-        assert(tx_finish(&job, false));
+        u64 title = 0;
+        bool same = cia_already_installed(&job, want, &title);
+        assert(same == (i < 2) && (!same || title == 0x0004000012345600ULL));
         clear_job(&job);
     }
-    assert(!remove(cache));
+    host_title = 0;
 }
+// Each file is read once: digests of files already on the SD are kept while their size and
+// modification time stay the same; any change makes the next check read it again.
+static void test_hash_cache(void) {
+    const char *path = "sdmc:/3ds/cached/data.bin";
+    assert(mkdirs(path, true));
+    put(path, "first contents");
+    JobStep step = {0};
+    volatile bool cancel = false;
+    char a[65], b[65], c[65];
+    assert(sha256_file(path, a, &step, &cancel));
+    assert(hash_cache_lookup(path, b) && !strcmp(a, b));
+    put(path, "other contents");  // same size, new bytes
+    assert(!hash_cache_lookup(path, b));
+    assert(sha256_file(path, c, &step, &cancel) && strcmp(a, c));
+    hash_cache_save();
+    json_decref(hash_cache); hash_cache = NULL;  // as after a restart
+    assert(hash_cache_lookup(path, b) && !strcmp(b, c));
+    // Staging names are reused by every installation: never cached.
+    assert(!hash_cacheable(TX_DIR "/0000.new") && !hash_cacheable(DATA_DIR "/tmp/x.cia"));
+    remove(path);
+    assert(!hash_cache_lookup(path, b));
+}
+
 int main(void) {
  test_forge_zip();test_progress();
  Job rate_job={0};JobStep rate_step={0};
@@ -116,7 +149,10 @@ int main(void) {
  assert(rate_job.done_bytes==90 && rate_step.progress>.89f && rate_step.progress<.91f);
  assert(rate_job.speed>0 && rate_job.speed<21);
  assert(!mkdir("sdmc:",0777));assert(!mkdir("sdmc:/3ds",0777));assert(!mkdir(DATA_DIR,0777));
+ test_cia_head();
+ test_cia_stream();
  test_recorded_cia();
+ test_hash_cache();
  const char *live="sdmc:/3ds/demo.3dsx";put(live,"old");
  char path[PATH_CAP];assert(sd_path(path,sizeof path,"%3DSX%/demo.3dsx"));assert(!strcmp(path,live));
  assert(!sd_path(path,sizeof path,"/../escape"));assert(!sd_path(path,sizeof path,"/bad:device"));assert(!sd_path(path,sizeof path,"/bad./file"));assert(!sd_path(path,sizeof path,"%UNKNOWN%/file"));
@@ -175,26 +211,34 @@ int main(void) {
  j=make_job();assert(tx_begin(&j));host_write_budget=4;assert(!extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/",false));host_write_budget=-1;assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);
  j=make_job();assert(tx_begin(&j));stage(&j,live,"replacement");host_rename_calls=0;host_rename_fail_at=2;assert(!tx_publish(&j));host_rename_fail_at=0;assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);
  // Real run() + install_poll() on a failed durable metadata commit restores published files.
- assert(copy_file("good.tar","sdmc:/source.tar"));
+ {TxFile target={0};strcpy(target.stage,"sdmc:/source.tar");assert(copy_file("good.tar",&target)&&strlen(target.digest)==64);}
  app.j=json_loads("{\"install\":{\"3dsx\":[]}}",0,NULL);
  memset(jobs,0,sizeof jobs);njobs=1;Job *full=&jobs[0];full->app=&app;full->nsteps=1;
  full->steps[0].raw=json_loads("{\"type\":\"extractFile\",\"file\":\"/source.tar\",\"output\":\"/3ds/\"}",0,NULL);
  put(live,"old-again");host_auto_ack=true;host_commit_ok=false;run(full);assert(full->state==JOB_FAILED);equal(live,"old-again");json_decref(full->steps[0].raw);clear_job(full);
- // Uninstall preserves modified/untracked user data and rolls back on record failure.
- char goodhash[65];volatile bool no=false;assert(sha256_file(live,goodhash,&step,&no));
- json_t *record=json_pack("{s:[s,s],s:{},s:[]}","files",live,"sdmc:/3ds/user.dat","hashes","dirs");
- json_object_set_new(json_object_get(record,"hashes"),live,json_string(goodhash));put("sdmc:/3ds/user.dat","user-save");
- memset(full,0,sizeof *full);full->app=&app;full->uninstall=true;full->record=json_incref(record);run_uninstall(full);assert(full->state==JOB_FAILED);equal(live,"old-again");equal("sdmc:/3ds/user.dat","user-save");clear_job(full);
- host_commit_ok=true;memset(full,0,sizeof *full);full->app=&app;full->uninstall=true;full->record=json_incref(record);run_uninstall(full);assert(full->state==JOB_DONE);assert(!path_exists(live));equal("sdmc:/3ds/user.dat","user-save");assert(full->warnings==1);clear_job(full);json_decref(record);json_decref(app.j);
+ // Uninstall, FBI-style. A 3DSX app: "uninstall only" removes the files it installed and
+ // keeps the port's data; the record is forgotten only when the main thread saves that.
+ json_t *record=json_pack("{s:[s],s:{},s:[]}","files",live,"hashes","dirs");put("sdmc:/3ds/user.dat","user-save");
+ memset(full,0,sizeof *full);full->app=&app;full->uninstall=true;full->record=json_incref(record);run_uninstall(full);assert(full->state==JOB_FAILED);clear_job(full);
+ put(live,"old-again");host_commit_ok=true;memset(full,0,sizeof *full);full->app=&app;full->uninstall=true;full->record=json_incref(record);run_uninstall(full);assert(full->state==JOB_DONE);assert(!path_exists(live));equal("sdmc:/3ds/user.dat","user-save");clear_job(full);json_decref(record);
+ // A CIA: "uninstall only" deletes the title and its ticket; every file stays.
+ host_title=0x0004000012345600ULL;host_tickets_deleted=0;put(live,"data");
+ record=json_pack("{s:[s,s],s:{},s:[]}","files","title:0004000012345600",live,"hashes","dirs");
+ memset(full,0,sizeof *full);full->app=&app;full->uninstall=true;full->record=json_incref(record);run_uninstall(full);
+ assert(full->state==JOB_DONE && !host_title && host_tickets_deleted==1);equal(live,"data");clear_job(full);
+ // "Uninstall and delete files": the port's folder and personal data go too, never /3ds itself,
+ // another top folder or the store's own folder.
+ assert(mkdirs("sdmc:/3ds/PortX/saves/slot1.sav",true));put("sdmc:/3ds/PortX/saves/slot1.sav","s");put("sdmc:/3ds/PortX/game.rom","r");
+ assert(mkdirs("sdmc:/vb/a.vb",true));put("sdmc:/vb/a.vb","rom");put("sdmc:/vb/keep.vb","other");
+ host_title=0x0004000012345600ULL;
+ memset(full,0,sizeof *full);full->app=&app;full->uninstall=true;full->record=json_incref(record);
+ full->purge=json_pack("[s,s,s,s,s]","sdmc:/3ds/PortX","sdmc:/vb/a.vb","sdmc:/3ds",DATA_DIR,"sdmc:/vb");run_uninstall(full);
+ assert(full->state==JOB_DONE && !host_title);assert(!path_exists("sdmc:/3ds/PortX"));assert(!path_exists("sdmc:/vb/a.vb"));assert(!path_exists(live));
+ equal("sdmc:/vb/keep.vb","other");assert(path_exists(DATA_DIR));json_decref(full->purge);clear_job(full);json_decref(record);json_decref(app.j);
  // Mid-entry cancellation leaves the previous installed bytes intact.
  put(live,"keep");j=make_job();assert(tx_begin(&j));host_cancel_on_write=&j;assert(!extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/",false));assert(tx_finish(&j,false));equal(live,"keep");clear_job(&j);
- // Mocked AM: reject an external existing title before AM overwrite when its original CIA is unavailable.
- j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","package");strcpy(tx.cia_path,"sdmc:/candidate.cia");host_title=0x0004000012345600ULL;host_am_starts=0;assert(!cia_prepare(&j));assert(!host_am_starts);assert(tx_finish(&j,false));clear_job(&j);
- // Mocked AM: new-title rollback removes only this transaction's title/cache.
- host_title=0;j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","package");tx_find("sdmc:/candidate.cia")->deleted=true;strcpy(tx.cia_path,"sdmc:/candidate.cia");assert(cia_prepare(&j));assert(tx_publish(&j));assert(hash_published(&j));tx.cia_attempted=true;int prior_overwrites=host_am_overwrites;assert(install_cia(&j,&step,tx.cia_cache,tx.had_title));assert(host_am_overwrites==prior_overwrites);assert(host_title);assert(cia_restore(&j));assert(!host_title);assert(tx_finish(&j,false));clear_job(&j);
- // Mocked AM: an update's old package is reinstalled and original cache bytes restored.
- assert(mkdirs(DATA_DIR "/cia-cache",false));put(DATA_DIR "/cia-cache/0004000012345600.cia","old-package");host_title=0x0004000012345600ULL;
- j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","new-package");tx_find("sdmc:/candidate.cia")->deleted=true;strcpy(tx.cia_path,"sdmc:/candidate.cia");assert(cia_prepare(&j));assert(tx_publish(&j));tx.cia_attempted=true;prior_overwrites=host_am_overwrites;assert(install_cia(&j,&step,tx.cia_cache,tx.had_title));assert(host_am_overwrites==prior_overwrites+1);int starts=host_am_starts;assert(cia_restore(&j));assert(host_am_starts==starts+1);assert(tx_finish(&j,false));equal(DATA_DIR "/cia-cache/0004000012345600.cia","old-package");clear_job(&j);
+ // Mocked AM: a new title whose record cannot be saved is removed again.
+ host_title=0;j=make_job();assert(tx_begin(&j));put("sdmc:/candidate.cia","package");tx.title_id=0x0004000012345600ULL;tx.had_title=false;assert(install_cia(&j,&step,"sdmc:/candidate.cia",false));tx.cia_attempted=true;assert(host_title);assert(cia_restore(&j));assert(!host_title);assert(tx_finish(&j,false));clear_job(&j);remove("sdmc:/candidate.cia");
  // Pinned hashes bind downloaded bytes before extraction or publication.
  j=make_job();assert(tx_begin(&j));stage(&j,live,"abc");
  assert(verify_download(&j,&step,live,"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"));

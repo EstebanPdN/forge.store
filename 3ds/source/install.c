@@ -86,6 +86,7 @@ typedef struct {
     char path[PATH_CAP], stage[96], backup[96];
     bool deleted, published, had_old, remove_live, personal;
     char replace_hash[65]; // Only replace the exact personal resource inspected before download.
+    char digest[65];       // SHA-256 of the staged bytes, computed while this job wrote them
 } TxFile;
 typedef struct {
     TxFile *files;
@@ -100,6 +101,9 @@ typedef struct {
     bool no_restore;
     u16 old_version, new_version;
     char cia_cache[PATH_CAP];
+    char cia_streamed[PATH_CAP];  // catalog path of the CIA that went straight into AM
+    char cia_digest[65];          // its SHA-256, computed while it streamed
+    bool cia_reused;              // the same CIA is already installed: nothing to download
 } Transaction;
 static Transaction tx;
 static u64 job_serial;
@@ -396,7 +400,10 @@ typedef struct {
     ForgeZipStream *zip;
     const char *range;
     u64 range_start, range_end; // offsets within this encrypted member
+    mbedtls_sha256_context *sha; // the file's digest, fed with exactly the bytes written
+    struct CiaSink *cia;         // set: the bytes go to the 3DS installer, not to a file
 } Dl;
+static bool cia_sink_write(struct CiaSink *k, const u8 *data, size_t len);
 
 static size_t on_write(char *data, size_t size, size_t nmemb, void *user) {
     Dl *d = user;
@@ -412,6 +419,12 @@ static size_t on_write(char *data, size_t size, size_t nmemb, void *user) {
         d->mem[d->mem_len] = 0;
         return len;
     }
+    if (d->cia) {
+        if ((d->expected && len > d->expected - d->written) || !cia_sink_write(d->cia, (const u8 *)data, len)) return 0;
+        if (d->sha) mbedtls_sha256_update_ret(d->sha, (const u8 *)data, len);
+        d->written += len;
+        return len;
+    }
     if (len > FILE_LIMIT - d->written || (d->expected && len > d->expected - d->written) || !free_space(len)) return 0;
     if (d->zip) {
         if (len > d->range_end - d->written) return 0;
@@ -420,6 +433,7 @@ static size_t on_write(char *data, size_t size, size_t nmemb, void *user) {
         return len;
     }
     size_t wrote = fwrite(data, 1, len, d->f);
+    if (d->sha && wrote) mbedtls_sha256_update_ret(d->sha, (const u8 *)data, wrote);
     d->written += wrote;
     return wrote;
 }
@@ -439,8 +453,6 @@ static int on_progress(void *user, curl_off_t total, curl_off_t now, curl_off_t 
     if (total > 0)
         d->step->progress = (float)now / total;
     d->job->done_bytes = d->base + now;
-    if (d->job->cia && !d->job->unknown_size && d->job->total_bytes)
-        d->job->cia_percent = (int)(50 * d->job->done_bytes / d->job->total_bytes);
     u64 tick = svcGetSystemTick();
     if (tick - d->last_tick > SYSCLOCK_ARM11 / 2) {
         float secs = (tick - d->last_tick) / (float)SYSCLOCK_ARM11;
@@ -519,6 +531,7 @@ static bool download_to_file(Job *j, JobStep *st, const char *url, const char *p
     TxFile *entry = tx_file(j, path);
     if (!entry) return false;
     entry->deleted = false;
+    entry->digest[0] = 0;
     char partial[96];
     snprintf(partial, sizeof partial, "%s", entry->stage);
     FILE *f = fopen(partial, "wb");
@@ -528,13 +541,20 @@ static bool download_to_file(Job *j, JobStep *st, const char *url, const char *p
     }
     static char vbuf[256 * 1024];
     setvbuf(f, vbuf, _IOFBF, sizeof vbuf);
-    Dl d = {.job = j, .step = st, .f = f, .base = j->done_bytes, .expected = expected};
+    // The SHA-256 is computed from the bytes as they reach the SD, so verification
+    // needs no second pass over the file (minutes for the 1 GB game data packs).
+    static mbedtls_sha256_context sha;
+    mbedtls_sha256_init(&sha);
+    mbedtls_sha256_starts_ret(&sha, 0);
+    Dl d = {.job = j, .step = st, .f = f, .base = j->done_bytes, .expected = expected, .sha = &sha};
     if (member) {
         d.zip = malloc(sizeof *d.zip);
         if (!d.zip || !forge_zip_begin(d.zip, member, expected)) {
-            free(d.zip); fclose(f); remove(partial);
+            free(d.zip); fclose(f); remove(partial); mbedtls_sha256_free(&sha);
             return fail(j, "Cannot open encrypted resource");
         }
+        d.zip->sha = &sha;
+        d.sha = NULL;  // the ciphertext is not the file
         d.expected = member->bytes;
     }
     CURLcode r = member ? fetch_member(url,&d,member->offset,j->error,sizeof j->error)
@@ -542,6 +562,9 @@ static bool download_to_file(Job *j, JobStep *st, const char *url, const char *p
     bool decoded = !d.zip || (d.zip->ended && d.zip->plain == expected);
     if (d.zip) { forge_zip_end(d.zip); free(d.zip); }
     bool disk_ok = durable_close(f);
+    u8 digest[32];
+    mbedtls_sha256_finish_ret(&sha, digest);
+    mbedtls_sha256_free(&sha);
     if (r != CURLE_OK || !disk_ok || !decoded || j->cancel || !d.written || (d.expected && d.written != d.expected)) {
         if (r == CURLE_OK) fail(j, "Incomplete download or unexpected size");
         if (!disk_ok)
@@ -551,7 +574,7 @@ static bool download_to_file(Job *j, JobStep *st, const char *url, const char *p
     }
 
     j->done_bytes = d.base + d.written;
-    if(j->cia && j->cur==j->last_download){j->cia_percent=50;j->phase=PHASE_PREPARE;}
+    for (int i = 0; i < 32; i++) sprintf(entry->digest + i * 2, "%02x", digest[i]);
     return true;
 }
 
@@ -579,14 +602,94 @@ static void load_sums(Job *j) {
         sums[0] = 0;
 }
 
+// ---- file digests --------------------------------------------------------------------------
+// Reading a file back costs as much as downloading it again on a 3DS (1 GB data packs take
+// minutes), so each file is hashed once:
+// - files this job writes get their digest while the bytes are written (TxFile.digest);
+// - files already on the SD keep theirs in HASH_CACHE, valid while the size and the
+//   modification time stay the same. Staging files are never cached: their names repeat.
+#define HASH_CACHE DATA_DIR "/file-hashes.json"
+#define HASH_CACHE_MAX 6000
+static json_t *hash_cache;
+static bool hash_cache_dirty;
+
+static bool hash_cacheable(const char *path) {
+    return path && !strncmp(path, "sdmc:/", 6) && strncmp(path, TX_DIR "/", strlen(TX_DIR "/")) &&
+           strncmp(path, DATA_DIR "/tmp/", strlen(DATA_DIR "/tmp/")) && strcmp(path, HASH_CACHE);
+}
+
+static bool file_stamp(const char *path, u64 *size, u64 *mtime) {
+    struct stat st;
+    if (stat(path, &st) || !S_ISREG(st.st_mode)) return false;
+    *size = (u64)st.st_size;
+#ifdef FORGE_INSTALL_HOST_TEST
+    *mtime = (u64)st.st_mtimespec.tv_sec * 1000000000ULL + (u64)st.st_mtimespec.tv_nsec;
+    return true;
+#else
+    return R_SUCCEEDED(archive_getmtime(path, mtime));
+#endif
+}
+
+static json_t *hash_cache_get(void) {
+    if (!hash_cache) {
+        hash_cache = json_load_file(HASH_CACHE, 0, NULL);
+        if (!json_is_object(hash_cache)) { json_decref(hash_cache); hash_cache = json_object(); }
+    }
+    return hash_cache;
+}
+
+static bool hash_cache_lookup(const char *path, char hex[65]) {
+    u64 size, mtime;
+    json_t *e = hash_cacheable(path) ? json_object_get(hash_cache_get(), path) : NULL;
+    const char *h = json_string_value(json_object_get(e, "h"));
+    if (!h || strlen(h) != 64 || !file_stamp(path, &size, &mtime) ||
+        (u64)json_integer_value(json_object_get(e, "s")) != size ||
+        (u64)json_integer_value(json_object_get(e, "m")) != mtime) return false;
+    memcpy(hex, h, 65);
+    return true;
+}
+
+static void hash_cache_put(const char *path, const char *hex) {
+    u64 size, mtime;
+    json_t *cache = hash_cacheable(path) && hex && strlen(hex) == 64 ? hash_cache_get() : NULL;
+    if (!cache || !file_stamp(path, &size, &mtime)) return;
+    if (json_object_size(cache) >= HASH_CACHE_MAX && !json_object_get(cache, path)) json_object_clear(cache);
+    json_object_set_new(cache, path, json_pack("{s:s,s:I,s:I}", "h", hex, "s", (json_int_t)size, "m", (json_int_t)mtime));
+    hash_cache_dirty = true;
+}
+
+static void hash_cache_save(void) {
+    if (!hash_cache_dirty || !hash_cache) return;
+    FILE *f = fopen(HASH_CACHE ".tmp", "wb");
+    bool ok = f && json_dumpf(hash_cache, f, JSON_COMPACT) == 0;
+    if (f && !durable_close(f)) ok = false;
+    // FAT cannot rename over an existing file; a lost cache only costs one more hash pass.
+    if (ok) { remove(HASH_CACHE); ok = !rename(HASH_CACHE ".tmp", HASH_CACHE); }
+    if (!ok) remove(HASH_CACHE ".tmp");
+    hash_cache_dirty = !ok;
+}
+
+// The digest this job computed while writing the file at `path` (its staged name, or its
+// live name once published).
+static const char *tx_digest(const char *path) {
+    for (int i = 0; i < tx.count; ++i) {
+        TxFile *e = &tx.files[i];
+        if (e->digest[0] && !e->deleted && !strcmp(e->published ? e->path : e->stage, path)) return e->digest;
+    }
+    return NULL;
+}
+
 static bool sha256_file(const char *path, char hex[65], JobStep *st, volatile bool *cancel) {
+    const char *known = tx_digest(path);
+    if (known) { memcpy(hex, known, 65); st->progress = 1; return true; }
+    if (hash_cache_lookup(path, hex)) { st->progress = 1; return true; }
     FILE *f = fopen(path, "rb");
     if (!f)
         return false;
     if (fseek(f, 0, SEEK_END)) { fclose(f); return false; }
     long total = ftell(f);
     if (total < 0 || fseek(f, 0, SEEK_SET)) { fclose(f); return false; }
-    static u8 buf[128 * 1024];
+    static u8 buf[256 * 1024];
     mbedtls_sha256_context c;
     mbedtls_sha256_init(&c);
     mbedtls_sha256_starts_ret(&c, 0);
@@ -604,6 +707,7 @@ static bool sha256_file(const char *path, char hex[65], JobStep *st, volatile bo
     fclose(f);
     for (int i = 0; i < 32; i++)
         sprintf(hex + i * 2, "%02x", out[i]);
+    if (ok) hash_cache_put(path, hex);
     return ok;
 }
 
@@ -618,7 +722,6 @@ static bool install_cia(Job *j, JobStep *st, const char *path, bool replace_titl
     long total = ftell(f);
     if (total <= 0 || fseek(f, 0, SEEK_SET)) { fclose(f); return false; }
     j->phase = PHASE_WRITE;
-    j->cia_percent = 50;
     Handle h;
     Result r = replace_title ? AM_StartCiaInstallOverwrite(&h, MEDIATYPE_SD)
                              : AM_StartCiaInstall(MEDIATYPE_SD, &h);
@@ -642,7 +745,6 @@ static bool install_cia(Job *j, JobStep *st, const char *path, bool replace_titl
         }
         off += n;
         st->progress = (float)off / total;
-        j->cia_percent = 50 + (int)(49 * off / (u64)total);
     }
     if (ferror(f) || off != (u64)total)
         r = -1;
@@ -674,19 +776,30 @@ static bool cia_info(const char *path, AM_TitleInfo *info) {
     return R_SUCCEEDED(r);
 }
 
-static bool copy_file(const char *source, const char *dest) {
+// Copies into this job's staged file `e`, recording the digest of the bytes written.
+static bool copy_file(const char *source, TxFile *e) {
+    e->digest[0] = 0;
     FILE *in = fopen(source, "rb");
     if (!in) return false;
-    FILE *out = fopen(dest, "wb");
+    FILE *out = fopen(e->stage, "wb");
     if (!out) { fclose(in); return false; }
-    char buf[16384];
+    static u8 buf[256 * 1024];
+    mbedtls_sha256_context c;
+    mbedtls_sha256_init(&c);
+    mbedtls_sha256_starts_ret(&c, 0);
     size_t n;
     bool ok = true;
-    while ((n = fread(buf, 1, sizeof buf, in)))
+    while ((n = fread(buf, 1, sizeof buf, in))) {
         if (fwrite(buf, 1, n, out) != n) { ok = false; break; }
+        mbedtls_sha256_update_ret(&c, buf, n);
+    }
+    u8 digest[32];
+    mbedtls_sha256_finish_ret(&c, digest);
+    mbedtls_sha256_free(&c);
     if (ferror(in)) ok = false;
     if (fclose(in)) ok = false;
     if (!durable_close(out)) ok = false;
+    if (ok) for (int i = 0; i < 32; i++) sprintf(e->digest + i * 2, "%02x", digest[i]);
     return ok;
 }
 
@@ -699,7 +812,7 @@ static bool preserve_personal(Job *j, const char *path, const char *digest) {
         if (!stat(backup,&info) || tx_find(backup)) continue;
         if (errno!=ENOENT) break;
         TxFile *e=tx_file(j,backup);
-        if (!e || !copy_file(path,e->stage)) break;
+        if (!e || !copy_file(path,e)) break;
         e->personal=true;
         char saved[65]; JobStep step={0};
         if (sha256_file(e->stage,saved,&step,&j->cancel) && !strcmp(saved,digest)) return true;
@@ -741,49 +854,182 @@ static bool same_recorded_cia(json_t *record, const char *cache, const char *can
            sha256_file(cache, hash, &step, cancel) && !strcasecmp(hash, expected);
 }
 
-static bool cia_prepare(Job *j) {
-    if (!tx.cia_path[0]) return true;
-    TxFile *source = tx_find(tx.cia_path);
-    if (!source) return fail(j, "CIA must be staged by this job");
-    char input[96];
-    strcpy(input, source->stage);
-    AM_TitleInfo info;
-    if (!cia_info(input, &info) || (info.titleID >> 32) != 0x00040000)
-        return fail(j, "Invalid CIA or unsupported non-application title");
-    const char *bound_title=json_string_value(json_object_get(j->release,"forgeTitleId"));
+static bool tx_mark(const char *path);
+static u64 record_title(json_t *record);
+static const char *str(json_t *o, const char *k);
+
+// The release names the title its CIA must install (my ports and catalog CIAs).
+static bool cia_bound_ok(Job *j, u64 title) {
+    const char *bound=json_string_value(json_object_get(j->release,"forgeTitleId"));
     json_t *cia_asset=app_asset(j->app,j->release,"cia");
-    if (!bound_title && !json_object_get(cia_asset,"o3ds") &&
+    if (!bound && !json_object_get(cia_asset,"o3ds") &&
         cia_asset==json_object_get(json_object_get(j->release,"assets"),"cia"))
-        bound_title=json_string_value(json_object_get(j->release,"ciaTitle"));
-    if (bound_title && (strtoull(bound_title,NULL,16)!=info.titleID))
-        return fail(j,"CIA title does not match its release");
-    tx.title_id = info.titleID;
-    tx.new_version = info.version;
-    if (!title_present(tx.title_id, &tx.had_title)) return fail(j, "Cannot inspect installed titles");
-    snprintf(tx.cia_cache, sizeof tx.cia_cache, DATA_DIR "/cia-cache/%016llx.cia", (unsigned long long)info.titleID);
-    if (tx.had_title) {
-        AM_TitleInfo backup, current;
-        if (R_FAILED(AM_GetTitleInfo(MEDIATYPE_SD, 1, &tx.title_id, &current))) return fail(j, "Cannot inspect installed titles");
-        tx.old_version = current.version;
-        // forge.store keeps the package it installed, to put that version back when this one
-        // fails after AM. A title installed some other way (FBI, Universal-Updater) has none:
-        // AM only replaces it once the new package is verified, and from then on the update
-        // is completed instead of undone.
-        tx.no_restore = !cia_info(tx.cia_cache, &backup) || backup.titleID != info.titleID || backup.version != current.version;
-        // Homebrew title IDs can be shared by unrelated software: replace only one this app
-        // is known to use (its catalog entry or an earlier installation).
-        if (tx.no_restore && !title_known(j, tx.title_id))
-            return fail(j, "Another installed title uses this CIA's title ID; it was not replaced");
-        if (!tx.no_restore && current.version == info.version && same_recorded_cia(j->record, tx.cia_cache, input, &j->cancel)) {
-            tx.cia_unchanged = true;
-            return true;
-        }
-    }
-    struct stat st;
-    if (stat(input, &st) || !free_space((u64)st.st_size)) return fail(j, "Insufficient SD space for CIA recovery copy");
-    TxFile *cache = tx_file(j, tx.cia_cache);
-    if (!cache || !copy_file(input, cache->stage)) return fail(j, "Cannot stage CIA recovery copy");
+        bound=json_string_value(json_object_get(j->release,"ciaTitle"));
+    return !bound || strtoull(bound,NULL,16)==title;
+}
+
+// Before AM sees the title: only an application, the one the release names, and never
+// another app's title that happens to share its ID.
+static bool cia_title_ok(Job *j, u64 title, u16 version) {
+    if ((title >> 32) != 0x00040000) return fail(j, "Invalid CIA or unsupported non-application title");
+    if (!cia_bound_ok(j, title)) return fail(j, "CIA title does not match its release");
+    if (!title_present(title, &tx.had_title)) return fail(j, "Cannot inspect installed titles");
+    if (tx.had_title && !title_known(j, title))
+        return fail(j, "Another installed title uses this CIA's title ID; it was not replaced");
+    tx.title_id = title;
+    tx.new_version = version;
+    AM_TitleInfo current;
+    if (tx.had_title && R_SUCCEEDED(AM_GetTitleInfo(MEDIATYPE_SD, 1, &tx.title_id, &current))) tx.old_version = current.version;
+    // An update has no package to go back to: once AM commits, it is completed. A first
+    // installation can still be undone by deleting the new title.
+    tx.no_restore = tx.had_title;
     return true;
+}
+
+// The same CIA (same SHA-256) is installed and still on the console: nothing to download.
+static bool cia_already_installed(Job *j, const char *want, u64 *out) {
+    if (!want || strlen(want) != 64) return false;
+    const char *t = str(j->release, "ciaTitle");
+    u64 title = t && strlen(t) == 16 ? strtoull(t, NULL, 16) : record_title(j->record);
+    if (!title) return false;
+    json_t *hashes = json_object_get(j->record, "hashes");
+    char key[PATH_CAP];
+    snprintf(key, sizeof key, "title:%016llx", (unsigned long long)title);
+    const char *got = json_string_value(json_object_get(hashes, key));
+    if (!got) {  // records before 1.4.2 hashed the retained package instead
+        snprintf(key, sizeof key, DATA_DIR "/cia-cache/%016llx.cia", (unsigned long long)title);
+        got = json_string_value(json_object_get(hashes, key));
+    }
+    bool present;
+    if (!got || strcasecmp(got, want) || !title_present(title, &present) || !present) return false;
+    *out = title;
+    return true;
+}
+
+// ---- CIA straight into the 3DS installer, as FBI's "Install from URL" does --------------------
+// No temporary file and no second pass: each block goes to AM as it arrives, so the download
+// and the installation are the same bytes and the same progress. AM checks the content
+// hashes when the installation finishes; the catalog's SHA-256, computed on the way, is
+// compared before that, so a wrong download never replaces the installed title.
+#define CIA_BLOCK (256 * 1024)
+struct CiaSink {
+    Job *j;
+    Handle am;
+    bool open;
+    u64 off;
+    size_t len;
+    u8 *buf;
+};
+
+static u32 le32(const u8 *p) { return (u32)p[0] | (u32)p[1] << 8 | (u32)p[2] << 16 | (u32)p[3] << 24; }
+
+// FBI's cia_get_title_id + tmd_get_title_id: the TMD follows the header, certificates and
+// ticket (each 64-byte aligned); title ID at +0x4C and version at +0x9C after its signature.
+static bool cia_head(const u8 *b, size_t n, u64 *title, u16 *version) {
+    static const u32 sig[6] = {0x240, 0x140, 0x80, 0x240, 0x140, 0x80};
+    if (n < 0x20) return false;
+    u64 tmd = (((u64)le32(b) + 0x3f) & ~0x3fULL) + (((u64)le32(b + 8) + 0x3f) & ~0x3fULL) +
+              (((u64)le32(b + 12) + 0x3f) & ~0x3fULL);
+    if (tmd + 4 > n || b[tmd + 3] >= 6) return false;
+    u64 at = tmd + sig[b[tmd + 3]];
+    if (at + 0x9e > n) return false;
+    u64 id = 0;
+    for (int i = 0; i < 8; i++) id = id << 8 | b[at + 0x4c + i];
+    *title = id;
+    *version = (u16)(b[at + 0x9c] << 8 | b[at + 0x9d]);
+    return true;
+}
+
+static bool cia_sink_open(struct CiaSink *k) {
+    Job *j = k->j;
+    u64 title = 0;
+    u16 version = 0;
+    bool parsed = cia_head(k->buf, k->len, &title, &version);
+#ifdef FORGE_INSTALL_HOST_TEST
+    if (!parsed && k->len >= 4 && !memcmp(k->buf, "CIA:", 4)) { host_cia_parse((const char *)k->buf, k->len, &title, &version); parsed = true; }
+#endif
+    if (!parsed) return fail(j, "Invalid CIA or unsupported non-application title");
+    if (!cia_title_ok(j, title, version)) return false;
+    Result r = tx.had_title ? AM_StartCiaInstallOverwrite(&k->am, MEDIATYPE_SD) : AM_StartCiaInstall(MEDIATYPE_SD, &k->am);
+    if (tx.had_title && R_FAILED(r)) r = AM_StartCiaInstall(MEDIATYPE_SD, &k->am);
+    if (R_FAILED(r)) return fail(j, "AM 0x%08lX", r);
+    k->open = true;
+    return true;
+}
+
+static bool cia_sink_flush(struct CiaSink *k) {
+    if (!k->len) return true;
+    if (!k->open && !cia_sink_open(k)) return false;
+    u32 written = 0;
+    Result r = FSFILE_Write(k->am, &written, k->off, k->buf, k->len, 0);
+    if (R_FAILED(r) || written != k->len) return fail(k->j, "CIA 0x%08lX", R_FAILED(r) ? r : -1);
+    k->off += k->len;
+    k->len = 0;
+    return true;
+}
+
+static bool cia_sink_write(struct CiaSink *k, const u8 *data, size_t len) {
+    while (len) {
+        size_t take = CIA_BLOCK - k->len < len ? CIA_BLOCK - k->len : len;
+        memcpy(k->buf + k->len, data, take);
+        k->len += take; data += take; len -= take;
+        if (k->len == CIA_BLOCK && !cia_sink_flush(k)) return false;
+    }
+    return true;
+}
+
+static bool stream_cia(Job *j, JobStep *st, const char *url, const char *path, u64 expected, const char *want) {
+    static u8 block[CIA_BLOCK];
+    static mbedtls_sha256_context sha;
+    struct CiaSink k = {.j = j, .buf = block};
+    mbedtls_sha256_init(&sha);
+    mbedtls_sha256_starts_ret(&sha, 0);
+    Dl d = {.job = j, .step = st, .base = j->done_bytes, .expected = expected, .sha = &sha, .cia = &k};
+    j->streaming = true;
+    CURLcode r = fetch(url, &d, j->error, sizeof j->error);
+    bool ok = r == CURLE_OK && !j->cancel && d.written && (!expected || d.written == expected);
+    if (r == CURLE_OK && !ok && !j->cancel && !j->error[0]) fail(j, "Incomplete download or unexpected size");
+    if (ok) ok = cia_sink_flush(&k) && k.open;
+    u8 digest[32];
+    char hex[65];
+    mbedtls_sha256_finish_ret(&sha, digest);
+    mbedtls_sha256_free(&sha);
+    for (int i = 0; i < 32; i++) sprintf(hex + i * 2, "%02x", digest[i]);
+    if (ok && want && *want && strcasecmp(hex, want)) ok = fail(j, "Downloaded file failed SHA-256 verification");
+    j->streaming = false;
+    if (!ok) {
+        if (k.open) AM_CancelCIAInstall(k.am);
+        return false;
+    }
+    j->phase = PHASE_FINISH;
+    // The markers tell recovery whether AM may have replaced the title.
+    tx_mark(TX_CIA_STARTED);
+    Result fr = AM_FinishCiaInstall(k.am);
+    if (R_FAILED(fr)) {
+        AM_CancelCIAInstall(k.am);
+        j->phase = PHASE_STEPS;
+        return fail(j, "CIA 0x%08lX", fr);
+    }
+    tx_mark(TX_CIA_FINISHED);
+    tx.cia_attempted = true;
+    j->no_cancel = true;  // the title is installed: what is left only records it
+    j->cancel = false;
+    j->phase = PHASE_STEPS;
+    j->done_bytes = d.base + d.written;
+    snprintf(tx.cia_streamed, sizeof tx.cia_streamed, "%s", path);
+    memcpy(tx.cia_digest, hex, 65);
+    return true;
+}
+
+// The catalog path the plan's installCia step reads.
+static bool cia_target(Job *j, const char *path) {
+    char file[PATH_CAP];
+    for (int i = 0; i < j->nsteps; i++) {
+        json_t *s = j->steps[i].raw;
+        if (str(s, "type") && !strcmp(str(s, "type"), "installCia") &&
+            sd_path(file, sizeof file, str(s, "file")) && !strcmp(file, path)) return true;
+    }
+    return false;
 }
 
 static bool cia_restore(Job *j) {
@@ -811,15 +1057,6 @@ static bool title_state(u64 id, bool *present, u16 *version) {
         *version = info.version;
     }
     return true;
-}
-
-// AM commits a CIA atomically: after a reported failure the title is the previous one or,
-// rarely, the new one. Only a visible change needs the previous version put back.
-static bool tx_title_changed(void) {
-    bool present;
-    u16 version;
-    if (!title_state(tx.title_id, &present, &version)) return true;
-    return tx.had_title ? !present || version != tx.old_version : present;
 }
 
 static bool tx_mark(const char *path) {
@@ -1024,9 +1261,15 @@ static bool tx_settle(json_t *journal, bool *completed) {
         }
     }
     if (forward) {
-        // A commit always follows a complete publication; anything else is not ours to guess.
-        for (size_t i = 0; i < count; i++)
-            if (entries[i].publish && exists(entries[i].stage)) ok = false;
+        // Since 1.4.2 AM commits the CIA before the data files take their places: finish
+        // placing them (a cut there leaves each file staged, backed up or already moved).
+        for (size_t i = 0; i < count && ok; i++) {
+            TxEntry *e = &entries[i];
+            if (!e->publish || !exists(e->stage)) continue;
+            if (!mkdirs(e->path, true)) { ok = false; break; }
+            if (exists(e->path) && (exists(e->backup) ? remove(e->path) : rename(e->path, e->backup))) ok = false;
+            else if (rename(e->stage, e->path)) ok = false;
+        }
         for (size_t i = count; ok && i-- > 0;) {
             if (remove(entries[i].backup) && errno != ENOENT) ok = false;
             if (remove(entries[i].stage) && errno != ENOENT) ok = false;
@@ -1187,18 +1430,27 @@ static bool extract(Job *j, JobStep *st, const char *archive_path, const char *i
         entry->deleted = false;
         entry->personal = personal;
         strcpy(entry->replace_hash,prior);
+        entry->digest[0] = 0;
         FILE *f = fopen(entry->stage, "wb");
         if (!f) { ok = fail(j, "Cannot stage archive entry"); break; }
         la_ssize_t n = 0;
         u64 written = 0;
+        mbedtls_sha256_context c;
+        mbedtls_sha256_init(&c);
+        mbedtls_sha256_starts_ret(&c, 0);
         while (!j->cancel && (n = archive_read_data(a, buf, sizeof buf)) > 0) {
             if ((u64)n > (u64)size - written || fwrite(buf, 1, (size_t)n, f) != (size_t)n) { ok = false; break; }
+            mbedtls_sha256_update_ret(&c, (const u8 *)buf, (size_t)n);
             written += n;
         }
+        u8 digest[32];
+        mbedtls_sha256_finish_ret(&c, digest);
+        mbedtls_sha256_free(&c);
         // Always close even when archive_read_data failed.
         bool closed = durable_close(f);
         if (n < 0 || !closed || written != (u64)size || j->cancel) ok = false;
         if (!ok) { fail(j, "Archive/SD write interrupted"); break; }
+        for (int i = 0; i < 32; i++) sprintf(entry->digest + i * 2, "%02x", digest[i]);
         files++;
         st->progress = ast.st_size ? fminf(1, archive_filter_bytes(a, -1) / (float)ast.st_size) : 0.5f;
     }
@@ -1243,9 +1495,6 @@ static bool local_download(Job *j, JobStep *step, char path[PATH_CAP]) {
         return true;
     }
     json_t *asset=str(s,"asset")?app_asset(j->app,j->release,str(s,"asset")):s;
-    const char *title=str(j->release,"ciaTitle");
-    if(title && strlen(title)==16 && str(s,"asset") && !strcmp(str(s,"asset"),"cia"))
-        snprintf(path,PATH_CAP,DATA_DIR "/cia-cache/%s.cia",title);
     return matches_file(j,step,path,str(asset,"sha256"));
 }
 
@@ -1303,12 +1552,22 @@ static bool prepare_downloads(Job *j) {
                 continue;
             }
         }
-        step->reuse=local_download(j,step,local);
+        char out[PATH_CAP];
+        u64 installed_title;
+        if(sd_path(out,sizeof out,str(s,"output")) && !json_is_true(json_object_get(s,"personal")) && cia_target(j,out)){
+            const char *want=str(asset,"sha256");
+            if((step->reuse=cia_already_installed(j,want,&installed_title))){
+                tx.title_id=installed_title;tx.had_title=true;
+                snprintf(tx.cia_streamed,sizeof tx.cia_streamed,"%s",out);
+                snprintf(tx.cia_digest,sizeof tx.cia_digest,"%s",want);
+                continue;
+            }
+        }else step->reuse=local_download(j,step,local);
         if(step->reuse && !json_is_true(json_object_get(s,"personal"))){
             char path[PATH_CAP];
             if(!sd_path(path,sizeof path,str(s,"output")))return fail(j,"Invalid download path");
             TxFile *e=tx_file(j,path);
-            if(!e || !copy_file(local,e->stage) || !verify_download(j,step,path,str(asset,"sha256")))
+            if(!e || !copy_file(local,e) || !verify_download(j,step,path,str(asset,"sha256")))
                 return fail(j,"Cannot stage verified local file");
         }
         if(step->reuse)continue;
@@ -1319,7 +1578,6 @@ static bool prepare_downloads(Job *j) {
         space+=(u64)json_integer_value(json_object_get(asset,"size"));
     }
     j->total_bytes=wire;
-    j->cia_percent=j->unknown_size?-1:j->last_download<0?50:0;
     return !j->cancel && (free_space(space) || fail(j,"Insufficient SD space"));
 }
 
@@ -1390,6 +1648,8 @@ static bool run_step(Job *j, JobStep *st) {
         json_int_t size = json_integer_value(json_object_get(s, "size"));
         if (size < 0) return fail(j, "Invalid download size");
         json_t *zip = json_object_get(s,"zipMember");
+        if (!personal && !zip && !unpack && cia_target(j, path))
+            return stream_cia(j, st, url, path, (u64)size, str(s, "sha256"));
         ForgeZipMember member;
         if(zip&&(!str(s,"sha256")||!forge_zip_member(zip,&member)))return fail(j,"Invalid encrypted resource");
         if(!preserve_personal(j,path,prior))return false;
@@ -1405,6 +1665,7 @@ static bool run_step(Job *j, JobStep *st) {
         if (!sd_path(path, sizeof path, str(s, "output"))) return fail(j, "Invalid or oversized catalog path");
         json_int_t size = json_integer_value(json_object_get(asset, "size"));
         if (size < 0) return fail(j, "Invalid download size");
+        if (cia_target(j, path)) return stream_cia(j, st, url, path, (u64)size, str(asset, "sha256"));
         return download_to_file(j, st, url, path, (u64)size, NULL)&&verify_download(j,st,path,str(asset,"sha256"));
     }
     if (!strcmp(type, "verifySha256")) {
@@ -1432,7 +1693,9 @@ static bool run_step(Job *j, JobStep *st) {
         }
         char hex[65];
         const char *staged = tx_read(path);
-        if (!staged || !sha256_file(staged, hex, st, &j->cancel)) {
+        bool streamed = tx.cia_streamed[0] && !strcmp(path, tx.cia_streamed);
+        if (streamed) memcpy(hex, tx.cia_digest, 65);
+        else if (!staged || !sha256_file(staged, hex, st, &j->cancel)) {
             snprintf(j->error, sizeof j->error, "Cannot read file for SHA-256");
             return false;
         }
@@ -1491,7 +1754,28 @@ static bool run_step(Job *j, JobStep *st) {
         if (tx.cia_path[0]) return fail(j, "Multiple CIA installs need separate transactions");
         strcpy(tx.cia_path, path);
         tx.cia_step = st;
-        return true; // AM runs only after every download, hash and extraction succeeds
+        char digest[65];
+        if (tx.cia_streamed[0] && !strcmp(path, tx.cia_streamed)) {
+            memcpy(digest, tx.cia_digest, 65);  // installed while it downloaded, or already installed
+        } else {
+            // A CIA that came out of an archive: installed from its extracted file.
+            const char *staged = tx_read(path);
+            AM_TitleInfo info;
+            if (!staged || !cia_info(staged, &info)) return fail(j, "Invalid CIA or unsupported non-application title");
+            if (!cia_title_ok(j, info.titleID, info.version) || !sha256_file(staged, digest, st, &j->cancel)) return false;
+            tx_mark(TX_CIA_STARTED);
+            if (!install_cia(j, st, staged, tx.had_title)) return false;
+            tx_mark(TX_CIA_FINISHED);
+            tx.cia_attempted = true;
+            j->no_cancel = true;
+            j->cancel = false;
+            j->phase = PHASE_STEPS;
+        }
+        char title[32];
+        snprintf(title, sizeof title, "title:%016llx", (unsigned long long)tx.title_id);
+        if (json_array_append_new(j->files, json_string(title)) || json_object_set_new(j->hashes, title, json_string(digest)))
+            return fail(j, "Out of memory");
+        return true;
     }
     if (!strcmp(type, "deleteFile")) {
         if (!sd_path(path, sizeof path, str(s, "file"))) return fail(j, "Invalid or oversized catalog path");
@@ -1511,14 +1795,16 @@ static bool run_step(Job *j, JobStep *st) {
         if (!sd_path(path2, sizeof path2, str(s, "new"))) return fail(j, "Invalid or oversized catalog path");
         TxFile *old = tx_find(path);
         if (!old || old->deleted) return fail(j, "Move source is not staged by this job");
-        char source[96];
+        char source[96], digest[65];
         strcpy(source, old->stage);
+        strcpy(digest, old->digest);
         TxFile *dest = tx_file(j, path2);
         if (!dest) return false;
         if (!strcasecmp(path, path2)) return true;
         if (rename(source, dest->stage)) return fail(j, "Cannot move staged file");
         tx_find(path)->deleted = true;
         dest->deleted = false;
+        strcpy(dest->digest, digest);
         return true;
     }
     if (!strcmp(type, "requireFile") || !strcmp(type, "checkFile")) {
@@ -1540,6 +1826,7 @@ static bool run_step(Job *j, JobStep *st) {
             st->state = STEP_WARN;
             tvars(st->result, sizeof st->result, T("install.step.missing"), "path", p, NULL, NULL);
             j->warnings++;
+            j->missing++;
         }
         return true;
     }
@@ -1550,6 +1837,7 @@ static bool run_step(Job *j, JobStep *st) {
             if (!dsp_dump(st->result, sizeof st->result)) {
                 st->state = STEP_WARN;
                 j->warnings++;
+                j->missing++;
             } else
                 snprintf(st->result, sizeof st->result, "%s", T("settings.dspDone"));
         }
@@ -1608,11 +1896,13 @@ static bool hash_published(Job *j) {
     JobStep step = {0};
     for (int i = 0; i < tx.count; ++i) {
         TxFile *e = &tx.files[i];
-        if (!e->published || e->personal) continue;
+        if (!e->published) continue;
+        if (e->personal) { hash_cache_put(e->path, e->digest); continue; }
         char hash[65];
         if (!sha256_file(e->path, hash, &step, &j->cancel) ||
             json_object_set_new(j->hashes, e->path, json_string(hash)))
             return fail(j, "Cannot record installed file integrity");
+        hash_cache_put(e->path, hash);
     }
     return true;
 }
@@ -1628,58 +1918,79 @@ static u64 record_title(json_t *record) {
     return 0;
 }
 
+// The record belongs to the main thread: it saves it (or forgets it) and acknowledges.
+static bool commit_record(Job *j) {
+    __atomic_store_n(&j->commit_pending, true, __ATOMIC_RELEASE);
+    while (!__atomic_load_n(&j->commit_ack, __ATOMIC_ACQUIRE) && !quit)
+        svcSleepThread(1000000);
+    bool saved = __atomic_load_n(&j->commit_ack, __ATOMIC_ACQUIRE) && j->commit_ok;
+    __atomic_store_n(&j->commit_pending, false, __ATOMIC_RELEASE);
+    return saved;
+}
+
+// A port's own file or folder: never the SD root, /3ds itself or the store's folder.
+static bool purgeable(const char *p) {
+    if (!safe_path(p) || strstr(p, "/..") || !strncasecmp(p, DATA_DIR, strlen(DATA_DIR))) return false;
+    const char *rest = p + 6;  // after "sdmc:/"
+    const char *slash = strchr(rest, '/');
+    return slash && slash[1] && slash[1] != '/';  // at least one level below a top folder
+}
+
+static void delete_tree(const char *path, int depth) {
+    struct stat st;
+    if (depth > 12 || stat(path, &st)) return;
+    if (!S_ISDIR(st.st_mode)) { remove(path); return; }
+    DIR *d = opendir(path);
+    if (d) {
+        struct dirent *e;
+        char child[PATH_CAP];
+        while ((e = readdir(d))) {
+            if (!strcmp(e->d_name, ".") || !strcmp(e->d_name, "..")) continue;
+            if (checked(child, sizeof child, "%s/%s", path, e->d_name)) delete_tree(child, depth + 1);
+        }
+        closedir(d);
+    }
+    rmdir(path);
+}
+
+// FBI's deletetitle.c: AM_DeleteTitle, then AM_DeleteTicket. "Uninstall only" removes the
+// app (the CIA title, or a 3DSX's own files); "uninstall and delete files" also removes
+// every file the port uses: its data, the files downloaded with it and its folder.
 static void run_uninstall(Job *j) {
     j->state = JOB_RUNNING;
-    if (!tx_begin(j)) { if (tx.dirs) tx_finish(j, false); j->state = JOB_FAILED; return; }
-    tx.title_id = record_title(j->record);
-    if (tx.title_id) {
-        snprintf(tx.cia_cache, sizeof tx.cia_cache, DATA_DIR "/cia-cache/%016llx.cia", (unsigned long long)tx.title_id);
-        AM_TitleInfo info, current;
-        if (!title_present(tx.title_id, &tx.had_title)) { fail(j, "Cannot inspect installed titles"); goto failed; }
-        if (tx.had_title) {
-            if (R_FAILED(AM_GetTitleInfo(MEDIATYPE_SD, 1, &tx.title_id, &current)) ||
-                !cia_info(tx.cia_cache, &info) || info.titleID != tx.title_id || info.version != current.version) {
-                fail(j, "Original CIA required for safe uninstall"); goto failed;
-            }
-            tx.had_title = true;
-            tx.old_version = tx.new_version = current.version;
-        }
-    }
-    json_t *hashes = json_object_get(j->record, "hashes"), *v;
-    size_t i;
-    JobStep step = {0};
-    json_array_foreach(json_object_get(j->record, "files"), i, v) {
-        const char *path = json_string_value(v);
-        const char *expected = path ? json_string_value(json_object_get(hashes, path)) : NULL;
-        if (!safe_path(path)) continue;
-        struct stat info;
-        if (stat(path, &info)) { if (errno == ENOENT) continue; fail(j, "Cannot inspect installed file"); goto failed; }
-        char hash[65];
-        if (!expected || strlen(expected) != 64 || !S_ISREG(info.st_mode) ||
-            !sha256_file(path, hash, &step, &j->cancel) || strcmp(hash, expected)) {
-            j->warnings++; // legacy inventory or modified file: preserve it
-            if (j->cancel) goto failed;
-            continue;
-        }
-        TxFile *e = tx_file(j, path);
-        if (!e) goto failed;
-        e->remove_live = true;
-    }
-    if (tx.had_title && !tx_find(tx.cia_cache)) { fail(j, "CIA recovery copy changed; preserving title"); goto failed; }
-    if (j->cancel || !tx_publish(j)) goto failed;
-    if (tx.had_title) {
-        tx.cia_attempted = true;
-        if (R_FAILED(AM_DeleteUserTitle(MEDIATYPE_SD, tx.title_id))) {
+    j->phase = PHASE_STEPS;
+    u64 title = record_title(j->record);
+    if (title) {
+        bool present = false;
+        if (!title_present(title, &present)) { fail(j, "Cannot inspect installed titles"); j->state = JOB_FAILED; return; }
+        if (present && R_FAILED(AM_DeleteTitle(MEDIATYPE_SD, title))) {
             fail(j, "Cannot remove CIA title");
-            if (cia_restore(j)) tx_finish(j, false);
-            else tx_abandon();
-            j->state = JOB_FAILED; return;
+            j->state = JOB_FAILED;
+            return;
+        }
+        AM_DeleteTicket(title);
+        char legacy[PATH_CAP];  // the copy kept by forge.store before 1.4.2
+        snprintf(legacy, sizeof legacy, DATA_DIR "/cia-cache/%016llx.cia", (unsigned long long)title);
+        remove(legacy);
+    }
+    size_t i;
+    json_t *v;
+    if (!title || j->purge) {
+        json_array_foreach(json_object_get(j->record, "files"), i, v) {
+            const char *path = json_string_value(v);
+            if (path && strncmp(path, "title:", 6) && safe_path(path) && strncasecmp(path, DATA_DIR "/", strlen(DATA_DIR "/")))
+                remove(path);
         }
     }
-    finish_record(j);
-    return;
-failed:
-    { bool restored = tx_finish(j, false); j->state = j->cancel && restored ? JOB_CANCELLED : JOB_FAILED; }
+    json_array_foreach(j->purge, i, v) {
+        const char *path = json_string_value(v);
+        if (purgeable(path)) delete_tree(path, 0);
+    }
+    remove_dirs(json_object_get(j->record, "dirs"));
+    bool saved = commit_record(j);
+    j->progress = 1;
+    if (!saved) { if (!j->error[0]) fail(j, "Cannot save installed record"); j->state = JOB_FAILED; return; }
+    j->state = JOB_DONE;
 }
 
 static void run(Job *j) {
@@ -1692,20 +2003,15 @@ static void run(Job *j) {
     if (!prepare_downloads(j)) {
         tx_finish(j,false);j->state=j->cancel?JOB_CANCELLED:JOB_FAILED;return;
     }
-    j->phase = j->cia && j->last_download<0 ? PHASE_PREPARE : PHASE_STEPS;
+    j->phase = PHASE_STEPS;
+    // Downloads carry the progress in bytes (job_progress); the weights only matter for
+    // installations that download nothing.
     float *weights = j->weight, total = 0;
     for (int i = 0; i < j->nsteps; i++) {
-        json_t *step=j->steps[i].raw;
-        json_t *asset=!strcmp(str(step,"type"),"downloadUrl")?step:app_asset(j->app,j->release,str(step,"asset"));
-        weights[i] =
-            j->steps[i].bytes
-                ? 1 + (float)forge_wire_size(asset) /
-                          1048576.0f
-                : (!strcmp(str(j->steps[i].raw, "type"), "installCia") ? 3 : 0.4f);
+        weights[i] = !strcmp(str(j->steps[i].raw, "type"), "installCia") ? 3 : 0.4f;
         total += weights[i];
     }
     j->wtotal = total;
-    float before = 0;
     for (int i = 0; i < j->nsteps && !j->cancel; i++) {
         JobStep *st = &j->steps[i];
         j->cur = i;
@@ -1718,64 +2024,31 @@ static void run(Job *j) {
             j->state = JOB_FAILED;
             return;
         }
-        // Progress is published from inside long steps through st->progress.
         bool ok = run_step(j, st);
         if (j->cancel)
             break;
         if (!ok) {
             st->state = STEP_ERROR;
             memcpy(st->result, j->error, sizeof st->result - 1);
+            if (tx.cia_attempted) { tx_after_title(j); return; }  // the new title stays
             tx_finish(j, false);
             j->state = JOB_FAILED;
             return;
         }
-        if(j->cia && i==j->last_download){j->cia_percent=50;j->phase=PHASE_PREPARE;}
-        if (st==tx.cia_step) {
-            st->state=STEP_PENDING; // AM opens this step only after all files are ready.
-            st->progress=0;
-        } else {
-            if (st->state==STEP_ACTIVE)st->state=STEP_DONE;
-            st->progress=1;
-        }
-        before += weights[i];
-        j->progress = before / total;
+        if (st->state==STEP_ACTIVE)st->state=STEP_DONE;
+        st->progress=1;
     }
-    j->phase = j->cia ? PHASE_PREPARE : PHASE_FINISH;
-    if (j->cancel || !cia_prepare(j) || !tx_publish(j)) {
+    j->phase = PHASE_FINISH;
+    if (j->cancel && !tx.cia_attempted) {
         bool restored = tx_finish(j, false);
-        j->state = j->cancel && restored ? JOB_CANCELLED : JOB_FAILED;
+        j->state = restored ? JOB_CANCELLED : JOB_FAILED;
         return;
     }
-    if (!hash_published(j)) {
-        tx_finish(j, false); j->state = j->cancel ? JOB_CANCELLED : JOB_FAILED; return;
-    }
-    if (tx.cia_unchanged) {
-        j->cur = (int)(tx.cia_step - j->steps);
-        tx.cia_step->state = STEP_DONE;
-        tx.cia_step->progress = 1;
-        j->cia_percent = 99;
-        j->phase = PHASE_FINISH;
-    } else if (tx.cia_path[0]) {
-        tx.cia_attempted = true;
-        // The markers tell recovery whether AM may have replaced the title.
-        bool marked = tx_mark(TX_CIA_STARTED);
-        if (!marked) fail(j, "SD write failed");
-        j->cur=(int)(tx.cia_step-j->steps);
-        tx.cia_step->state=STEP_ACTIVE;
-        bool installed = marked && install_cia(j, tx.cia_step, tx.cia_cache, tx.had_title);
-        tx.cia_step->state=installed?STEP_DONE:STEP_ERROR;
-        if (installed) tx_mark(TX_CIA_FINISHED);
-        else if (!tx_title_changed()) {
-            bool restored = tx_finish(j, false);
-            j->state = j->cancel && restored ? JOB_CANCELLED : JOB_FAILED; return;
-        }
-        char title[32];
-        snprintf(title, sizeof title, "title:%016llx", (unsigned long long)tx.title_id);
-        if (!installed || json_array_append_new(j->files, json_string(title))) {
-            if (!j->error[0]) fail(j, "Out of memory");
-            tx_after_title(j);
-            return;
-        }
+    j->cancel = false;
+    // The data files were staged first; they take their places now (renames only).
+    if (!tx_publish(j) || !hash_published(j)) {
+        if (tx.cia_attempted) { tx_after_title(j); return; }
+        tx_finish(j, false); j->state = JOB_FAILED; return;
     }
     finish_record(j);
 }
@@ -1802,6 +2075,7 @@ static void worker_main(void *arg) {
             }
             if (next->uninstall) run_uninstall(next);
             else run(next);
+            hash_cache_save();
         }
     }
 }
@@ -1819,7 +2093,13 @@ void install_init(void) {
     LightEvent_Init(&wake, RESET_ONESHOT);
     s32 prio = 0x30;
     svcGetThreadPriority(&prio, CUR_THREAD_HANDLE);
-    worker = threadCreate(worker_main, NULL, 64 * 1024, prio + 1, -2, false);
+    // New 3DS: the installer gets its own core. On the application core it only runs
+    // while the interface waits for the screen, which made verification take minutes.
+    worker = NULL;
+#ifndef FORGE_INSTALL_HOST_TEST
+    if (IS_NEW3DS) worker = threadCreate(worker_main, NULL, 64 * 1024, prio + 1, 2, false);
+#endif
+    if (!worker) worker = threadCreate(worker_main, NULL, 64 * 1024, prio + 1, -2, false);
 }
 
 void install_stop(void) {
@@ -1949,7 +2229,6 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
     j->nknown += app_title_ids(a, j->known_titles + j->nknown, 8 - j->nknown);
     j->record = json_deep_copy(installed_record(a));
     j->cia = cia;
-    j->cia_percent = -1;
     j->experimental = app_release_experimental(a, selected);
     j->release = json_deep_copy(selected);
     j->script = json_deep_copy(script);
@@ -2033,10 +2312,17 @@ bool install_busy(App *a) {
     return j && (j->state == JOB_QUEUED || j->state == JOB_RUNNING);
 }
 
+// Real progress only: the bytes downloaded (data files and the CIA, which installs while it
+// downloads) over the bytes to download. Nothing is estimated; 100 % means done.
 float job_progress(Job *j) {
     if (j->state == JOB_DONE)
         return 1;
-    if (j->cia && !j->uninstall) return j->cia_percent<0 ? -1.f : j->cia_percent/100.f;
+    if (j->state == JOB_QUEUED)
+        return 0;
+    if (!j->uninstall && j->unknown_size)
+        return -1;
+    if (!j->uninstall && j->total_bytes)
+        return clampf((float)j->done_bytes / j->total_bytes, 0, .99f);
     if (j->wtotal <= 0)
         return 0;
     float done = 0;
@@ -2051,15 +2337,15 @@ float job_progress(Job *j) {
 
 int job_percent(Job *j) {
     if(j->state==JOB_DONE)return 100;
-    if(j->cia && !j->uninstall)return j->cia_percent;
-    return (int)(job_progress(j)*100);
+    float p = job_progress(j);
+    return p < 0 ? -1 : (int)(p * 100);
 }
 
 const char *job_activity(Job *j) {
     if(j->state==JOB_QUEUED)return T("install.queued");
     if(j->phase==PHASE_CHECK)return T("install.checkSD");
     if(j->phase==PHASE_FINISH)return T("install.finalizing");
-    if(j->phase==PHASE_WRITE)return T("install.title");
+    if(j->phase==PHASE_WRITE || j->streaming)return T("install.title");
     JobStep *st=j->cur>=0 && j->cur<j->nsteps?&j->steps[j->cur]:NULL;
     if(j->phase==PHASE_PREPARE){
         if(st && st->state==STEP_ACTIVE && !strcmp(str(st->raw,"type"),"dumpDsp"))return st->label;
@@ -2070,7 +2356,7 @@ const char *job_activity(Job *j) {
 }
 
 void install_cancel(Job *j) {
-    if (j && !__atomic_load_n(&j->commit_pending, __ATOMIC_ACQUIRE))
+    if (j && !j->no_cancel && !__atomic_load_n(&j->commit_pending, __ATOMIC_ACQUIRE))
         j->cancel = true; // publication/record boundary cannot be interrupted after acknowledgment
 }
 
@@ -2104,7 +2390,35 @@ u64 install_title_id(App *a) {
     return title && R_SUCCEEDED(AM_GetTitleInfo(MEDIATYPE_SD, 1, &title, &info)) ? title : 0;
 }
 
-Job *install_uninstall(App *a) {
+// "delete_files": also every file of the port, chosen here on the main thread (the catalog
+// and the personal manifest are not the worker's to read).
+static json_t *port_files(App *a) {
+    json_t *paths = json_array();
+    char full[PATH_CAP];
+    const char *folder = json_string_value(json_object_get(a->j, "folder"));
+    bool shared = false;
+    for (int i = 0; folder && i < NAPPS; i++)
+        if (&APPS[i] != a && APPS[i].folder && !strcasecmp(APPS[i].folder, folder)) shared = true;
+    if (folder && !shared && sd_path(full, sizeof full, folder)) {
+        size_t n = strlen(full);
+        if (n && full[n - 1] == '/') full[n - 1] = 0;
+        json_array_append_new(paths, json_string(full));
+    }
+    size_t i;
+    json_t *step;
+    json_array_foreach(forge_mode_data(a->id), i, step) {
+        const char *out = json_string_value(json_object_get(step, "unpackTo"));
+        if (!out) out = json_string_value(json_object_get(step, "output"));
+        if (out && sd_path(full, sizeof full, out)) {
+            size_t n = strlen(full);
+            if (n && full[n - 1] == '/') full[n - 1] = 0;
+            json_array_append_new(paths, json_string(full));
+        }
+    }
+    return paths;
+}
+
+Job *install_uninstall(App *a, bool delete_files) {
     if (!a || !worker) return NULL;
     if (install_busy(a)) return install_job(a);
     json_t *record = installed_record(a);
@@ -2117,9 +2431,11 @@ Job *install_uninstall(App *a) {
         for (int i = 0; i < njobs; ++i) if (jobs[i].state >= JOB_DONE) { slot = i; break; }
     if (slot == MAX_JOBS) { LightLock_Unlock(&lock); json_decref(snapshot); return NULL; }
     Job *j = &jobs[slot];
-    if (slot < njobs) { json_decref(j->files); json_decref(j->dirs); json_decref(j->hashes); json_decref(j->record); json_decref(j->release); json_decref(j->script); }
+    if (slot < njobs) { json_decref(j->files); json_decref(j->dirs); json_decref(j->hashes); json_decref(j->record); json_decref(j->release); json_decref(j->script); json_decref(j->purge); }
     memset(j, 0, sizeof *j);
     j->app = a; j->record = snapshot; j->uninstall = true; j->serial = ++job_serial;
+    j->purge = delete_files ? port_files(a) : NULL;
+    j->cia = app_installed_cia(a);  // the summary shows the format being removed
     j->state = JOB_QUEUED;
     if (slot == njobs) njobs++;
     LightLock_Unlock(&lock);

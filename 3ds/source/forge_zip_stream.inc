@@ -16,6 +16,7 @@ typedef struct {
     u8 out[32768];
     bool ended;
     u64 plain, limit;
+    mbedtls_sha256_context *sha; // optional: digest of the plaintext written to the file
 } ForgeZipStream;
 
 static bool forge_zip_begin(ForgeZipStream *s, const ForgeZipMember *member, u64 limit) {
@@ -63,6 +64,7 @@ static bool forge_zip_write(ForgeZipStream *s, FILE *file, u8 *data, size_t len)
         int rc = inflate(&s->inflate, Z_NO_FLUSH);
         size_t n = sizeof s->out - s->inflate.avail_out;
         if (n > s->limit - s->plain || fwrite(s->out, 1, n, file) != n) return false;
+        if (s->sha && n) mbedtls_sha256_update_ret(s->sha, s->out, n);
         s->plain += n;
         if (rc == Z_STREAM_END) { s->ended = true; return s->inflate.avail_in == 0; }
         if (rc == Z_BUF_ERROR && !n && !s->inflate.avail_in) break;

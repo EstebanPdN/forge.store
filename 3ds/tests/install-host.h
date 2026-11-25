@@ -21,7 +21,10 @@ typedef int Handle;
 typedef void *Thread;
 typedef int LightLock;
 typedef int LightEvent;
-typedef struct { json_t *j; const char *id, *repo; bool old_ok; } App;
+typedef struct { json_t *j; const char *id, *repo; bool old_ok; const char *folder; } App;
+#define MAX_APPS 4
+static App APPS[MAX_APPS];
+static int NAPPS;
 #define DATA_DIR "sdmc:/3ds/forge-store"
 #define DANGER 1
 #define AMBER 2
@@ -81,6 +84,9 @@ static bool app_requirement_met(App*a,json_t*r) {return false;}
 static json_t *app_install_steps(App*a,bool cia) {return json_object_get(json_object_get(a->j,"install"),cia?"cia":"3dsx");}
 static bool app_has_format(App*a,bool cia) {return json_array_size(app_install_steps(a,cia))>0;}
 static json_t *forge_mode_plan(const char *id,json_t *base) {return json_deep_copy(base);}
+static bool app_installed_cia(App *a) {return false;}
+static json_t *host_forge_data;  // personal files of the app under test
+static json_t *forge_mode_data(const char *id) {return host_forge_data;}
 static json_t *app_release(App*a,bool e) {return json_object_get(json_object_get(a->j,"releases"),e?"experimental":"stable");}
 static bool app_release_experimental(App*a,json_t*r) {return r==json_object_get(json_object_get(a->j,"releases"),"experimental");}
 static json_t *app_asset(App*a,json_t*r,const char*k) {return json_object_get(json_object_get(r,"assets"),k);}
@@ -160,6 +166,9 @@ static Result AM_GetTitleCount(int media,u32*n) {host_am_load();*n=host_title?1:
 static Result AM_GetTitleList(u32*n,int media,u32 cap,u64*t) {host_am_load();*n=host_title?1:0;if(*n)t[0]=host_title;return 0;}
 static Result AM_GetTitleInfo(int m,u32 n,u64*t,AM_TitleInfo*i) {host_am_load();i->titleID=host_title;i->version=host_version;return host_title&&*t==host_title?0:-1;}
 static Result AM_DeleteUserTitle(int m,u64 t) {host_mutation();host_am_load();if(t==host_title)host_title=0;host_am_save();return 0;}
+static int host_tickets_deleted;
+static Result AM_DeleteTitle(int m,u64 t) {host_mutation();host_am_load();if(t!=host_title)return -1;host_title=0;host_am_save();return 0;}
+static Result AM_DeleteTicket(u64 t) {host_tickets_deleted++;return 0;}
 static Result AM_StartCiaInstallOverwrite(Handle*h,int m) {host_am_overwrites++;host_am_starts++;host_am_head_len=0;*h=1;return host_am_fail?-1:0;}
 static Result AM_StartCiaInstall(int m,Handle*h) {host_am_starts++;host_am_head_len=0;*h=1;return host_am_fail?-1:0;}
 static void (*host_am_observe)(bool finishing);

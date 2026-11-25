@@ -237,9 +237,17 @@ json_t *forge_mode_plan(const char *id,json_t *base) {
         const char *type=json_string_value(json_object_get(step,"type"));
         if(type && !strcmp(type,"installCia"))cia=true;
     }
+    // Order: the game's folders, then every data file, then the app itself (the CIA last).
+    json_array_foreach(base,i,step) {
+        const char *type=json_string_value(json_object_get(step,"type"));
+        if(type && !strcmp(type,"mkdir") && json_array_append(plan,step)){json_decref(plan);return NULL;}
+    }
     json_array_foreach(extra,i,step)
         if(install_format_matches(step,cia) && json_array_append(plan,step)){json_decref(plan);return NULL;}
-    if(json_array_extend(plan,base)){json_decref(plan);return NULL;}
+    json_array_foreach(base,i,step) {
+        const char *type=json_string_value(json_object_get(step,"type"));
+        if((!type || strcmp(type,"mkdir")) && json_array_append(plan,step)){json_decref(plan);return NULL;}
+    }
     json_t *copy=json_deep_copy(plan);json_decref(plan);return copy;
 }
 void forge_mode_exit(void) {

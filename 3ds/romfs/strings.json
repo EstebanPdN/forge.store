@@ -354,7 +354,10 @@
     "native.update": "Actualizar",
     "install.checkSD": "Comprobando la SD",
     "install.preparing": "Preparando instalación",
-    "install.finalizing": "Finalizando"
+    "install.finalizing": "Finalizando",
+    "uninstall.app": "Solo desinstalar",
+    "uninstall.all": "Desinstalar y borrar archivos",
+    "uninstall.allHint": "También borra la ROM, los datos y la carpeta."
   },
   "en": {
     "section.home": "Store",
@@ -711,7 +714,10 @@
     "native.update": "Update",
     "install.checkSD": "Checking SD card",
     "install.preparing": "Preparing installation",
-    "install.finalizing": "Finalizing"
+    "install.finalizing": "Finalizing",
+    "uninstall.app": "Uninstall only",
+    "uninstall.all": "Uninstall and delete files",
+    "uninstall.allHint": "Also deletes the ROM, data and game folder."
   },
   "pt": {
     "section.home": "Loja",
@@ -1057,7 +1063,10 @@
     "native.update": "Atualizar",
     "install.checkSD": "Verificando o cartão SD",
     "install.preparing": "Preparando a instalação",
-    "install.finalizing": "Finalizando"
+    "install.finalizing": "Finalizando",
+    "uninstall.app": "Só desinstalar",
+    "uninstall.all": "Desinstalar e apagar arquivos",
+    "uninstall.allHint": "Também apaga a ROM, os dados e a pasta."
   },
   "it": {
     "section.home": "Negozio",
@@ -1403,7 +1412,10 @@
     "native.update": "Aggiorna",
     "install.checkSD": "Verifica della scheda SD",
     "install.preparing": "Preparazione installazione",
-    "install.finalizing": "Finalizzazione"
+    "install.finalizing": "Finalizzazione",
+    "uninstall.app": "Solo disinstalla",
+    "uninstall.all": "Disinstalla ed elimina i file",
+    "uninstall.allHint": "Elimina anche ROM, dati e cartella del gioco."
   },
   "fr": {
     "section.home": "Boutique",
@@ -1749,7 +1761,10 @@
     "native.update": "Mettre à jour",
     "install.checkSD": "Vérification de la carte SD",
     "install.preparing": "Préparation de l’installation",
-    "install.finalizing": "Finalisation"
+    "install.finalizing": "Finalisation",
+    "uninstall.app": "Désinstaller seulement",
+    "uninstall.all": "Désinstaller et supprimer les fichiers",
+    "uninstall.allHint": "Supprime aussi la ROM, les données et le dossier."
   },
   "de": {
     "section.home": "Shop",
@@ -2095,7 +2110,10 @@
     "native.update": "Aktualisieren",
     "install.checkSD": "SD-Karte wird geprüft",
     "install.preparing": "Installation vorbereiten",
-    "install.finalizing": "Abschließen"
+    "install.finalizing": "Abschließen",
+    "uninstall.app": "Nur deinstallieren",
+    "uninstall.all": "Deinstallieren und Dateien löschen",
+    "uninstall.allHint": "Löscht auch ROM, Daten und Spielordner."
   },
   "ru": {
     "section.home": "Магазин",
@@ -2441,7 +2459,10 @@
     "native.update": "Обновить",
     "install.checkSD": "Проверка карты SD",
     "install.preparing": "Подготовка к установке",
-    "install.finalizing": "Завершение"
+    "install.finalizing": "Завершение",
+    "uninstall.app": "Только удалить",
+    "uninstall.all": "Удалить вместе с файлами",
+    "uninstall.allHint": "Также удаляет ROM, данные и папку игры."
   },
   "ja": {
     "section.home": "ストア",
@@ -2787,6 +2808,9 @@
     "native.update": "更新",
     "install.checkSD": "SDカードを確認中",
     "install.preparing": "インストール準備中",
-    "install.finalizing": "完了処理中"
+    "install.finalizing": "完了処理中",
+    "uninstall.app": "アンインストールのみ",
+    "uninstall.all": "アンインストールしてファイルも削除",
+    "uninstall.allHint": "ROM・データ・フォルダーも削除します。"
   }
 }

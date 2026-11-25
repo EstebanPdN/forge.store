@@ -26,7 +26,10 @@
     "media.ok": "Listo",
     "native.retryIn": "Reintentar · {s} s",
     "native.retry": "Reintentar",
-    "native.update": "Actualizar"
+    "native.update": "Actualizar",
+    "uninstall.app": "Solo desinstalar",
+    "uninstall.all": "Desinstalar y borrar archivos",
+    "uninstall.allHint": "También borra la ROM, los datos y la carpeta."
   },
   "en": {
     "native.checkFiles": "Check files",
@@ -55,7 +58,10 @@
     "media.ok": "Ready",
     "native.retryIn": "Retry · {s} s",
     "native.retry": "Retry",
-    "native.update": "Update"
+    "native.update": "Update",
+    "uninstall.app": "Uninstall only",
+    "uninstall.all": "Uninstall and delete files",
+    "uninstall.allHint": "Also deletes the ROM, data and game folder."
   },
   "pt": {
     "native.checkFiles": "Verificar arquivos",
@@ -84,7 +90,10 @@
     "media.ok": "Pronto",
     "native.retryIn": "Tentar de novo · {s} s",
     "native.retry": "Tentar de novo",
-    "native.update": "Atualizar"
+    "native.update": "Atualizar",
+    "uninstall.app": "Só desinstalar",
+    "uninstall.all": "Desinstalar e apagar arquivos",
+    "uninstall.allHint": "Também apaga a ROM, os dados e a pasta."
   },
   "it": {
     "native.checkFiles": "Controlla i file",
@@ -113,7 +122,10 @@
     "media.ok": "Pronto",
     "native.retryIn": "Riprova · {s} s",
     "native.retry": "Riprova",
-    "native.update": "Aggiorna"
+    "native.update": "Aggiorna",
+    "uninstall.app": "Solo disinstalla",
+    "uninstall.all": "Disinstalla ed elimina i file",
+    "uninstall.allHint": "Elimina anche ROM, dati e cartella del gioco."
   },
   "fr": {
     "native.checkFiles": "Vérifier les fichiers",
@@ -142,7 +154,10 @@
     "media.ok": "Prêt",
     "native.retryIn": "Réessayer · {s} s",
     "native.retry": "Réessayer",
-    "native.update": "Mettre à jour"
+    "native.update": "Mettre à jour",
+    "uninstall.app": "Désinstaller seulement",
+    "uninstall.all": "Désinstaller et supprimer les fichiers",
+    "uninstall.allHint": "Supprime aussi la ROM, les données et le dossier."
   },
   "de": {
     "native.checkFiles": "Dateien prüfen",
@@ -171,7 +186,10 @@
     "media.ok": "Bereit",
     "native.retryIn": "Erneut · {s} s",
     "native.retry": "Erneut versuchen",
-    "native.update": "Aktualisieren"
+    "native.update": "Aktualisieren",
+    "uninstall.app": "Nur deinstallieren",
+    "uninstall.all": "Deinstallieren und Dateien löschen",
+    "uninstall.allHint": "Löscht auch ROM, Daten und Spielordner."
   },
   "ru": {
     "native.checkFiles": "Проверить файлы",
@@ -200,7 +218,10 @@
     "media.ok": "Готово",
     "native.retryIn": "Повтор · {s} с",
     "native.retry": "Повторить",
-    "native.update": "Обновить"
+    "native.update": "Обновить",
+    "uninstall.app": "Только удалить",
+    "uninstall.all": "Удалить вместе с файлами",
+    "uninstall.allHint": "Также удаляет ROM, данные и папку игры."
   },
   "ja": {
     "native.checkFiles": "ファイルを確認",
@@ -229,6 +250,9 @@
     "media.ok": "完了",
     "native.retryIn": "再試行 · {s} 秒",
     "native.retry": "再試行",
-    "native.update": "更新"
+    "native.update": "更新",
+    "uninstall.app": "アンインストールのみ",
+    "uninstall.all": "アンインストールしてファイルも削除",
+    "uninstall.allHint": "ROM・データ・フォルダーも削除します。"
   }
 }

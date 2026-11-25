@@ -1,12 +1,19 @@
 # Changelog
 
-## forge.store 1.4.1
+## forge.store 1.4.2
 
-- CIA installs use the first 0–50% for bytes downloaded. At 50%, the store prepares the installation. From 50–99%, the bar follows the bytes written to the 3DS installer. It stays at 99% while the system confirms and the store saves the installation record. Both the install screen and Downloads show 100% only after success. Downloads of unknown size show activity until their size is known or the transfer finishes.
-- The store picks up CIA replacements on GitHub even when the release tag stays the same. Super Mario 64 DS now installs the current beta-01 CIA. Give the CIA your European ASMP revision 0 ROM for first launch. The 3DSX still uses the converted data files.
-- Updates check the files already on your SD card and reuse matching downloads. If the same CIA is already installed, Forge keeps it in place while it checks or repairs the game data. Missing files are fetched again. When my personal resources need a repair, a changed copy is kept beside the replacement.
-- My public betas keep their full-color artwork and a single purple hammer, including when an update is available. The home card and game details no longer show the “Uses your ROM” or “Uses your data” tag.
-- Old 3DS and 2DS systems show a compatibility message before a New 3DS-only game can enter the download queue.
+- Progress shows the real download, with no long pauses.
+- CIAs install while they download, like FBI.
+- The game folder and its files come first, the CIA last.
+- Files already on your SD card are not downloaded again.
+- Uninstall only the app, or the app and its files.
+- Open always starts an installed game.
+- Super Mario 64 DS installs the current beta-01.
+- Store updates now always show up.
+- Downloads keep going with the lid closed. The green light blinks when they finish.
+- My betas show one purple hammer. No more "Uses your ROM" tag.
+- Old 3DS shows when a game needs a New 3DS.
+- The intro shows the store version.
 
 ## forge.store 1.4
 

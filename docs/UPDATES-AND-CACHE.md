@@ -5,9 +5,10 @@
 The native store checks for its own updates on every launch, before the usual introduction.
 This check is always enabled. It is separate from game releases and the Store resources package.
 
-CIA installations check the latest GitHub release of `EstebanPdN/forge.store` and match
-`forge-store-v<version>.cia` to its numeric release tag. The release asset supplies the size
-and SHA-256. Public 3DSX installations use the compact `builds/3ds/update.json` manifest.
+Both launchers read the compact `builds/3ds/update.json` manifest from raw.githubusercontent.com
+and download `forge-store.cia` or `forge-store.3dsx` beside it. Until 1.4.1 the CIA asked the
+GitHub API, whose 60 requests an hour per connection the store's own pages can use up; the
+check then failed silently.
 A confirmed current build shows a success message; an unavailable or invalid response
 continues to the introduction without claiming that the installation is up to date.
 
@@ -16,7 +17,7 @@ continues to the introduction without claiming that the installation is up to da
   even if the platform resolver has not returned. A late response cannot start an update.
 - The manifest must contain a positive integer `store_build`, a bounded file size and a
   lowercase SHA-256 digest. Download destinations and binary URLs are fixed in the application.
-- CIA updates require a higher numeric release version. Public 3DSX updates require a larger build number. The touch screen shows a bounded `version`
+- Updates require a larger build number. The touch screen shows a bounded `version`
   label, falling back to the numeric build if the label is absent or invalid. No binary request,
   staging file or installation starts before **Yes**. **No** fades both screens to black and
   closes the store. This decision has no timeout; HOME/exit can cancel the waiting worker.
@@ -134,10 +135,9 @@ it at launch and before the next installation, from the SD alone:
 - **Committed** (the record has the transaction id; for an uninstallation, the record is gone):
   backups are removed and the installation is complete.
 - **Not committed:** published files are removed, backups go back to their paths, created
-  folders are removed when empty and the CIA title returns to its previous version (deleted
-  when it was new, reinstalled from its kept package when it was replaced).
-- **No package to return to** (a CIA installed with FBI or Universal-Updater, then updated
-  here): once AM committed the new title, the update is completed instead.
+  folders are removed when empty and a new CIA title is deleted again.
+- **AM committed an update:** since 1.4.2 no package is kept to return to, so the update is
+  completed instead: the remaining staged files take their places.
 - **No readable inventory:** nothing was published yet, so the staged files are deleted.
 - Anything that cannot be settled safely (backups without an inventory, paths outside the
   rules) is moved to `install-transaction-kept-N` and never deleted.
@@ -149,7 +149,24 @@ even when its own cleanup fails too, is settled by the next installation without
 Recovery is silent. `3ds/tests/run-install-recovery.py` cuts the power before every SD and AM
 mutation of real installations, updates and uninstallations (also with the record commit or AM
 failing, so the cut lands inside the rollback), then cuts it again at every mutation of the
-recovery itself, and checks that each one ends at the previous or the new version.
+recovery itself, and checks that each one ends at the previous or the new version. A CIA cut
+right after AM commits may end with the new title and the previous files; the next
+installation completes it. An uninstallation only ever removes.
+
+## Installing and uninstalling CIAs (since 1.4.2)
+
+As FBI's "Install from URL" does, a CIA downloads straight into AM: each 256 KB block is
+written to the `AM_StartCiaInstall` handle as it arrives, with no temporary file, no kept
+copy and no second read. The title ID comes from the CIA header (FBI's `cia_get_title_id`);
+the catalog's SHA-256 is computed on the way and compared before `AM_FinishCiaInstall`.
+The installed record keeps that digest under `title:<id>`, so the same CIA is never
+downloaded again. Plans run the game's folders first, then its data files, then the CIA.
+Progress is the bytes downloaded over the bytes to download.
+
+Uninstalling deletes the title and its ticket (`AM_DeleteTitle`, `AM_DeleteTicket`, as in
+FBI's `deletetitle.c`). "Uninstall and delete files" also removes the files the store
+recorded, the port's personal data and its catalog folder, never `/3ds` or the store's own
+folder.
 
 ## Apps installed without forge.store
 

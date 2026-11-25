@@ -22,7 +22,7 @@ typedef struct {
     u32 samples;
 } Clip;
 
-static bool ok, ducked;
+static bool ok, ducked, lid_closed;
 static Clip clips[24];
 // The worker decodes into ordinary memory and publishes `decoded_clips`; the main thread
 // moves one clip per frame into linear memory (linearAlloc is not thread-safe) and
@@ -369,7 +369,7 @@ void audio_update(void) {
     }
     // Web Audio's master uses a 50 ms exponential smoothing constant.
     master_now = lerpf(master_now, S.volume, 1 - expf(-DT / .05f));
-    duck_now = lerpf(duck_now, ducked ? 0 : 1, 1 - expf(-DT / .18f));
+    duck_now = lerpf(duck_now, ducked || lid_closed ? 0 : 1, 1 - expf(-DT / .18f));
     set_vol(CH_MUSIC, music_vol * master_now * duck_now);
     for (int ch = CH_SFX; ch < CH_SFX + N_SFX; ch++) set_vol(ch, master_now);
     float hz = fminf(15000, 18000 * powf(1 - muffle_target, 3) + 900 * muffle_target);
@@ -389,6 +389,7 @@ void audio_update(void) {
 
 bool audio_available(void) { return ok; }
 void music_duck(bool d) { ducked = d; }
+void music_lid(bool closed) { lid_closed = closed; }
 
 // Only called by the opt-in scripted harness, never written on normal launches.
 void audio_log(FILE *f) {

@@ -1,3 +1,5 @@
+#include "store_version.h"
+#include "background.h"
 #include "install_rules.h"
 // All store screens. Layout numbers match the HTML prototype (native 3DS pixels).
 #include "assets.h"
@@ -247,7 +249,9 @@ static void requirement_views_rebuild(void) {
 }
 static bool requirement_view_has(json_t *req) {
     // Ports take the ROM under any name: the scan decides. Not known yet is not a warning.
-    if(rom_find_ruled(req))return !rom_find_known(req)||rom_find_have(req);
+    // An answer from before the latest scan request (an installation just placed the ROM)
+    // is not a warning either: on a 3DS the rescan can take a while.
+    if(rom_find_ruled(req))return !rom_find_known(req)||rom_find_have(req)||!rom_find_settled();
     for(unsigned i=0;i<requirement_view_count;i++)
         if(requirement_views[i].requirement==req)return file_view_nonempty(requirement_views[i].file);
     return false;
@@ -749,6 +753,8 @@ static void intro_bottom(void) {
     u32 ec = C(S.dark ? 0xf1f3f4 : 0x3b535c, a);
     text_style(T("intro.enter"),bx+16,by+15-line_h(10.5f)/2,10.5f,800,0,ec,AL_LEFT);
     draw_icon("next", bx + 16 + tw2 + 16 + 6.5f, by + 15, 13, ec);
+    // The installed version, small in the bottom-left corner.
+    text("v" STORE_VERSION, 8, roundf(240 - 8 - line_h(10)), 10, C(TH.ink_faint, a), AL_LEFT);
     if (picker) {
         float pa=ease_out(span(NOW,picker_t+.6f,.6f));
         if(picked) pa*=1-ease_in(span(NOW,ready_t+.55f,.3f));
@@ -1479,9 +1485,11 @@ static void detail_update(void) {
         detail_select_shot((shot_i+1)%dapp->shots,1);
     dscroll = lerpf(dscroll, dscroll_target, 1 - powf(.0005f, DT));
     if(uninstall_on) {
-        if(IN.down&KEY_B || hit(16,148,130,28)) { uninstall_on=false; sfx("back"); }
-        else if(IN.down&KEY_A || hit(152,148,152,28)) {
-            Job *job=install_uninstall(dapp); uninstall_on=false;
+        // A: uninstall only. Y: uninstall and delete the port's files. B: cancel.
+        bool everything=IN.down&KEY_Y || hit(16,146,288,28);
+        if(IN.down&KEY_B || hit(16,180,288,28)) { uninstall_on=false; sfx("back"); }
+        else if(everything || IN.down&KEY_A || hit(16,112,288,28)) {
+            Job *job=install_uninstall(dapp,everything); uninstall_on=false;
             if(job) open_install(job);
         }
         return;
@@ -1622,8 +1630,9 @@ static void detail_update(void) {
         }
     }
     if ((IN.down & KEY_A && !(dtab == 1 && shot_i < 0)) || tap_action) {
-        if(st==ST_NEEDS_FILE){if(dtab!=2)sfx("tab");dtab=2;dscroll=dscroll_target=0;toast(T("toast.needsFile"),AMBER);sfx("warn");}
-        else if(st==ST_INSTALLED) launch_app(dapp);
+        // Open always starts an installed game: if a file is really missing, the port itself
+        // says which one and where it goes.
+        if(st==ST_INSTALLED || st==ST_NEEDS_FILE) launch_app(dapp);
         else if (st == ST_AVAILABLE || st == ST_UPDATE) {
             if (app_release(dapp, false))
                 open_sheet();
@@ -2297,11 +2306,13 @@ static void detail_bottom(float sa) {
     }
     if(removable) button_round(259,205,26,28,NULL,"trash",NULL,BTN_SURFACE,a);
     if(uninstall_on) {
-        rect(0,0,320,240,C(0x0a1216,.55f*a)); glass(6,64,308,124,12,a);
-        text_fit(T("action.uninstall"),16,78,14,288,C(TH.ink,a));
-        text_fit(dapp->title,16,103,11,288,C(TH.ink_soft,a));
-        button(16,148,130,28,T("action.cancel"),NULL,NULL,BTN_GHOST,a);
-        button(152,148,152,28,T("action.uninstall"),"trash",NULL,BTN_SURFACE,a);
+        rect(0,0,320,240,C(0x0a1216,.55f*a)); glass(6,28,308,186,12,a);
+        text_fit(T("action.uninstall"),16,38,14,288,C(TH.ink,a));
+        text_fit(dapp->title,16,62,11,288,C(TH.ink_soft,a));
+        text_fit(T("uninstall.allHint"),16,84,10,288,C(TH.ink_faint,a));
+        button(16,112,288,28,T("uninstall.app"),"trash","A",BTN_SURFACE,a);
+        button(16,146,288,28,T("uninstall.all"),"trash","Y",BTN_SURFACE,a);
+        button(16,180,288,28,T("action.cancel"),NULL,"B",BTN_GHOST,a);
     }
     if (sheet_on)
         sheet_draw(a);
@@ -2370,7 +2381,7 @@ static float install_row_h(const JobStep *s) {
 static float install_tail(float y,float a,bool draw) {
     if(ij->state<=JOB_RUNNING) return 0;
     float start=y;
-    const char *message=ij->state==JOB_DONE && ij->uninstall?T(ij->warnings?"native.uninstallKept":"native.uninstalled"):ij->state==JOB_FAILED?ij->error:ij->state==JOB_CANCELLED?T("install.cancelled"):ij->warnings?T("install.doneMissing"):T("install.done");
+    const char *message=ij->state==JOB_DONE && ij->uninstall?T(ij->warnings?"native.uninstallKept":"native.uninstalled"):ij->state==JOB_FAILED?ij->error:ij->state==JOB_CANCELLED?T("install.cancelled"):ij->missing?T("install.doneMissing"):T("install.done");
     float h=text_wrap_h(message,11,280);
     if(draw) text_wrap(message,20,y,11,C(ij->state==JOB_FAILED?DANGER:ij->warnings?AMBER:TH.mint,a),280);
     y+=h+8;
@@ -2480,7 +2491,7 @@ static void install_top(float sa) {
     fx_draw(0, sa);
     char title[96];
     bool done = ij->state == JOB_DONE, fail = ij->state == JOB_FAILED || ij->state == JOB_CANCELLED;
-    if(done) snprintf(title,sizeof title,"%s",ij->uninstall?T("native.uninstalled"):ij->warnings?T("install.doneMissing"):T("install.done"));
+    if(done) snprintf(title,sizeof title,"%s",ij->uninstall?T("native.uninstalled"):ij->missing?T("install.doneMissing"):T("install.done"));
     else if (fail)
         snprintf(title, sizeof title, "%s", ij->state == JOB_CANCELLED ? T("install.cancelled") : T("install.failed"));
     else if (ij->state == JOB_QUEUED)
@@ -3218,6 +3229,7 @@ static void settings_bottom(float sa) {
 
 static void job_done(Job *j) {
     file_view_refresh();rom_find_refresh();
+    if (j->state == JOB_DONE && !j->uninstall && !install_active()) background_finished();
     // What is on the console changed: look again (an uninstalled app is forgotten at once).
     if(j->uninstall&&j->state==JOB_DONE)detect_forget(j->app->id);else detect_request();
     bool watching = scene == SC_INSTALL && ij == j;
@@ -3227,10 +3239,10 @@ static void job_done(Job *j) {
     if (j->state == JOB_DONE) {
         if(j->uninstall&&j->warnings)snprintf(msg,sizeof msg,"%s",T("native.uninstallKept"));
         else if(j->uninstall)tvars(msg,sizeof msg,T("toast.uninstalled"),"title",j->app->title,NULL,NULL);
-        else if(j->warnings) snprintf(msg,sizeof msg,"%s · %s", j->app->title,T("status.needsFile"));
+        else if(j->missing) snprintf(msg,sizeof msg,"%s · %s", j->app->title,T("status.needsFile"));
         else tvars(msg, sizeof msg, T("toast.installed"), "title", j->app->title, NULL, NULL);
         sfx(j->uninstall?"back":"complete");
-        toast(msg, j->warnings ? AMBER : MINT);
+        toast(msg, (j->uninstall ? j->warnings : j->missing) ? AMBER : MINT);
     } else if (j->state == JOB_FAILED) {
         snprintf(msg, sizeof msg, "%s · %s", T("install.failed"), j->app->title);
         toast(msg, DANGER);

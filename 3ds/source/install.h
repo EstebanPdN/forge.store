@@ -31,7 +31,8 @@ typedef struct {
     json_t *release, *script;
     volatile JobState state;
     volatile InstallPhase phase;
-    volatile int cia_percent; // -1 while the download total is unknown
+    volatile bool streaming;  // the CIA is downloading straight into the 3DS installer
+    volatile bool no_cancel;  // the title is installed: only its record is left to save
     bool unknown_size;
     int last_download;
     volatile float progress, speed;
@@ -43,7 +44,9 @@ typedef struct {
     volatile bool cancel;
     char error[128];
     int warnings;
+    int missing;  // required files still absent after the installation (a subset of warnings)
     json_t *files, *dirs, *hashes, *record;
+    json_t *purge;  // uninstall: the port's files and folders to delete too
     // Identifies this installation in its recovery inventory and in the installed record:
     // after an interruption, a matching record means it was committed.
     char transaction[40];
@@ -75,4 +78,6 @@ Job *install_at(int i);
 /** Current tracked CIA title if AM still finds it; zero otherwise. */
 u64 install_title_id(App *a);
 /** Removes only recorded unchanged files/title; preserves user edits and data. */
-Job *install_uninstall(App *a);
+/** FBI-style: deletes the CIA title and its ticket (or a 3DSX's files). delete_files also
+ *  removes the port's data, the files downloaded with it and its folder. */
+Job *install_uninstall(App *a, bool delete_files);

@@ -31,6 +31,8 @@ void rom_find_watch(json_t *requirement);
 /** Asks for a new scan; the answer is in once rom_find_completed() reaches the ticket. */
 unsigned rom_find_refresh(void);
 unsigned rom_find_completed(void);
+/** No scan pending: the cached answers describe the SD as it is now. */
+bool rom_find_settled(void);
 void rom_find_pump(float now);
 /** False until the first scan ends. */
 bool rom_find_known(json_t *requirement);

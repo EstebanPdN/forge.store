@@ -203,60 +203,18 @@ static void tidy_homebrew(void) {
         }
     closedir(d);
 }
-// Compare up to four numeric version components, padding omitted components with zero.
-static bool version_parts(const char *p, unsigned parts[4]) {
-    for (int i = 0; i < 4; i++) {
-        if (*p < '0' || *p > '9') return false;
-        while (*p >= '0' && *p <= '9') {
-            if (parts[i] > 99999) return false;
-            parts[i] = parts[i] * 10 + (*p++ - '0');
-        }
-        if (!*p) return true;
-        if (*p++ != '.') return false;
-    }
-    return false;
-}
-
-static bool release_cia(json_t *release, uint64_t *bytes, char hash[65],
-                        char *url, size_t cap, bool *newer) {
-    const char *tag = json_string_value(json_object_get(release, "tag_name"));
-    unsigned local[4] = {0}, remote[4] = {0};
-    if (!tag || *tag != 'v' || strlen(tag) >= sizeof offered_version ||
-        !version_parts(tag + 1, remote) || !version_parts(STORE_VERSION, local)) return false;
-    for (int n = 0; n < 4; n++) {
-        if (local[n] == remote[n]) continue;
-        *newer = remote[n] > local[n];
-        break;
-    }
-    char filename[64];
-    snprintf(filename, sizeof filename, "forge-store-%s.cia", tag);
-    snprintf(url, cap, "https://github.com/EstebanPdN/forge.store/releases/download/%s/%s", tag, filename);
-    size_t i;
-    json_t *asset;
-    json_array_foreach(json_object_get(release, "assets"), i, asset) {
-        const char *name = json_string_value(json_object_get(asset, "name"));
-        if (!name || strcmp(name, filename)) continue;
-        const char *digest = json_string_value(json_object_get(asset, "digest"));
-        json_int_t size = json_integer_value(json_object_get(asset, "size"));
-        if (size < 32 || size > 96 * 1024 * 1024 || !digest || strncmp(digest, "sha256:", 7) ||
-            strlen(digest + 7) != 64 || strspn(digest + 7, "0123456789abcdef") != 64) return false;
-        memcpy(hash, digest + 7, 65);
-        *bytes = size;
-        snprintf(offered_version, sizeof offered_version, "%s", tag + 1);
-        return true;
-    }
-    return false;
-}
-
 static void run(void *unused) {
     tidy_homebrew();
     if (homebrew && access("romfs:/personal-assets.fme", F_OK) == 0) {
         publish(UPDATE_CURRENT);
         return;
     }
-    char download_url[256] = UPDATE_BASE "forge-store.3dsx";
-    CURL *c = request(homebrew ? UPDATE_BASE "update.json" :
-                      "https://api.github.com/repos/EstebanPdN/forge.store/releases/latest");
+    // Both launchers read update.json from the repository. The GitHub API allows 60
+    // requests an hour per connection and the store's own pages use them up, which made
+    // the CIA check fail silently (1.4 consoles were not offered 1.4.1).
+    char download_url[256];
+    snprintf(download_url, sizeof download_url, UPDATE_BASE "%s", homebrew ? "forge-store.3dsx" : "forge-store.cia");
+    CURL *c = request(UPDATE_BASE "update.json");
     if (!c) {
         publish(UPDATE_OFFLINE);
         return;
@@ -274,13 +232,9 @@ static void run(void *unused) {
     int64_t build = 0;
     char expected[65];
     bool newer = false, valid;
-    if (homebrew) {
-        valid = store_update_metadata(root, true, &bytes, expected, &build);
-        if (valid) store_update_version_label(root, build, offered_version, sizeof offered_version);
-        newer = build > STORE_BUILD;
-    } else {
-        valid = release_cia(root, &bytes, expected, download_url, sizeof download_url, &newer);
-    }
+    valid = store_update_metadata(root, homebrew, &bytes, expected, &build);
+    if (valid) store_update_version_label(root, build, offered_version, sizeof offered_version);
+    newer = valid && build > STORE_BUILD;
     json_decref(root);
     if (!valid) {
         publish(UPDATE_OFFLINE);

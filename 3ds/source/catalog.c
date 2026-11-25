@@ -1821,7 +1821,16 @@ bool app_record_outdated(App *a, json_t *record, json_t *release) {
                 if(file && !strncmp(file,"title:",6) && strlen(file)==22){title=file+6;break;}
             }
         }
-        if(title)snprintf(path,sizeof path,DATA_DIR "/cia-cache/%s.cia",title);
+        // 1.4.2 records the streamed CIA's SHA-256 under its title; earlier ones hashed the
+        // package kept in cia-cache.
+        char key[40];
+        if(title){
+            snprintf(key,sizeof key,"title:%s",title);
+            for(char *c=key+6;*c;c++)*c=(char)tolower((unsigned char)*c);  // recorded as %016llx
+            const char *got=json_string_value(json_object_get(json_object_get(record,"hashes"),key));
+            if(got)return strcasecmp(want,got)!=0;
+            snprintf(path,sizeof path,DATA_DIR "/cia-cache/%s.cia",title);
+        }
     }else{
         size_t i;json_t *s;
         json_array_foreach(app_install_steps(a,false),i,s){

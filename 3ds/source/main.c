@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <time.h>
 
+#include "background.h"
 #include "audio.h"
 #include "catalog.h"
 #include "fx.h"
@@ -744,6 +745,7 @@ int main(int argc, char **argv) {
         NOW += DT;
 
         read_input(frame);
+        background_update(install_active() != NULL, IN.down || IN.touch_down);
         if (quit_req || scenes_wants_exit() || (IN.held & KEY_SELECT && IN.down & KEY_START)) {
             C3D_FrameEnd(0);
             break;
@@ -837,6 +839,7 @@ int main(int argc, char **argv) {
     }
     C2D_Fini();
     C3D_Fini();
+    background_exit();
     if (mcu_ok) mcuHwcExit();
     ptmuExit();
     cfguExit();

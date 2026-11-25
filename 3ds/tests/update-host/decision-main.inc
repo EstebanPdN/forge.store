@@ -30,7 +30,8 @@ int main(int argc,char **argv) {
     assert(store_update_state()!=UPDATE_CHECKING);
     if(store_update_state()==UPDATE_AVAILABLE){
         assert(*store_update_version());
-        assert(!strcmp(store_update_version(),hb?"2026.11.12.3":"1.10"));
+        // An unusable label falls back to the build number; the offer itself stays valid.
+        if(strcmp(argv[1],"bad-version"))assert(!strcmp(store_update_version(),"2026.11.12.3"));
         svcSleepThread(100000000);
         assert(store_update_state()==UPDATE_AVAILABLE);
         assert(access(DATA_DIR "/store-update.part",F_OK)&&!starts&&!writes);
