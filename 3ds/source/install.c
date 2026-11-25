@@ -94,7 +94,7 @@ typedef struct {
     char cia_path[PATH_CAP];
     JobStep *cia_step;
     u64 title_id;
-    bool had_title, cia_attempted;
+    bool had_title, cia_attempted, cia_unchanged;
     // The title was installed without forge.store's copy of its package: it cannot be
     // put back, so once AM commits the new title the installation is completed instead.
     bool no_restore;
@@ -731,6 +731,16 @@ static bool title_known(Job *j, u64 id) {
     return false;
 }
 
+// A title version alone cannot distinguish two builds of the same homebrew release.
+static bool same_recorded_cia(json_t *record, const char *cache, const char *candidate, volatile bool *cancel) {
+    const char *expected = json_string_value(json_object_get(json_object_get(record, "hashes"), cache));
+    if (!expected || strlen(expected) != 64) return false;
+    JobStep step = {0};
+    char hash[65];
+    return sha256_file(candidate, hash, &step, cancel) && !strcasecmp(hash, expected) &&
+           sha256_file(cache, hash, &step, cancel) && !strcasecmp(hash, expected);
+}
+
 static bool cia_prepare(Job *j) {
     if (!tx.cia_path[0]) return true;
     TxFile *source = tx_find(tx.cia_path);
@@ -764,6 +774,10 @@ static bool cia_prepare(Job *j) {
         // is known to use (its catalog entry or an earlier installation).
         if (tx.no_restore && !title_known(j, tx.title_id))
             return fail(j, "Another installed title uses this CIA's title ID; it was not replaced");
+        if (!tx.no_restore && current.version == info.version && same_recorded_cia(j->record, tx.cia_cache, input, &j->cancel)) {
+            tx.cia_unchanged = true;
+            return true;
+        }
     }
     struct stat st;
     if (stat(input, &st) || !free_space((u64)st.st_size)) return fail(j, "Insufficient SD space for CIA recovery copy");
@@ -1026,9 +1040,24 @@ static bool tx_settle(json_t *journal, bool *completed) {
         if (ok && reinstall) {
             char package[PATH_CAP];
             snprintf(package, sizeof package, DATA_DIR "/cia-cache/%016llx.cia", (unsigned long long)title);
-            Job restore = {0};
-            JobStep step = {0};
-            if (!install_cia(&restore, &step, package, true)) printf("Recovery: CIA restore failed: %s\n", restore.error);
+            // Earlier versions could enter AM for an identical package. After undo, the
+            // cache holds the previous CIA and the staged file holds its replacement.
+            const char *app = json_string_value(json_object_get(journal, "app"));
+            json_t *record = json_object_get(saved, app);
+            bool present; u16 version;
+            if (title_state(title, &present, &version) && present && version == json_integer_value(json_object_get(journal, "oldVersion"))) {
+                for (size_t i = 0; i < count && reinstall; i++) {
+                    volatile bool cancel = false;
+                    if (entries[i].publish && !strcmp(entries[i].path, package))
+                        reinstall = !same_recorded_cia(record, package, entries[i].stage, &cancel);
+                }
+            }
+            if (reinstall) {
+                Job restore = {0};
+                JobStep step = {0};
+                ok = install_cia(&restore, &step, package, true);
+                if (!ok) printf("Recovery: CIA restore failed: %s\n", restore.error);
+            }
         }
     }
     json_decref(saved);
@@ -1720,7 +1749,13 @@ static void run(Job *j) {
     if (!hash_published(j)) {
         tx_finish(j, false); j->state = j->cancel ? JOB_CANCELLED : JOB_FAILED; return;
     }
-    if (tx.cia_path[0]) {
+    if (tx.cia_unchanged) {
+        j->cur = (int)(tx.cia_step - j->steps);
+        tx.cia_step->state = STEP_DONE;
+        tx.cia_step->progress = 1;
+        j->cia_percent = 99;
+        j->phase = PHASE_FINISH;
+    } else if (tx.cia_path[0]) {
         tx.cia_attempted = true;
         // The markers tell recovery whether AM may have replaced the title.
         bool marked = tx_mark(TX_CIA_STARTED);

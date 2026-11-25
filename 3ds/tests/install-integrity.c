@@ -82,6 +82,31 @@ static void test_progress(void) {
     progress_job.state=JOB_DONE;assert(job_percent(&progress_job)==100);
     host_title=0;
 }
+
+static void test_recorded_cia(void) {
+    const char *cache = DATA_DIR "/cia-cache/0004000012345600.cia";
+    assert(mkdirs(cache, true));
+    put(cache, "recorded package");
+    JobStep step = {0};
+    volatile bool cancel = false;
+    char hash[65];
+    assert(sha256_file(cache, hash, &step, &cancel));
+    const char *candidates[] = {"recorded package", "replacement with same title version", "recorded package"};
+    for (int i = 0; i < 3; i++) {
+        Job job = make_job();
+        job.record = json_pack("{s:{s:s}}", "hashes", cache, hash);
+        host_title = i == 2 ? 0 : 0x0004000012345600ULL;
+        host_version = 1;
+        assert(tx_begin(&job));
+        strcpy(tx.cia_path, "sdmc:/candidate.cia");
+        stage(&job, tx.cia_path, candidates[i]);
+        assert(cia_prepare(&job));
+        assert(tx.cia_unchanged == (i == 0));
+        assert(tx_finish(&job, false));
+        clear_job(&job);
+    }
+    assert(!remove(cache));
+}
 int main(void) {
  test_forge_zip();test_progress();
  Job rate_job={0};JobStep rate_step={0};
@@ -91,6 +116,7 @@ int main(void) {
  assert(rate_job.done_bytes==90 && rate_step.progress>.89f && rate_step.progress<.91f);
  assert(rate_job.speed>0 && rate_job.speed<21);
  assert(!mkdir("sdmc:",0777));assert(!mkdir("sdmc:/3ds",0777));assert(!mkdir(DATA_DIR,0777));
+ test_recorded_cia();
  const char *live="sdmc:/3ds/demo.3dsx";put(live,"old");
  char path[PATH_CAP];assert(sd_path(path,sizeof path,"%3DSX%/demo.3dsx"));assert(!strcmp(path,live));
  assert(!sd_path(path,sizeof path,"/../escape"));assert(!sd_path(path,sizeof path,"/bad:device"));assert(!sd_path(path,sizeof path,"/bad./file"));assert(!sd_path(path,sizeof path,"%UNKNOWN%/file"));
