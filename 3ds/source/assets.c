@@ -172,30 +172,22 @@ static const char *relative(const char *path) {
 }
 
 // ---- views inside a pack ------------------------------------------------------------------
-// newlib and BSD use funopen. The Linux host harness uses glibc's fopencookie.
+// funopen differs between newlib (size_t lengths, 64-bit offsets) and BSD/macOS.
 #if defined(__LARGE64_FILES) && defined(__3DS__)
 typedef _READ_WRITE_BUFSIZE_TYPE view_size;
 typedef _fpos64_t view_pos;
 #elif defined(__3DS__)
 typedef _READ_WRITE_BUFSIZE_TYPE view_size;
 typedef fpos_t view_pos;
-#elif defined(__GLIBC__)
-typedef size_t view_size;
-typedef off64_t view_pos;
 #else
 typedef int view_size;
 typedef fpos_t view_pos;
-#endif
-#ifdef __GLIBC__
-typedef ssize_t view_read_result;
-#else
-typedef int view_read_result;
 #endif
 typedef struct {
     FILE *file;
     long base, size, pos;
 } View;
-static view_read_result view_read(void *cookie, char *buf, view_size length) {
+static int view_read(void *cookie, char *buf, view_size length) {
     View *v = cookie;
     long left = v->size - v->pos, n = length > (view_size)65536 ? 65536 : (long)length;
     if (n > left) n = left;
@@ -220,25 +212,12 @@ static int view_close(void *cookie) {
     free(v);
     return r;
 }
-#ifdef __GLIBC__
-static int cookie_seek(void *cookie, off64_t *offset, int whence) {
-    view_pos pos = view_seek(cookie, *offset, whence);
-    if (pos < 0) return -1;
-    *offset = pos;
-    return 0;
-}
-#endif
 static FILE *pack_view(const Entry *e) {
     View *v = malloc(sizeof *v);
     if (!v) return NULL;
     *v = (View){fopen(R.packs[e->pack].path, "rb"), e->offset, e->size, 0};
     if (!v->file) { free(v); return NULL; }
-#ifdef __GLIBC__
-    cookie_io_functions_t io = {.read = view_read, .seek = cookie_seek, .close = view_close};
-    FILE *f = fopencookie(v, "r", io);
-#else
     FILE *f = funopen(v, view_read, NULL, view_seek, view_close);
-#endif
     if (!f) { fclose(v->file); free(v); }
     return f;
 }
