@@ -17,7 +17,7 @@
 #define SEALED_PATH "romfs:/personal-assets.fme"
 #define KEY_PATH DATA_DIR "/forge-mode.key"
 #define FACTORY_KEY_PATH "romfs:/forge-default.key"
-#define MANIFEST_MAX 16384u
+#define MANIFEST_MAX 65536u
 static const unsigned char aad[] = "forge.store/private-assets/v1";
 static Thread worker;
 static bool done, restore;
@@ -42,7 +42,13 @@ static bool valid_download(json_t *step, const char *package) {
         !hash || strlen(hash)!=64 || size<=0 || size>(member?INT32_MAX:128*1024*1024)) return false;
     if (package) {
         if (strcmp(out,package) || !member || json_object_get(step,"personal")) return false;
-    } else if (!json_is_true(json_object_get(step,"personal")) || strncmp(out,"/3ds/",5)) return false;
+    } else if (!json_is_true(json_object_get(step,"personal")) || (strncmp(out,"/3ds/",5) && strncmp(out,"/vb/",4))) return false;
+    if (json_object_get(step,"unpackTo")) {
+        const char *dir=json_string_value(json_object_get(step,"unpackTo"));
+        if (package || !member || strncmp(out,"/3ds/forge-store/tmp/",21) ||
+            !dir || strncmp(dir,"/3ds/",5) || strlen(dir)<=5 || strlen(dir)>240 ||
+            dir[strlen(dir)-1]!='/' || strstr(dir,"..")) return false;
+    }
     for (unsigned i=0;i<64;i++) if (forge_hex_digit(hash[i])<0) return false;
     return !member || forge_zip_member(member,NULL);
 }
@@ -74,7 +80,7 @@ static bool valid_manifest(json_t *root) {
             if (!prepare_build(id,json_object_get(entry,"build"))) return false;
             steps=json_object_get(entry,"data");
         }
-        if (!json_is_array(steps) || json_array_size(steps)>4) return false;
+        if (!json_is_array(steps) || json_array_size(steps)>56) return false;
         size_t i; json_t *step;
         json_array_foreach(steps,i,step) if (!valid_download(step,NULL)) return false;
     }
@@ -99,7 +105,15 @@ static bool persist_key(const unsigned char hash[32],const unsigned char key[32]
     FILE *f=fopen(KEY_PATH ".tmp","wb");bool ok=false;
     if(f){ok=fwrite(saved,1,sizeof saved,f)==sizeof saved;if(fflush(f)||fsync(fileno(f)))ok=false;if(fclose(f))ok=false;}
     wipe(saved,sizeof saved);
+    // FAT cannot rename over an existing file. Keep the previous key usable
+    // if the console loses power between the two directory operations.
+    bool previous = access(KEY_PATH,F_OK)==0;
+    if (ok && previous) {
+        if (access(KEY_PATH ".bak",F_OK)==0 && remove(KEY_PATH ".bak")) ok=false;
+        if (ok && rename(KEY_PATH,KEY_PATH ".bak")) ok=false;
+    }
     if(!ok||rename(KEY_PATH ".tmp",KEY_PATH)){remove(KEY_PATH ".tmp");return false;}
+    remove(KEY_PATH ".bak");
     return true;
 }
 static json_t *restore_manifest(const char *path, const unsigned char digest[32],
@@ -114,6 +128,35 @@ static json_t *restore_manifest(const char *path, const unsigned char digest[32]
     wipe(saved,sizeof saved);
     return restored;
 }
+
+// FBI records a scanned URL before installing its CIA. The private QR supplies
+// a random key in the URL fragment, separate from the downloadable package.
+static bool read_install_qr(unsigned char key[32]) {
+    FILE *file = fopen("sdmc:/fbi/lasturls", "rb");
+    if (!file) return false;
+    char url[2048];
+    size_t size = fread(url, 1, sizeof url, file);
+    bool ok = !ferror(file) && size < sizeof url && !memchr(url, 0, size);
+    fclose(file);
+    if (ok) {
+        url[size] = 0;
+        char *fragment = strchr(url, '#');
+        const char prefix[] = "#forge-v1=";
+        ok = !strncmp(url, "https://", 8) && !strpbrk(url, "\r\n") && fragment &&
+             !strncmp(fragment, prefix, sizeof prefix - 1) && strlen(fragment + sizeof prefix - 1) == 64;
+        if (ok) {
+            const char *hex = fragment + sizeof prefix - 1;
+            for (size_t i = 0; i < 32; ++i) {
+                int hi = forge_hex_digit(hex[2*i]), lo = forge_hex_digit(hex[2*i+1]);
+                if (hi < 0 || lo < 0) { ok = false; break; }
+                key[i] = (unsigned char)((hi << 4) | lo);
+            }
+        }
+    }
+    wipe(url, sizeof url);
+    return ok;
+}
+
 static void unlock_worker(void *unused) {
     (void)unused;
     unsigned char key[32]={0},digest[32],*blob=NULL;size_t length=0;
@@ -128,9 +171,15 @@ static void unlock_worker(void *unused) {
     if(!read_ok||memcmp(blob,"FM01",4))goto end;
     unsigned iterations=get32(blob+4);if(iterations<10000||iterations>200000)goto end;
     mbedtls_sha256_ret(blob,length,digest,0);
+    bool save_key = !restore;
     if(restore) {
         result_manifest=restore_manifest(FACTORY_KEY_PATH,digest,blob,length);
         if (!result_manifest) result_manifest=restore_manifest(KEY_PATH,digest,blob,length);
+        if (!result_manifest) result_manifest=restore_manifest(KEY_PATH ".bak",digest,blob,length);
+        if (!result_manifest && read_install_qr(key)) {
+            result_manifest=decrypt(blob,length,key);
+            save_key=true;
+        }
     } else {
         u64 started=osGetTime();
         int err=forge_derive_key((unsigned char*)password,strlen(password),blob+8,iterations,key);
@@ -139,7 +188,7 @@ static void unlock_worker(void *unused) {
         result_manifest=decrypt(blob,length,key);
     }
     if(result_manifest) {
-        if(restore||persist_key(digest,key))result_state=FORGE_ENABLED;
+        if(!save_key||persist_key(digest,key))result_state=FORGE_ENABLED;
         else {json_decref(result_manifest);result_manifest=NULL;result_state=FORGE_STORAGE_ERROR;}
     }
 end:
@@ -179,7 +228,7 @@ json_t *forge_mode_plan(const char *id,json_t *base) {
     // Only the authenticated manifest may supply an encrypted member and its key.
     size_t i;json_t *step;
     if (base!=json_object_get(forge_mode_build(id),"steps"))
-        json_array_foreach(base,i,step) if(json_object_get(step,"zipMember"))return NULL;
+        json_array_foreach(base,i,step) if(json_object_get(step,"zipMember")||json_object_get(step,"unpackTo"))return NULL;
     json_t *plan=json_array();if(!plan)return NULL;
     json_t *extra=forge_mode_data(id);
     if((extra&&json_array_extend(plan,extra))||json_array_extend(plan,base)){json_decref(plan);return NULL;}

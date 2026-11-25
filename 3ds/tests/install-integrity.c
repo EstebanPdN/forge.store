@@ -67,12 +67,17 @@ int main(void) {
  j=make_job();assert(tx_begin(&j));stage(&j,live,"new");stage(&j,"sdmc:/3ds/newdir/data.bin","data");assert(tx_publish(&j));equal(live,"new");assert(tx_finish(&j,false));equal(live,"old");assert(!path_exists("sdmc:/3ds/newdir"));clear_job(&j);
  j=make_job();assert(tx_begin(&j));stage(&j,live,"new");stage(&j,"sdmc:/3ds/missing.bin","new");remove(tx_find("sdmc:/3ds/missing.bin")->stage);assert(!tx_publish(&j));assert(tx_finish(&j,false));equal(live,"old");clear_job(&j);
  archive_fixture("good.tar",false);archive_fixture("bad.tar",true);
- JobStep step={0};j=make_job();assert(tx_begin(&j));assert(!extract(&j,&step,"bad.tar",NULL,"sdmc:/3ds/"));assert(tx_finish(&j,false));equal(live,"old");assert(!path_exists("sdmc:/escape"));clear_job(&j);
- j=make_job();assert(tx_begin(&j));j.cancel=true;assert(!extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/"));assert(tx_finish(&j,false));equal(live,"old");clear_job(&j);
- j=make_job();assert(tx_begin(&j));assert(extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/"));equal(live,"old");assert(tx_publish(&j));assert(tx_finish(&j,true));equal(live,"new");clear_job(&j);
+ JobStep step={0};j=make_job();assert(tx_begin(&j));assert(!extract(&j,&step,"bad.tar",NULL,"sdmc:/3ds/",false));assert(tx_finish(&j,false));equal(live,"old");assert(!path_exists("sdmc:/escape"));clear_job(&j);
+ j=make_job();assert(tx_begin(&j));j.cancel=true;assert(!extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/",false));assert(tx_finish(&j,false));equal(live,"old");clear_job(&j);
+ j=make_job();assert(tx_begin(&j));assert(extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/",false));equal(live,"old");assert(tx_publish(&j));assert(tx_finish(&j,true));equal(live,"new");clear_job(&j);
+ // Authenticated personal archives fill missing files and preserve existing copies.
+ j=make_job();assert(tx_begin(&j));
+ assert(extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/",true));assert(!tx_find(live));
+ assert(extract(&j,&step,"good.tar",NULL,"sdmc:/vb/",true));assert(tx_find("sdmc:/vb/demo.3dsx")->personal);
+ assert(tx_publish(&j));assert(tx_finish(&j,true));equal(live,"new");clear_job(&j);
  // A valid entry followed by a corrupted archive header must fail the whole extraction.
  FILE*f=fopen("truncated.tar","wb");FILE*in=fopen("good.tar","rb");char bytes[1200];size_t n=fread(bytes,1,sizeof bytes,in);assert(n==sizeof bytes);fclose(in);assert(fwrite(bytes,1,n,f)==n);fclose(f);
- j=make_job();assert(tx_begin(&j));assert(!extract(&j,&step,"truncated.tar",NULL,"sdmc:/3ds/"));assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);
+ j=make_job();assert(tx_begin(&j));assert(!extract(&j,&step,"truncated.tar",NULL,"sdmc:/3ds/",false));assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);
  // Bind digest to original asset filename, not merely any matching hash line.
  App app={.id="demo",.repo="example/demo"};app.j=json_loads("{\"install\":{\"3dsx\":[{\"type\":\"downloadRelease\",\"output\":\"/3ds/demo.3dsx\",\"asset\":\"binary\"}]}}",0,NULL);
  json_t*rel=json_loads("{\"assets\":{\"binary\":{\"name\":\"original.3dsx\"}}}",0,NULL);
@@ -86,7 +91,7 @@ int main(void) {
  // Main-thread record failure produces negative acknowledgment for worker rollback.
  jobs[0].commit_pending=true;jobs[0].commit_ack=false;host_commit_ok=false;install_poll(NULL);assert(jobs[0].commit_ack&&!jobs[0].commit_ok);host_commit_ok=true;
  // Inject a mid-extraction short write and a final promotion failure.
- j=make_job();assert(tx_begin(&j));host_write_budget=4;assert(!extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/"));host_write_budget=-1;assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);
+ j=make_job();assert(tx_begin(&j));host_write_budget=4;assert(!extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/",false));host_write_budget=-1;assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);
  j=make_job();assert(tx_begin(&j));stage(&j,live,"replacement");host_rename_calls=0;host_rename_fail_at=2;assert(!tx_publish(&j));host_rename_fail_at=0;assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);
  // Real run() + install_poll() on a failed durable metadata commit restores published files.
  assert(copy_file("good.tar","sdmc:/source.tar"));
@@ -101,7 +106,7 @@ int main(void) {
  memset(full,0,sizeof *full);full->app=&app;full->uninstall=true;full->record=json_incref(record);run_uninstall(full);assert(full->state==JOB_FAILED);equal(live,"old-again");equal("sdmc:/3ds/user.dat","user-save");clear_job(full);
  host_commit_ok=true;memset(full,0,sizeof *full);full->app=&app;full->uninstall=true;full->record=json_incref(record);run_uninstall(full);assert(full->state==JOB_DONE);assert(!path_exists(live));equal("sdmc:/3ds/user.dat","user-save");assert(full->warnings==1);clear_job(full);json_decref(record);json_decref(app.j);
  // Mid-entry cancellation leaves the previous installed bytes intact.
- put(live,"keep");j=make_job();assert(tx_begin(&j));host_cancel_on_write=&j;assert(!extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/"));assert(tx_finish(&j,false));equal(live,"keep");clear_job(&j);
+ put(live,"keep");j=make_job();assert(tx_begin(&j));host_cancel_on_write=&j;assert(!extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/",false));assert(tx_finish(&j,false));equal(live,"keep");clear_job(&j);
  // Mocked AM: reject an external existing title before AM overwrite when its original CIA is unavailable.
  j=make_job();assert(tx_begin(&j));stage(&j,"sdmc:/candidate.cia","package");strcpy(tx.cia_path,"sdmc:/candidate.cia");host_title=0x0004000012345600ULL;host_am_starts=0;assert(!cia_prepare(&j));assert(!host_am_starts);assert(tx_finish(&j,false));clear_job(&j);
  // Mocked AM: new-title rollback removes only this transaction's title/cache.

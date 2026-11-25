@@ -182,7 +182,7 @@ static void search_and_releases(void) {
     CHECK(catalog_search("  ZÉLDA  ",out,512)>0);same(out[0]->id,"alttp");
     char *a=search_normalize("ÉCOLE JOÃO ПрИВЕТ が 한글"),*b=search_normalize(" école joão привет が 한글 ");same(a,b);free(a);free(b);
     App x={.id="release",.j=J("{\"releases\":{\"stable\":{\"tag\":\"v1\",\"date\":\"2026-01-01\"},\"experimental\":{\"tag\":\"v2\",\"date\":\"2026-02-01\"}},\"install\":{\"3dsx\":[{\"type\":\"downloadUrl\",\"size\":100},null,{}, {\"type\":\"downloadUrl\",\"size\":-5}]}}")};
-    CHECK(app_has_experimental(&x));CHECK(app_release_experimental(&x,app_release(&x,true)));
+    CHECK(app_has_channel_choice(&x));CHECK(app_has_experimental(&x));CHECK(app_release_experimental(&x,app_release(&x,true)));
     CHECK(app_download_size(&x,true,false)==100);
     json_t *rels=json_object_get(x.j,"releases"),*ex=json_object_get(rels,"experimental");
     json_object_del(ex,"date");CHECK(!app_has_experimental(&x));same(str(app_release(&x,true),"tag"),"v1");
@@ -191,7 +191,7 @@ static void search_and_releases(void) {
     CHECK(installed_commit(&x,"v2",true,false,NULL,NULL));S.experimental=false;CHECK(app_status(&x)==ST_INSTALLED);
     json_object_set_new(ex,"tag",json_string("v3"));CHECK(app_status(&x)==ST_UPDATE);
     busy=true;CHECK(app_status(&x)==ST_BUSY);busy=false;x.dev=true;CHECK(app_status(&x)==ST_DEV);x.dev=false;
-    json_object_set_new(rels,"stable",json_null());CHECK(app_has_experimental(&x));same(str(app_release(&x,false),"tag"),"v3");
+    json_object_set_new(rels,"stable",json_null());CHECK(!app_has_channel_choice(&x));CHECK(app_has_experimental(&x));same(str(app_release(&x,false),"tag"),"v3");
     json_object_set_new(ex,"tag",json_null());CHECK(!app_release(&x,true));CHECK(app_status(&x)==ST_INSTALLED);
     CHECK(!app_release(NULL,true));CHECK(!app_has_format(NULL,false));CHECK(!app_asset(NULL,NULL,NULL));
     json_decref(x.j);

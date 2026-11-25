@@ -1522,6 +1522,10 @@ bool app_has_experimental(App *a) {
     return iso_date(ed) && iso_date(sd) && strcmp(ed, sd) > 0;
 }
 
+bool app_has_channel_choice(App *a) {
+    return app_has_experimental(a) && app_release(a, false) != app_release(a, true);
+}
+
 bool app_release_experimental(App *a, json_t *rel) {
     return a && rel && rel == json_object_get(json_object_get(a->j, "releases"), "experimental");
 }

@@ -69,6 +69,7 @@ int catalog_search(const char *query, App **out, int max);
 /** Release for the channel (experimental only when newer than stable). NULL = none. */
 json_t *app_release(App *a, bool experimental);
 bool app_has_experimental(App *a);
+bool app_has_channel_choice(App *a);
 /** Actual selected channel, including stable/experimental fallback. */
 bool app_release_experimental(App *a, json_t *release);
 json_t *app_install_steps(App *a, bool cia);

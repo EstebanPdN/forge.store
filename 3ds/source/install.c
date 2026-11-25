@@ -1059,7 +1059,7 @@ static bool pattern_match(const char *re, const char *s) {
     return false;
 }
 
-static bool extract(Job *j, JobStep *st, const char *archive_path, const char *input, const char *out) {
+static bool extract(Job *j, JobStep *st, const char *archive_path, const char *input, const char *out, bool personal) {
     if (!archive_path || !safe_path(out)) return fail(j, "Invalid archive path");
     struct archive *a = archive_read_new();
     if (!a) return fail(j, "Out of memory");
@@ -1096,6 +1096,16 @@ static bool extract(Job *j, JobStep *st, const char *archive_path, const char *i
         if (!path_ok || !safe_path(dest) || (!to_dir && !folder && files)) {
             ok = fail(j, "Archive output ambiguous or path too long"); break;
         }
+        if (personal) {
+            struct stat existing;
+            if (!stat(dest,&existing)) {
+                if (!S_ISREG(existing.st_mode) || archive_read_data_skip(a)<ARCHIVE_OK) {
+                    ok=fail(j,"Cannot preserve existing personal resource"); break;
+                }
+                files++; continue;
+            }
+            if (errno!=ENOENT) {ok=fail(j,"Cannot inspect personal resource");break;}
+        }
         la_int64_t size = archive_entry_size(e);
         if (size < 0 || (u64)size > FILE_LIMIT || !free_space((u64)size)) {
             ok = fail(j, "Insufficient SD space or archive entry too large"); break;
@@ -1103,6 +1113,7 @@ static bool extract(Job *j, JobStep *st, const char *archive_path, const char *i
         TxFile *entry = tx_file(j, dest);
         if (!entry) { ok = false; break; }
         entry->deleted = false;
+        entry->personal = personal;
         FILE *f = fopen(entry->stage, "wb");
         if (!f) { ok = fail(j, "Cannot stage archive entry"); break; }
         la_ssize_t n = 0;
@@ -1147,7 +1158,11 @@ static bool run_step(Job *j, JobStep *st) {
     }
     if (!strcmp(type, "downloadUrl")) {
         bool personal=json_is_true(json_object_get(s,"personal"));
-        if(personal) {
+        const char *unpack=str(s,"unpackTo");
+        if(unpack && (!personal || !json_object_get(s,"zipMember") ||
+            !sd_path(path2,sizeof path2,unpack) || strncmp(path2,"sdmc:/3ds/",10) ||
+            strlen(path2)<=10 || path2[strlen(path2)-1]!='/')) return fail(j,"Invalid personal archive destination");
+        if(personal && !unpack) {
             if(!sd_path(path,sizeof path,str(s,"output")))return fail(j,"Invalid personal-resource path");
             struct stat existing;
             if(!stat(path,&existing)) {
@@ -1192,6 +1207,7 @@ static bool run_step(Job *j, JobStep *st) {
             }
         }
         if (!sd_path(path, sizeof path, str(s, "output"))) return fail(j, "Invalid or oversized catalog path");
+        if(unpack && strncmp(path,DATA_DIR "/tmp/",strlen(DATA_DIR "/tmp/")))return fail(j,"Invalid personal archive staging path");
         json_int_t size = json_integer_value(json_object_get(s, "size"));
         if (size < 0) return fail(j, "Invalid download size");
         json_t *zip = json_object_get(s,"zipMember");
@@ -1199,6 +1215,7 @@ static bool run_step(Job *j, JobStep *st) {
         if(zip&&(!str(s,"sha256")||!forge_zip_member(zip,&member)))return fail(j,"Invalid encrypted resource");
         if(!download_to_file(j, st, url, path, (u64)size, zip?&member:NULL))return false;
         if(!verify_download(j,st,path,str(s,"sha256")))return false;
+        if(unpack)return extract(j,st,tx_read(path),NULL,path2,true);
         if(personal){TxFile *e=tx_find(path);if(!e)return fail(j,"Missing personal-resource transaction");e->personal=true;}
         return true;
     }
@@ -1266,7 +1283,7 @@ static bool run_step(Job *j, JobStep *st) {
     if (!strcmp(type, "extractFile")) {
         if (!sd_path(path, sizeof path, str(s, "file"))) return fail(j, "Invalid or oversized catalog path");
         if (!sd_path(path2, sizeof path2, str(s, "output"))) return fail(j, "Invalid or oversized catalog path");
-        return extract(j, st, tx_read(path), str(s, "input"), path2);
+        return extract(j, st, tx_read(path), str(s, "input"), path2,false);
     }
     if (!strcmp(type, "installCia")) {
         if (!sd_path(path, sizeof path, str(s, "file"))) return fail(j, "Invalid or oversized catalog path");
@@ -1656,7 +1673,7 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
     if (install_busy(a))
         return install_job(a);
     if(!app_has_format(a,cia)){toast("This format is unavailable on this console",AMBER);return NULL;}
-    if (!json_array_size(script) || json_array_size(script) > 28 || json_is_true(json_object_get(a->j, "nativeUnsupported"))) {
+    if (!json_array_size(script) || json_array_size(script) > INSTALL_MAX_STEPS || json_is_true(json_object_get(a->j, "nativeUnsupported"))) {
         toast(S.lang == 0 ? "Este instalador necesita opciones adicionales." : "This installer requires additional choices.", AMBER);
         return NULL;
     }
@@ -1734,8 +1751,6 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
     size_t i;
     json_t *s;
     json_array_foreach(j->script, i, s) {
-        if (j->nsteps >= 28)
-            break;
         const char *type = str(s, "type");
         const char *key = step_key(type);
         if (!key)

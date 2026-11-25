@@ -283,7 +283,15 @@ static void requirement_check_start(App *a,json_t *req,bool install) {
 }
 
 static void status_icon(App *a, float cx, float cy, float al) {
-    switch (app_status_view(a)) {
+    AppStatus status = app_status_view(a);
+    if (app_release_experimental(a, app_release(a, false))) {
+        // Keep install/update marks visible alongside the public beta.
+        float y = status == ST_INSTALLED || status == ST_UPDATE || status == ST_NEEDS_FILE ? cy - 36 : cy;
+        circle(cx, y, 7.5f, C(TH.bg, al));
+        circle(cx, y, 6.5f, C(0x087e90, al));
+        draw_icon("settings", cx, y, 10, C(0xffffff, al));
+    }
+    switch (status) {
     case ST_INSTALLED:
         circle(cx, cy, 7.5f, C(TH.bg, al)), circle(cx, cy, 6, C(MINT, al)), draw_icon("check", cx, cy, 9, C(0xffffff, al));
         break;
@@ -1273,7 +1281,7 @@ static void open_detail(void) {
     news_open = 0; requirement_tool_count=0;
     sheet_on=false; uninstall_on=false;
     sheet_cia = S.cia && app_has_format(dapp, true) ? true : !app_has_format(dapp, false);
-    sheet_exp = S.experimental && app_has_experimental(dapp);
+    sheet_exp = app_release_experimental(dapp, app_release(dapp, S.experimental));
     app_request_shots(dapp);
     sd_space();
     next_scene = SC_DETAIL;
@@ -1368,7 +1376,7 @@ static bool sheet_compatible(void) {
     json_t *rel=app_release(dapp,sheet_exp), *old=json_object_get(rel,"o3ds");
     return !json_is_true(json_object_get(dapp->j,"nativeUnsupported")) && (IS_NEW3DS || json_is_true(old) || (!json_is_false(old) && dapp->old_ok));
 }
-static float sheet_format_y(void) { return 54+(app_has_experimental(dapp)?88:0); }
+static float sheet_format_y(void) { return 54+(app_has_channel_choice(dapp)?88:0); }
 
 static void start_install(void) {
     if (!sheet_compatible()) { sfx("error"); toast(T("confirm.blockedNew"),DANGER); return; }
@@ -1482,7 +1490,7 @@ static void detail_update(void) {
         return;
     }
     if (sheet_on) {
-        int opts = (app_has_experimental(dapp) ? 1 : 0) + (app_has_format(dapp, true) && app_has_format(dapp, false) ? 1 : 0);
+        int opts = (app_has_channel_choice(dapp) ? 1 : 0) + (app_has_format(dapp, true) && app_has_format(dapp, false) ? 1 : 0);
         if (IN.down & KEY_B)
             close_sheet(), sfx("back");
         else if (IN.down & KEY_A)
@@ -1490,7 +1498,7 @@ static void detail_update(void) {
         else if (IN.repeat & (KEY_UP | KEY_DOWN) && opts > 1)
             sheet_focus = (int)clampf(sheet_focus + (IN.repeat & KEY_DOWN ? 1 : -1), 0, opts-1), sfx("move");
         else if (IN.down & (KEY_LEFT | KEY_RIGHT | KEY_L | KEY_R)) {
-            int f = app_has_experimental(dapp) ? sheet_focus : 1;
+            int f = app_has_channel_choice(dapp) ? sheet_focus : 1;
             if (f == 0)
                 sheet_exp = (IN.down & (KEY_RIGHT | KEY_R)) != 0;
             else if (app_has_format(dapp, true) && app_has_format(dapp, false))
@@ -1498,7 +1506,7 @@ static void detail_update(void) {
             sfx("toggle");
         }
         float cy = 54;
-        if (app_has_experimental(dapp)) {
+        if (app_has_channel_choice(dapp)) {
             for (int c = 0; c < 2; c++)
                 if (hit(16,cy+c*44,288,38)) {
                     sheet_exp = c == 1;
@@ -1533,7 +1541,7 @@ static void detail_update(void) {
     if(dtab==2 && IN.down & KEY_SELECT) { detail_option_focus=(detail_option_focus+1)%2; dscroll=dscroll_target=0; }
     if(dtab==2 && detail_option_focus>=0 && IN.repeat & (KEY_LEFT|KEY_RIGHT)) {
         if(detail_option_focus==0 && app_has_format(dapp,true) && app_has_format(dapp,false)) sheet_cia=(IN.repeat&KEY_LEFT)!=0;
-        if(detail_option_focus==1 && app_has_experimental(dapp)) sheet_exp=(IN.repeat&KEY_RIGHT)!=0;
+        if(detail_option_focus==1 && app_has_channel_choice(dapp)) sheet_exp=(IN.repeat&KEY_RIGHT)!=0;
         sfx("toggle");
     } else if (IN.repeat & (KEY_LEFT | KEY_RIGHT))
         detail_next_shot(IN.repeat & KEY_RIGHT ? 1 : -1), sfx_pitch("move", 2);
@@ -1953,7 +1961,7 @@ static float detail_install(float y, float a) {
     y+=2;
     for(int opt=0;opt<2;opt++) {
         if(opt==0 && !(app_has_format(dapp,true) && app_has_format(dapp,false))) continue;
-        if(opt==1 && !app_has_experimental(dapp)) continue;
+        if(opt==1 && !app_has_channel_choice(dapp)) continue;
         const char *left="CIA · HOME Menu",*right="3DSX · Homebrew Launcher";char stable[128],experimental[128];
         if(opt){snprintf(stable,sizeof stable,"%s %s",T("channel.stable"),json_string_value(json_object_get(app_release(dapp,false),"tag")));snprintf(experimental,sizeof experimental,"%s %s",T("channel.experimental"),json_string_value(json_object_get(app_release(dapp,true),"tag")));left=stable;right=experimental;}
         // Reserve the rendered uppercase label, including its letter spacing.
@@ -2127,7 +2135,7 @@ static void sheet_draw(float a) {
     snprintf(folder,sizeof folder,"sdmc:%s",dapp->folder?dapp->folder:"/3ds/");
     text_fit(folder,53,33+dy,9,251,C(TH.ink_faint,a));
     float cy=54+dy;
-    if(app_has_experimental(dapp)) {
+    if(app_has_channel_choice(dapp)) {
         for(int c=0;c<2;c++) {
             bool on=sheet_exp==(c==1);
             json_t *rel=json_object_get(json_object_get(dapp->j,"releases"),c?"experimental":"stable");

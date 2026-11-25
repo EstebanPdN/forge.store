@@ -205,6 +205,11 @@ static void tidy_homebrew(void) {
 }
 static void run(void *unused) {
     tidy_homebrew();
+    // The public update feed cannot supply a replacement for a personal edition.
+    if (access("romfs:/personal-assets.fme", F_OK) == 0) {
+        publish(UPDATE_CURRENT);
+        return;
+    }
     CURL *c = request(UPDATE_BASE "update.json");
     if (!c) {
         publish(UPDATE_OFFLINE);

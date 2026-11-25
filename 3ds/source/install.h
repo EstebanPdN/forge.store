@@ -16,6 +16,8 @@ typedef struct {
     bool bytes;  // a download: progress is in bytes
 } JobStep;
 
+#define INSTALL_MAX_STEPS 64
+
 typedef struct {
     App *app;
     bool cia, experimental, reported, uninstall;
@@ -27,8 +29,8 @@ typedef struct {
     volatile JobState state;
     volatile float progress, speed;
     volatile u64 done_bytes, total_bytes;
-    JobStep steps[28];
-    float weight[28], wtotal;  // share of the total time each step takes
+    JobStep steps[INSTALL_MAX_STEPS];
+    float weight[INSTALL_MAX_STEPS], wtotal;  // share of the total time each step takes
     int nsteps;
     volatile int cur;
     volatile bool cancel;
