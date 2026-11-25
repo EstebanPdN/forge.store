@@ -14,6 +14,8 @@ jobs:
           python-version: '3.12'
       - run: python3 tools/check-repository.py
       - run: python3 -m compileall -q tools 3ds/tools 3ds/tests
+      - name: Install native test dependencies
+        run: sudo apt-get install -y --no-install-recommends libvorbis-dev libogg-dev libjansson-dev zlib1g-dev
       - name: Native audio headroom and pixel icon geometry
         run: |
           python3 3ds/tests/run-audio-gain.py
@@ -23,7 +25,6 @@ jobs:
           python3 3ds/tests/run-reader-cache-fs.py
       - name: Recognizing installed apps and ROMs (production detect.c, rom_find.c)
         run: |
-          sudo apt-get install -y --no-install-recommends libjansson-dev zlib1g-dev > /dev/null
           python3 3ds/tests/run-detect.py
           python3 3ds/tests/run-rom-find.py
       - name: JavaScript syntax
