@@ -30,8 +30,7 @@ int main(int argc,char **argv) {
     assert(store_update_state()!=UPDATE_CHECKING);
     if(store_update_state()==UPDATE_AVAILABLE){
         assert(*store_update_version());
-        if(strcmp(argv[1],"bad-version"))assert(!strcmp(store_update_version(),"2026.11.12.3"));
-        else {char fallback[40];snprintf(fallback,sizeof fallback,"%lld",(long long)STORE_BUILD+1);assert(!strcmp(store_update_version(),fallback));}
+        assert(!strcmp(store_update_version(),hb?"2026.11.12.3":"1.10"));
         svcSleepThread(100000000);
         assert(store_update_state()==UPDATE_AVAILABLE);
         assert(access(DATA_DIR "/store-update.part",F_OK)&&!starts&&!writes);

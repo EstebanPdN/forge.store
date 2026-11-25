@@ -11,19 +11,18 @@
 ## Install the CIA (recommended)
 
 1. Open **FBI → Remote Install → Scan QR Code**.
-2. Scan the QR code in the [README](../README.md#download-and-installation). It points to
-   `builds/3ds/forge-store.cia` in this repository.
+2. Scan the QR code in the [README](../README.md#download-and-installation). It downloads the CIA from the v1.4.1 release.
 3. Confirm the installation and return to the HOME Menu. **forge.store** appears with its
    own banner.
 
-You can also download [forge-store.cia](https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.cia),
-check it against [SHA256SUMS](../builds/3ds/SHA256SUMS), copy it to the SD card and install it
+You can also download [forge-store.cia](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.1/forge-store-v1.4.1.cia),
+check it against [SHA256SUMS.txt](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.1/SHA256SUMS.txt), copy it to the SD card and install it
 from FBI. The CIA identity never changes: product `CTR-H-FRGS`, unique ID `0xF0F5E`.
 
 ## Install the 3DSX
 
-Copy [forge-store.3dsx](https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.3dsx)
-to `sdmc:/3ds/forge-store/` and open it from the Homebrew Launcher.
+Copy [forge-store.3dsx](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.1/forge-store-v1.4.1.3dsx)
+as `sdmc:/3ds/forge-store/forge-store.3dsx` and open it from the Homebrew Launcher.
 
 ## First start
 
@@ -90,7 +89,7 @@ locally. The orange **forge mode enabled** indicator stays beside the console mo
 restarting. The code and personal download addresses never appear in logs.
 
 For configured ports, installation downloads missing personal files through the same
-size- and hash-checked transaction. Existing files are preserved. New personal files roll
+size- and hash-checked transaction. Matching files are reused. When a personal resource has changed, the installer keeps the previous file beside its replacement with a numbered .forge-backup suffix. New personal files roll
 back with a failed install but remain on the SD card when the application is uninstalled.
 If the authenticated manifest supplies a private build for a development entry, its
 detail page shows the version and offers the CIA. Choosing Download fetches that port's

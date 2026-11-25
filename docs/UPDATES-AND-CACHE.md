@@ -5,9 +5,10 @@
 The native store checks for its own updates on every launch, before the usual introduction.
 This check is always enabled. It is separate from game releases and the Store resources package.
 
-`store_update.c` fetches the compact `builds/3ds/update.json` manifest over verified HTTPS from
-`EstebanPdN/forge.store`. The manifest and binaries are ordinary repository files, not GitHub
-releases. A confirmed current build shows a success message; an unavailable or invalid response
+CIA installations check the latest GitHub release of `EstebanPdN/forge.store` and match
+`forge-store-v<version>.cia` to its numeric release tag. The release asset supplies the size
+and SHA-256. Public 3DSX installations use the compact `builds/3ds/update.json` manifest.
+A confirmed current build shows a success message; an unavailable or invalid response
 continues to the introduction without claiming that the installation is up to date.
 
 - Metadata is limited to 16 KiB. The network request has a 2.5-second connection timeout and
@@ -15,7 +16,7 @@ continues to the introduction without claiming that the installation is up to da
   even if the platform resolver has not returned. A late response cannot start an update.
 - The manifest must contain a positive integer `store_build`, a bounded file size and a
   lowercase SHA-256 digest. Download destinations and binary URLs are fixed in the application.
-- Only a larger build number offers an update. The touch screen shows a bounded `version`
+- CIA updates require a higher numeric release version. Public 3DSX updates require a larger build number. The touch screen shows a bounded `version`
   label, falling back to the numeric build if the label is absent or invalid. No binary request,
   staging file or installation starts before **Yes**. **No** fades both screens to black and
   closes the store. This decision has no timeout; HOME/exit can cancel the waiting worker.

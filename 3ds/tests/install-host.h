@@ -162,13 +162,16 @@ static Result AM_GetTitleInfo(int m,u32 n,u64*t,AM_TitleInfo*i) {host_am_load();
 static Result AM_DeleteUserTitle(int m,u64 t) {host_mutation();host_am_load();if(t==host_title)host_title=0;host_am_save();return 0;}
 static Result AM_StartCiaInstallOverwrite(Handle*h,int m) {host_am_overwrites++;host_am_starts++;host_am_head_len=0;*h=1;return host_am_fail?-1:0;}
 static Result AM_StartCiaInstall(int m,Handle*h) {host_am_starts++;host_am_head_len=0;*h=1;return host_am_fail?-1:0;}
+static void (*host_am_observe)(bool finishing);
 static Result FSFILE_Write(Handle h,u32*w,u64 off,const void*b,size_t n,int flags) {
+ if(host_am_observe)host_am_observe(false);
  if (off==0) {host_am_head_len=n<sizeof host_am_head?n:sizeof host_am_head;memcpy(host_am_head,b,host_am_head_len);}
  *w=(u32)n;return 0;
 }
 static Result AM_CancelCIAInstall(Handle h) {return 0;}
 // AM commits atomically: the title changes only once the install finishes.
 static Result AM_FinishCiaInstall(Handle h) {
+ if(host_am_observe)host_am_observe(true);
  host_mutation();
  if (host_am_fail_finish) return -1;
  u64 t;uint16_t v;host_cia_parse(host_am_head,host_am_head_len,&t,&v);

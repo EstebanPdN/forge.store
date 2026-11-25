@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/EstebanPdN/forge.store/releases/tag/v1.4"><img src="docs/badges/status.svg" alt="Release v1.4" height="22"></a>
+  <a href="https://github.com/EstebanPdN/forge.store/releases/tag/v1.4.1"><img src="docs/badges/status.svg" alt="Release v1.4.1" height="22"></a>
   <a href="docs/INSTALLING.md"><img src="docs/badges/platform.svg" alt="Old and New Nintendo 3DS" height="22"></a>
   <a href="docs/MEDIA.md"><img src="docs/badges/resources.svg" alt="Store resources: 16.04 MB" height="22"></a>
   <a href="#license-and-legal-notice"><img src="docs/badges/license.svg" alt="Component-specific licenses" height="22"></a>
@@ -48,7 +48,7 @@ files tell you exactly which file to place on the SD card.
   </tr>
   <tr>
     <td width="50%" valign="top"><strong>Look before you install</strong><br>A native GitHub reader for READMEs, releases, images and repository details.</td>
-    <td width="50%" valign="top"><strong>Download, install, play</strong><br>Download queue, verified installs that survive a power cut, uninstall, SD browser and direct launch.</td>
+    <td width="50%" valign="top"><strong>Download, install, play</strong><br>Follow CIA downloads and installation by bytes written. Updates reuse verified files on the SD card.</td>
   </tr>
   <tr>
     <td width="50%" valign="top"><strong>Made for two screens</strong><br>400×240 above, 320×240 touch below, crisp native type, light and dark themes and eight languages.</td>
@@ -61,25 +61,25 @@ files tell you exactly which file to place on the SD card.
 ## Download and installation
 
 <p>
-  <a href="https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.cia"><img src="docs/images/download-cia.svg" alt="Download forge.store CIA" width="210" height="46"></a>
-  <a href="https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/forge-store.3dsx"><img src="docs/images/download-3dsx.svg" alt="Download Homebrew Launcher 3DSX" width="210" height="46"></a>
+  <a href="https://github.com/EstebanPdN/forge.store/releases/download/v1.4.1/forge-store-v1.4.1.cia"><img src="docs/images/download-cia.svg" alt="Download forge.store CIA" width="210" height="46"></a>
+  <a href="https://github.com/EstebanPdN/forge.store/releases/download/v1.4.1/forge-store-v1.4.1.3dsx"><img src="docs/images/download-3dsx.svg" alt="Download Homebrew Launcher 3DSX" width="210" height="46"></a>
 </p>
 
-**Stable: [v1.4](https://github.com/EstebanPdN/forge.store/releases/tag/v1.4).**
+**[Download v1.4.1](https://github.com/EstebanPdN/forge.store/releases/tag/v1.4.1)** · [Changelog](CHANGELOG.md#forgestore-141)
 
 <img align="right" src="docs/images/forge-store-qr.png" alt="QR code for the forge.store CIA" width="160">
 
 1. **CIA:** open FBI, choose **Remote Install → Scan QR Code** and scan the code on the
    right, or copy the CIA to your SD card and install it from FBI.
-2. **3DSX:** copy `forge-store.3dsx` to `sdmc:/3ds/forge-store/` and open it from the
+2. **3DSX:** copy `forge-store.3dsx` as `sdmc:/3ds/forge-store/forge-store.3dsx` and open it from the
    Homebrew Launcher.
 3. Launch **forge.store**, choose a theme and enter the store.
 4. With Wi-Fi on, the **Store resources** package (16.04 MB of trailers) downloads in the
    background. You can browse and install while it finishes.
 
 Keep at least 100 MB free for the store and its resources; each game needs its own space.
-Compare your download with [SHA256SUMS](builds/3ds/SHA256SUMS) before installing.
-The buttons and QR code always point to the newest build in this repository. Each
+Compare your download with [SHA256SUMS.txt](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.1/SHA256SUMS.txt) before installing.
+The buttons and QR code above install v1.4.1. Each
 [GitHub release](https://github.com/EstebanPdN/forge.store/releases) keeps its own CIA, 3DSX and QR code.
 
 **Updates are built in.** Every launch checks for a newer store build. Choose **Yes** to

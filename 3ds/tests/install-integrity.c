@@ -50,8 +50,40 @@ static void test_forge_zip(void) {
     forge_zip_end(&stream);
     fclose(file);
 }
+static Job progress_job;
+static int writes;
+static void observe_am(bool finish) {
+    if(finish){
+        assert(job_percent(&progress_job)==99 && progress_job.phase==PHASE_FINISH);
+    }else{
+        assert(progress_job.phase==PHASE_WRITE);
+        assert(job_percent(&progress_job)==(writes++ ? 74 : 50));
+    }
+}
+static void test_progress(void) {
+    progress_job=(Job){.cia=true,.state=JOB_RUNNING,.phase=PHASE_STEPS,.total_bytes=100};
+    JobStep step={0};Dl dl={.job=&progress_job,.step=&step,.expected=100,.written=50};
+    assert(!on_progress(&dl,100,50,0,0) && job_percent(&progress_job)==25);
+    progress_job.unknown_size=true;progress_job.cia_percent=-1;
+    assert(!on_progress(&dl,0,50,0,0) && job_percent(&progress_job)==-1);
+    FILE *f=fopen("half.cia","wb");assert(f && !fseek(f,524287,SEEK_SET) && fputc(0,f)==0 && !fclose(f));
+    host_am_observe=observe_am;
+    assert(install_cia(&progress_job,&step,"half.cia",false) && writes==2);
+    assert(job_percent(&progress_job)==99);
+    writes=0;host_am_fail_finish=true;
+    assert(!install_cia(&progress_job,&step,"half.cia",false));progress_job.state=JOB_FAILED;
+    assert(job_percent(&progress_job)==99);
+    host_am_fail_finish=false;host_am_observe=NULL;progress_job.cancel=true;
+    assert(!install_cia(&progress_job,&step,"half.cia",false));progress_job.state=JOB_CANCELLED;
+    assert(job_percent(&progress_job)<100);
+    progress_job=(Job){.state=JOB_RUNNING,.nsteps=1,.cur=0,.weight={1},.wtotal=1,.phase=PHASE_FINISH};
+    progress_job.steps[0].progress=1;
+    assert(job_percent(&progress_job)==99 && !strcmp(job_activity(&progress_job),"install.finalizing"));
+    progress_job.state=JOB_DONE;assert(job_percent(&progress_job)==100);
+    host_title=0;
+}
 int main(void) {
- test_forge_zip();
+ test_forge_zip();test_progress();
  Job rate_job={0};JobStep rate_step={0};
  Dl rate={.job=&rate_job,.step=&rate_step,.expected=100,.written=90,.last_bytes=70};
  rate.last_tick=svcGetSystemTick()-SYSCLOCK_ARM11;
@@ -75,14 +107,37 @@ int main(void) {
  assert(extract(&j,&step,"good.tar",NULL,"sdmc:/3ds/",true));assert(!tx_find(live));
  assert(extract(&j,&step,"good.tar",NULL,"sdmc:/vb/",true));assert(tx_find("sdmc:/vb/demo.3dsx")->personal);
  assert(tx_publish(&j));assert(tx_finish(&j,true));equal(live,"new");clear_job(&j);
+ // A previous edition has already unpacked the bundle. One missing or changed member forces repair.
+ j=make_job();assert(tx_begin(&j));char digest[65],source[PATH_CAP];
+ assert(sha256_file(live,digest,&step,&j.cancel));
+ step.raw=json_pack("{s:s,s:b,s:s,s:s,s:{s:s,s:s}}","type","downloadUrl","personal",1,
+                    "output","%TMP%/bundle.zip","unpackTo","/vb/","members","demo.3dsx",digest,"data/file.bin",digest);
+ assert(local_download(&j,&step,source));put("sdmc:/vb/demo.3dsx","mod");
+ assert(!local_download(&j,&step,source));assert(extract(&j,&step,"good.tar",NULL,"sdmc:/vb/",true));
+ assert(tx_publish(&j));assert(tx_finish(&j,true));equal("sdmc:/vb/demo.3dsx","new");equal("sdmc:/vb/demo.3dsx.forge-backup-1","mod");
+ assert(local_download(&j,&step,source));assert(!remove("sdmc:/vb/data/file.bin"));assert(!local_download(&j,&step,source));
+ json_decref(step.raw);step.raw=NULL;clear_job(&j);
  // A valid entry followed by a corrupted archive header must fail the whole extraction.
  FILE*f=fopen("truncated.tar","wb");FILE*in=fopen("good.tar","rb");char bytes[1200];size_t n=fread(bytes,1,sizeof bytes,in);assert(n==sizeof bytes);fclose(in);assert(fwrite(bytes,1,n,f)==n);fclose(f);
  j=make_job();assert(tx_begin(&j));assert(!extract(&j,&step,"truncated.tar",NULL,"sdmc:/3ds/",false));assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);
  // Bind digest to original asset filename, not merely any matching hash line.
  App app={.id="demo",.repo="example/demo"};app.j=json_loads("{\"install\":{\"3dsx\":[{\"type\":\"downloadRelease\",\"output\":\"/3ds/demo.3dsx\",\"asset\":\"binary\"}]}}",0,NULL);
+ // Even a release marked Old-compatible cannot override a New-only catalog entry.
+ json_object_set_new(app.j,"releases",json_pack("{s:{s:s,s:b}}","stable","tag","v1","o3ds",1));
+ worker=(Thread)1;
+ IS_NEW3DS=false;
+ assert(!install_start(&app,false,false) && njobs==0);
+ IS_NEW3DS=true;
+ Job *compatible=install_start(&app,false,false);
+ assert(compatible && compatible->state==JOB_QUEUED);
+ json_decref(compatible->release);json_decref(compatible->script);
+ memset(compatible,0,sizeof *compatible);njobs=0;worker=NULL;
  json_t*rel=json_loads("{\"assets\":{\"binary\":{\"name\":\"original.3dsx\"}}}",0,NULL);
  j=make_job();j.app=&app;j.release=rel;assert(tx_begin(&j));stage(&j,live,"abc");step.raw=json_loads("{\"type\":\"verifySha256\",\"file\":\"/3ds/demo.3dsx\"}",0,NULL);
  strcpy(sums,"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad other.3dsx\n");assert(!run_step(&j,&step));equal(live,"new");
+ json_t *binary=json_object_get(json_object_get(rel,"assets"),"binary");json_object_set_new(binary,"sumsName",json_string("other.3dsx"));
+ assert(!run_step(&j,&step));json_object_set_new(binary,"sha256",json_string("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad"));
+ assert(run_step(&j,&step));
  strcpy(sums,"ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad *original.3dsx\r\n");assert(run_step(&j,&step));j.cancel=true;assert(!run_step(&j,&step));assert(tx_finish(&j,false));equal(live,"new");clear_job(&j);json_decref(step.raw);json_decref(rel);json_decref(app.j);
  // Real write callback rejects size overruns, cancellation and space exhaustion.
  f=tmpfile();Dl d={.f=f,.job=&j,.expected=3};j.cancel=false;assert(on_write("abc",1,3,&d)==3);assert(on_write("x",1,1,&d)==0);j.cancel=true;assert(on_write("",1,0,&d)==0);j.cancel=false;d.expected=0;host_free_space=0;assert(on_write("x",1,1,&d)==0);host_free_space=UINT64_MAX;fclose(f);

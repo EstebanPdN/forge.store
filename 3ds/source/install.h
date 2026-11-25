@@ -7,12 +7,15 @@
 typedef enum { JOB_QUEUED, JOB_RUNNING, JOB_DONE, JOB_FAILED, JOB_CANCELLED } JobState;
 typedef enum { STEP_PENDING, STEP_ACTIVE, STEP_DONE, STEP_WARN, STEP_ERROR } StepState;
 
+typedef enum { PHASE_CHECK, PHASE_STEPS, PHASE_PREPARE, PHASE_WRITE, PHASE_FINISH } InstallPhase;
 typedef struct {
     json_t *raw;
     char label[112];
     char result[112];
     volatile StepState state;
     volatile float progress;
+    int extracted;
+    bool reuse;
     bool bytes;  // a download: progress is in bytes
 } JobStep;
 
@@ -27,6 +30,10 @@ typedef struct {
     bool commit_ok;
     json_t *release, *script;
     volatile JobState state;
+    volatile InstallPhase phase;
+    volatile int cia_percent; // -1 while the download total is unknown
+    bool unknown_size;
+    int last_download;
     volatile float progress, speed;
     volatile u64 done_bytes, total_bytes;
     JobStep steps[INSTALL_MAX_STEPS];
@@ -58,6 +65,8 @@ void install_cancel(Job *j);
 void install_poll(void (*on_done)(Job *));
 /** Overall progress 0..1, including the step in progress. */
 float job_progress(Job *j);
+int job_percent(Job *j);
+const char *job_activity(Job *j);
 void tvars(char *out, size_t n, const char *tmpl, const char *k1, const char *v1, const char *k2, const char *v2);
 
 int install_count(void);

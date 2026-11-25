@@ -1,3 +1,4 @@
+#include "install_rules.h"
 // Catalog, localization, settings and the installed-apps record.
 #include "assets.h"
 #include "forge_mode.h"
@@ -1519,7 +1520,9 @@ bool app_has_experimental(App *a) {
     if (!st) return true;
     const char *ed = json_string_value(json_object_get(ex, "date"));
     const char *sd = json_string_value(json_object_get(st, "date"));
-    return iso_date(ed) && iso_date(sd) && strcmp(ed, sd) > 0;
+    if(!iso_date(ed) || !iso_date(sd))return false;
+    const char *et=json_string_value(json_object_get(ex,"publishedAt")), *st_time=json_string_value(json_object_get(st,"publishedAt"));
+    return strcmp(et && st_time ? et : ed, et && st_time ? st_time : sd)>0;
 }
 
 bool app_has_channel_choice(App *a) {
@@ -1561,7 +1564,7 @@ u32 app_download_size(App *a, bool cia, bool experimental) {
     uint64_t total = 0;
     size_t i; json_t *s;
     json_t *data=forge_mode_data(a->id);
-    json_array_foreach(data,i,s) total+=(uint64_t)forge_wire_size(s);
+    json_array_foreach(data,i,s) if(install_format_matches(s,cia)) total+=(uint64_t)forge_wire_size(s);
     if (total>UINT32_MAX) return UINT32_MAX;
     json_array_foreach(steps, i, s) {
         const char *type = json_string_value(json_object_get(s, "type"));
@@ -1790,11 +1793,51 @@ bool app_requirement_met(App *a,json_t *r){
     return app_requirement_path(r,full,sizeof full)&&nonempty_file(full);
 }
 
+bool app_installed_cia(App *a) {
+    json_t *record = installed_record(a);
+    const char *format = json_string_value(json_object_get(record,"format"));
+    if (format) return !strcmp(format,"cia");
+    return record ? json_is_true(json_object_get(record,"cia")) : a && a->found_title;
+}
+
+// Older records already contain the SHA-256 of the retained CIA or 3DSX.
+bool app_record_outdated(App *a, json_t *record, json_t *release) {
+    const char *version = json_string_value(json_object_get(record,"version"));
+    const char *tag = json_string_value(json_object_get(release,"tag"));
+    if (!version || !tag) return false;
+    if (strcmp(tag,version)) return true;
+    bool cia=app_installed_cia(a);
+    json_t *asset=app_asset(a,release,cia?"cia":"3dsx");
+    const char *want=json_string_value(json_object_get(asset,"sha256"));
+    const char *name=json_string_value(json_object_get(asset,"name"));
+    if(!want || !name || !detect_ends(name,cia?".cia":".3dsx"))return false;
+    char path[512];path[0]=0;
+    if(cia){
+        const char *title=json_string_value(json_object_get(release,"ciaTitle"));
+        if(!title){
+            json_t *v;size_t i;
+            json_array_foreach(json_object_get(record,"files"),i,v){
+                const char *file=json_string_value(v);
+                if(file && !strncmp(file,"title:",6) && strlen(file)==22){title=file+6;break;}
+            }
+        }
+        if(title)snprintf(path,sizeof path,DATA_DIR "/cia-cache/%s.cia",title);
+    }else{
+        size_t i;json_t *s;
+        json_array_foreach(app_install_steps(a,false),i,s){
+            const char *key=json_string_value(json_object_get(s,"asset"));
+            if(key && !strcmp(key,"3dsx"))catalog_sd_path(json_string_value(json_object_get(s,"output")),path,sizeof path);
+        }
+    }
+    const char *got=json_string_value(json_object_get(json_object_get(record,"hashes"),path));
+    return got && strcasecmp(want,got);
+}
+
 json_t *app_missing_requirement(App *a) {
     size_t i; json_t *r;
     if (!a) return NULL;
     json_array_foreach(json_object_get(a->j, "requires"), i, r)
-        if (!app_requirement_met(a, r)) return r;
+        if (install_format_matches(r,app_installed_cia(a)) && !app_requirement_met(a, r)) return r;
     return NULL;
 }
 
@@ -1846,8 +1889,7 @@ AppStatus app_status(App *a) {
     const char *channel = json_string_value(json_object_get(e, "channel"));
     bool experimental = channel ? !strcmp(channel, "experimental") : json_is_true(json_object_get(e, "experimental"));
     json_t *rel = app_release(a, experimental);
-    const char *latest = json_string_value(json_object_get(rel, "tag"));
-    if (latest && *latest && strcmp(latest, v)) return ST_UPDATE;
+    if (app_record_outdated(a,e,rel)) return ST_UPDATE;
     if (app_missing_requirement(a)) return ST_NEEDS_FILE;
     return ST_INSTALLED;
 }

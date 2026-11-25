@@ -472,7 +472,9 @@
             ]
           },
           "ciaTitle": "0004000005a13e00",
-          "ciaVersion": 1024
+          "ciaVersion": 1024,
+          "assetUpdated": "2026-11-11T05:20:11Z",
+          "publishedAt": "2026-11-11T05:20:13Z"
         },
         "experimental": {
           "tag": "v4.2-E2",
@@ -537,7 +539,9 @@
             ]
           },
           "ciaTitle": "0004000005a13e00",
-          "ciaVersion": 1024
+          "ciaVersion": 1024,
+          "assetUpdated": "2026-11-12T16:10:57Z",
+          "publishedAt": "2026-11-12T16:10:58Z"
         }
       },
       "requires": [
@@ -1214,15 +1218,18 @@
           "assets": {
             "3dsx": {
               "name": "tmc-3ds-v2.2.3dsx",
-              "size": 4975192
+              "size": 4975192,
+              "sha256": "6b4da87cbbac099c633caa4f0e78ccf496d6c9485da7be765402794b9cfc6215"
             },
             "cia": {
               "name": "tmc-3ds-v2.2.cia",
-              "size": 3621824
+              "size": 3621824,
+              "sha256": "e2dac020f6a86f8515e68455ed765f8c08cc9b70de1286b432a4dcdc34494c8f"
             },
             "sums": {
               "name": "SHA256SUMS.txt",
-              "size": 252
+              "size": 252,
+              "sha256": "479c02a89ed2e6e723d5aa60880dbd04b6c8d3a5c2a4a52aedbfadb9a959f7ab"
             }
           },
           "notes": {
@@ -1268,7 +1275,9 @@
             ]
           },
           "ciaTitle": "0004000005a22d00",
-          "ciaVersion": 3072
+          "ciaVersion": 3072,
+          "assetUpdated": "2026-10-18T09:04:26Z",
+          "publishedAt": "2026-10-18T09:05:14Z"
         }
       },
       "requires": [
@@ -1828,15 +1837,18 @@
           "assets": {
             "3dsx": {
               "name": "mk64-3ds-v2.0.3dsx",
-              "size": 49700432
+              "size": 49700432,
+              "sha256": "d3ab9ed7db1d7b480a58f7c6b4b11ae241a4f42fe42b73a15df37563e897da3b"
             },
             "cia": {
               "name": "mk64-3ds-v2.0.cia",
-              "size": 46179264
+              "size": 46179264,
+              "sha256": "cfa728c4db15a16a83a99ba38396bc7875e8ac922ac78798b2c46f20a5846f20"
             },
             "sums": {
               "name": "SHA256SUMS.txt",
-              "size": 553
+              "size": 553,
+              "sha256": "cd0f214c9e26b262342bf4bb81c2f3726044a6280a36d365580b8e29f4f5faef"
             }
           },
           "notes": {
@@ -1890,7 +1902,9 @@
             ]
           },
           "ciaTitle": "0004000005a27000",
-          "ciaVersion": 8192
+          "ciaVersion": 8192,
+          "assetUpdated": "2026-10-23T20:55:39Z",
+          "publishedAt": "2026-10-23T21:14:28Z"
         },
         "experimental": {
           "tag": "v2.1-E2",
@@ -1898,15 +1912,18 @@
           "assets": {
             "3dsx": {
               "name": "mk64-3ds-v2.1-E2.3dsx",
-              "size": 49703928
+              "size": 49703928,
+              "sha256": "02ecce44775e755b9792840e76e1539bbf47212200832618e7758a2b3f0f6a8d"
             },
             "cia": {
               "name": "mk64-3ds-v2.1-E2.cia",
-              "size": 46183360
+              "size": 46183360,
+              "sha256": "db4b642912b852923b6b6c934ed62542d970c19f22a1b29b2774d908e72d3533"
             },
             "sums": {
               "name": "SHA256SUMS.txt",
-              "size": 562
+              "size": 562,
+              "sha256": "6f2319548a42618dbb3d0de38ee8ee417ec490af9dfc282170eb65b6877fb5a1"
             }
           },
           "notes": {
@@ -1936,7 +1953,9 @@
             ]
           },
           "ciaTitle": "0004000005a27000",
-          "ciaVersion": 9216
+          "ciaVersion": 9216,
+          "assetUpdated": "2026-10-31T18:03:06Z",
+          "publishedAt": "2026-10-31T18:03:06Z"
         }
       },
       "requires": [
@@ -2559,19 +2578,23 @@
           "assets": {
             "zip": {
               "name": "legend-of-doom-3ds-v1.0.zip",
-              "size": 28101638
+              "size": 28101638,
+              "sha256": "8735b5880f665d14fc1604bc53b68a48898fde367ae8b73c5ec82f68aa19eb50"
             },
             "3dsx": {
               "name": "legend-of-doom-3ds-v1.0.3dsx",
-              "size": 10180556
+              "size": 10180556,
+              "sha256": "9a0eb3169f0d4a8d293b0dd9fda876104b510c1fa754accb21498648d8640a1d"
             },
             "cia": {
               "name": "legend-of-doom-3ds-v1.0.cia",
-              "size": 48624576
+              "size": 48624576,
+              "sha256": "5e31d47389c622ff10b99d76c43cd5c08eeefc9ce0ed007285fd9dd126ca42d0"
             },
             "sums": {
               "name": "SHA256SUMS.txt",
-              "size": 550
+              "size": 550,
+              "sha256": "ad9c0e65bb89e2de692d27e1d22a47312a1638f79e983dc66af62b00df80f984"
             }
           },
           "notes": {
@@ -2919,15 +2942,18 @@
           "assets": {
             "3dsx": {
               "name": "Starwing-3DS.3dsx",
-              "size": 5586492
+              "size": 5586492,
+              "sha256": "b4bf295166d44d19ce4cc0b801d1c4792f4035765b6935e1a64dff50c1371c14"
             },
             "cia": {
               "name": "Starwing-3DS.cia",
-              "size": 4670400
+              "size": 4670400,
+              "sha256": "dbdc73298720bf59b47d49f6e84ff270f6a5536d0e48d321e782f3ef54545dc6"
             },
             "sums": {
               "name": "Starwing-3DS-SHA256SUMS.txt",
-              "size": 345
+              "size": 345,
+              "sha256": "aadf4d2559d145cde1531b6f19bc43a3a298302a7c5632cc522d6839bb439769"
             }
           },
           "notes": {
@@ -2973,7 +2999,9 @@
             ]
           },
           "ciaTitle": "0004000005f58b00",
-          "ciaVersion": 87
+          "ciaVersion": 87,
+          "assetUpdated": "2026-10-19T20:12:19Z",
+          "publishedAt": "2026-10-19T19:50:16Z"
         },
         "experimental": {
           "tag": "v1.2-E3",
@@ -3023,7 +3051,9 @@
             ]
           },
           "ciaTitle": "0004000005f58b00",
-          "ciaVersion": 105
+          "ciaVersion": 105,
+          "assetUpdated": "2026-11-21T04:05:38Z",
+          "publishedAt": "2026-11-21T04:07:04Z"
         }
       },
       "requires": [
@@ -3421,15 +3451,18 @@
           "assets": {
             "3dsx": {
               "name": "mutiny-3ds-v1.0.3dsx",
-              "size": 7406424
+              "size": 7406424,
+              "sha256": "1e256d4ec194081c1ec4df1e1e39e0fc02aac548681eb2620bcdb7cb7f479259"
             },
             "cia": {
               "name": "mutiny-3ds-v1.0.cia",
-              "size": 7541696
+              "size": 7541696,
+              "sha256": "1985e090fcc6d128c871892c443f7d33af7d16bdd1495a7fe47b61cffaea3731"
             },
             "sums": {
               "name": "SHA256SUMS.txt",
-              "size": 173
+              "size": 173,
+              "sha256": "462de9324792500f714a411c8abc56dd9d99fa64c12afc347ef0d1521cabaad9"
             }
           },
           "notes": {
@@ -3475,7 +3508,9 @@
             ]
           },
           "ciaTitle": "000400000f4d1100",
-          "ciaVersion": 0
+          "ciaVersion": 0,
+          "assetUpdated": "2026-11-07T07:03:25Z",
+          "publishedAt": "2026-11-07T07:03:26Z"
         }
       },
       "requires": [],
@@ -3657,8 +3692,8 @@
           "assets": {
             "sums": {
               "name": "SHA256SUMS.txt",
-              "size": 185,
-              "sha256": "3e24e8f2622d3d2786345e5bc5268f36fd493ff38e4e6d96595572e68a6c6180"
+              "size": 178,
+              "sha256": "5e552aeb798e574e2c2ad8c87e38b9f8719a438a67d7f3c1a83f7c17c9921c8c"
             },
             "3dsx": {
               "name": "SM64DS-Public-Beta-01.3dsx",
@@ -3667,8 +3702,9 @@
             },
             "cia": {
               "name": "SM64DS-Public-Beta-01.cia",
-              "size": 3217344,
-              "sha256": "3af3c7aba6a736f1a37f067820e360b756ba4cb047d89b5b81b6582993118fe3"
+              "size": 53187520,
+              "sha256": "384091b55068ede25594a649084e76a5de147a3f17c6430a92224f6675005a38",
+              "sumsName": "SM64DS-Beta-01.cia"
             }
           },
           "notes": {
@@ -3698,7 +3734,9 @@
             ]
           },
           "ciaTitle": "000400000f536500",
-          "ciaVersion": 0
+          "ciaVersion": 0,
+          "assetUpdated": "2026-11-25T06:17:44Z",
+          "publishedAt": "2026-11-25T04:12:59Z"
         }
       },
       "requires": [
@@ -3743,7 +3781,8 @@
                 "tail": 65536
               }
             }
-          ]
+          ],
+          "format": "3dsx"
         },
         {
           "id": "build142",
@@ -3786,7 +3825,8 @@
                 "tail": 65536
               }
             }
-          ]
+          ],
+          "format": "3dsx"
         },
         {
           "id": "native",
@@ -3828,6 +3868,59 @@
                 ],
                 "tail": 65536
               }
+            }
+          ],
+          "format": "3dsx"
+        },
+        {
+          "id": "rom",
+          "format": "cia",
+          "label": {
+            "es": "Super Mario 64 DS (ASMP rev. 0)",
+            "en": "Super Mario 64 DS (ASMP rev. 0)",
+            "pt": "Super Mario 64 DS (ASMP rev. 0)",
+            "it": "Super Mario 64 DS (ASMP rev. 0)",
+            "fr": "Super Mario 64 DS (ASMP rev. 0)",
+            "de": "Super Mario 64 DS (ASMP rev. 0)",
+            "ru": "Super Mario 64 DS (ASMP rev. 0)",
+            "ja": "Super Mario 64 DS (ASMP rev. 0)"
+          },
+          "path": "/3ds/sm64ds/sm64ds.nds",
+          "size": 16777216,
+          "accept": "*.nds",
+          "help": {
+            "es": "Copia tu ROM europea ASMP, revisión 0, a /3ds/sm64ds/. El CIA prepara los datos al arrancar.",
+            "en": "Copy your European ASMP revision 0 ROM to /3ds/sm64ds/. The CIA prepares the data on first launch.",
+            "pt": "Copie sua ROM europeia ASMP revisão 0 para /3ds/sm64ds/. O CIA prepara os dados ao iniciar.",
+            "it": "Copia la ROM europea ASMP revisione 0 in /3ds/sm64ds/. Il CIA prepara i dati al primo avvio.",
+            "fr": "Copiez votre ROM européenne ASMP révision 0 dans /3ds/sm64ds/. Le CIA prépare les données au premier lancement.",
+            "de": "Kopiere deine europäische ASMP-ROM, Revision 0, nach /3ds/sm64ds/. Das CIA bereitet die Daten beim ersten Start vor.",
+            "ru": "Скопируйте европейский ROM ASMP ревизии 0 в /3ds/sm64ds/. CIA подготовит данные при первом запуске.",
+            "ja": "欧州版 ASMP Rev.0 の ROM を /3ds/sm64ds/ にコピーしてください。CIA は初回起動時にデータを準備します。"
+          },
+          "detect": [
+            {
+              "dir": "/3ds/sm64ds/",
+              "ext": [
+                "nds"
+              ],
+              "sizes": [
+                16777216
+              ],
+              "magic": [
+                {
+                  "at": 12,
+                  "any": [
+                    "ASMP"
+                  ]
+                },
+                {
+                  "at": 30,
+                  "hex": [
+                    "00"
+                  ]
+                }
+              ]
             }
           ]
         }
@@ -3889,15 +3982,7 @@
           },
           {
             "type": "requireFile",
-            "ref": "prepared"
-          },
-          {
-            "type": "requireFile",
-            "ref": "build142"
-          },
-          {
-            "type": "requireFile",
-            "ref": "native"
+            "ref": "rom"
           },
           {
             "type": "dumpDsp"
@@ -4133,7 +4218,9 @@
             ]
           },
           "ciaTitle": "000400000fe7cb00",
-          "ciaVersion": 1076
+          "ciaVersion": 1076,
+          "assetUpdated": "2026-11-25T04:35:50Z",
+          "publishedAt": "2026-11-25T04:36:11Z"
         }
       },
       "requires": [],
@@ -4518,7 +4605,9 @@
             ]
           },
           "ciaTitle": "000400000f3d5700",
-          "ciaVersion": 52
+          "ciaVersion": 52,
+          "assetUpdated": "2026-11-25T05:46:19Z",
+          "publishedAt": "2026-11-25T05:46:20Z"
         }
       },
       "requires": [
@@ -4851,7 +4940,9 @@
             ]
           },
           "ciaTitle": "000400000d051000",
-          "ciaVersion": 5
+          "ciaVersion": 5,
+          "assetUpdated": "2026-11-25T04:03:41Z",
+          "publishedAt": "2026-11-25T01:46:37Z"
         }
       },
       "requires": [
@@ -5156,7 +5247,9 @@
             ]
           },
           "ciaTitle": "00040000092b9900",
-          "ciaVersion": 1087
+          "ciaVersion": 1087,
+          "assetUpdated": "2026-11-23T22:10:20Z",
+          "publishedAt": "2026-11-23T22:10:21Z"
         }
       },
       "requires": [
@@ -6568,7 +6661,9 @@
             ]
           },
           "ciaTitle": "000400000bb41c00",
-          "ciaVersion": 1024
+          "ciaVersion": 1024,
+          "assetUpdated": "2026-08-16T09:33:38Z",
+          "publishedAt": "2026-08-15T16:57:44Z"
         },
         "experimental": {
           "tag": "nightly-2.1",
@@ -6578,13 +6673,13 @@
               "name": "GeometryDash3DS.cia",
               "size": 48026560,
               "url": "https://github.com/AleFunky/gd3ds/releases/download/nightly-2.1/GeometryDash3DS.cia",
-              "sha256": "9d40fd001ec6029fa2434932e55ca11ae9073e9c19ada215c6ecfca431df57ac"
+              "sha256": "0c57841dbcde33c1facb16fcdd3f7b9bf5b17f1fd7865f91730eeb10ccbe3b0c"
             },
             "3dsx": {
               "name": "GeometryDash3DS.3dsx",
-              "size": 48452692,
+              "size": 48454696,
               "url": "https://github.com/AleFunky/gd3ds/releases/download/nightly-2.1/GeometryDash3DS.3dsx",
-              "sha256": "e77f34ecdcf53fa072aba66ac6aafa08900ce8df3f5eef5073ca4e7f7a7de581"
+              "sha256": "732c42f701f441b74b9d98faacae88de3adc35c6d9cb83d202def3bdd463dcef"
             }
           },
           "notes": {
@@ -6614,7 +6709,9 @@
             ]
           },
           "ciaTitle": "000400000bb41c00",
-          "ciaVersion": 1024
+          "ciaVersion": 1024,
+          "assetUpdated": "2026-11-23T15:19:14Z",
+          "publishedAt": "2026-10-02T23:55:24Z"
         }
       },
       "install": {
@@ -6996,7 +7093,9 @@
             ]
           },
           "ciaTitle": "000400000ff12300",
-          "ciaVersion": 0
+          "ciaVersion": 0,
+          "assetUpdated": "2016-09-13T02:37:57Z",
+          "publishedAt": "2016-09-13T02:38:10Z"
         }
       },
       "requires": [
@@ -7437,7 +7536,9 @@
             ]
           },
           "ciaTitle": "0004000000384900",
-          "ciaVersion": 2064
+          "ciaVersion": 2064,
+          "assetUpdated": "2026-11-24T15:08:39Z",
+          "publishedAt": "2026-11-24T15:13:41Z"
         }
       },
       "install": {
@@ -7999,7 +8100,9 @@
             ]
           },
           "ciaTitle": "000400000c3d3d00",
-          "ciaVersion": 5125
+          "ciaVersion": 5125,
+          "assetUpdated": "2026-10-25T08:10:24Z",
+          "publishedAt": "2026-10-25T08:10:25Z"
         }
       },
       "install": {
@@ -8484,7 +8587,9 @@
             ]
           },
           "ciaTitle": "000400000bcfff00",
-          "ciaVersion": 5168
+          "ciaVersion": 5168,
+          "assetUpdated": "2026-10-13T18:57:45Z",
+          "publishedAt": "2026-10-13T19:22:44Z"
         }
       },
       "requires": [],
@@ -8838,7 +8943,9 @@
             ]
           },
           "ciaTitle": "0004000003d5d100",
-          "ciaVersion": 2319
+          "ciaVersion": 2319,
+          "assetUpdated": "2026-10-31T07:00:02Z",
+          "publishedAt": "2026-10-31T07:04:04Z"
         }
       },
       "install": {
@@ -8973,7 +9080,9 @@
             ]
           },
           "ciaTitle": "0004000004391700",
-          "ciaVersion": 3137
+          "ciaVersion": 3137,
+          "assetUpdated": "2026-06-20T17:11:58Z",
+          "publishedAt": "2026-06-20T17:08:42Z"
         },
         "experimental": {
           "tag": "git",
@@ -9019,7 +9128,9 @@
             ]
           },
           "ciaTitle": "0004000004391700",
-          "ciaVersion": 3137
+          "ciaVersion": 3137,
+          "assetUpdated": "2026-11-15T04:31:48Z",
+          "publishedAt": "2026-11-15T04:31:48Z"
         }
       },
       "install": {
@@ -9153,7 +9264,9 @@
             ]
           },
           "ciaTitle": "000400000bf74d00",
-          "ciaVersion": 84
+          "ciaVersion": 84,
+          "assetUpdated": "2026-02-06T02:00:27Z",
+          "publishedAt": "2026-02-06T02:00:50Z"
         }
       },
       "install": {
@@ -9333,7 +9446,9 @@
             ]
           },
           "ciaTitle": "000400000bafe000",
-          "ciaVersion": 3073
+          "ciaVersion": 3073,
+          "assetUpdated": "2024-06-18T00:22:28Z",
+          "publishedAt": "2024-06-18T00:21:50Z"
         }
       },
       "requires": [],
@@ -9467,7 +9582,9 @@
             ]
           },
           "ciaTitle": "0004000000df1100",
-          "ciaVersion": 0
+          "ciaVersion": 0,
+          "assetUpdated": "2023-07-21T05:31:21Z",
+          "publishedAt": "2023-07-21T05:16:08Z"
         }
       },
       "install": {
@@ -9636,7 +9753,9 @@
             ]
           },
           "ciaTitle": "000400000f800100",
-          "ciaVersion": 2145
+          "ciaVersion": 2145,
+          "assetUpdated": "2024-06-25T19:58:08Z",
+          "publishedAt": "2024-06-25T19:58:21Z"
         }
       },
       "requires": [],
@@ -9817,7 +9936,9 @@
             ]
           },
           "ciaTitle": "000400000b3da300",
-          "ciaVersion": 1136
+          "ciaVersion": 1136,
+          "assetUpdated": "2026-11-23T20:25:42Z",
+          "publishedAt": "2026-11-23T20:23:14Z"
         }
       },
       "install": {
@@ -9950,7 +10071,9 @@
             ]
           },
           "ciaTitle": "000400000ae5e700",
-          "ciaVersion": 1027
+          "ciaVersion": 1027,
+          "assetUpdated": "2025-04-15T10:19:18Z",
+          "publishedAt": "2025-04-15T10:19:20Z"
         }
       },
       "install": {
@@ -10088,7 +10211,9 @@
             ]
           },
           "ciaTitle": "000400000beef500",
-          "ciaVersion": 3105
+          "ciaVersion": 3105,
+          "assetUpdated": "2025-11-19T01:28:02Z",
+          "publishedAt": "2024-11-17T07:29:51Z"
         }
       },
       "install": {
@@ -10260,7 +10385,9 @@
             ]
           },
           "ciaTitle": "0004000000efad00",
-          "ciaVersion": 0
+          "ciaVersion": 0,
+          "assetUpdated": "2026-08-04T18:36:57Z",
+          "publishedAt": "2026-08-04T18:36:57Z"
         }
       },
       "install": {

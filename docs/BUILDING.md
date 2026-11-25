@@ -37,8 +37,8 @@ the CIA and the 3DSX. Keep the personal manifest and resulting binaries under `.
 Public builds exclude the personal manifest, including the historical fixture in the source tree.
 A personal FBI install QR can pass a fresh AES key through its URL fragment. On first launch
 the store authenticates the manifest with that key and saves the activation on the SD card.
-Keep the QR private and open the store before scanning another FBI download. Personal editions
-skip the public self-update feed.
+Keep the QR private and open the store before scanning another FBI download. Personal CIAs offer newer public release CIAs. Accepting one replaces the embedded personal
+manifest and activation. Personal 3DSX builds skip the public self-update feed.
 For an offline edition that carries its own decryption key, also set `FORGE_DEFAULT_ACTIVATION` to the matching
 FMK1 activation file. Both packages carry the activation and can open the personal catalog
 on first launch with a fresh SD card.

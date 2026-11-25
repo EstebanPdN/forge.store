@@ -59,7 +59,7 @@ def releases(repo):
     return json.loads(out.stdout)
 
 
-def retag(asset, live, old, tag, nested=False):
+def retag(asset, live, old, tag, nested=False, single_cia=False):
     name = asset['name']
     if old and old in name:
         guess = name.replace(old, tag)
@@ -68,14 +68,22 @@ def retag(asset, live, old, tag, nested=False):
     match = next((a for a in live['assets'] if a['name'] == guess), None) or \
         next((a for a in live['assets'] if a['name'] == name), None)
     if not match:
-        return None
+        candidates = [a for a in live['assets'] if a['name'].casefold() == guess.casefold()]
+        if not candidates and single_cia and name.lower().endswith('.cia'):
+            candidates = [a for a in live['assets'] if a['name'].lower().endswith('.cia')]
+        if len(candidates) != 1:
+            return None
+        match = candidates[0]
     updated = dict(asset, name=match['name'], size=match['size'])
-    updated.pop('sha256', None)
+    if old != tag or name != match['name'] or asset.get('size') != match['size']:
+        updated.pop('sha256', None)
     digest = match.get('digest') or ''
     if digest.startswith('sha256:') and len(digest) == 71:
         updated['sha256'] = digest[7:]
+    if tag != old or updated['name'] != name or updated.get('sha256') != asset.get('sha256'):
+        updated.pop('sumsName', None)
     if updated.get('url'):
-        updated['url'] = updated['url'].replace(old, tag)
+        updated['url'] = match.get('browser_download_url') or updated['url'].replace(old, tag)
     if 'o3ds' in asset:
         if nested:
             return None
@@ -91,20 +99,29 @@ def merge_channel(rels, channel, live, log):
         return False
     known = rels.get(channel) or rels.get('stable') or rels.get('experimental')
     tag = live['tag_name']
-    if not isinstance(known, dict) or known.get('tag') == tag:
+    if not isinstance(known, dict):
         return False
     assets = {}
     for key, asset in known.get('assets', {}).items():
-        updated = retag(asset, live, known.get('tag', ''), tag)
+        updated = retag(asset, live, known.get('tag', ''), tag, single_cia=key == 'cia' and 'o3ds' not in asset)
         if not updated:
             log.append(f'  {channel}: {tag} lacks a match for {asset["name"]}; kept {known.get("tag")}')
             return False
         assets[key] = updated
     if not assets:
         return False
-    updated = dict(known, tag=tag, date=live['published_at'][:10], assets=assets)
-    updated.pop('ciaTitle', None)  # read again from the new CIA (see cia_identity)
-    updated.pop('ciaVersion', None)
+    revision = max((a.get('updated_at', '') for a in live['assets']), default='')
+    same = rels.get(channel, {}).get('tag') == tag
+    if same and revision < known.get('assetUpdated', ''):
+        return False
+    if same and assets == known.get('assets') and revision == known.get('assetUpdated', '') and live['published_at'] == known.get('publishedAt'):
+        return False
+    updated = dict(known, tag=tag, date=live['published_at'][:10], publishedAt=live['published_at'], assets=assets)
+    if revision:
+        updated['assetUpdated'] = revision
+    if not same or assets.get('cia') != known.get('assets', {}).get('cia'):
+        updated.pop('ciaTitle', None)
+        updated.pop('ciaVersion', None)
     if rels.get(channel, {}).get('tag') != tag:
         updated['notes'] = GENERIC
     rels[channel] = updated
@@ -239,7 +256,7 @@ def follow_pinned(app, live, log):
         digest = match.get('digest') or ''
         sha = digest[7:] if digest.startswith('sha256:') and len(digest) == 71 else None
         # Renamed, or replaced under the same name (its pinned hash no longer matches).
-        replaced = bool(asset.get('sha256')) and bool(sha) and sha != asset['sha256']
+        replaced = bool(sha) and sha != asset.get('sha256')
         if match['name'] != asset['name'] or replaced:
             renames[asset['name']] = (match['name'], match['size'], sha)
     if not renames:
@@ -349,15 +366,17 @@ def main():
                 print(app['id'], app['repo'])
                 print('\n'.join(log))
             continue
+        live.sort(key=lambda r: r['published_at'], reverse=True)
         stable = next((r for r in live if not r['prerelease']), None)
         pre = next((r for r in live if r['prerelease']), None)
         log = []
         changed |= merge_channel(rels, 'stable', stable, log)
-        stable_date = rels.get('stable', {}).get('date', '')
-        if pre and pre['published_at'][:10] > stable_date:
+        stable_release = rels.get('stable', {})
+        stable_date = stable_release.get('publishedAt') or stable_release.get('date', '')
+        if pre and pre['published_at'] > stable_date:
             changed |= merge_channel(rels, 'experimental', pre, log)
         elif 'experimental' in rels and rels.get('stable') and \
-                rels['experimental'].get('date', '') <= stable_date:
+                (rels['experimental'].get('publishedAt') or rels['experimental'].get('date', '')) <= stable_date:
             # The store hides an experimental build older than stable; so does the catalog.
             log.append(f'  experimental: {rels["experimental"]["tag"]} is older than stable; removed')
             del rels['experimental']

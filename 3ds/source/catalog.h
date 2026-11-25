@@ -116,6 +116,8 @@ bool path_exists(const char *path);
 bool path_exists_cached(const char *path);
 void path_cache_clear(void);
 /** First user file (ROM, data) still missing, or NULL. */
+bool app_record_outdated(App *a,json_t *record,json_t *release);
+bool app_installed_cia(App *a);
 json_t *app_missing_requirement(App *a);
 /** Existing nonempty regular user file; folder paths check example or file.bin.
  * Missing/pathless/invalid paths remain unresolved. No hash verification. */

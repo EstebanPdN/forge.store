@@ -1,3 +1,4 @@
+#include "install_rules.h"
 // All store screens. Layout numbers match the HTML prototype (native 3DS pixels).
 #include "assets.h"
 #include "scenes.h"
@@ -254,7 +255,7 @@ static bool requirement_view_has(json_t *req) {
 static json_t *app_missing_requirement_view(App *a) {
     if(!a)return NULL;
     size_t i;json_t *r;
-    json_array_foreach(json_object_get(a->j,"requires"),i,r)if(!requirement_view_has(r))return r;
+    json_array_foreach(json_object_get(a->j,"requires"),i,r)if(install_format_matches(r,app_installed_cia(a)) && !requirement_view_has(r))return r;
     return NULL;
 }
 static App *test_installed_app;  // test.txt "detail-installed" only
@@ -273,8 +274,7 @@ static AppStatus app_status_view(App *a) {
     json_t *record=installed_record(a);
     const char *channel=json_string_value(json_object_get(record,"channel"));
     bool exp=channel?!strcmp(channel,"experimental"):json_is_true(json_object_get(record,"experimental"));
-    const char *latest=json_string_value(json_object_get(app_release(a,exp),"tag"));
-    if(latest&&*latest&&strcmp(latest,version))return ST_UPDATE;
+    if(app_record_outdated(a,record,app_release(a,exp)))return ST_UPDATE;
     return app_missing_requirement_view(a)?ST_NEEDS_FILE:ST_INSTALLED;
 }
 static void requirement_check_start(App *a,json_t *req,bool install) {
@@ -284,13 +284,7 @@ static void requirement_check_start(App *a,json_t *req,bool install) {
 
 static void status_icon(App *a, float cx, float cy, float al) {
     AppStatus status = app_status_view(a);
-    if (app_release_experimental(a, app_release(a, false))) {
-        // Keep install/update marks visible alongside the public beta.
-        float y = status == ST_INSTALLED || status == ST_UPDATE || status == ST_NEEDS_FILE ? cy - 36 : cy;
-        circle(cx, y, 7.5f, C(TH.bg, al));
-        circle(cx, y, 6.5f, C(0x087e90, al));
-        draw_icon("settings", cx, y, 10, C(0xffffff, al));
-    }
+    if (app_release_experimental(a,app_release(a,false))) status=ST_DEV;
     switch (status) {
     case ST_INSTALLED:
         circle(cx, cy, 7.5f, C(TH.bg, al)), circle(cx, cy, 6, C(MINT, al)), draw_icon("check", cx, cy, 9, C(0xffffff, al));
@@ -873,16 +867,20 @@ static void fmt_eta(char *out, size_t n, float seconds) {
 static bool job_rate(Job *j, char *out, size_t n) {
     *out = 0;
     if (!j || j->state != JOB_RUNNING || j->speed <= 1 || j->cur < 0 || j->cur >= j->nsteps || !j->steps[j->cur].bytes) return false;
+    if (j->phase!=PHASE_STEPS || j->steps[j->cur].reuse) return false;
     char rate[24], left[24];
     fmt_size(rate, sizeof rate, j->speed);
+    if(j->unknown_size){snprintf(out,n,"%s/s",rate);return true;}
     fmt_eta(left, sizeof left, (j->total_bytes > j->done_bytes ? j->total_bytes - j->done_bytes : 0) / j->speed);
     snprintf(out, n, "%s/s · %s", rate, left);
     return true;
 }
 static void job_progress_line(Job *j, char *out, size_t n) {
     char rate[64];
-    if (job_rate(j, rate, sizeof rate)) snprintf(out, n, "%d %% · %s", (int)(job_progress(j) * 100), rate);
-    else snprintf(out, n, "%d %%", (int)(job_progress(j) * 100));
+    int percent=job_percent(j);
+    if(percent<0){if(!job_rate(j,out,n))snprintf(out,n,"…");}
+    else if(job_rate(j,rate,sizeof rate))snprintf(out,n,"%d %% · %s",percent,rate);
+    else snprintf(out,n,"%d %%",percent);
 }
 static int retry_count;  // automatic download retries, see install_retry()
 
@@ -1047,7 +1045,6 @@ static void home_card(App *a, float al, float dy) {
     json_t *rel=app_release(a,S.experimental);
     scissor(TOP_W,cx,cy,212,16);
     if(rel) cx+=chip(cx,cy,json_string_value(json_object_get(rel,"tag")),NULL,C(TH.mint,1),C(TH.mint,.16f),al)+3;
-    if(a->needs_rom || a->needs_data) cx+=chip(cx,cy,T(a->needs_rom?"chip.rom":"chip.data"),a->needs_rom?"rom":"file",C(TH.ink_soft,1),C(TH.surface2,1),al)+3;
     if(!a->old_ok) cx+=chip(cx,cy,T("chip.n3dsOnly"),NULL,C(TH.ink_soft,1),C(TH.surface2,1),al)+3;
     if(a->stereo) chip(cx,cy,T("chip.3d"),"depth",C(TH.ink_soft,1),C(TH.surface2,1),al);
     scissor_off();
@@ -1065,7 +1062,7 @@ static void home_card(App *a, float al, float dy) {
         } else {
             float p=st==ST_DEV?a->progress/100.f:j?job_progress(j):0;
             if(p<0)snprintf(label,sizeof label,"%s",T("status.unknown"));
-            else snprintf(label,sizeof label,"%d %%",(int)(p*100));
+            else snprintf(label,sizeof label,"%d %%",j?job_percent(j):(int)(p*100));
             text(label,x+w-10,y+33,10,C(TH.ink,al),AL_RIGHT);
             if(p>=0){rrect(x+w-90,y+53,80,5,2,C(TH.surface3,al));
             rrect(x+w-90,y+53,fmaxf(1,80*p),5,2,C(st==ST_DEV?LAV:FORGE,al));}
@@ -1373,8 +1370,8 @@ static void launch_app(App *app) {
 static void close_sheet(void) { sheet_on=false; sheet_cia=sheet_saved_cia; sheet_exp=sheet_saved_exp; }
 
 static bool sheet_compatible(void) {
-    json_t *rel=app_release(dapp,sheet_exp), *old=json_object_get(rel,"o3ds");
-    return !json_is_true(json_object_get(dapp->j,"nativeUnsupported")) && (IS_NEW3DS || json_is_true(old) || (!json_is_false(old) && dapp->old_ok));
+    json_t *rel=app_release(dapp,sheet_exp);
+    return !json_is_true(json_object_get(dapp->j,"nativeUnsupported")) && install_model_matches(IS_NEW3DS,dapp->old_ok,rel);
 }
 static float sheet_format_y(void) { return 54+(app_has_channel_choice(dapp)?88:0); }
 
@@ -2041,7 +2038,7 @@ static float detail_install(float y, float a) {
     y=ry+12;
     text_caps(T("detail.youProvide"),x,y,9,1,C(TH.mint,a),AL_LEFT);y+=17;
     json_array_foreach(json_object_get(dapp->j, "requires"), i, s) {
-        y=detail_requirement_card(s,x,y,w,a);
+        if(install_format_matches(s,sheet_cia))y=detail_requirement_card(s,x,y,w,a);
     }
     if(json_array_size(json_object_get(dapp->j,"requires"))==0){draw_icon("check",x+5,y+7,10,C(TH.mint,a));y+=text_wrap(T("detail.noRequirements"),x+16,y,11,C(TH.ink_soft,a),w-16);}
     bool dsp=false; json_array_foreach(steps,i,s) { const char *t=json_string_value(json_object_get(s,"type")); if(t && !strcmp(t,"dumpDsp")) dsp=true; }
@@ -2279,12 +2276,12 @@ static void detail_bottom(float sa) {
         Job *j = install_job(dapp);
         float p = j ? job_progress(j) : 0;
         rrect(5, 209, 280, 26, 13, C(TH.surface, a));
-        snprintf(lbl, sizeof lbl, "%s", T(j && j->state == JOB_QUEUED ? "status.queued" : "status.downloading"));
+        snprintf(lbl, sizeof lbl, "%s", j?job_activity(j):T("status.downloading"));
         text(lbl, 16, 211, 10, C(TH.ink, a), AL_LEFT);
         if (j) job_progress_line(j, lbl, sizeof lbl); else snprintf(lbl, sizeof lbl, "%d %%", (int)(p * 100));
         text_dyn(lbl, 274, 211, 10, C(TH.ink, a), AL_RIGHT);
         rrect(16, 225, 258, 4, 2, C(TH.surface3, a));
-        rrect(16, 225, fmaxf(4, 258 * p), 4, 2, C(FORGE, a));
+        if(p>=0)rrect(16, 225, fmaxf(4, 258 * p), 4, 2, C(FORGE, a));
         button_round(289,205,26,28, NULL, "close", NULL, BTN_SURFACE, a);
         
     } else {
@@ -2322,7 +2319,7 @@ static int ij_state_seen;
 static json_t *install_missing_req;
 static float install_check_y=-1000;
 static float ilog_scroll, ilog_target;
-static float install_open_t, install_shown_p, install_step_t;
+static float install_open_t, install_step_t;
 // A failed download retries by itself: a 10 s countdown, up to five attempts. Each failure
 // also asks GitHub again for the app's releases, so a replaced build is picked up.
 #define RETRY_MAX 5
@@ -2398,7 +2395,7 @@ static void open_install(Job *j) {
     install_parent = scene;
     done_t = -1;
     ij_state_seen = -1; ilog_scroll=ilog_target=0; ilog_manual=false;
-    install_open_t = NOW; install_shown_p = job_progress(j); install_step_seen = j->cur; install_step_t = NOW - 1;
+    install_open_t = NOW; install_step_seen = j->cur; install_step_t = NOW - 1;
     install_saw_running = j->state == JOB_QUEUED || j->state == JOB_RUNNING; retry_at = -1;
     next_scene = SC_INSTALL;
     trans_phase = 1;
@@ -2412,7 +2409,7 @@ static void install_retry(void) {
     retry_count++;
     ij = n;
     done_t = -1; ij_state_seen = -1; ilog_scroll = ilog_target = 0; ilog_manual = false;
-    install_open_t = NOW; install_shown_p = 0; install_step_seen = n->cur; install_step_t = NOW - 1;
+    install_open_t = NOW; install_step_seen = n->cur; install_step_t = NOW - 1;
     install_saw_running = true;
     sfx("download");
 }
@@ -2432,7 +2429,6 @@ static void install_update(void) {
     }
     ilog_target=clampf(ilog_target,0,fmaxf(0,total-view));
     ilog_scroll=lerpf(ilog_scroll,ilog_target,1-expf(-DT*18));
-    install_shown_p = lerpf(install_shown_p, job_progress(ij), 1 - expf(-DT * 7));
     if (ij->cur != install_step_seen) {
         if (running && ij->cur > install_step_seen) sfx("move");
         install_step_seen = ij->cur; install_step_t = NOW;
@@ -2521,7 +2517,7 @@ static void install_top(float sa) {
         }
         scissor_off();
     }
-    float shown = clampf(done ? fmaxf(install_shown_p, 1) : install_shown_p, 0, 1);
+    float shown = clampf(job_progress(ij),0,1);
     float cx = CARD_X + 75 + EYE * 2 + ox, cy = CARD_Y + CARD_H / 2 + oy;
     const float radius = 56;
     float ring_in = ease_out(span(NOW, install_open_t + .08f, .55f));
@@ -2564,10 +2560,10 @@ static void install_top(float sa) {
     float e0 = ease_out(span(NOW, install_open_t + .14f, .4f)), e1 = ease_out(span(NOW, install_open_t + .22f, .4f)),
           e2 = ease_out(span(NOW, install_open_t + .30f, .4f)), e3 = ease_out(span(NOW, install_open_t + .38f, .4f));
     char pct[16];
-    snprintf(pct, sizeof pct, "%d %%", (int)roundf(shown * 100));
+    if(job_percent(ij)<0)strcpy(pct,"…");
+    else snprintf(pct,sizeof pct,"%d %%",job_percent(ij));
     u32 pct_col = done ? mix_rgb(0xffffff, 0xbff0dc, flash) : 0xffffff;
     text_ex(pct, roundf(rx0 + (1 - e0) * 12), my - 50, 30, 800, FONT_BRAND, -.5f, C(pct_col, ca * e0), AL_LEFT);
-    JobStep *st = ij->cur < ij->nsteps ? &ij->steps[ij->cur] : NULL;
     float step_k = ease_out(span(NOW, install_step_t, .32f));
     float lx = roundf(rx0 + (1 - e1) * 12 + (1 - step_k) * 8), la = ca * e1 * step_k;
     const float label_y = my - 6;
@@ -2575,17 +2571,16 @@ static void install_top(float sa) {
         text_fit(ij->error, lx, label_y, 11, rw, C(0xffb0a8, la));
     else if (done)
         text_fit_style(a->title, lx, label_y, 11, 700, rw, C(0xffffff, la));
-    else if (st)
-        text_fit_style(st->label, lx, label_y, 11, 700, rw, C(0xffffff, la));
+    else
+        text_fit_style(job_activity(ij), lx, label_y, 11, 700, rw, C(0xffffff, la));
     rect(rx0, my + 18, roundf(rw * e2), 1, C(0xffe0a6, .22f * ca));
     char line[96], a1[24], a2[24];
-    bool speed = st && st->bytes && ij->state == JOB_RUNNING && ij->speed > 1;
-    if (speed) {
-        job_rate(ij, line, sizeof line);
-    } else {
+    bool speed = job_rate(ij,line,sizeof line);
+    if (!speed) {
         fmt_size(a1, sizeof a1, (double)ij->done_bytes);
         fmt_size(a2, sizeof a2, (double)ij->total_bytes);
-        snprintf(line, sizeof line, "%s / %s", a1, a2);
+        if(ij->unknown_size)snprintf(line,sizeof line,"%s",a1);
+        else snprintf(line, sizeof line, "%s / %s", a1, a2);
     }
     if (!ij->uninstall) {
         float sx3 = roundf(rx0 + (1 - e3) * 12);

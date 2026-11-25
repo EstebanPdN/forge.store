@@ -17,7 +17,7 @@ class Handler(http.server.BaseHTTPRequestHandler):
    body=b'changed' if case=='changed' else b'cached payload';self.send_response(200);self.send_header('ETag','"fixture-v1"');self.end_headers();self.wfile.write(body);return
   payload=(b'3DSX'+b'x'*4092) if case.startswith('hb') else struct.pack('<Q',0 if case=='wrong-title' else 0x000400000F0F5E00)+b'x'*4088
   if case=='hb-bad':payload=b'BAD!'+payload[4:]
-  if self.path.endswith('update.json'):
+  if self.path.endswith(('update.json','releases/latest')):
    files={k:{'bytes':len(payload),'sha256':hashlib.sha256(payload).hexdigest()} for k in ['forge-store.cia','forge-store.3dsx']}
    if case=='hash':files['forge-store.cia']['sha256']='0'*64
    if case=='bad-hex':files['forge-store.cia']['sha256']='z'*64
@@ -25,9 +25,17 @@ class Handler(http.server.BaseHTTPRequestHandler):
    if case=='missing-file':del files['forge-store.cia']
    if case=='size':files['forge-store.cia']['bytes']=-1
    body=json.dumps({'store_build':seq if case=='current' else seq-1 if case=='older' else seq+1,'version':'bad\nlabel' if case=='bad-version' else '2026.11.12.3','files':files}).encode()
+   if self.path.endswith('releases/latest'):
+    tag='v1.4' if case=='current' else 'v1.3' if case=='older' else 'v1.10'
+    if case=='bad-version':tag='v1.invalid'
+    assets=[{'name':f'forge-store-{tag}.cia','size':v['bytes'],'digest':'sha256:'+v['sha256']} for k,v in files.items() if k.endswith('.cia')]
+    body=json.dumps({'tag_name':tag,'assets':assets}).encode()
    if case=='malformed':body=b'{'
    if case=='huge':body=b'x'*18000
-  else:body=payload[:-5] if case=='truncated' else payload
+  else:
+   if not case.startswith('hb') and not self.path.endswith('/releases/download/v1.10/forge-store-v1.10.cia'):
+    self.send_error(404);return
+   body=payload[:-5] if case=='truncated' else payload
   self.send_response(200);self.end_headers();self.wfile.write(body)
 server=http.server.ThreadingHTTPServer(('127.0.0.1',0),Handler);threading.Thread(target=server.serve_forever,daemon=True).start()
 with tempfile.TemporaryDirectory(prefix='forge-store-network-') as temp:
@@ -49,7 +57,7 @@ static int mbedtls_sha256_finish_ret(mbedtls_sha256_context*c,unsigned char*p){C
  flags=['clang','-g','-O1','-fsanitize=address,undefined','-Wno-deprecated-declarations','-I'+temp,'-I/opt/homebrew/include','-L/opt/homebrew/lib','-ljansson','-lcurl','-lz','-lpthread']
  subprocess.run(flags+[str(p/'updater.c'),'-o',str(p/'updater')],check=True)
  env={**os.environ,'TEST_PORT':str(server.server_port)}
- cases=[('current',0,1),('older',0,1),('malformed',0,2),('huge',0,2),('size',0,2),('large-size',0,2),('bad-hex',0,2),('missing-file',0,2),('deadline',0,2),('cancelled',0,2),('hash',0,6),('truncated',0,6),('wrong-title',0,6),('valid',3,6),('valid',1,6),('valid',2,6),('valid',0,5),('valid',4,6),('hb-valid',0,5),('hb-rename',0,5),('hb-keep',0,5),('hb-bad',0,6),('hb-missing',0,6),('decline',0,8),('cancel-wait',0,8),('bad-version',0,5)]
+ cases=[('current',0,1),('older',0,1),('malformed',0,2),('huge',0,2),('size',0,2),('large-size',0,2),('bad-hex',0,2),('missing-file',0,2),('deadline',0,2),('cancelled',0,2),('hash',0,6),('truncated',0,6),('wrong-title',0,6),('valid',3,6),('valid',1,6),('valid',2,6),('valid',0,5),('valid',4,6),('hb-valid',0,5),('hb-rename',0,5),('hb-keep',0,5),('hb-bad',0,6),('hb-missing',0,6),('decline',0,8),('cancel-wait',0,8),('bad-version',0,2)]
  for case,fault,want in cases:
   state.update(case=case,calls=0);subprocess.run([str(p/'updater'),case,str(fault),str(want)],cwd=p,env=env,check=True)
   if case in ['decline','cancel-wait']:assert state['calls']==1,(case,state)

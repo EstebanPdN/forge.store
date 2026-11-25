@@ -1,5 +1,13 @@
 # Changelog
 
+## forge.store 1.4.1
+
+- CIA installs use the first 0–50% for bytes downloaded. At 50%, the store prepares the installation. From 50–99%, the bar follows the bytes written to the 3DS installer. It stays at 99% while the system confirms and the store saves the installation record. Both the install screen and Downloads show 100% only after success. Downloads of unknown size show activity until their size is known or the transfer finishes.
+- The store picks up CIA replacements on GitHub even when the release tag stays the same. Super Mario 64 DS now installs the current beta-01 CIA. Give the CIA your European ASMP revision 0 ROM for first launch. The 3DSX still uses the converted data files.
+- Updates check the files already on your SD card and reuse matching downloads. Missing files are fetched again. When my personal resources need a repair, a changed copy is kept beside the replacement.
+- My public betas keep their full-color artwork and a single purple hammer, including when an update is available. The home card no longer shows the “Uses your ROM” or “Uses your data” tag.
+- Old 3DS and 2DS systems show a compatibility message before a New 3DS-only game can enter the download queue.
+
 ## forge.store 1.4
 
 - Download the public betas of Worms 3DS, DuskLight (Twilight Princess), Red Viper Color and Super Mario 64 DS from the store. A teal gear marks each beta on its full-color icon. The orange update indicator stays visible when an installed beta has an update.

@@ -390,17 +390,20 @@ static void downloads_top(float a) {
         else { rrect_hgrad(21,101,44,44,12,C(FORGE,a),C(FORGE2,a)); draw_icon("layers",43,123,26,C(0xffffff,a)); }
         scissor(400,75,94,304,58);
         text_style(ap?ap->title:T("media.package"),75,94,12,900,0,C(TH.ink,a),AL_LEFT);
-        text(j ? (j->cur >= 0 && j->cur < j->nsteps ? j->steps[j->cur].label : job_label(j)) : package_label(),75,111,10, C(TH.ink_soft, a), AL_LEFT);
+        text(j ? job_activity(j) : package_label(),75,111,10, C(TH.ink_soft, a), AL_LEFT);
         float p = j ? job_progress(j) : PKG.progress;
         rrect(75,130,304,5,2.5f, C(TH.surface3, a));
         if (p > 0) rrect(75,130,fmaxf(5,304*p),5,2.5f, C(FORGE, a));
         char b[96], bytes[24], total[24];
-        snprintf(b, sizeof b, "%d %%", (int)(p * 100)); text_style(b,75,138,10,800,0,C(TH.ink_soft,a),AL_LEFT);
+        if(j && job_percent(j)<0)strcpy(b,"…");
+        else snprintf(b,sizeof b,"%d %%",j?job_percent(j):(int)(p*100));
+        text_style(b,75,138,10,800,0,C(TH.ink_soft,a),AL_LEFT);
         if (job_rate(j, b, sizeof b)) {
         } else {
             fmt_size(bytes, sizeof bytes, j ? (double)j->done_bytes : (double)PKG.received);
             fmt_size(total, sizeof total, j ? (double)j->total_bytes : (double)PKG.bytes);
-            snprintf(b, sizeof b, "%s / %s", bytes, total);
+            if(j && j->unknown_size)snprintf(b,sizeof b,"%s",bytes);
+            else snprintf(b, sizeof b, "%s / %s", bytes, total);
         }
         text_style(b,379,138,10,800,0,C(TH.ink_soft,a),AL_RIGHT);
         scissor_off();
@@ -440,9 +443,11 @@ static void downloads_bottom(float a) {
         text_fit_style(ap?ap->title:T("media.package"),42,y+5,11,600,fmaxf(0,right_x-49),C(TH.ink,a));
         char sub[256];
         if (j) {
-            char rate[64];
-            if (j->state == JOB_RUNNING && job_rate(j, rate, sizeof rate)) snprintf(sub, sizeof sub, "%d %% · %s", (int)(job_progress(j) * 100), rate);
-            else if (j->state == JOB_RUNNING) snprintf(sub, sizeof sub, "%d %% · %s", (int)(job_progress(j) * 100), j->cur >= 0 && j->cur < j->nsteps ? j->steps[j->cur].label : job_label(j));
+            if (j->state == JOB_RUNNING) {
+                int percent=job_percent(j);
+                if(percent<0)snprintf(sub,sizeof sub,"%s",job_activity(j));
+                else snprintf(sub,sizeof sub,"%d %% · %s",percent,job_activity(j));
+            }
             else if(j->state==JOB_QUEUED){char total[24];fmt_size(total,sizeof total,j->total_bytes);snprintf(sub,sizeof sub,"%s · %s · %s",j->tag,j->cia?"CIA":"3DSX",total);}
             else snprintf(sub,sizeof sub,"%s · %s · %s",j->tag,j->cia?"CIA":"3DSX",release_channel_label(j->release,j->experimental));
         }else package_detail(sub,sizeof sub);

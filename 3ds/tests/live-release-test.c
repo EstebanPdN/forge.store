@@ -19,5 +19,16 @@ int main(void){
     rels=json_array();r=live("v5.0",false,"2026-11-09");json_object_del(json_array_get(json_object_get(r,"assets"),0),"digest");json_array_append_new(rels,r);assert(live_release_merge(app,rels));stable=json_object_get(json_object_get(app,"releases"),"stable");cia=json_object_get(json_object_get(stable,"assets"),"cia");assert(!json_object_get(cia,"sha256"));json_decref(rels);json_decref(app);
     app=base();stable=json_object_get(json_object_get(app,"releases"),"stable");cia=json_object_get(json_object_get(stable,"assets"),"cia");json_object_set_new(cia,"o3ds",json_pack("{s:s,s:i}","name","old-v4.0.cia","size",3));rels=json_array();r=live("v5.0",false,"2026-11-09");json_array_append_new(rels,r);assert(!live_release_merge(app,rels));json_array_append_new(json_object_get(r,"assets"),json_pack("{s:s,s:i}","name","old-v5.0.cia","size",4));assert(live_release_merge(app,rels));json_decref(rels);json_decref(app);
     app=base();rels=json_array();json_array_append_new(rels,live("../escape",false,"2026-11-09"));assert(!live_release_merge(app,rels));json_decref(rels);json_decref(app);
+    // Same tag, replacement CIA, renamed file: update its digest and keep the curated notes.
+    app=base();rels=json_array();r=live("v4.0",false,"2026-11-01T00:00:00Z");json_array_append_new(rels,r);
+    json_t *file=json_array_get(json_object_get(r,"assets"),0);
+    json_object_set_new(file,"name",json_string("game-repacked.cia"));
+    json_object_set_new(file,"updated_at",json_string("2026-11-02T00:00:00Z"));
+    json_object_set_new(file,"browser_download_url",json_string("https://example.com/v4.0/game-repacked.cia"));
+    assert(live_release_merge(app,rels));assert(!live_release_merge(app,rels));
+    stable=json_object_get(json_object_get(app,"releases"),"stable");cia=json_object_get(json_object_get(stable,"assets"),"cia");
+    assert(!strcmp(str(cia,"name"),"game-repacked.cia") && !strcmp(str(cia,"url"),str(file,"browser_download_url")));
+    json_object_set_new(file,"size",json_integer(5));json_object_set_new(file,"updated_at",json_string("2026-11-01T00:00:00Z"));
+    assert(!live_release_merge(app,rels));json_decref(app);json_decref(rels);
     puts("PASS: live releases, exact retagging, immutable fallback, complete assets, variants, digests, media/drafts, channel dates");
 }

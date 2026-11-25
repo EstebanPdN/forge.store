@@ -5,12 +5,13 @@
 #include "reader_cache.h"
 #include <time.h>
 #include "site_progress.h"
+#include "store_version.h"
 // The repository's catalog is kept current by a scheduled GitHub Action that follows
 // every listed repository and my website's Progress page. The store reads that file from raw.githubusercontent.com
 // (no API rate limit) on launch and every 30 minutes, and adopts newer releases, install
 // plans and detection data for the apps it already ships. Art and text stay bundled.
 #define URL "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/catalog/forge-store.json"
-#define CACHE DATA_DIR "/catalog-remote.cache"
+#define CACHE DATA_DIR "/catalog-" STORE_VERSION ".cache"
 #define LIMIT (2u * 1024u * 1024u)
 #define PERIOD 1800.f
 #define SITE "https://estebanpdn.github.io/"
@@ -120,6 +121,7 @@ static bool apply(json_t *remote) {
         for (int k = 0; k < BUILTIN_APPS; k++) if (APPS[k].id && !strcmp(APPS[k].id, id)) { a = &APPS[k]; break; }
         if (!a || install_busy(a)) continue;
         json_t *have = json_object_get(a->j, "releases"), *want = json_object_get(r, "releases");
+        bool current_plan=true;
         if (json_is_object(have) && json_is_object(want)) {
             const char *channel; json_t *release;
             json_object_foreach(want, channel, release) {
@@ -127,7 +129,12 @@ static bool apply(json_t *remote) {
                 if (!json_is_string(json_object_get(release, "tag")) || !json_is_object(json_object_get(release, "assets"))) continue;
                 json_t *current = json_object_get(have, channel);
                 // Never step back behind a newer release the live per-repo sync already found.
-                if (current && (json_equal(current, release) || strcmp(date_of(release), date_of(current)) < 0)) continue;
+                if(current && json_equal(current,release))continue;
+                if(current && strcmp(date_of(release),date_of(current))<0){current_plan=false;continue;}
+                const char *known=json_string_value(json_object_get(current,"assetUpdated"));
+                const char *incoming=json_string_value(json_object_get(release,"assetUpdated"));
+                if(known && json_equal(json_object_get(current,"tag"),json_object_get(release,"tag")) &&
+                   (!incoming || strcmp(incoming,known)<0)){current_plan=false;continue;}
                 if (!json_object_set(have, channel, release)) changed = true;
             }
         }
@@ -146,7 +153,7 @@ static bool apply(json_t *remote) {
         if (json_is_object(detect) && !json_equal(detect, json_object_get(a->j, "detect")))
             if (!json_object_set(a->j, "detect", detect)) changed = true;
         json_t *plan = json_object_get(r, "install");
-        if (json_is_object(plan) && json_object_size(plan) && !json_equal(plan, json_object_get(a->j, "install")))
+        if (current_plan && json_is_object(plan) && json_object_size(plan) && !json_equal(plan, json_object_get(a->j, "install")))
             if (!json_object_set(a->j, "install", plan)) changed = true;
     }
     return changed;

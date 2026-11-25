@@ -1,3 +1,4 @@
+#include "install_rules.h"
 // Installer thread. One job at a time; steps follow the catalog's install script.
 #ifdef FORGE_INSTALL_HOST_TEST
 #include "../tests/install-host.h"
@@ -84,6 +85,7 @@ void tvars(char *out, size_t n, const char *tmpl, const char *k1, const char *v1
 typedef struct {
     char path[PATH_CAP], stage[96], backup[96];
     bool deleted, published, had_old, remove_live, personal;
+    char replace_hash[65]; // Only replace the exact personal resource inspected before download.
 } TxFile;
 typedef struct {
     TxFile *files;
@@ -311,6 +313,8 @@ static bool tx_publishes(const TxFile *e) {
     return !e->deleted && !e->remove_live && strncmp(e->path, DATA_DIR "/tmp/", strlen(DATA_DIR "/tmp/"));
 }
 
+static bool sha256_file(const char *, char [65], JobStep *, volatile bool *);
+
 static bool tx_publish(Job *j) {
     // Every file that will reach a live path is staged now. The inventory promises it, and
     // recovery reads a missing staged file as one already moved into place.
@@ -359,7 +363,11 @@ static bool tx_publish(Job *j) {
         if (!e->remove_live && (stat(e->stage, &st) || !S_ISREG(st.st_mode))) return fail(j, "Missing staged file");
         if (!mkdirs(e->path, true)) return fail(j, "Cannot create destination directory");
         if (!stat(e->path, &st)) {
-            if(e->personal)return fail(j,"Personal file appeared during installation; preserved");
+            if(e->personal) {
+                char prior[65]; JobStep step={0};
+                if(!e->replace_hash[0] || !sha256_file(e->path,prior,&step,&j->cancel) || strcmp(e->replace_hash,prior))
+                    return fail(j,"Personal file changed during installation; preserved");
+            }
             if (!S_ISREG(st.st_mode) || rename(e->path, e->backup)) return fail(j, "Cannot back up destination");
             e->had_old = true;
         } else if (errno != ENOENT) return fail(j, "Cannot inspect destination");
@@ -431,6 +439,8 @@ static int on_progress(void *user, curl_off_t total, curl_off_t now, curl_off_t 
     if (total > 0)
         d->step->progress = (float)now / total;
     d->job->done_bytes = d->base + now;
+    if (d->job->cia && !d->job->unknown_size && d->job->total_bytes)
+        d->job->cia_percent = (int)(50 * d->job->done_bytes / d->job->total_bytes);
     u64 tick = svcGetSystemTick();
     if (tick - d->last_tick > SYSCLOCK_ARM11 / 2) {
         float secs = (tick - d->last_tick) / (float)SYSCLOCK_ARM11;
@@ -540,6 +550,8 @@ static bool download_to_file(Job *j, JobStep *st, const char *url, const char *p
         return false;
     }
 
+    j->done_bytes = d.base + d.written;
+    if(j->cia && j->cur==j->last_download){j->cia_percent=50;j->phase=PHASE_PREPARE;}
     return true;
 }
 
@@ -605,6 +617,8 @@ static bool install_cia(Job *j, JobStep *st, const char *path, bool replace_titl
     if (fseek(f, 0, SEEK_END)) { fclose(f); return false; }
     long total = ftell(f);
     if (total <= 0 || fseek(f, 0, SEEK_SET)) { fclose(f); return false; }
+    j->phase = PHASE_WRITE;
+    j->cia_percent = 50;
     Handle h;
     Result r = replace_title ? AM_StartCiaInstallOverwrite(&h, MEDIATYPE_SD)
                              : AM_StartCiaInstall(MEDIATYPE_SD, &h);
@@ -628,6 +642,7 @@ static bool install_cia(Job *j, JobStep *st, const char *path, bool replace_titl
         }
         off += n;
         st->progress = (float)off / total;
+        j->cia_percent = 50 + (int)(49 * off / (u64)total);
     }
     if (ferror(f) || off != (u64)total)
         r = -1;
@@ -638,6 +653,7 @@ static bool install_cia(Job *j, JobStep *st, const char *path, bool replace_titl
             snprintf(j->error, sizeof j->error, "CIA 0x%08lX", r);
         return false;
     }
+    j->phase = PHASE_FINISH;
     r = AM_FinishCiaInstall(h);
     if (R_FAILED(r)) {
         AM_CancelCIAInstall(h);
@@ -674,6 +690,24 @@ static bool copy_file(const char *source, const char *dest) {
     return ok;
 }
 
+// Modified personal data stays beside its replacement, outside the uninstall inventory.
+static bool preserve_personal(Job *j, const char *path, const char *digest) {
+    if (!*digest) return true;
+    for (unsigned i=1; i<=1000; ++i) {
+        char backup[PATH_CAP]; struct stat info;
+        if (!checked(backup,sizeof backup,"%s.forge-backup-%u",path,i)) break;
+        if (!stat(backup,&info) || tx_find(backup)) continue;
+        if (errno!=ENOENT) break;
+        TxFile *e=tx_file(j,backup);
+        if (!e || !copy_file(path,e->stage)) break;
+        e->personal=true;
+        char saved[65]; JobStep step={0};
+        if (sha256_file(e->stage,saved,&step,&j->cancel) && !strcmp(saved,digest)) return true;
+        break;
+    }
+    return fail(j,"Cannot preserve existing game data");
+}
+
 static bool title_present(u64 id, bool *present) {
     *present = false;
     u32 count = 0, got = 0;
@@ -707,8 +741,12 @@ static bool cia_prepare(Job *j) {
     if (!cia_info(input, &info) || (info.titleID >> 32) != 0x00040000)
         return fail(j, "Invalid CIA or unsupported non-application title");
     const char *bound_title=json_string_value(json_object_get(j->release,"forgeTitleId"));
+    json_t *cia_asset=app_asset(j->app,j->release,"cia");
+    if (!bound_title && !json_object_get(cia_asset,"o3ds") &&
+        cia_asset==json_object_get(json_object_get(j->release,"assets"),"cia"))
+        bound_title=json_string_value(json_object_get(j->release,"ciaTitle"));
     if (bound_title && (strtoull(bound_title,NULL,16)!=info.titleID))
-        return fail(j,"Private CIA title does not match its release");
+        return fail(j,"CIA title does not match its release");
     tx.title_id = info.titleID;
     tx.new_version = info.version;
     if (!title_present(tx.title_id, &tx.had_title)) return fail(j, "Cannot inspect installed titles");
@@ -1096,16 +1134,21 @@ static bool extract(Job *j, JobStep *st, const char *archive_path, const char *i
         if (!path_ok || !safe_path(dest) || (!to_dir && !folder && files)) {
             ok = fail(j, "Archive output ambiguous or path too long"); break;
         }
+        char prior[65]="";
         if (personal) {
             struct stat existing;
             if (!stat(dest,&existing)) {
-                if (!S_ISREG(existing.st_mode) || archive_read_data_skip(a)<ARCHIVE_OK) {
-                    ok=fail(j,"Cannot preserve existing personal resource"); break;
+                const char *want=json_string_value(json_object_get(json_object_get(st->raw,"members"),name));
+                if (!S_ISREG(existing.st_mode) || (want && !sha256_file(dest,prior,st,&j->cancel))) {
+                    ok=fail(j,"Cannot inspect existing personal resource");break;
                 }
-                files++; continue;
-            }
-            if (errno!=ENOENT) {ok=fail(j,"Cannot inspect personal resource");break;}
+                if (!want || !strcasecmp(prior,want)) {
+                    if(archive_read_data_skip(a)<ARCHIVE_OK){ok=false;break;}
+                    files++; continue;
+                }
+            } else if (errno!=ENOENT) {ok=fail(j,"Cannot inspect personal resource");break;}
         }
+        if(!preserve_personal(j,dest,prior)){ok=false;break;}
         la_int64_t size = archive_entry_size(e);
         if (size < 0 || (u64)size > FILE_LIMIT || !free_space((u64)size)) {
             ok = fail(j, "Insufficient SD space or archive entry too large"); break;
@@ -1114,6 +1157,7 @@ static bool extract(Job *j, JobStep *st, const char *archive_path, const char *i
         if (!entry) { ok = false; break; }
         entry->deleted = false;
         entry->personal = personal;
+        strcpy(entry->replace_hash,prior);
         FILE *f = fopen(entry->stage, "wb");
         if (!f) { ok = fail(j, "Cannot stage archive entry"); break; }
         la_ssize_t n = 0;
@@ -1133,6 +1177,7 @@ static bool extract(Job *j, JobStep *st, const char *archive_path, const char *i
     archive_read_free(a);
     if (!ok && !j->error[0]) fail(j, "Damaged or interrupted archive");
     if (ok && !files) fail(j, "No matching files in archive");
+    st->extracted=files;
     return ok && files > 0;
 }
 
@@ -1147,11 +1192,114 @@ static bool verify_download(Job *j,JobStep *st,const char *path,const char *expe
     return true;
 }
 
+// Hash on the install worker. The UI never reads game data to decide what to queue.
+static bool matches_file(Job *j, JobStep *step, const char *path, const char *want) {
+    char digest[65];
+    return want && strlen(want)==64 && sha256_file(path,digest,step,&j->cancel) && !strcasecmp(digest,want);
+}
+
+static bool local_download(Job *j, JobStep *step, char path[PATH_CAP]) {
+    json_t *s=step->raw;
+    if(!sd_path(path,PATH_CAP,str(s,"output")))return false;
+    if(json_is_true(json_object_get(s,"personal"))) {
+        const char *dir=str(s,"unpackTo");
+        if(!dir)return matches_file(j,step,path,str(s,"sha256"));
+        json_t *members=json_object_get(s,"members"),*hash;
+        if(!json_object_size(members))return false;
+        const char *name;
+        json_object_foreach(members,name,hash){
+            if(!checked(path,PATH_CAP,"sdmc:%s%s",dir,name) || !safe_path(path) ||
+               !matches_file(j,step,path,json_string_value(hash)))return false;
+        }
+        return true;
+    }
+    json_t *asset=str(s,"asset")?app_asset(j->app,j->release,str(s,"asset")):s;
+    const char *title=str(j->release,"ciaTitle");
+    if(title && strlen(title)==16 && str(s,"asset") && !strcmp(str(s,"asset"),"cia"))
+        snprintf(path,PATH_CAP,DATA_DIR "/cia-cache/%s.cia",title);
+    return matches_file(j,step,path,str(asset,"sha256"));
+}
+
+// Only skip a complete download/verify/extract/delete sequence with final SD outputs.
+static int archive_sequence(Job *j,int first,char key[PATH_CAP]) {
+    JobStep *step=&j->steps[first];
+    const char *path=str(step->raw,"output");
+    if(!step->bytes || !path || strncmp(path,"%TMP%/",6) || first+2>=j->nsteps)return -1;
+    json_t *asset=str(step->raw,"asset")?app_asset(j->app,j->release,str(step->raw,"asset")):step->raw;
+    const char *hash=str(asset,"sha256");
+    if(!hash || strlen(hash)!=64)return -1;
+    int at=first+1;
+    if(!strcmp(str(j->steps[at].raw,"type"),"verifySha256")){
+        const char *file=str(j->steps[at++].raw,"file");
+        if(!file || strcmp(file,path))return -1;
+    }
+    json_t *ex=j->steps[at].raw;
+    const char *file=str(ex,"file"),*out=str(ex,"output"),*input=str(ex,"input");
+    if(at+1>=j->nsteps || strcmp(str(ex,"type"),"extractFile") || !file || strcmp(file,path) ||
+       !out || !*out || strchr(out,'%'))return -1;
+    json_t *del=j->steps[at+1].raw;
+    if(strcmp(str(del,"type"),"deleteFile") || !str(del,"file") || strcmp(str(del,"file"),path))return -1;
+    // Later filesystem operations may need staged outputs, even when identical live files exist.
+    for(int k=at+2;k<j->nsteps;k++){
+        json_t *later=j->steps[k].raw;
+        const char *src=str(later,"old");
+        if(!src)src=str(later,"file");
+        if(src && !strncmp(src,out,strlen(out)))return -1;
+    }
+    return checked(key,PATH_CAP,"archive:%s:%s:%s",hash,out,input?input:"")?at:-1;
+}
+
+static bool archive_present(Job *j,JobStep *step,json_t *files) {
+    if(!json_object_size(files))return false;
+    const char *path;json_t *hash;
+    json_object_foreach(files,path,hash)
+        if(!safe_path(path) || !matches_file(j,step,path,json_string_value(hash)))return false;
+    return true;
+}
+
+static bool prepare_downloads(Job *j) {
+    u64 wire=0,space=0;
+    j->last_download=-1;
+    for(int i=0;i<j->nsteps && !j->cancel;i++){
+        JobStep *step=&j->steps[i];
+        if(!step->bytes)continue;
+        json_t *s=step->raw,*asset=str(s,"asset")?app_asset(j->app,j->release,str(s,"asset")):s;
+        char local[PATH_CAP];
+        char receipt[PATH_CAP];
+        int extract_at=archive_sequence(j,i,receipt);
+        if(extract_at>=0){
+            json_t *files=json_object_get(json_object_get(j->record,"hashes"),receipt);
+            if(archive_present(j,step,files)){
+                for(int k=i;k<=extract_at;k++)j->steps[k].reuse=true;
+                continue;
+            }
+        }
+        step->reuse=local_download(j,step,local);
+        if(step->reuse && !json_is_true(json_object_get(s,"personal"))){
+            char path[PATH_CAP];
+            if(!sd_path(path,sizeof path,str(s,"output")))return fail(j,"Invalid download path");
+            TxFile *e=tx_file(j,path);
+            if(!e || !copy_file(local,e->stage) || !verify_download(j,step,path,str(asset,"sha256")))
+                return fail(j,"Cannot stage verified local file");
+        }
+        if(step->reuse)continue;
+        j->last_download=i;
+        u64 bytes=forge_wire_size(asset);
+        if(!bytes)j->unknown_size=true;
+        wire+=bytes;
+        space+=(u64)json_integer_value(json_object_get(asset,"size"));
+    }
+    j->total_bytes=wire;
+    j->cia_percent=j->unknown_size?-1:j->last_download<0?50:0;
+    return !j->cancel && (free_space(space) || fail(j,"Insufficient SD space"));
+}
+
 static bool run_step(Job *j, JobStep *st) {
     json_t *s = st->raw;
     const char *type = str(s, "type");
     char path[PATH_CAP], path2[PATH_CAP], url[2048];
     if (!type) return fail(j, "Missing install operation");
+    if (st->reuse) return true;
     if (!strcmp(type, "mkdir")) {
         if (!sd_path(path, sizeof path, str(s, "directory"))) return fail(j, "Invalid or oversized catalog path");
         return mkdirs(path, false) || fail(j, "Cannot create directory");
@@ -1162,14 +1310,16 @@ static bool run_step(Job *j, JobStep *st) {
         if(unpack && (!personal || !json_object_get(s,"zipMember") ||
             !sd_path(path2,sizeof path2,unpack) || strncmp(path2,"sdmc:/3ds/",10) ||
             strlen(path2)<=10 || path2[strlen(path2)-1]!='/')) return fail(j,"Invalid personal archive destination");
+        char prior[65]="";
         if(personal && !unpack) {
             if(!sd_path(path,sizeof path,str(s,"output")))return fail(j,"Invalid personal-resource path");
             struct stat existing;
             if(!stat(path,&existing)) {
                 if(!S_ISREG(existing.st_mode))return fail(j,"Personal-resource path is not a regular file");
-                st->progress=1;return true; // never overwrite a user's existing game data
-            }
-            if(errno!=ENOENT)return fail(j,"Cannot inspect personal-resource path");
+                const char *want=str(s,"sha256");
+                if(want && !sha256_file(path,prior,st,&j->cancel))return fail(j,"Cannot check personal resource");
+                if(!want || !strcasecmp(prior,want)){st->progress=1;return true;}
+            } else if(errno!=ENOENT)return fail(j,"Cannot inspect personal-resource path");
         }
         const char *direct = str(s, "url");
         if (direct && *direct) {
@@ -1213,10 +1363,11 @@ static bool run_step(Job *j, JobStep *st) {
         json_t *zip = json_object_get(s,"zipMember");
         ForgeZipMember member;
         if(zip&&(!str(s,"sha256")||!forge_zip_member(zip,&member)))return fail(j,"Invalid encrypted resource");
+        if(!preserve_personal(j,path,prior))return false;
         if(!download_to_file(j, st, url, path, (u64)size, zip?&member:NULL))return false;
         if(!verify_download(j,st,path,str(s,"sha256")))return false;
         if(unpack)return extract(j,st,tx_read(path),NULL,path2,true);
-        if(personal){TxFile *e=tx_find(path);if(!e)return fail(j,"Missing personal-resource transaction");e->personal=true;}
+        if(personal){TxFile *e=tx_find(path);if(!e)return fail(j,"Missing personal-resource transaction");e->personal=true;strcpy(e->replace_hash,prior);}
         return true;
     }
     if (!strcmp(type, "downloadRelease")) {
@@ -1233,6 +1384,7 @@ static bool run_step(Job *j, JobStep *st) {
             load_sums(j);
         const char *name = strrchr(path, '/');
         name = name ? name + 1 : path;
+        const char *alias=NULL,*alias_hash=NULL;
         // Verification must bind the digest to this download's original asset name.
         size_t si;
         json_t *step;
@@ -1241,7 +1393,9 @@ static bool run_step(Job *j, JobStep *st) {
                 continue;
             if (!sd_path(path2, sizeof path2, str(step, "output"))) return fail(j, "Invalid or oversized catalog path");
             if (!strcmp(path, path2)) {
-                const char *asset_name = str(app_asset(j->app, j->release, str(step, "asset")), "name");
+                json_t *asset=app_asset(j->app,j->release,str(step,"asset"));
+                const char *asset_name=str(asset,"name");
+                alias=str(asset,"sumsName");alias_hash=str(asset,"sha256");
                 if (asset_name && *asset_name)
                     name = asset_name;
                 break;
@@ -1270,7 +1424,9 @@ static bool run_step(Job *j, JobStep *st) {
                 const char *last = end;
                 if (last > filename && last[-1] == '\r')
                     last--;
-                if ((size_t)(last - filename) == strlen(name) && !memcmp(filename, name, last - filename)) {
+                size_t length=(size_t)(last-filename);
+                if ((length==strlen(name) && !memcmp(filename,name,length)) ||
+                    (alias && alias_hash && !strcasecmp(hex,alias_hash) && length==strlen(alias) && !memcmp(filename,alias,length))) {
                     snprintf(st->result, sizeof st->result, "%s", T("install.step.verified"));
                     return true;
                 }
@@ -1283,7 +1439,23 @@ static bool run_step(Job *j, JobStep *st) {
     if (!strcmp(type, "extractFile")) {
         if (!sd_path(path, sizeof path, str(s, "file"))) return fail(j, "Invalid or oversized catalog path");
         if (!sd_path(path2, sizeof path2, str(s, "output"))) return fail(j, "Invalid or oversized catalog path");
-        return extract(j, st, tx_read(path), str(s, "input"), path2,false);
+        int before=tx.count;
+        if(!extract(j, st, tx_read(path), str(s, "input"), path2,false))return false;
+        int first=j->cur-1;
+        if(first>=0 && !strcmp(str(j->steps[first].raw,"type"),"verifySha256"))first--;
+        char receipt[PATH_CAP];
+        if(first>=0 && archive_sequence(j,first,receipt)==j->cur && st->extracted==tx.count-before && before<tx.count){
+            json_t *files=json_object();
+            bool ok=files!=NULL;
+            for(int k=before;ok && k<tx.count;k++){
+                char hash[65];
+                ok=tx_publishes(&tx.files[k]) && sha256_file(tx.files[k].stage,hash,st,&j->cancel) &&
+                   !json_object_set_new(files,tx.files[k].path,json_string(hash));
+            }
+            if(ok)json_object_set(j->hashes,receipt,files);
+            json_decref(files);
+        }
+        return !j->cancel;
     }
     if (!strcmp(type, "installCia")) {
         if (!sd_path(path, sizeof path, str(s, "file"))) return fail(j, "Invalid or oversized catalog path");
@@ -1407,7 +1579,7 @@ static bool hash_published(Job *j) {
     JobStep step = {0};
     for (int i = 0; i < tx.count; ++i) {
         TxFile *e = &tx.files[i];
-        if (!e->published) continue;
+        if (!e->published || e->personal) continue;
         char hash[65];
         if (!sha256_file(e->path, hash, &step, &j->cancel) ||
             json_object_set_new(j->hashes, e->path, json_string(hash)))
@@ -1488,6 +1660,10 @@ static void run(Job *j) {
         if (tx.dirs) tx_finish(j, false);
         j->state = JOB_FAILED; return;
     }
+    if (!prepare_downloads(j)) {
+        tx_finish(j,false);j->state=j->cancel?JOB_CANCELLED:JOB_FAILED;return;
+    }
+    j->phase = j->cia && j->last_download<0 ? PHASE_PREPARE : PHASE_STEPS;
     float *weights = j->weight, total = 0;
     for (int i = 0; i < j->nsteps; i++) {
         json_t *step=j->steps[i].raw;
@@ -1506,7 +1682,7 @@ static void run(Job *j) {
         j->cur = i;
         st->state = STEP_ACTIVE;
         st->progress = 0;
-        if (!net_ok && st->bytes) {
+        if (!net_ok && st->bytes && !st->reuse) {
             snprintf(j->error, sizeof j->error, "Wi-Fi");
             st->state = STEP_ERROR;
             tx_finish(j, false);
@@ -1524,12 +1700,18 @@ static void run(Job *j) {
             j->state = JOB_FAILED;
             return;
         }
-        if (st->state == STEP_ACTIVE)
-            st->state = STEP_DONE;
-        st->progress = 1;
+        if(j->cia && i==j->last_download){j->cia_percent=50;j->phase=PHASE_PREPARE;}
+        if (st==tx.cia_step) {
+            st->state=STEP_PENDING; // AM opens this step only after all files are ready.
+            st->progress=0;
+        } else {
+            if (st->state==STEP_ACTIVE)st->state=STEP_DONE;
+            st->progress=1;
+        }
         before += weights[i];
         j->progress = before / total;
     }
+    j->phase = j->cia ? PHASE_PREPARE : PHASE_FINISH;
     if (j->cancel || !cia_prepare(j) || !tx_publish(j)) {
         bool restored = tx_finish(j, false);
         j->state = j->cancel && restored ? JOB_CANCELLED : JOB_FAILED;
@@ -1543,7 +1725,10 @@ static void run(Job *j) {
         // The markers tell recovery whether AM may have replaced the title.
         bool marked = tx_mark(TX_CIA_STARTED);
         if (!marked) fail(j, "SD write failed");
+        j->cur=(int)(tx.cia_step-j->steps);
+        tx.cia_step->state=STEP_ACTIVE;
         bool installed = marked && install_cia(j, tx.cia_step, tx.cia_cache, tx.had_title);
+        tx.cia_step->state=installed?STEP_DONE:STEP_ERROR;
         if (installed) tx_mark(TX_CIA_FINISHED);
         else if (!tx_title_changed()) {
             bool restored = tx_finish(j, false);
@@ -1682,11 +1867,9 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
     if (!selected_tag || strlen(selected_tag) >= sizeof jobs[0].tag) {
         toast("Missing release or oversized version", DANGER); return NULL;
     }
-    if (!IS_NEW3DS && (json_is_false(json_object_get(selected, "o3ds")) ||
-        (!json_object_get(selected, "o3ds") && !a->old_ok))) {
-        toast("This release requires New Nintendo 3DS", AMBER); return NULL;
+    if (!install_model_matches(IS_NEW3DS,a->old_ok,selected)) {
+        toast(T("confirm.blockedNew"), AMBER); return NULL;
     }
-    u64 needed = 0;
     size_t si;
     json_t *step;
     json_array_foreach(script, si, step) {
@@ -1699,17 +1882,9 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
             json_t *asset = !strcmp(type, "downloadUrl") ? step : app_asset(a, selected, str(step, "asset"));
             json_int_t size = json_integer_value(json_object_get(asset, "size"));
             if (size < 0 || (u64)size > FILE_LIMIT) { toast("Unsupported download size", DANGER); return NULL; }
-            if (json_is_true(json_object_get(step,"personal"))) {
-                char path[PATH_CAP];
-                struct stat existing;
-                if (sd_path(path,sizeof path,str(step,"output")) && !stat(path,&existing) && S_ISREG(existing.st_mode))
-                    continue;
-            }
-            needed += (u64)size;
         }
 
     }
-    if (!free_space(needed)) { toast("Insufficient SD space", DANGER); return NULL; }
     LightLock_Lock(&lock);
     int slot = njobs;
     if (njobs == MAX_JOBS) { // reuse a finished slot without moving an active Job
@@ -1737,7 +1912,9 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
     u64 recorded = record_title(installed_record(a));
     if (recorded) j->known_titles[j->nknown++] = recorded;
     j->nknown += app_title_ids(a, j->known_titles + j->nknown, 8 - j->nknown);
+    j->record = json_deep_copy(installed_record(a));
     j->cia = cia;
+    j->cia_percent = -1;
     j->experimental = app_release_experimental(a, selected);
     j->release = json_deep_copy(selected);
     j->script = json_deep_copy(script);
@@ -1824,6 +2001,7 @@ bool install_busy(App *a) {
 float job_progress(Job *j) {
     if (j->state == JOB_DONE)
         return 1;
+    if (j->cia && !j->uninstall) return j->cia_percent<0 ? -1.f : j->cia_percent/100.f;
     if (j->wtotal <= 0)
         return 0;
     float done = 0;
@@ -1833,7 +2011,27 @@ float job_progress(Job *j) {
         else if (i == j->cur)
             done += j->weight[i] * clampf(j->steps[i].progress, 0, 1);
     }
-    return clampf(done / j->wtotal, 0, 1);
+    return clampf(done / j->wtotal, 0, .99f);
+}
+
+int job_percent(Job *j) {
+    if(j->state==JOB_DONE)return 100;
+    if(j->cia && !j->uninstall)return j->cia_percent;
+    return (int)(job_progress(j)*100);
+}
+
+const char *job_activity(Job *j) {
+    if(j->state==JOB_QUEUED)return T("install.queued");
+    if(j->phase==PHASE_CHECK)return T("install.checkSD");
+    if(j->phase==PHASE_FINISH)return T("install.finalizing");
+    if(j->phase==PHASE_WRITE)return T("install.title");
+    JobStep *st=j->cur>=0 && j->cur<j->nsteps?&j->steps[j->cur]:NULL;
+    if(j->phase==PHASE_PREPARE){
+        if(st && st->state==STEP_ACTIVE && !strcmp(str(st->raw,"type"),"dumpDsp"))return st->label;
+        return T("install.preparing");
+    }
+    if(j->cia && st && st->bytes)return T("status.downloading");
+    return st?st->label:T("install.preparing");
 }
 
 void install_cancel(Job *j) {

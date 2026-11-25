@@ -203,14 +203,60 @@ static void tidy_homebrew(void) {
         }
     closedir(d);
 }
+// Compare up to four numeric version components, padding omitted components with zero.
+static bool version_parts(const char *p, unsigned parts[4]) {
+    for (int i = 0; i < 4; i++) {
+        if (*p < '0' || *p > '9') return false;
+        while (*p >= '0' && *p <= '9') {
+            if (parts[i] > 99999) return false;
+            parts[i] = parts[i] * 10 + (*p++ - '0');
+        }
+        if (!*p) return true;
+        if (*p++ != '.') return false;
+    }
+    return false;
+}
+
+static bool release_cia(json_t *release, uint64_t *bytes, char hash[65],
+                        char *url, size_t cap, bool *newer) {
+    const char *tag = json_string_value(json_object_get(release, "tag_name"));
+    unsigned local[4] = {0}, remote[4] = {0};
+    if (!tag || *tag != 'v' || strlen(tag) >= sizeof offered_version ||
+        !version_parts(tag + 1, remote) || !version_parts(STORE_VERSION, local)) return false;
+    for (int n = 0; n < 4; n++) {
+        if (local[n] == remote[n]) continue;
+        *newer = remote[n] > local[n];
+        break;
+    }
+    char filename[64];
+    snprintf(filename, sizeof filename, "forge-store-%s.cia", tag);
+    snprintf(url, cap, "https://github.com/EstebanPdN/forge.store/releases/download/%s/%s", tag, filename);
+    size_t i;
+    json_t *asset;
+    json_array_foreach(json_object_get(release, "assets"), i, asset) {
+        const char *name = json_string_value(json_object_get(asset, "name"));
+        if (!name || strcmp(name, filename)) continue;
+        const char *digest = json_string_value(json_object_get(asset, "digest"));
+        json_int_t size = json_integer_value(json_object_get(asset, "size"));
+        if (size < 32 || size > 96 * 1024 * 1024 || !digest || strncmp(digest, "sha256:", 7) ||
+            strlen(digest + 7) != 64 || strspn(digest + 7, "0123456789abcdef") != 64) return false;
+        memcpy(hash, digest + 7, 65);
+        *bytes = size;
+        snprintf(offered_version, sizeof offered_version, "%s", tag + 1);
+        return true;
+    }
+    return false;
+}
+
 static void run(void *unused) {
     tidy_homebrew();
-    // The public update feed cannot supply a replacement for a personal edition.
-    if (access("romfs:/personal-assets.fme", F_OK) == 0) {
+    if (homebrew && access("romfs:/personal-assets.fme", F_OK) == 0) {
         publish(UPDATE_CURRENT);
         return;
     }
-    CURL *c = request(UPDATE_BASE "update.json");
+    char download_url[256] = UPDATE_BASE "forge-store.3dsx";
+    CURL *c = request(homebrew ? UPDATE_BASE "update.json" :
+                      "https://api.github.com/repos/EstebanPdN/forge.store/releases/latest");
     if (!c) {
         publish(UPDATE_OFFLINE);
         return;
@@ -227,14 +273,20 @@ static void run(void *unused) {
     uint64_t bytes = 0;
     int64_t build = 0;
     char expected[65];
-    bool valid = store_update_metadata(root, homebrew, &bytes, expected, &build);
-    if(valid)store_update_version_label(root,build,offered_version,sizeof offered_version);
+    bool newer = false, valid;
+    if (homebrew) {
+        valid = store_update_metadata(root, true, &bytes, expected, &build);
+        if (valid) store_update_version_label(root, build, offered_version, sizeof offered_version);
+        newer = build > STORE_BUILD;
+    } else {
+        valid = release_cia(root, &bytes, expected, download_url, sizeof download_url, &newer);
+    }
     json_decref(root);
     if (!valid) {
         publish(UPDATE_OFFLINE);
         return;
     }
-    if (build <= STORE_BUILD) {
+    if (!newer) {
         int expected_state = UPDATE_CHECKING;
         __atomic_compare_exchange_n(&state, &expected_state, UPDATE_CURRENT, false, __ATOMIC_ACQ_REL,
                                     __ATOMIC_ACQUIRE);
@@ -267,7 +319,7 @@ static void run(void *unused) {
     publish(UPDATE_DOWNLOADING);
     mbedtls_sha256_init(&d.hash);
     mbedtls_sha256_starts_ret(&d.hash, 0);
-    c = request(homebrew ? UPDATE_BASE "forge-store.3dsx" : UPDATE_BASE "forge-store.cia");
+    c = request(download_url);
     rc = CURLE_FAILED_INIT;
     if (c) {
         curl_easy_setopt(c, CURLOPT_TIMEOUT, 900L);

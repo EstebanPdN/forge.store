@@ -1,3 +1,4 @@
+#include "install_rules.h"
 // Encrypted personal-resource manifest. No password, plaintext URL or ROM is
 // built into the executable. Derivation/decryption and SD persistence run on a
 // worker; installation still uses the normal verified, transactional downloader.
@@ -17,7 +18,7 @@
 #define SEALED_PATH "romfs:/personal-assets.fme"
 #define KEY_PATH DATA_DIR "/forge-mode.key"
 #define FACTORY_KEY_PATH "romfs:/forge-default.key"
-#define MANIFEST_MAX 65536u
+#define MANIFEST_MAX (192u*1024u)
 static const unsigned char aad[] = "forge.store/private-assets/v1";
 static Thread worker;
 static bool done, restore;
@@ -228,10 +229,17 @@ json_t *forge_mode_plan(const char *id,json_t *base) {
     // Only the authenticated manifest may supply an encrypted member and its key.
     size_t i;json_t *step;
     if (base!=json_object_get(forge_mode_build(id),"steps"))
-        json_array_foreach(base,i,step) if(json_object_get(step,"zipMember")||json_object_get(step,"unpackTo"))return NULL;
+        json_array_foreach(base,i,step) if(json_object_get(step,"zipMember")||json_object_get(step,"unpackTo")||json_object_get(step,"personal"))return NULL;
     json_t *plan=json_array();if(!plan)return NULL;
     json_t *extra=forge_mode_data(id);
-    if((extra&&json_array_extend(plan,extra))||json_array_extend(plan,base)){json_decref(plan);return NULL;}
+    bool cia=false;
+    json_array_foreach(base,i,step) {
+        const char *type=json_string_value(json_object_get(step,"type"));
+        if(type && !strcmp(type,"installCia"))cia=true;
+    }
+    json_array_foreach(extra,i,step)
+        if(install_format_matches(step,cia) && json_array_append(plan,step)){json_decref(plan);return NULL;}
+    if(json_array_extend(plan,base)){json_decref(plan);return NULL;}
     json_t *copy=json_deep_copy(plan);json_decref(plan);return copy;
 }
 void forge_mode_exit(void) {

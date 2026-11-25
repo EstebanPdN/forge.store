@@ -1,3 +1,4 @@
+#include "install_rules.h"
 #include "install_plan.h"
 #include <stdio.h>
 #include <string.h>
@@ -43,7 +44,7 @@ void install_plan_build(InstallPlan*p,json_t*steps,json_t*assets,json_t*requires
   else if(!strcmp(t,"dumpDsp"))put(p,"/3ds/dspfirm.cdc",false,0,-1,true);
   else if(!strcmp(t,"installCia"))p->cia=true;
  }
- json_array_foreach(requires,i,s){const char*name=str(s,"path");char full[PLAN_PATH];
+ json_array_foreach(requires,i,s){if(!install_format_matches(s,p->cia))continue;const char*name=str(s,"path");char full[PLAN_PATH];
   if(*name&&name[strlen(name)-1]=='/'&&*str(s,"example")){int n=snprintf(full,sizeof full,"%s%s",name,str(s,"example"));if(n>0&&n<PLAN_PATH)name=full;}
   const char*at=found?found(s):NULL;if(at&&!strncmp(at,"sdmc:/",6)&&strlen(at+5)<PLAN_PATH)name=at+5;
   put(p,name,false,json_number_value(json_object_get(s,"size")),i,false);

@@ -132,7 +132,7 @@
     "confirm.destination": "Destino",
     "confirm.space": "Espacio",
     "confirm.spaceValue": "{size} · quedan {free}",
-    "confirm.blockedNew": "Esta versión necesita una New 3DS.",
+    "confirm.blockedNew": "Este juego no es compatible con tu consola.",
     "confirm.free": "quedan {free}",
     "confirm.stableHint": "Recomendada · probada",
     "confirm.expHint": "Lo más nuevo · puede tener fallos",
@@ -351,7 +351,10 @@
     "status.unknown": "Desconocido",
     "native.retryIn": "Reintentar · {s} s",
     "native.retry": "Reintentar",
-    "native.update": "Actualizar"
+    "native.update": "Actualizar",
+    "install.checkSD": "Comprobando la SD",
+    "install.preparing": "Preparando instalación",
+    "install.finalizing": "Finalizando"
   },
   "en": {
     "section.home": "Store",
@@ -486,7 +489,7 @@
     "confirm.destination": "Destination",
     "confirm.space": "Space",
     "confirm.spaceValue": "{size} · {free} left",
-    "confirm.blockedNew": "This version needs a New 3DS.",
+    "confirm.blockedNew": "This game is incompatible with your console.",
     "confirm.free": "{free} free",
     "confirm.stableHint": "Recommended · tested",
     "confirm.expHint": "Newest · may have bugs",
@@ -705,7 +708,10 @@
     "status.unknown": "Unknown",
     "native.retryIn": "Retry · {s} s",
     "native.retry": "Retry",
-    "native.update": "Update"
+    "native.update": "Update",
+    "install.checkSD": "Checking SD card",
+    "install.preparing": "Preparing installation",
+    "install.finalizing": "Finalizing"
   },
   "pt": {
     "section.home": "Loja",
@@ -834,7 +840,7 @@
     "confirm.destination": "Destino",
     "confirm.space": "Espaço",
     "confirm.spaceValue": "{size} · {free} livres",
-    "confirm.blockedNew": "Esta versão requer um New 3DS.",
+    "confirm.blockedNew": "Este jogo requer um New 3DS.",
     "confirm.free": "{free} livres",
     "confirm.stableHint": "Recomendado · testado",
     "confirm.expHint": "Mais recente · pode ter bugs",
@@ -1048,7 +1054,10 @@
     "status.unknown": "Desconhecido",
     "native.retryIn": "Tentar de novo · {s} s",
     "native.retry": "Tentar de novo",
-    "native.update": "Atualizar"
+    "native.update": "Atualizar",
+    "install.checkSD": "Verificando o cartão SD",
+    "install.preparing": "Preparando a instalação",
+    "install.finalizing": "Finalizando"
   },
   "it": {
     "section.home": "Negozio",
@@ -1177,7 +1186,7 @@
     "confirm.destination": "Destinazione",
     "confirm.space": "Spazio",
     "confirm.spaceValue": "{size} · {free} liberi",
-    "confirm.blockedNew": "Questa versione richiede un New 3DS.",
+    "confirm.blockedNew": "Questo gioco richiede un New 3DS.",
     "confirm.free": "{free} liberi",
     "confirm.stableHint": "Consigliata · testata",
     "confirm.expHint": "Più recente · può avere bug",
@@ -1391,7 +1400,10 @@
     "status.unknown": "Sconosciuto",
     "native.retryIn": "Riprova · {s} s",
     "native.retry": "Riprova",
-    "native.update": "Aggiorna"
+    "native.update": "Aggiorna",
+    "install.checkSD": "Verifica della scheda SD",
+    "install.preparing": "Preparazione installazione",
+    "install.finalizing": "Finalizzazione"
   },
   "fr": {
     "section.home": "Boutique",
@@ -1520,7 +1532,7 @@
     "confirm.destination": "Destination",
     "confirm.space": "Espace",
     "confirm.spaceValue": "{size} · {free} libres",
-    "confirm.blockedNew": "Cette version nécessite une New 3DS.",
+    "confirm.blockedNew": "Ce jeu nécessite une New 3DS.",
     "confirm.free": "{free} libres",
     "confirm.stableHint": "Conseillé · testé",
     "confirm.expHint": "Récent · peut avoir des bugs",
@@ -1734,7 +1746,10 @@
     "status.unknown": "Inconnu",
     "native.retryIn": "Réessayer · {s} s",
     "native.retry": "Réessayer",
-    "native.update": "Mettre à jour"
+    "native.update": "Mettre à jour",
+    "install.checkSD": "Vérification de la carte SD",
+    "install.preparing": "Préparation de l’installation",
+    "install.finalizing": "Finalisation"
   },
   "de": {
     "section.home": "Shop",
@@ -1863,7 +1878,7 @@
     "confirm.destination": "Ziel",
     "confirm.space": "Platz",
     "confirm.spaceValue": "{size} · {free} frei",
-    "confirm.blockedNew": "Diese Version benötigt eine New 3DS.",
+    "confirm.blockedNew": "Dieses Spiel benötigt einen New 3DS.",
     "confirm.free": "{free} frei",
     "confirm.stableHint": "Empfohlen · getestet",
     "confirm.expHint": "Neueste · evtl. Fehler",
@@ -2077,7 +2092,10 @@
     "status.unknown": "Unbekannt",
     "native.retryIn": "Erneut · {s} s",
     "native.retry": "Erneut versuchen",
-    "native.update": "Aktualisieren"
+    "native.update": "Aktualisieren",
+    "install.checkSD": "SD-Karte wird geprüft",
+    "install.preparing": "Installation vorbereiten",
+    "install.finalizing": "Abschließen"
   },
   "ru": {
     "section.home": "Магазин",
@@ -2206,7 +2224,7 @@
     "confirm.destination": "Папка",
     "confirm.space": "Место",
     "confirm.spaceValue": "{size} · свободно {free}",
-    "confirm.blockedNew": "Для этой версии нужна New 3DS.",
+    "confirm.blockedNew": "Для этой игры требуется New 3DS.",
     "confirm.free": "Свободно: {free}",
     "confirm.stableHint": "Рекомендуется · проверено",
     "confirm.expHint": "Новейшая · возможны ошибки",
@@ -2420,7 +2438,10 @@
     "status.unknown": "Неизвестно",
     "native.retryIn": "Повтор · {s} с",
     "native.retry": "Повторить",
-    "native.update": "Обновить"
+    "native.update": "Обновить",
+    "install.checkSD": "Проверка карты SD",
+    "install.preparing": "Подготовка к установке",
+    "install.finalizing": "Завершение"
   },
   "ja": {
     "section.home": "ストア",
@@ -2549,7 +2570,7 @@
     "confirm.destination": "保存先",
     "confirm.space": "容量",
     "confirm.spaceValue": "{size}・残り{free}",
-    "confirm.blockedNew": "このバージョンにはNew 3DSが必要です。",
+    "confirm.blockedNew": "このゲームには New 3DS が必要です。",
     "confirm.free": "残り{free}",
     "confirm.stableHint": "おすすめ・動作確認済み",
     "confirm.expHint": "最新・不具合の可能性あり",
@@ -2763,6 +2784,9 @@
     "status.unknown": "不明",
     "native.retryIn": "再試行 · {s} 秒",
     "native.retry": "再試行",
-    "native.update": "更新"
+    "native.update": "更新",
+    "install.checkSD": "SDカードを確認中",
+    "install.preparing": "インストール準備中",
+    "install.finalizing": "完了処理中"
   }
 }
