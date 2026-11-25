@@ -4471,54 +4471,54 @@
       "folder": "/3ds/worms3ds/",
       "releases": {
         "experimental": {
-          "tag": "beta-01",
+          "tag": "beta-02",
           "date": "2026-11-25",
           "o3ds": false,
           "assets": {
             "sums": {
               "name": "SHA256SUMS.txt",
               "size": 263,
-              "sha256": "2ef8e2777f26bc00f20e900f2db16f6b89fca53e706817e95a46ee850ca5171d"
+              "sha256": "df2093ce4b60f6bbba414e020f7da424e0fcb2f26ce9aa18b3fdb4f46ce25e65"
             },
             "3dsx": {
-              "name": "Worms-3D-beta-01.3dsx",
-              "size": 5655844,
-              "sha256": "f3866b11d6bb16320528883e2acb7fd244d83b5d6266cc36f040dc1edf923d49"
+              "name": "Worms-3D-beta-02.3dsx",
+              "size": 55331016,
+              "sha256": "e236a45d19650598413d325189f3811cb5bbc85c603ccbd76cbd917866b5d430"
             },
             "cia": {
-              "name": "Worms-3D-beta-01.cia",
-              "size": 3204032,
-              "sha256": "a41acede77ebeb2fb1e74a74a036a6870d1cb5ccd2a8352d53efd2decaa79596"
+              "name": "Worms-3D-beta-02.cia",
+              "size": 53175232,
+              "sha256": "eb9f41551180cadd70fe30dacb5238011afb18f0b21664e18ccd176e8d849828"
             }
           },
           "notes": {
             "es": [
-              "Beta pública para New Nintendo 3DS."
+              "Consulta el historial completo en GitHub."
             ],
             "en": [
-              "Public beta for New Nintendo 3DS."
+              "Read the full changelog on GitHub."
             ],
             "pt": [
-              "Beta pública para New Nintendo 3DS."
+              "Veja o histórico completo no GitHub."
             ],
             "it": [
-              "Beta pubblica per New Nintendo 3DS."
+              "Leggi il changelog completo su GitHub."
             ],
             "fr": [
-              "Bêta publique pour New Nintendo 3DS."
+              "Consultez l’historique complet sur GitHub."
             ],
             "de": [
-              "Öffentliche Beta für New Nintendo 3DS."
+              "Den vollständigen Changelog gibt es auf GitHub."
             ],
             "ru": [
-              "Открытая бета для New Nintendo 3DS."
+              "Полный список изменений — на GitHub."
             ],
             "ja": [
-              "Newニンテンドー3DS向け公開ベータ版。"
+              "変更履歴の全文は GitHub をご覧ください。"
             ]
           },
           "ciaTitle": "000400000f3d5700",
-          "ciaVersion": 51
+          "ciaVersion": 52
         }
       },
       "requires": [
