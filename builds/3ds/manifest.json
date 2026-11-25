@@ -7,11 +7,11 @@
   "files": {
     "forge-store.cia": {
       "bytes": 10961856,
-      "sha256": "26698f288bbf36690836b7ab608c3a343e6bd2bb3891249733950c7f30252737"
+      "sha256": "3cc791a50a2dbafc537446a85c4df8265e0fcd414a5233bffeb4b7913cdfaefc"
     },
     "forge-store.3dsx": {
-      "bytes": 11613076,
-      "sha256": "d7387e2d77cb65fb28a744432a688e653390dc680401d1bb3efa18601f86fc7d"
+      "bytes": 11612952,
+      "sha256": "3f3c3f5603c812118f1fd00e732afaf37b0923963d778f69d72caf213925bb40"
     }
   },
   "source_sha256": {
@@ -88,7 +88,7 @@
     "3ds/source/remote_image.h": "9ca93c5848ed351bd74b936c924106c22fa221bc79fe3e6848c162cae59d6d20",
     "3ds/source/rom_find.c": "be03ef628cf47ac47492aa5e32c95c3d19a65e73c777170e77e27d60dd491eb8",
     "3ds/source/rom_find.h": "57d26254776dcc8911e6a4e138d66b2f1108908aaf792c63cabbca042768ba7c",
-    "3ds/source/scenes.c": "aba99d83958358a8728fa0a24a37a4a89130724a5e7dcef4edb1d8dad463ab56",
+    "3ds/source/scenes.c": "d0c0a39e6c1bb283f617b5c4506c0f1ad493669b05057f9e695dce82130fb112",
     "3ds/source/scenes.h": "bdacb79d60a3443058ae577018917fbc71a794487eba94ec6d8b750d710e9eef",
     "3ds/source/sd_usage.c": "546e020a18071bf5ea6e31fedea8c7267d96e62f2b64203158dad26d6e4dcb94",
     "3ds/source/sd_usage.h": "8757e3b3afbb761b13c046f4c82fa80816969d6117240f07451b580e045c76df",

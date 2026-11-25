@@ -1672,7 +1672,6 @@ static void detail_top_overlay(float sa) {
     if(dapp->has_stars){fmt_stars(tmp,sizeof tmp,dapp->stars);HEAD_CHIP(tmp,"star",C(0,.45f));}
     if(!dapp->old_ok)HEAD_CHIP(T("chip.n3dsOnly"),NULL,C(0,.45f));
     if(dapp->stereo)HEAD_CHIP(json_is_string(json_object_get(json_object_get(dapp->j,"compat"),"stereo"))?"3D β":"3D","depth",C(0,.45f));
-    if(dapp->needs_rom)HEAD_CHIP(T("chip.rom"),"rom",C(0,.45f));
 #undef HEAD_CHIP
     float xx=0;int row=0;
     for(int i=0;i<nc;i++){float cw=chip_width(chips[i].label,chips[i].icon);if(xx&&xx+cw>324){row++;xx=0;}chips[i].x=xx;chips[i].y=row*19;xx+=cw+3;}
