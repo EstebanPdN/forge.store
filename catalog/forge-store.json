@@ -5204,20 +5204,20 @@
       "folder": "/3ds/StarHaven/",
       "releases": {
         "stable": {
-          "tag": "v1.3.15",
-          "date": "2026-11-23",
+          "tag": "v1.4.0",
+          "date": "2026-11-25",
           "assets": {
             "cia": {
               "name": "StarHaven.cia",
-              "size": 10781632,
-              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.15/StarHaven.cia",
-              "sha256": "e79bc71c1add7f9a17a134af5826fe62fc3d799bc38d4f5483ef1036d0ba52d2"
+              "size": 10924992,
+              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.4.0/StarHaven.cia",
+              "sha256": "5635a4e65fa698137480148b68c03249961b1cf2f831410aae125752a8cfe870"
             },
             "3dsx": {
               "name": "StarHaven.3dsx",
-              "size": 14709724,
-              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.3.15/StarHaven.3dsx",
-              "sha256": "573eb2559c94d3866f5cd13487b0f0c2b107333f84b98c37f5c2e6923cb310fc"
+              "size": 14937852,
+              "url": "https://github.com/SecondaryLifer/StarHaven/releases/download/v1.4.0/StarHaven.3dsx",
+              "sha256": "64fb21a3abd1bfdaeb785334ffe06b641b162dae728230dfb5a128da27686c32"
             }
           },
           "notes": {
@@ -5246,10 +5246,10 @@
               "変更履歴の全文は GitHub をご覧ください。"
             ]
           },
+          "assetUpdated": "2026-11-25T11:36:41Z",
+          "publishedAt": "2026-11-25T11:36:42Z",
           "ciaTitle": "00040000092b9900",
-          "ciaVersion": 1087,
-          "assetUpdated": "2026-11-23T22:10:20Z",
-          "publishedAt": "2026-11-23T22:10:21Z"
+          "ciaVersion": 1088
         }
       },
       "requires": [
@@ -7958,6 +7958,9 @@
         "ids": [
           6686
         ],
+        "files": [
+          "%3DSX%/mgba.3dsx"
+        ],
         "uu": "mGBA"
       }
     },
@@ -8798,6 +8801,7 @@
           868562
         ],
         "files": [
+          "%3DSX%/nimbus.3dsx",
           "/3ds/nimbus.3dsx"
         ],
         "uu": "Nimbus"
