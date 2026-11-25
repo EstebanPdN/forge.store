@@ -25,6 +25,8 @@ jobs:
           python3 3ds/tests/run-site-progress.py
           python3 3ds/tests/run-music-stream.py
           python3 3ds/tests/run-reader-cache-fs.py
+      - name: Bounded reads from installed resource packs
+        run: python3 3ds/tests/run-assets.py
       - name: Recognizing installed apps and ROMs (production detect.c, rom_find.c)
         run: |
           python3 3ds/tests/run-detect.py

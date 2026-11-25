@@ -1,6 +1,9 @@
 // Host-only platform shim for the production assets.c (compiled as its own translation unit).
 // Fixtures chdir into a temporary folder that holds "romfs:/..." and "packs/" directories.
 #pragma once
+#if defined(__linux__) && !defined(_GNU_SOURCE)
+#define _GNU_SOURCE  // fopencookie and off64_t for pack views under glibc
+#endif
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
