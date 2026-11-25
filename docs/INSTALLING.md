@@ -83,7 +83,8 @@ Downloads or restart the store.
 
 ## Forge Mode
 
-**Settings → Console** opens the secret-code keyboard. A valid personal code authenticates
+The public edition downloads the public files listed in each installation plan. It ships
+without personal download sources. In a personal edition, **Settings → Console** opens the secret-code keyboard. A valid personal code authenticates
 the encrypted resource manifest, animates the forge into a check and saves activation
 locally. The orange **forge mode enabled** indicator stays beside the console model after
 restarting. The code and personal download addresses never appear in logs.

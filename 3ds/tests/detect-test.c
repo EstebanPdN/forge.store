@@ -84,6 +84,13 @@ static void rules(void) {
     CHECK(!detect_newer("2026-11-08", "2026-11-08T10:00") && detect_newer("2026-11-09", "2026-11-08T23:59"));
     CHECK(!detect_newer("2026-11-07T23:59", "2026-11-08") && !detect_newer("", "2026-11-08") && !detect_newer("2026-11-08", ""));
 
+    // A re-upload under the same beta tag still updates an older installed CIA.
+    app = json_pack("{s:{s:{s:i,s:s}}}", "releases", "experimental", "ciaVersion",51,"date","2026-11-25");
+    CHECK(detect_outdated(app,"",0x000400000f3d5700ULL,50));
+    CHECK(!detect_outdated(app,"",0x000400000f3d5700ULL,51));
+    CHECK(detect_available(app,stamp) && !strcmp(stamp,"2026-11-25"));
+    json_decref(app);
+
     // Outdated: Universal-Updater installed an older entry, or the CIA version is lower.
     app = json_loads("{\"source\":\"universal\",\"title\":\"NetPass\",\"updatedAt\":\"2026-11-08T13:42\","
                      "\"releases\":{\"stable\":{\"date\":\"2026-11-08\",\"ciaVersion\":2048}}}", 0, NULL);

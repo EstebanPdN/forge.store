@@ -127,7 +127,6 @@ static void ports(const char *catalog) {
     struct { const char *id, *folder, *file, *header; } data[] = {
         {"ctrquake", "/3ds/ctrQuake/id1", "/3ds/ctrQuake/id1/pak0.pak", "PACK"},
         {"xash3ds", "/xash3d/valve", "/xash3d/valve/pak0.pak", "PACK"},
-        {"worms", "/3ds/worms3ds", "/3ds/worms3ds/assets.worms", NULL},
         {"openlara", "/3ds/OpenLara/DATA", "/3ds/OpenLara/DATA/GYM.PHD", NULL},
         {"openlara", "/3ds/OpenLara/PSXDATA", "/3ds/OpenLara/PSXDATA/GYM.PSX", NULL},
         {"openlara", "/3ds/OpenLara/DATA", "/3ds/OpenLara/DATA/angkor1.tr4", NULL},
@@ -139,6 +138,20 @@ static void ports(const char *catalog) {
         if (data[n].header) { put(data[n].file, 64, 0, "ZIP!"); assert(!scan_at(req)); }
         put(data[n].file, 64, 0, data[n].header ? data[n].header : "x");
         FOUND(req, data[n].file); gone(data[n].file);
+    }
+    // The beta packs have specific headers. Sparse files stand in for the disc data.
+    struct { const char *id, *folder, *file, *header; off_t size; } packs[] = {
+        {"worms", "/3ds/worms3ds", "/3ds/worms3ds/assets.worms", "WORMSPK1", 1048237800},
+        {"dusklight", "/3ds/DuskLight", "/3ds/DuskLight/zelda.twilight", "DLTWPK01", 1048725866}
+    };
+    for (unsigned i=0; i<sizeof packs/sizeof *packs; i++) {
+        req=requirement(root,packs[i].id);
+        dirs(packs[i].folder);
+        put(packs[i].file,64,0,packs[i].header);
+        assert(!scan_at(req));
+        assert(!truncate(at_root(packs[i].file),packs[i].size));
+        FOUND(req,packs[i].file);
+        gone(packs[i].file);
     }
     put("/3ds/butterscotch/data.win", 64, 0, "x");                 // Butterscotch lists folders only
     assert(!scan_at(requirement(root, "butterscotch"))); gone("/3ds/butterscotch/data.win");

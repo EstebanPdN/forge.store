@@ -15,8 +15,8 @@
       "ru": "Магазин портов для Nintendo 3DS",
       "ja": "Nintendo 3DS向け移植ストア"
     },
-    "revision": 3,
-    "updated": "2026-11-12",
+    "revision": 4,
+    "updated": "2026-11-25",
     "url": "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/catalog/forge-store.json",
     "site": "https://estebanpdn.github.io/",
     "sources": [
@@ -3545,9 +3545,7 @@
         "year": 2004
       },
       "color": "#e0a800",
-      "status": "development",
-      "progress": 85,
-      "progressCard": "port-sm64ds",
+      "status": "released",
       "repo": "EstebanPdN/sm64ds-3ds",
       "page": "https://estebanpdn.github.io/super-mario-64-ds.html",
       "stars": 2,
@@ -3586,71 +3584,63 @@
         "ja": "アナログ操作、Cスティックカメラ、3D表示のネイティブ版Super Mario 64 DS。"
       },
       "description": {
-        "es": "Adaptación nativa de Super Mario 64 DS con control analógico, cámara con C-Stick, 3D estereoscópico y menús táctiles. Aún está en desarrollo y no tiene versión pública: aquí puedes seguir su progreso.",
-        "en": "A native adaptation of Super Mario 64 DS with analog control, a C-Stick camera, stereoscopic 3D and touch menus. It is still in development with no public release: follow its progress here.",
-        "pt": "Uma adaptação nativa de Super Mario 64 DS com controle analógico, câmera no C-Stick, 3D estereoscópico e menus de toque. Ainda está em desenvolvimento, sem versão pública: acompanhe o progresso aqui.",
-        "it": "Un adattamento nativo di Super Mario 64 DS con controllo analogico, telecamera con C-Stick, 3D stereoscopico e menu touch. È ancora in sviluppo e non ha una versione pubblica: segui qui i suoi progressi.",
-        "fr": "Une adaptation native de Super Mario 64 DS avec contrôle analogique, caméra au C-Stick, 3D stéréoscopique et menus tactiles. Toujours en développement, sans version publique : suivez son avancement ici.",
-        "de": "Eine native Umsetzung von Super Mario 64 DS mit Analogsteuerung, C-Stick-Kamera, stereoskopischem 3D und Touch-Menüs. Noch in Entwicklung, ohne öffentliche Version: verfolge hier den Fortschritt.",
-        "ru": "Нативная адаптация Super Mario 64 DS с аналоговым управлением, камерой на C-Stick, стереоскопическим 3D и сенсорными меню. Пока в разработке и без публичного релиза: следите за прогрессом здесь.",
-        "ja": "アナログ操作、Cスティックカメラ、立体視3D、タッチメニューに対応したSuper Mario 64 DSのネイティブ移植です。現在開発中で、まだ公開版はありません。進捗はこちらでご確認ください。"
+        "es": "Adaptación nativa de Super Mario 64 DS con control analógico, cámara con C-Stick, 3D estereoscópico y menús táctiles. La beta pública usa el renderizador del BUILD 142.",
+        "en": "A native adaptation of Super Mario 64 DS with analog control, a C-Stick camera, stereoscopic 3D and touch menus. The public beta uses the BUILD 142 renderer.",
+        "pt": "Uma adaptação nativa de Super Mario 64 DS com controle analógico, câmera no C-Stick, 3D estereoscópico e menus de toque. A beta pública usa o renderizador da BUILD 142.",
+        "it": "Un adattamento nativo di Super Mario 64 DS con controllo analogico, telecamera con C-Stick, 3D stereoscopico e menu touch. La beta pubblica usa il renderer della BUILD 142.",
+        "fr": "Une adaptation native de Super Mario 64 DS avec contrôle analogique, caméra au C-Stick, 3D stéréoscopique et menus tactiles. La bêta publique utilise le moteur de rendu du BUILD 142.",
+        "de": "Eine native Umsetzung von Super Mario 64 DS mit Analogsteuerung, C-Stick-Kamera, stereoskopischem 3D und Touch-Menüs. Die öffentliche Beta nutzt den Renderer aus BUILD 142.",
+        "ru": "Нативная адаптация Super Mario 64 DS с аналоговым управлением, камерой на C-Stick, стереоскопическим 3D и сенсорными меню. В публичной бета-версии используется рендерер из BUILD 142.",
+        "ja": "アナログ操作、Cスティックカメラ、立体視3D、タッチメニューに対応したSuper Mario 64 DSのネイティブ移植です。公開ベータ版ではBUILD 142のレンダラーを使用します。"
       },
       "features": {
         "es": [
           "Movimiento analógico",
           "Cámara con C-Stick",
           "3D estereoscópico",
-          "Menús táctiles",
-          "Un único archivo de datos preparado"
+          "Menús táctiles"
         ],
         "en": [
           "Analog movement",
           "C-Stick camera",
           "Stereoscopic 3D",
-          "Touch menus",
-          "A single prepared data file"
+          "Touch menus"
         ],
         "pt": [
           "Movimento analógico",
           "Câmera no C-Stick",
           "3D estereoscópico",
-          "Menus de toque",
-          "Um único arquivo de dados preparado"
+          "Menus de toque"
         ],
         "it": [
           "Movimento analogico",
           "Telecamera con C-Stick",
           "3D stereoscopico",
-          "Menu touch",
-          "Un unico file di dati preparato"
+          "Menu touch"
         ],
         "fr": [
           "Déplacement analogique",
           "Caméra au C-Stick",
           "3D stéréoscopique",
-          "Menus tactiles",
-          "Un seul fichier de données préparé"
+          "Menus tactiles"
         ],
         "de": [
           "Analoge Bewegung",
           "C-Stick-Kamera",
           "Stereoskopisches 3D",
-          "Touch-Menüs",
-          "Nur eine vorbereitete Datendatei"
+          "Touch-Menüs"
         ],
         "ru": [
           "Аналоговое движение",
           "Камера на C-Stick",
           "Стереоскопическое 3D",
-          "Сенсорные меню",
-          "Один подготовленный файл данных"
+          "Сенсорные меню"
         ],
         "ja": [
           "アナログ移動",
           "Cスティックカメラ",
           "立体視3D",
-          "タッチメニュー",
-          "準備済みデータファイル1つだけ"
+          "タッチメニュー"
         ]
       },
       "compat": {
@@ -3659,85 +3649,266 @@
         "stereo": true
       },
       "folder": "/3ds/sm64ds/",
-      "releases": null,
+      "releases": {
+        "experimental": {
+          "tag": "beta-01",
+          "date": "2026-11-25",
+          "o3ds": true,
+          "assets": {
+            "sums": {
+              "name": "SHA256SUMS.txt",
+              "size": 185,
+              "sha256": "3e24e8f2622d3d2786345e5bc5268f36fd493ff38e4e6d96595572e68a6c6180"
+            },
+            "3dsx": {
+              "name": "SM64DS-Public-Beta-01.3dsx",
+              "size": 8069416,
+              "sha256": "8cc7b519e550e77f857ca408617e351a7a26f9dee588a8ffff6f5750c00f0a38"
+            },
+            "cia": {
+              "name": "SM64DS-Public-Beta-01.cia",
+              "size": 3217344,
+              "sha256": "3af3c7aba6a736f1a37f067820e360b756ba4cb047d89b5b81b6582993118fe3"
+            }
+          },
+          "notes": {
+            "es": [
+              "Beta pública para Nintendo 3DS."
+            ],
+            "en": [
+              "Public beta for Nintendo 3DS."
+            ],
+            "pt": [
+              "Beta pública para Nintendo 3DS."
+            ],
+            "it": [
+              "Beta pubblica per Nintendo 3DS."
+            ],
+            "fr": [
+              "Bêta publique pour Nintendo 3DS."
+            ],
+            "de": [
+              "Öffentliche Beta für Nintendo 3DS."
+            ],
+            "ru": [
+              "Публичная бета-версия для Nintendo 3DS."
+            ],
+            "ja": [
+              "ニンテンドー3DS向け公開ベータ版。"
+            ]
+          },
+          "ciaTitle": "000400000f536500",
+          "ciaVersion": 0
+        }
+      },
       "requires": [
         {
-          "id": "rom",
+          "id": "prepared",
           "label": {
-            "es": "Tu ROM de NDS (Europa, rev 0)",
-            "en": "Your NDS ROM (Europe, rev 0)",
-            "pt": "Sua ROM de NDS (Europa, rev 0)",
-            "it": "La tua ROM NDS (Europa, rev 0)",
-            "fr": "Votre ROM NDS (Europe, rev 0)",
-            "de": "Deine NDS-ROM (Europa, Rev 0)",
-            "ru": "Ваша ROM NDS (Европа, rev 0)",
-            "ja": "お手持ちのNDS ROM（欧州版、rev 0）"
+            "es": "prepared.sm64ds",
+            "en": "prepared.sm64ds",
+            "pt": "prepared.sm64ds",
+            "it": "prepared.sm64ds",
+            "fr": "prepared.sm64ds",
+            "de": "prepared.sm64ds",
+            "ru": "prepared.sm64ds",
+            "ja": "prepared.sm64ds"
           },
-          "path": "/3ds/sm64ds/sm64ds.nds",
-          "size": 16777216,
-          "accept": "*.nds",
-          "hashes": [
-            {
-              "label": "EU",
-              "sha1": "1367529f2cb23e76ef295cb1727333ae8f0a6cd7"
-            }
-          ],
+          "path": "/3ds/sm64ds/prepared.sm64ds",
+          "size": 15686873,
+          "accept": "prepared.sm64ds",
           "help": {
-            "es": "Se prepara en la consola (64 MB libres) o con SM64DS Packer en el PC.",
-            "en": "Prepared on the console (64 MB free) or with SM64DS Packer on a PC.",
-            "pt": "Preparada no console (64 MB livres) ou com o SM64DS Packer no PC.",
-            "it": "Si prepara sulla console (64 MB liberi) o con SM64DS Packer su PC.",
-            "fr": "Préparée sur la console (64 MB libres) ou avec SM64DS Packer sur PC.",
-            "de": "Wird auf der Konsole (64 MB frei) oder mit SM64DS Packer am PC vorbereitet.",
-            "ru": "Готовится на консоли (нужно 64 МБ) или в SM64DS Packer на ПК.",
-            "ja": "本体（64 MBの空きが必要）またはPCのSM64DS Packerで準備します。"
+            "es": "En el PC, convierte tu ROM europea ASMP rev. 0 con el conversor beta-01 del repositorio. Copia prepared.sm64ds, build142-data.bin y native/ a /3ds/sm64ds/.",
+            "en": "On a computer, run the beta-01 converter from the repository with your European ASMP rev. 0 ROM. Copy prepared.sm64ds, build142-data.bin and native/ to /3ds/sm64ds/.",
+            "pt": "No computador, use o conversor beta-01 do repositório com sua ROM europeia ASMP rev. 0. Copie prepared.sm64ds, build142-data.bin e native/ para /3ds/sm64ds/.",
+            "it": "Sul computer, usa il convertitore beta-01 del repository con la tua ROM europea ASMP rev. 0. Copia prepared.sm64ds, build142-data.bin e native/ in /3ds/sm64ds/.",
+            "fr": "Sur ordinateur, utilise le convertisseur beta-01 du dépôt avec ta ROM européenne ASMP rév. 0. Copie prepared.sm64ds, build142-data.bin et native/ dans /3ds/sm64ds/.",
+            "de": "Konvertiere deine europäische ASMP-ROM (Rev. 0) am Computer mit dem beta-01-Konverter aus dem Repository. Kopiere prepared.sm64ds, build142-data.bin und native/ nach /3ds/sm64ds/.",
+            "ru": "На компьютере запустите конвертер beta-01 из репозитория для своей европейской ROM ASMP рев. 0. Скопируйте prepared.sm64ds, build142-data.bin и native/ в /3ds/sm64ds/.",
+            "ja": "PCでリポジトリのbeta-01コンバーターを使い、欧州版ASMP rev. 0のROMを変換してください。prepared.sm64ds、build142-data.bin、native/を/3ds/sm64ds/にコピーします。"
           },
           "detect": [
             {
               "dir": "/3ds/sm64ds/",
-              "ext": [
-                "sm64ds"
+              "names": [
+                "prepared.sm64ds"
               ],
               "sizes": [
                 15686873
               ],
-              "magic": [
-                {
-                  "at": 0,
-                  "any": [
-                    "SM64DSP1"
-                  ]
-                }
-              ],
-              "derived": true
-            },
+              "crc32": {
+                "any": [
+                  "a33c61d0"
+                ],
+                "tail": 65536
+              }
+            }
+          ]
+        },
+        {
+          "id": "build142",
+          "label": {
+            "es": "build142-data.bin",
+            "en": "build142-data.bin",
+            "pt": "build142-data.bin",
+            "it": "build142-data.bin",
+            "fr": "build142-data.bin",
+            "de": "build142-data.bin",
+            "ru": "build142-data.bin",
+            "ja": "build142-data.bin"
+          },
+          "path": "/3ds/sm64ds/build142-data.bin",
+          "size": 2506009,
+          "accept": "build142-data.bin",
+          "help": {
+            "es": "En el PC, convierte tu ROM europea ASMP rev. 0 con el conversor beta-01 del repositorio. Copia prepared.sm64ds, build142-data.bin y native/ a /3ds/sm64ds/.",
+            "en": "On a computer, run the beta-01 converter from the repository with your European ASMP rev. 0 ROM. Copy prepared.sm64ds, build142-data.bin and native/ to /3ds/sm64ds/.",
+            "pt": "No computador, use o conversor beta-01 do repositório com sua ROM europeia ASMP rev. 0. Copie prepared.sm64ds, build142-data.bin e native/ para /3ds/sm64ds/.",
+            "it": "Sul computer, usa il convertitore beta-01 del repository con la tua ROM europea ASMP rev. 0. Copia prepared.sm64ds, build142-data.bin e native/ in /3ds/sm64ds/.",
+            "fr": "Sur ordinateur, utilise le convertisseur beta-01 du dépôt avec ta ROM européenne ASMP rév. 0. Copie prepared.sm64ds, build142-data.bin et native/ dans /3ds/sm64ds/.",
+            "de": "Konvertiere deine europäische ASMP-ROM (Rev. 0) am Computer mit dem beta-01-Konverter aus dem Repository. Kopiere prepared.sm64ds, build142-data.bin und native/ nach /3ds/sm64ds/.",
+            "ru": "На компьютере запустите конвертер beta-01 из репозитория для своей европейской ROM ASMP рев. 0. Скопируйте prepared.sm64ds, build142-data.bin и native/ в /3ds/sm64ds/.",
+            "ja": "PCでリポジトリのbeta-01コンバーターを使い、欧州版ASMP rev. 0のROMを変換してください。prepared.sm64ds、build142-data.bin、native/を/3ds/sm64ds/にコピーします。"
+          },
+          "detect": [
             {
               "dir": "/3ds/sm64ds/",
-              "ext": [
-                "nds"
+              "names": [
+                "build142-data.bin"
               ],
               "sizes": [
-                16777216
+                2506009
               ],
-              "magic": [
-                {
-                  "at": 12,
-                  "any": [
-                    "ASMP"
-                  ]
-                },
-                {
-                  "at": 30,
-                  "hex": [
-                    "00"
-                  ]
-                }
-              ]
+              "crc32": {
+                "any": [
+                  "12bd4537"
+                ],
+                "tail": 65536
+              }
+            }
+          ]
+        },
+        {
+          "id": "native",
+          "label": {
+            "es": "native/ (542)",
+            "en": "native/ (542)",
+            "pt": "native/ (542)",
+            "it": "native/ (542)",
+            "fr": "native/ (542)",
+            "de": "native/ (542)",
+            "ru": "native/ (542)",
+            "ja": "native/ (542)"
+          },
+          "path": "/3ds/sm64ds/native/00000.nim",
+          "size": 91776,
+          "accept": "00000.nim",
+          "help": {
+            "es": "En el PC, convierte tu ROM europea ASMP rev. 0 con el conversor beta-01 del repositorio. Copia prepared.sm64ds, build142-data.bin y native/ a /3ds/sm64ds/.",
+            "en": "On a computer, run the beta-01 converter from the repository with your European ASMP rev. 0 ROM. Copy prepared.sm64ds, build142-data.bin and native/ to /3ds/sm64ds/.",
+            "pt": "No computador, use o conversor beta-01 do repositório com sua ROM europeia ASMP rev. 0. Copie prepared.sm64ds, build142-data.bin e native/ para /3ds/sm64ds/.",
+            "it": "Sul computer, usa il convertitore beta-01 del repository con la tua ROM europea ASMP rev. 0. Copia prepared.sm64ds, build142-data.bin e native/ in /3ds/sm64ds/.",
+            "fr": "Sur ordinateur, utilise le convertisseur beta-01 du dépôt avec ta ROM européenne ASMP rév. 0. Copie prepared.sm64ds, build142-data.bin et native/ dans /3ds/sm64ds/.",
+            "de": "Konvertiere deine europäische ASMP-ROM (Rev. 0) am Computer mit dem beta-01-Konverter aus dem Repository. Kopiere prepared.sm64ds, build142-data.bin und native/ nach /3ds/sm64ds/.",
+            "ru": "На компьютере запустите конвертер beta-01 из репозитория для своей европейской ROM ASMP рев. 0. Скопируйте prepared.sm64ds, build142-data.bin и native/ в /3ds/sm64ds/.",
+            "ja": "PCでリポジトリのbeta-01コンバーターを使い、欧州版ASMP rev. 0のROMを変換してください。prepared.sm64ds、build142-data.bin、native/を/3ds/sm64ds/にコピーします。"
+          },
+          "detect": [
+            {
+              "dir": "/3ds/sm64ds/native/",
+              "names": [
+                "00000.nim"
+              ],
+              "sizes": [
+                91776
+              ],
+              "crc32": {
+                "any": [
+                  "caac4ead"
+                ],
+                "tail": 65536
+              }
             }
           ]
         }
       ],
-      "install": null
+      "install": {
+        "3dsx": [
+          {
+            "type": "mkdir",
+            "directory": "/3ds/sm64ds/"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "3dsx",
+            "output": "/3ds/sm64ds/sm64ds.3dsx"
+          },
+          {
+            "type": "verifySha256",
+            "file": "/3ds/sm64ds/sm64ds.3dsx",
+            "sums": "sums"
+          },
+          {
+            "type": "requireFile",
+            "ref": "prepared"
+          },
+          {
+            "type": "requireFile",
+            "ref": "build142"
+          },
+          {
+            "type": "requireFile",
+            "ref": "native"
+          },
+          {
+            "type": "dumpDsp"
+          }
+        ],
+        "cia": [
+          {
+            "type": "mkdir",
+            "directory": "/3ds/sm64ds/"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "cia",
+            "output": "%TMP%/SM64DS-Public-Beta-01.cia"
+          },
+          {
+            "type": "verifySha256",
+            "file": "%TMP%/SM64DS-Public-Beta-01.cia",
+            "sums": "sums"
+          },
+          {
+            "type": "installCia",
+            "file": "%TMP%/SM64DS-Public-Beta-01.cia"
+          },
+          {
+            "type": "deleteFile",
+            "file": "%TMP%/SM64DS-Public-Beta-01.cia"
+          },
+          {
+            "type": "requireFile",
+            "ref": "prepared"
+          },
+          {
+            "type": "requireFile",
+            "ref": "build142"
+          },
+          {
+            "type": "requireFile",
+            "ref": "native"
+          },
+          {
+            "type": "dumpDsp"
+          }
+        ]
+      },
+      "detect": {
+        "ids": [
+          1004389
+        ]
+      }
     },
     {
       "id": "rvc",
@@ -3754,9 +3925,7 @@
         "year": 1995
       },
       "color": "#b3121b",
-      "status": "development",
-      "progress": 50,
-      "progressCard": "port-viper",
+      "status": "released",
       "icon": "assets/ports/rvc/icon.webp",
       "banner": {
         "bg": "assets/ports/rvc/art.webp",
@@ -3910,14 +4079,164 @@
         "stereo": true
       },
       "folder": "/3ds/red-viper-color/",
-      "releases": null,
+      "releases": {
+        "experimental": {
+          "tag": "beta-01",
+          "date": "2026-11-25",
+          "o3ds": true,
+          "assets": {
+            "3dsx": {
+              "name": "Red-Viper-Color-beta-01.3dsx",
+              "size": 762696,
+              "sha256": "202738e889bc7d007fef7976199aabf0c451cc98d6c7c43227b3bcb1eaa6809d"
+            },
+            "cia": {
+              "name": "Red-Viper-Color-beta-01.cia",
+              "size": 775104,
+              "sha256": "47e87fb8fc79e0fe9db728e03b7ce6f749882ab48a72a1147cff2de1864ebb58"
+            },
+            "sums": {
+              "name": "SHA256SUMS.txt",
+              "size": 375,
+              "sha256": "c42df4fcee182af7e5dde4b901ac78824deb824314944df19a8a23ad24d58515"
+            },
+            "palettes": {
+              "name": "Red-Viper-Color-SD-Palettes.zip",
+              "size": 3668596,
+              "sha256": "46dadf688cd374a876fb747ae0ebac6983534b6ad5ac0a552c733b11efd116d6"
+            }
+          },
+          "notes": {
+            "es": [
+              "Beta pública con 16 paletas. Abre tus juegos .vb desde /vb/."
+            ],
+            "en": [
+              "Public beta with 16 palettes. Open your .vb games from /vb/."
+            ],
+            "pt": [
+              "Beta pública com 16 paletas. Abra seus jogos .vb em /vb/."
+            ],
+            "it": [
+              "Beta pubblica con 16 palette. Apri i tuoi giochi .vb da /vb/."
+            ],
+            "fr": [
+              "Bêta publique avec 16 palettes. Ouvre tes jeux .vb depuis /vb/."
+            ],
+            "de": [
+              "Öffentliche Beta mit 16 Farbpaletten. Öffne deine .vb-Spiele unter /vb/."
+            ],
+            "ru": [
+              "Публичная бета-версия с 16 палитрами. Открывайте свои игры .vb из /vb/."
+            ],
+            "ja": [
+              "16種類のパレットを含む公開ベータ版です。/vb/ から自分の .vb ゲームを開いてください。"
+            ]
+          },
+          "ciaTitle": "000400000fe7cb00",
+          "ciaVersion": 1076
+        }
+      },
       "requires": [],
-      "install": null,
-      "featured": true
+      "install": {
+        "3dsx": [
+          {
+            "type": "mkdir",
+            "directory": "/3ds/red-viper-color/"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "palettes",
+            "output": "%TMP%/Red-Viper-Color-SD-Palettes.zip"
+          },
+          {
+            "type": "verifySha256",
+            "file": "%TMP%/Red-Viper-Color-SD-Palettes.zip",
+            "sums": "sums"
+          },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/Red-Viper-Color-SD-Palettes.zip",
+            "input": "^red-viper-color/colorpacks",
+            "output": "/red-viper-color/colorpacks"
+          },
+          {
+            "type": "deleteFile",
+            "file": "%TMP%/Red-Viper-Color-SD-Palettes.zip"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "3dsx",
+            "output": "/3ds/red-viper-color/red-viper-color.3dsx"
+          },
+          {
+            "type": "verifySha256",
+            "file": "/3ds/red-viper-color/red-viper-color.3dsx",
+            "sums": "sums"
+          },
+          {
+            "type": "dumpDsp"
+          }
+        ],
+        "cia": [
+          {
+            "type": "mkdir",
+            "directory": "/3ds/red-viper-color/"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "palettes",
+            "output": "%TMP%/Red-Viper-Color-SD-Palettes.zip"
+          },
+          {
+            "type": "verifySha256",
+            "file": "%TMP%/Red-Viper-Color-SD-Palettes.zip",
+            "sums": "sums"
+          },
+          {
+            "type": "extractFile",
+            "file": "%TMP%/Red-Viper-Color-SD-Palettes.zip",
+            "input": "^red-viper-color/colorpacks",
+            "output": "/red-viper-color/colorpacks"
+          },
+          {
+            "type": "deleteFile",
+            "file": "%TMP%/Red-Viper-Color-SD-Palettes.zip"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "cia",
+            "output": "%TMP%/Red-Viper-Color-beta-01.cia"
+          },
+          {
+            "type": "verifySha256",
+            "file": "%TMP%/Red-Viper-Color-beta-01.cia",
+            "sums": "sums"
+          },
+          {
+            "type": "installCia",
+            "file": "%TMP%/Red-Viper-Color-beta-01.cia"
+          },
+          {
+            "type": "deleteFile",
+            "file": "%TMP%/Red-Viper-Color-beta-01.cia"
+          },
+          {
+            "type": "dumpDsp"
+          }
+        ]
+      },
+      "featured": true,
+      "repo": "EstebanPdN/red-viper-color-3ds",
+      "detect": {
+        "ids": [
+          1042379
+        ]
+      },
+      "page": "https://estebanpdn.github.io/red-viper-color.html"
     },
     {
       "id": "worms",
-      "title": "Worms 3D",
+      "title": "Worms 3DS",
       "category": "forge",
       "author": "EstebanPdN",
       "credits": "Worms 3D © Team17 · código recuperado y compilado de forma nativa",
@@ -3926,9 +4245,7 @@
         "year": 2003
       },
       "color": "#2d9be0",
-      "status": "development",
-      "progress": 70,
-      "progressCard": "port-worms",
+      "status": "released",
       "page": "https://estebanpdn.github.io/worms-3d.html",
       "icon": "assets/ports/worms/icon.webp",
       "banner": {
@@ -4002,27 +4319,83 @@
             "ru": "Прицеливание",
             "ja": "照準"
           }
+        },
+        {
+          "caption": {
+            "es": "La isla",
+            "en": "The island",
+            "pt": "A ilha",
+            "it": "L’isola",
+            "fr": "L’île",
+            "de": "Die Insel",
+            "ru": "Остров",
+            "ja": "島"
+          },
+          "top": "assets/ports/worms/shots/beta01-03-top.webp",
+          "bottom": "assets/ports/worms/shots/beta01-03-bottom.webp"
+        },
+        {
+          "caption": {
+            "es": "Selección de armas",
+            "en": "Weapon selection",
+            "pt": "Seleção de armas",
+            "it": "Scelta delle armi",
+            "fr": "Choix des armes",
+            "de": "Waffenauswahl",
+            "ru": "Выбор оружия",
+            "ja": "武器選択"
+          },
+          "top": "assets/ports/worms/shots/beta01-04-top.webp",
+          "bottom": "assets/ports/worms/shots/beta01-04-bottom.webp"
+        },
+        {
+          "caption": {
+            "es": "Explosión",
+            "en": "Explosion",
+            "pt": "Explosão",
+            "it": "Esplosione",
+            "fr": "Explosion",
+            "de": "Explosion",
+            "ru": "Взрыв",
+            "ja": "爆発"
+          },
+          "top": "assets/ports/worms/shots/beta01-06-top.webp",
+          "bottom": "assets/ports/worms/shots/beta01-06-bottom.webp"
+        },
+        {
+          "caption": {
+            "es": "Vista aérea",
+            "en": "Aerial view",
+            "pt": "Vista aérea",
+            "it": "Vista aerea",
+            "fr": "Vue aérienne",
+            "de": "Luftansicht",
+            "ru": "Вид сверху",
+            "ja": "上空からの眺め"
+          },
+          "top": "assets/ports/worms/shots/beta01-07-top.webp",
+          "bottom": "assets/ports/worms/shots/beta01-07-bottom.webp"
         }
       ],
       "tagline": {
-        "es": "Worms 3D reconstruido desde su código recuperado, nativo en New 3DS.",
-        "en": "Worms 3D rebuilt from its recovered code, native on New 3DS.",
-        "pt": "Worms 3D reconstruído a partir do código recuperado, nativo no New 3DS.",
-        "it": "Worms 3D ricostruito dal codice recuperato, nativo su New 3DS.",
-        "fr": "Worms 3D reconstruit à partir de son code récupéré, natif sur New 3DS.",
-        "de": "Worms 3D aus wiederhergestelltem Code neu gebaut, nativ auf New 3DS.",
-        "ru": "Worms 3D, пересобранный из восстановленного кода, нативно на New 3DS.",
-        "ja": "復元したコードから再構築したWorms 3D。New 3DSでネイティブ動作。"
+        "es": "Worms 3D en dos pantallas, con el radar siempre a mano.",
+        "en": "Worms 3D on two screens, with the radar always in view.",
+        "pt": "Worms 3D em duas telas, com o radar sempre à vista.",
+        "it": "Worms 3D su due schermi, con il radar sempre in vista.",
+        "fr": "Worms 3D sur deux écrans, avec le radar toujours visible.",
+        "de": "Worms 3D auf zwei Bildschirmen, mit dem Radar immer im Blick.",
+        "ru": "Worms 3D на двух экранах: радар всегда на виду.",
+        "ja": "2画面で遊ぶWorms 3D。レーダーを見ながら戦えます。"
       },
       "description": {
-        "es": "Worms 3D de GameCube reconstruido a partir de su código recuperado y compilado de forma nativa para New 3DS. Jugable de principio a fin, en todos los idiomas, con partidas en la SD y cargador de mods .worms.",
-        "en": "GameCube Worms 3D rebuilt from its recovered code and compiled natively for New 3DS. Playable from start to finish, in every language, with SD saves and a .worms mod loader.",
-        "pt": "Worms 3D de GameCube reconstruído a partir do código recuperado e compilado nativamente para New 3DS. Jogável do início ao fim, em todos os idiomas, com saves no SD e um carregador de mods .worms.",
-        "it": "Worms 3D per GameCube ricostruito dal codice recuperato e compilato in modo nativo per New 3DS. Giocabile dall'inizio alla fine, in tutte le lingue, con salvataggi sulla SD e un caricatore di mod .worms.",
-        "fr": "Worms 3D GameCube reconstruit à partir de son code récupéré et compilé nativement pour New 3DS. Jouable du début à la fin, dans toutes les langues, avec sauvegardes sur la SD et chargeur de mods .worms.",
-        "de": "Worms 3D vom GameCube, aus wiederhergestelltem Code neu gebaut und nativ für New 3DS kompiliert. Von Anfang bis Ende spielbar, in allen Sprachen, mit Spielständen auf der SD und einem .worms-Mod-Loader.",
-        "ru": "Worms 3D с GameCube, пересобранный из восстановленного кода и нативно скомпилированный для New 3DS. Проходится от начала до конца, на всех языках, с сохранениями на SD и загрузчиком модов .worms.",
-        "ja": "GameCube版Worms 3Dを復元したコードから再構築し、New 3DS向けにネイティブコンパイルしました。最初から最後までプレイ可能で、全言語に対応し、SDへのセーブと.worms Modローダーを備えています。"
+        "es": "Beta de mi port nativo para New Nintendo 3DS. En la pantalla inferior puedes seguir la posición de los equipos en el radar y elegir un arma durante tu turno.",
+        "en": "The public beta of my native New Nintendo 3DS port. Track the teams on the lower-screen radar and choose a weapon when your turn comes around.",
+        "pt": "Beta pública do meu port nativo para New Nintendo 3DS. Acompanhe as equipes no radar da tela inferior e escolha uma arma na sua vez.",
+        "it": "Beta pubblica del mio port nativo per New Nintendo 3DS. Segui le squadre sul radar dello schermo inferiore e scegli un’arma al tuo turno.",
+        "fr": "Bêta publique de mon portage natif pour New Nintendo 3DS. Suivez les équipes sur le radar de l’écran inférieur et choisissez une arme à votre tour.",
+        "de": "Öffentliche Beta meiner nativen Umsetzung für New Nintendo 3DS. Verfolge die Teams auf dem Radar des unteren Bildschirms und wähle eine Waffe, wenn du am Zug bist.",
+        "ru": "Публичная бета моего нативного порта для New Nintendo 3DS. Следите за командами на радаре нижнего экрана и выбирайте оружие, когда наступит ваш ход.",
+        "ja": "Newニンテンドー3DS向けに移植した公開ベータ版です。下画面のレーダーでチームの位置を確認し、自分のターンで武器を選べます。"
       },
       "features": {
         "es": [
@@ -4096,7 +4469,58 @@
         "stereo": false
       },
       "folder": "/3ds/worms3ds/",
-      "releases": null,
+      "releases": {
+        "experimental": {
+          "tag": "beta-01",
+          "date": "2026-11-25",
+          "o3ds": false,
+          "assets": {
+            "sums": {
+              "name": "SHA256SUMS.txt",
+              "size": 263,
+              "sha256": "2ef8e2777f26bc00f20e900f2db16f6b89fca53e706817e95a46ee850ca5171d"
+            },
+            "3dsx": {
+              "name": "Worms-3D-beta-01.3dsx",
+              "size": 5655844,
+              "sha256": "f3866b11d6bb16320528883e2acb7fd244d83b5d6266cc36f040dc1edf923d49"
+            },
+            "cia": {
+              "name": "Worms-3D-beta-01.cia",
+              "size": 3204032,
+              "sha256": "a41acede77ebeb2fb1e74a74a036a6870d1cb5ccd2a8352d53efd2decaa79596"
+            }
+          },
+          "notes": {
+            "es": [
+              "Beta pública para New Nintendo 3DS."
+            ],
+            "en": [
+              "Public beta for New Nintendo 3DS."
+            ],
+            "pt": [
+              "Beta pública para New Nintendo 3DS."
+            ],
+            "it": [
+              "Beta pubblica per New Nintendo 3DS."
+            ],
+            "fr": [
+              "Bêta publique pour New Nintendo 3DS."
+            ],
+            "de": [
+              "Öffentliche Beta für New Nintendo 3DS."
+            ],
+            "ru": [
+              "Открытая бета для New Nintendo 3DS."
+            ],
+            "ja": [
+              "Newニンテンドー3DS向け公開ベータ版。"
+            ]
+          },
+          "ciaTitle": "000400000f3d5700",
+          "ciaVersion": 51
+        }
+      },
       "requires": [
         {
           "id": "data",
@@ -4111,33 +4535,118 @@
             "ja": "お手持ちのディスクのassets.worms（EU版、GWMP8P）"
           },
           "path": "/3ds/worms3ds/assets.worms",
-          "size": 1047527424,
+          "size": 1048237800,
           "help": {
-            "es": "Se crea con Worms3DExtractor para macOS a partir de tu copia del disco (unos 999 MB).",
-            "en": "Created with Worms3DExtractor for macOS from your disc copy (about 999 MB).",
-            "pt": "Criado com o Worms3DExtractor para macOS a partir da cópia do seu disco (cerca de 999 MB).",
-            "it": "Si crea con Worms3DExtractor per macOS dalla copia del tuo disco (circa 999 MB).",
-            "fr": "Créé avec Worms3DExtractor pour macOS à partir de la copie de votre disque (environ 999 MB).",
-            "de": "Mit Worms3DExtractor für macOS aus deiner Disc-Kopie erstellt (ca. 999 MB).",
-            "ru": "Создается в Worms3DExtractor для macOS из копии вашего диска (около 999 МБ).",
-            "ja": "お手持ちのディスクのコピーから、macOS用Worms3DExtractorで作成します（約999 MB）。"
+            "es": "Prepara tu disco con Forge 3DS Converter.",
+            "en": "Prepare your disc with Forge 3DS Converter.",
+            "pt": "Prepare seu disco com o Forge 3DS Converter.",
+            "it": "Prepara il tuo disco con Forge 3DS Converter.",
+            "fr": "Préparez votre disque avec Forge 3DS Converter.",
+            "de": "Bereite deine Disc mit Forge 3DS Converter vor.",
+            "ru": "Подготовьте свой диск с помощью Forge 3DS Converter.",
+            "ja": "Forge 3DS Converterでお手持ちのディスクから作成してください。"
           },
           "detect": [
             {
               "dir": "/3ds/worms3ds/",
               "names": [
                 "assets.worms"
+              ],
+              "sizes": [
+                1048237800
+              ],
+              "magic": [
+                {
+                  "at": 0,
+                  "any": [
+                    "WORMSPK1"
+                  ]
+                }
               ]
             }
-          ]
+          ],
+          "tool": {
+            "label": {
+              "es": "Forge 3DS Converter",
+              "en": "Forge 3DS Converter",
+              "pt": "Forge 3DS Converter",
+              "it": "Forge 3DS Converter",
+              "fr": "Forge 3DS Converter",
+              "de": "Forge 3DS Converter",
+              "ru": "Forge 3DS Converter",
+              "ja": "Forge 3DS Converter"
+            },
+            "url": "https://github.com/EstebanPdN/estebanpdn.github.io/releases/tag/forge-3ds-converter-v1.2.0"
+          }
         }
       ],
-      "install": null
+      "install": {
+        "3dsx": [
+          {
+            "type": "mkdir",
+            "directory": "/3ds/worms3ds/"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "3dsx",
+            "output": "/3ds/worms3ds/Worms-3D.3dsx"
+          },
+          {
+            "type": "verifySha256",
+            "file": "/3ds/worms3ds/Worms-3D.3dsx",
+            "sums": "sums"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data"
+          },
+          {
+            "type": "dumpDsp"
+          }
+        ],
+        "cia": [
+          {
+            "type": "mkdir",
+            "directory": "/3ds/worms3ds/"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "cia",
+            "output": "%TMP%/Worms-3D-beta-01.cia"
+          },
+          {
+            "type": "verifySha256",
+            "file": "%TMP%/Worms-3D-beta-01.cia",
+            "sums": "sums"
+          },
+          {
+            "type": "installCia",
+            "file": "%TMP%/Worms-3D-beta-01.cia"
+          },
+          {
+            "type": "deleteFile",
+            "file": "%TMP%/Worms-3D-beta-01.cia"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data"
+          },
+          {
+            "type": "dumpDsp"
+          }
+        ]
+      },
+      "repo": "EstebanPdN/worms-3ds",
+      "detect": {
+        "ids": [
+          998743
+        ]
+      }
     },
     {
       "id": "dusklight",
-      "title": "Dusklight",
-      "fullTitle": "Dusklight 3DS · Twilight Princess",
+      "title": "DuskLight",
+      "fullTitle": "DuskLight 3DS · Twilight Princess",
       "category": "forge",
       "author": "EstebanPdN",
       "credits": "Dusklight (TwilitRealm), zeldaret/tp, Aurora, OpenDSP",
@@ -4146,9 +4655,7 @@
         "year": 2006
       },
       "color": "#3b2f5c",
-      "status": "development",
-      "progress": 45,
-      "progressCard": "port-dusklight",
+      "status": "released",
       "repo": "EstebanPdN/dusklight-3ds",
       "page": "https://estebanpdn.github.io/dusklight.html",
       "stars": 6,
@@ -4160,26 +4667,97 @@
         "logo": "assets/ports/dusklight/logo.webp",
         "fx": "twilight"
       },
-      "shots": [],
+      "shots": [
+        {
+          "caption": {
+            "es": "Pantalla de título",
+            "en": "Title screen",
+            "pt": "Tela de título",
+            "it": "Schermata del titolo",
+            "fr": "Écran titre",
+            "de": "Titelbildschirm",
+            "ru": "Титульный экран",
+            "ja": "タイトル画面"
+          },
+          "top": "assets/ports/dusklight/shots/beta01-03-top.webp",
+          "bottom": "assets/ports/dusklight/shots/beta01-03-bottom.webp"
+        },
+        {
+          "caption": {
+            "es": "El puente al atardecer",
+            "en": "The bridge at sunset",
+            "pt": "A ponte ao pôr do sol",
+            "it": "Il ponte al tramonto",
+            "fr": "Le pont au crépuscule",
+            "de": "Die Brücke bei Sonnenuntergang",
+            "ru": "Мост на закате",
+            "ja": "夕暮れの橋"
+          },
+          "top": "assets/ports/dusklight/shots/beta01-02-top.webp",
+          "bottom": "assets/ports/dusklight/shots/beta01-02-bottom.webp"
+        },
+        {
+          "caption": {
+            "es": "Selección de partida",
+            "en": "Quest logs",
+            "pt": "Seleção de partida",
+            "it": "Selezione del salvataggio",
+            "fr": "Choix du fichier",
+            "de": "Spielstand auswählen",
+            "ru": "Выбор сохранения",
+            "ja": "冒険の記録"
+          },
+          "top": "assets/ports/dusklight/shots/beta01-04-top.webp",
+          "bottom": "assets/ports/dusklight/shots/beta01-04-bottom.webp"
+        },
+        {
+          "caption": {
+            "es": "La cascada",
+            "en": "The waterfall",
+            "pt": "A cachoeira",
+            "it": "La cascata",
+            "fr": "La cascade",
+            "de": "Der Wasserfall",
+            "ru": "Водопад",
+            "ja": "滝"
+          },
+          "top": "assets/ports/dusklight/shots/beta01-05-top.webp",
+          "bottom": "assets/ports/dusklight/shots/beta01-05-bottom.webp"
+        },
+        {
+          "caption": {
+            "es": "Conversación al anochecer",
+            "en": "A conversation at dusk",
+            "pt": "Conversa ao anoitecer",
+            "it": "Dialogo al crepuscolo",
+            "fr": "Conversation au crépuscule",
+            "de": "Gespräch in der Dämmerung",
+            "ru": "Разговор в сумерках",
+            "ja": "夕暮れの会話"
+          },
+          "top": "assets/ports/dusklight/shots/beta01-06-top.webp",
+          "bottom": "assets/ports/dusklight/shots/beta01-06-bottom.webp"
+        }
+      ],
       "tagline": {
-        "es": "Twilight Princess nativo en New 3DS. Un proyecto en sus primeros pasos.",
-        "en": "Twilight Princess running natively on New 3DS. An early-stage project.",
-        "pt": "Twilight Princess rodando nativo no New 3DS. Um projeto em fase inicial.",
-        "it": "Twilight Princess in versione nativa su New 3DS. Un progetto agli inizi.",
-        "fr": "Twilight Princess en natif sur New 3DS. Un projet à ses débuts.",
-        "de": "Twilight Princess nativ auf New 3DS. Ein Projekt im Frühstadium.",
-        "ru": "Twilight Princess нативно на New 3DS. Проект на ранней стадии.",
-        "ja": "Twilight PrincessをNew 3DSでネイティブ動作させる、初期段階のプロジェクト。"
+        "es": "Twilight Princess · Beta pública para New Nintendo 3DS.",
+        "en": "Twilight Princess · Public beta for New Nintendo 3DS.",
+        "pt": "Twilight Princess · Beta pública para New Nintendo 3DS.",
+        "it": "Twilight Princess · Beta pubblica per New Nintendo 3DS.",
+        "fr": "Twilight Princess · Bêta publique pour New Nintendo 3DS.",
+        "de": "Twilight Princess · Öffentliche Beta für New Nintendo 3DS.",
+        "ru": "Twilight Princess · Открытая бета для New Nintendo 3DS.",
+        "ja": "Twilight Princess · Newニンテンドー3DS向け公開ベータ版。"
       },
       "description": {
-        "es": "Proyecto temprano para llevar Twilight Princess a New 3DS de forma nativa, basado en Dusklight y la decompilación de zeldaret/tp. Todavía no es jugable.",
-        "en": "An early project to bring Twilight Princess natively to New 3DS, based on Dusklight and the zeldaret/tp decompilation. Not playable yet.",
-        "pt": "Um projeto inicial para levar Twilight Princess de forma nativa ao New 3DS, baseado no Dusklight e na decompilação zeldaret/tp. Ainda não é jogável.",
-        "it": "Un progetto agli inizi per portare Twilight Princess in versione nativa su New 3DS, basato su Dusklight e sulla decompilazione zeldaret/tp. Non ancora giocabile.",
-        "fr": "Un projet naissant pour porter Twilight Princess nativement sur New 3DS, basé sur Dusklight et la décompilation zeldaret/tp. Pas encore jouable.",
-        "de": "Ein frühes Projekt, um Twilight Princess nativ auf New 3DS zu bringen, auf Basis von Dusklight und der Dekompilierung zeldaret/tp. Noch nicht spielbar.",
-        "ru": "Ранний проект по нативному переносу Twilight Princess на New 3DS на основе Dusklight и декомпиляции zeldaret/tp. Пока не играбелен.",
-        "ja": "Dusklightとzeldaret/tpのデコンパイルをベースに、Twilight PrincessをNew 3DSでネイティブ動作させる初期段階のプロジェクトです。まだプレイはできません。"
+        "es": "En esta beta de Twilight Princess todavía hay bajadas de rendimiento y fallos gráficos ocasionales.",
+        "en": "This Twilight Princess beta still has frame rate drops and occasional graphical glitches.",
+        "pt": "Esta beta de Twilight Princess ainda apresenta quedas na taxa de quadros e falhas gráficas ocasionais.",
+        "it": "Questa beta di Twilight Princess presenta ancora cali di frame rate e occasionali difetti grafici.",
+        "fr": "Cette bêta de Twilight Princess présente encore des baisses de fréquence d’images et quelques défauts graphiques.",
+        "de": "In dieser Beta von Twilight Princess treten noch Bildrateneinbrüche und gelegentliche Grafikfehler auf.",
+        "ru": "В этой бета-версии Twilight Princess ещё встречаются падения частоты кадров и графические ошибки.",
+        "ja": "このベータ版のTwilight Princessでは、フレームレートの低下や描画の乱れが起きることがあります。"
       },
       "features": {
         "es": [
@@ -4229,9 +4807,147 @@
         "stereo": false
       },
       "folder": "/3ds/DuskLight/",
-      "releases": null,
-      "requires": [],
-      "install": null
+      "releases": {
+        "experimental": {
+          "tag": "beta-01",
+          "date": "2026-11-25",
+          "o3ds": false,
+          "assets": {
+            "cia": {
+              "name": "DuskLight-Public-Beta-01.cia",
+              "size": 16517056,
+              "sha256": "b9e0115c9c43c18a6788988f81702d8f11512a8a0bbbc43719575af5e6e84b47"
+            },
+            "sums": {
+              "name": "SHA256SUMS.txt",
+              "size": 183,
+              "sha256": "235fa65e36d8599aa527bd8e56780bebca585442f0b3e822253a1c0a4ce26a40"
+            }
+          },
+          "notes": {
+            "es": [
+              "En esta beta de Twilight Princess todavía hay bajadas de rendimiento y fallos gráficos ocasionales."
+            ],
+            "en": [
+              "This Twilight Princess beta still has frame rate drops and occasional graphical glitches."
+            ],
+            "pt": [
+              "Esta beta de Twilight Princess ainda apresenta quedas na taxa de quadros e falhas gráficas ocasionais."
+            ],
+            "it": [
+              "Questa beta di Twilight Princess presenta ancora cali di frame rate e occasionali difetti grafici."
+            ],
+            "fr": [
+              "Cette bêta de Twilight Princess présente encore des baisses de fréquence d’images et quelques défauts graphiques."
+            ],
+            "de": [
+              "In dieser Beta von Twilight Princess treten noch Bildrateneinbrüche und gelegentliche Grafikfehler auf."
+            ],
+            "ru": [
+              "В этой бета-версии Twilight Princess ещё встречаются падения частоты кадров и графические ошибки."
+            ],
+            "ja": [
+              "このベータ版のTwilight Princessでは、フレームレートの低下や描画の乱れが起きることがあります。"
+            ]
+          },
+          "ciaTitle": "000400000d051000",
+          "ciaVersion": 5
+        }
+      },
+      "requires": [
+        {
+          "id": "data",
+          "path": "/3ds/DuskLight/zelda.twilight",
+          "label": {
+            "es": "zelda.twilight (GameCube USA / PAL Rev 0)",
+            "en": "zelda.twilight (GameCube USA / PAL Rev 0)",
+            "pt": "zelda.twilight (GameCube USA / PAL Rev 0)",
+            "it": "zelda.twilight (GameCube USA / PAL Rev 0)",
+            "fr": "zelda.twilight (GameCube USA / PAL Rev 0)",
+            "de": "zelda.twilight (GameCube USA / PAL Rev 0)",
+            "ru": "zelda.twilight (GameCube USA / PAL Rev 0)",
+            "ja": "zelda.twilight (GameCube USA / PAL Rev 0)"
+          },
+          "help": {
+            "es": "Prepara tu disco con Forge 3DS Converter.",
+            "en": "Prepare your disc with Forge 3DS Converter.",
+            "pt": "Prepare seu disco com o Forge 3DS Converter.",
+            "it": "Prepara il tuo disco con Forge 3DS Converter.",
+            "fr": "Préparez votre disque avec Forge 3DS Converter.",
+            "de": "Bereite deine Disc mit Forge 3DS Converter vor.",
+            "ru": "Подготовьте свой диск с помощью Forge 3DS Converter.",
+            "ja": "Forge 3DS Converterでお手持ちのディスクから作成してください。"
+          },
+          "detect": [
+            {
+              "dir": "/3ds/DuskLight/",
+              "names": [
+                "zelda.twilight"
+              ],
+              "minSize": 1048576,
+              "magic": [
+                {
+                  "at": 0,
+                  "any": [
+                    "DLTWPK01"
+                  ]
+                }
+              ]
+            }
+          ],
+          "tool": {
+            "label": {
+              "es": "Forge 3DS Converter",
+              "en": "Forge 3DS Converter",
+              "pt": "Forge 3DS Converter",
+              "it": "Forge 3DS Converter",
+              "fr": "Forge 3DS Converter",
+              "de": "Forge 3DS Converter",
+              "ru": "Forge 3DS Converter",
+              "ja": "Forge 3DS Converter"
+            },
+            "url": "https://github.com/EstebanPdN/estebanpdn.github.io/releases/tag/forge-3ds-converter-v1.2.0"
+          }
+        }
+      ],
+      "install": {
+        "cia": [
+          {
+            "type": "mkdir",
+            "directory": "/3ds/DuskLight/"
+          },
+          {
+            "type": "downloadRelease",
+            "asset": "cia",
+            "output": "%TMP%/DuskLight-Public-Beta-01.cia"
+          },
+          {
+            "type": "verifySha256",
+            "file": "%TMP%/DuskLight-Public-Beta-01.cia",
+            "sums": "sums"
+          },
+          {
+            "type": "installCia",
+            "file": "%TMP%/DuskLight-Public-Beta-01.cia"
+          },
+          {
+            "type": "deleteFile",
+            "file": "%TMP%/DuskLight-Public-Beta-01.cia"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data"
+          },
+          {
+            "type": "dumpDsp"
+          }
+        ]
+      },
+      "detect": {
+        "ids": [
+          853264
+        ]
+      }
     },
     {
       "id": "starhaven",

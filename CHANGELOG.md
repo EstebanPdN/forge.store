@@ -1,5 +1,11 @@
 # Changelog
 
+## forge.store 1.4
+
+- Download the public betas of Worms 3DS, DuskLight (Twilight Princess), Red Viper Color and Super Mario 64 DS from the store. A teal gear marks each beta on its full-color icon. The orange update indicator stays visible when an installed beta has an update.
+- The galleries for Worms 3DS and DuskLight now include screenshots of both screens captured in Azahar.
+- Each beta lists its available launchers and installation requirements. Prepare your own game data for the port you choose.
+
 ## forge.store 1.3
 
 - The store installs in about 11 MB instead of 50 MB. Updates are just as small.

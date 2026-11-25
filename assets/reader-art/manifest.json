@@ -1334,6 +1334,78 @@
       "source_sha256": "1206f37c0b98fc18d108c212215bffea6dc3e981f30275f08ed20337d771a839"
     },
     {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/worms-3ds/main/docs/badges/platform.svg",
+      "file": "3ds/romfs/reader-art/786f76e27c6e2ef63ffedb38817146f8a4a59eaca556b50adc33dc2fa2e0a2a1.rimg",
+      "width": 200,
+      "height": 22,
+      "bytes": 2129,
+      "sha256": "c3316d1eb57f8d078ad454c3ce7d6f4eb2154519495dbd01a4a30f2347e0ac21",
+      "source_sha256": "81608b9136cc2d023c9c107530714d9fc34750a84a3af4f83257f28de3e583f6"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/worms-3ds/main/docs/badges/version.svg",
+      "file": "3ds/romfs/reader-art/2ee62abef4c7de0dd9e6d7a248e4a639808cd0c8a939e9237452e0d643a8121e.rimg",
+      "width": 136,
+      "height": 22,
+      "bytes": 1491,
+      "sha256": "767b7fb96ce0b943e47dda191da44416e9d761e139bf53408aa6b48d67f84bbd",
+      "source_sha256": "85049eb903fdd8ae6a719e5239c9189325e3fe6d01b7ff7ceeea29b51c311b43"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/worms-3ds/main/docs/images/discord-official.svg",
+      "file": "3ds/romfs/reader-art/79fc17e302ff16b3f9ce79951e4c9a1110558cd366e1539822abf63c7efe9936.rimg",
+      "width": 166,
+      "height": 46,
+      "bytes": 1893,
+      "sha256": "3bca7e8d642f28c742185f8f5f1e90db0379b437cd077621ba5c8bc013a1b889",
+      "source_sha256": "70d74ff1eef87b828e8251f108d88852b5e7bcba6e8817f89596dd07b8ae3e6b"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/worms-3ds/main/docs/images/island.webp",
+      "file": "3ds/romfs/reader-art/bcafa9fc55f758a139cadb75a1e0ffe2a2fbc6a3e09f274f879230d153e9a989.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 72545,
+      "sha256": "f4e9f11c4ac2afb142f210c11c8933530cf2f6698021057a1a67aebd7c280dbb",
+      "source_sha256": "9b0e090dc6c47a796f7ac35caec73cfd9ae4b4bb638ca489a74d3c1b6984fe41"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/worms-3ds/main/docs/images/patreon.svg",
+      "file": "3ds/romfs/reader-art/81e867380e46b368307f122091a3cc5363d674504218ecac5b600ff9e902816f.rimg",
+      "width": 216,
+      "height": 46,
+      "bytes": 2603,
+      "sha256": "076030d8585c7852165d932ed01515c24dc01fb8e17412ea67e0c39fa49351a7",
+      "source_sha256": "65f57fd8b166c53be3329be56bcb5b758076448e58846379ca03326de2ced5e3"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/worms-3ds/main/docs/images/showcase-rounded.webp",
+      "file": "3ds/romfs/reader-art/cab6eb3ba05618023e39b3c808dbbb4d67d2442230cdb4d5e39840e23631f636.rimg",
+      "width": 376,
+      "height": 212,
+      "bytes": 124211,
+      "sha256": "50421861098b441e4438d28d20f7447a1c52f00ff367e282cfd2b390fbdef071",
+      "source_sha256": "e3b11fbc6682960a373514a6609533642d647f45edcc64b203c11a7b28ca4120"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/worms-3ds/main/docs/images/weapons.webp",
+      "file": "3ds/romfs/reader-art/81e3ba7a768f7e6dddf24387547fa54829a27ebbcd542208b43da751eddef603.rimg",
+      "width": 200,
+      "height": 240,
+      "bytes": 65416,
+      "sha256": "d5f5dd22a64db53a8b2d5e151fc7bd436fb156de5a7ff7cb44bd1748f6661384",
+      "source_sha256": "678e7719f19571d4771f141d23c543075f492aabdf120aa3fd8da3d77321c4c6"
+    },
+    {
+      "url": "https://raw.githubusercontent.com/EstebanPdN/worms-3ds/main/docs/images/website.svg",
+      "file": "3ds/romfs/reader-art/91065456d1bd65d12de66ea5e3bfcfed73072fce80ea66e6772f27bbb5946b21.rimg",
+      "width": 142,
+      "height": 46,
+      "bytes": 1879,
+      "sha256": "dd470266366164c2b930f51a9271e12a96f1d8a9e81cf32f8fc58d54bb0eb5f3",
+      "source_sha256": "cc6d444736c90467f93e3d04d9f460e6b7c5d6e8c8eb56422392d05b8f050cec"
+    },
+    {
       "url": "https://raw.githubusercontent.com/EstebanPdN/zelda-alttp-3ds/main/docs/badges/license.svg",
       "file": "3ds/romfs/reader-art/fd805fbf53b4daa71c49d69d83a42709ae31af8c68ceffa60518e103dc159362.rimg",
       "width": 193,

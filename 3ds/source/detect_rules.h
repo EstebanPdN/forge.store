@@ -126,13 +126,18 @@ static inline bool detect_newer(const char *available, const char *installed) {
     return n >= 10 && strncmp(available, installed, n) > 0;
 }
 
-/** When the app's current stable version was published, as precisely as the catalog
+static inline json_t *detect_default_release(json_t *app) {
+    json_t *releases = json_object_get(app, "releases");
+    json_t *stable = json_object_get(releases, "stable");
+    return json_is_object(stable) ? stable : json_object_get(releases, "experimental");
+}
+
+/** When the app's default release was published, as precisely as the catalog
  * knows: Universal-DB's update time, else the release date. */
 static inline bool detect_available(json_t *app, char out[DETECT_STAMP]) {
     const char *at = json_string_value(json_object_get(app, "updatedAt"));
     if (at && detect_stamp(at, out)) return true;
-    json_t *stable = json_object_get(json_object_get(app, "releases"), "stable");
-    return detect_stamp(json_string_value(json_object_get(stable, "date")), out);
+    return detect_stamp(json_string_value(json_object_get(detect_default_release(app), "date")), out);
 }
 
 /** Name of the app's entry in Universal-Updater's records (Universal-DB store). */
@@ -144,10 +149,10 @@ static inline const char *detect_uu_name(json_t *app) {
 }
 
 /** Installed but older: Universal-Updater installed an earlier entry, or the CIA title's
- * version is below the one the current stable release ships (when the catalog knows it). */
+ * version is below the one the default release ships (when the catalog knows it). */
 static inline bool detect_outdated(json_t *app, const char *uu_updated, uint64_t title, unsigned version) {
     char available[DETECT_STAMP];
     if (uu_updated && *uu_updated && detect_available(app, available) && detect_newer(available, uu_updated)) return true;
-    json_t *want = json_object_get(json_object_get(json_object_get(app, "releases"), "stable"), "ciaVersion");
+    json_t *want = json_object_get(detect_default_release(app), "ciaVersion");
     return title && json_is_integer(want) && json_integer_value(want) > (json_int_t)version;
 }
