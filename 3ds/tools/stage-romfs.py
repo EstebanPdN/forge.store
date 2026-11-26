@@ -9,7 +9,7 @@
   zlib, which also accepts the plain files.
 Every step is deterministic: the same inputs give byte-identical outputs.
 """
-import gzip, hashlib, importlib.util, json, os, shutil, struct, subprocess
+import re, gzip, hashlib, importlib.util, json, os, shutil, struct, subprocess
 from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 source = ROOT / '3ds/romfs'
@@ -26,7 +26,10 @@ moved = {Path(m).name for m in store_packs.MOVED}
 shutil.copytree(source, target, ignore=shutil.ignore_patterns('banner', '.DS_Store', 'forge-default.key', 'personal-assets.fme', *moved))
 if private_manifest := os.environ.get('FORGE_PERSONAL_MANIFEST'):
     sealed = Path(private_manifest).read_bytes()
-    if len(sealed) < 56 or len(sealed) > 56 + 192 * 1024 or sealed[:4] != b'FM01':
+    # Same bound as the console (forge_mode.c MANIFEST_MAX), read from the source so they never differ.
+    limit = re.search(r'#define MANIFEST_MAX \((\d+)u\*(\d+)u\)', (ROOT / '3ds/source/forge_mode.c').read_text())
+    limit = int(limit[1]) * int(limit[2])
+    if len(sealed) < 56 or len(sealed) > 56 + limit or sealed[:4] != b'FM01':
         raise ValueError('Expected a sealed Forge Mode manifest')
     (target / 'personal-assets.fme').write_bytes(sealed)
 if activation := os.environ.get('FORGE_DEFAULT_ACTIVATION'):
