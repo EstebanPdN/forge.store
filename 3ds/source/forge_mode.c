@@ -18,7 +18,7 @@
 #define SEALED_PATH "romfs:/personal-assets.fme"
 #define KEY_PATH DATA_DIR "/forge-mode.key"
 #define FACTORY_KEY_PATH "romfs:/forge-default.key"
-#define MANIFEST_MAX (192u*1024u)
+#define MANIFEST_MAX (512u*1024u)  // room for per-file hashes of large data folders (Celeste: 1218 files)
 static const unsigned char aad[] = "forge.store/private-assets/v1";
 static Thread worker;
 static bool done, restore;
