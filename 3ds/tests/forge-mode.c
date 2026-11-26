@@ -22,54 +22,7 @@ static void check_preview_plan(void) {
     assert(!valid_download(download,"/3ds/forge-store/tmp/forge-preview.cia"));
     json_decref(untrusted);json_decref(plan);
 }
-static void check_required_factory(void) {
-    json_t *base=json_loads("[{\"type\":\"requireFile\",\"ref\":\"rom\"}]",0,NULL);
-    assert(base);
-    assert(!forge_mode_plan("demo",base));
-    forge_mode_init();
-    assert(!forge_mode_plan("demo",base));
-    settle();
-    assert(forge_mode_state()==FORGE_INVALID && !forge_mode_plan("demo",base));
-    assert(!forge_mode_unlock("host-fixture-only"));
-
-    assert(!rename("factory-key",FACTORY_KEY_PATH));
-    forge_mode_init();
-    settle();
-    assert(forge_mode_enabled() && access(KEY_PATH,F_OK)!=0);
-    json_t *plan=forge_mode_plan("demo",base);
-    assert(json_array_size(plan)==2);
-    assert(json_is_true(json_object_get(json_array_get(plan,0),"personal")));
-    json_decref(plan);
-    check_preview_plan();
-    forge_mode_exit();
-    assert(!unlink(FACTORY_KEY_PATH));
-    json_decref(base);
-    puts("PASS: factory edition activates with a blank SD; pending or missing activation cannot queue a public plan");
-}
-static void check_code_catalog(void) {
-    assert(!rename(SEALED_PATH,CODE_CATALOG_PATH));
-    assert(!rename("factory-key",FACTORY_KEY_PATH));
-    forge_mode_init();
-    settle();
-    assert(forge_mode_state()==FORGE_LOCKED && !forge_mode_data("demo"));
-    assert(forge_mode_unlock("wrong-fixture-code"));
-    settle();
-    assert(forge_mode_state()==FORGE_INVALID);
-    assert(forge_mode_unlock("host-fixture-only"));
-    settle();
-    assert(forge_mode_enabled());
-    check_preview_plan();
-    forge_mode_exit();
-    forge_mode_init();
-    settle();
-    assert(forge_mode_enabled());
-    forge_mode_exit();
-    puts("PASS: public catalog requires the code on a fresh SD and restores saved activation");
-}
-int main(int argc,char **argv){
-    (void)argv;
-    if(FORGE_FACTORY_ACTIVATION){check_required_factory();return 0;}
-    if(argc>1){check_code_catalog();return 0;}
+int main(void){
     // Compare the optimized production KDF with OpenSSL, including full work
     // factor, UTF-8, all-zero salt and the maximum accepted password length.
     const char *codes[]={"a", "fixture-ñ-3ds", "0123456789012345678901234567890123456789012345678901234567890123"};

@@ -2,10 +2,6 @@
 #include <stdbool.h>
 #include <jansson.h>
 
-#ifndef FORGE_FACTORY_ACTIVATION
-#define FORGE_FACTORY_ACTIVATION 0
-#endif
-
 typedef enum { FORGE_LOCKED, FORGE_CHECKING, FORGE_ENABLED, FORGE_INVALID, FORGE_STORAGE_ERROR } ForgeModeState;
 void forge_mode_init(void);
 void forge_mode_pump(void);

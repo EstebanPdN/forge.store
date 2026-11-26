@@ -54,7 +54,7 @@ static int mbedtls_sha256_starts_ret(mbedtls_sha256_context*c,int x){CC_SHA256_I
 static int mbedtls_sha256_update_ret(mbedtls_sha256_context*c,const unsigned char*p,size_t n){CC_SHA256_Update(c,p,n);return 0;}
 static int mbedtls_sha256_finish_ret(mbedtls_sha256_context*c,unsigned char*p){CC_SHA256_Final(p,c);return 0;}
 ''')
- for n in ['store_version.h','store_update_policy.h','forge_mode.h','http_cache.h','reader_cache.h','reader_cache.c','assets.h']:(p/n).write_text((root/'source'/n).read_text())
+ for n in ['store_version.h','store_update_policy.h','http_cache.h','reader_cache.h','reader_cache.c','assets.h']:(p/n).write_text((root/'source'/n).read_text())
  types=(root/'source/store_update.h').read_text().replace('#include "common.h"','#include "platform.h"');(p/'store_update.h').write_text(types)
  src=(root/'source/store_update.c').read_text().replace('#include "network.h"','').replace('#include "hbl_launch.h"','')
  src+='\n'+(root/'tests/update-host/decision-main.inc').read_text()
@@ -67,20 +67,6 @@ static int mbedtls_sha256_finish_ret(mbedtls_sha256_context*c,unsigned char*p){C
   state.update(case=case,calls=0);subprocess.run([str(p/'updater'),case,str(fault),str(want)],cwd=p,env=env,check=True)
   if case in ['decline','cancel-wait']:assert state['calls']==1,(case,state)
   if case=='rate-limit':assert state['calls']==3,(case,state)
- (p/'romfs:').mkdir()
- personal=p/'romfs:/personal-assets.fme'
- personal.write_bytes(b'fixture')
- for case in ('valid','hb-valid'):
-  state.update(case=case,calls=0)
-  subprocess.run([str(p/'updater'),case,'0','1'],cwd=p,env=env,check=True)
-  assert state['calls']==0,(case,state)
- personal.unlink()
- public_code_catalog=p/'romfs:/forge-code-assets.fme'
- public_code_catalog.write_bytes(b'fixture')
- state.update(case='current',calls=0)
- subprocess.run([str(p/'updater'),'current','0','1'],cwd=p,env=env,check=True)
- assert state['calls']==1,state
- public_code_catalog.unlink()
  cache=(root/'source/http_cache.c').read_text().replace('#include "network.h"','#include "platform.h"')
  cache+=r'''
 int main(int argc,char**argv){http_cache_init();curl_global_init(CURL_GLOBAL_DEFAULT);char e[128];size_t n;char*b=http_cache_get("https://fixture/cache/test","*/*",1024,atoi(argv[1]),NULL,NULL,&n,e,sizeof e);assert(b&&!strcmp(b,argv[2])&&n==strlen(b));free(b);
@@ -106,7 +92,7 @@ int main(int argc,char**argv){
 '''
  (p/'bundled.c').write_text(bundled);subprocess.run(flags+[str(p/'bundled.c'),str(p/'reader_cache.c'),str(root/'source/assets.c'),'-DASSETS_HOST_TEST','-o',str(p/'bundled')],check=True)
  key=hashlib.sha256(b'https://fixture/cache/bundle*/*').hexdigest()
- bundle=p/'romfs:/reader-data'/key;bundle.parent.mkdir()
+ bundle=p/'romfs:/reader-data'/key;bundle.parent.mkdir(parents=True)
  body=b'bundled payload';packed=struct.pack('<4sQII',b'FGH2',int(time.time()),len(body),zlib.crc32(body))+body
  bundle.write_bytes(packed);disk=p/'sdmc:/3ds/forge-store/http-v1'/key
  def check_bundle(case,refresh,want,calls):

@@ -16,7 +16,6 @@
 #include <ctype.h>
 
 #define SEALED_PATH "romfs:/personal-assets.fme"
-#define CODE_CATALOG_PATH "romfs:/forge-code-assets.fme"
 #define KEY_PATH DATA_DIR "/forge-mode.key"
 #define FACTORY_KEY_PATH "romfs:/forge-default.key"
 #define MANIFEST_MAX (512u*1024u)  // room for per-file hashes of large data folders (Celeste: 1218 files)
@@ -162,10 +161,8 @@ static bool read_install_qr(unsigned char key[32]) {
 static void unlock_worker(void *unused) {
     (void)unused;
     unsigned char key[32]={0},digest[32],*blob=NULL;size_t length=0;
-    result_state=restore&&!FORGE_FACTORY_ACTIVATION?FORGE_LOCKED:FORGE_INVALID;result_manifest=NULL;
+    result_state=restore?FORGE_LOCKED:FORGE_INVALID;result_manifest=NULL;
     FILE *f=fopen(SEALED_PATH,"rb");
-    bool code_catalog=!f&&!FORGE_FACTORY_ACTIVATION;
-    if(code_catalog) f=fopen(CODE_CATALOG_PATH,"rb");
     if(!f)goto end;
     if(fseek(f,0,SEEK_END)){fclose(f);goto end;}
     long len=ftell(f);rewind(f);
@@ -177,14 +174,12 @@ static void unlock_worker(void *unused) {
     mbedtls_sha256_ret(blob,length,digest,0);
     bool save_key = !restore;
     if(restore) {
-        if(!code_catalog) result_manifest=restore_manifest(FACTORY_KEY_PATH,digest,blob,length);
-        if (!FORGE_FACTORY_ACTIVATION && !result_manifest) {
-            result_manifest=restore_manifest(KEY_PATH,digest,blob,length);
-            if (!result_manifest) result_manifest=restore_manifest(KEY_PATH ".bak",digest,blob,length);
-            if (!result_manifest && !code_catalog && read_install_qr(key)) {
-                result_manifest=decrypt(blob,length,key);
-                save_key=true;
-            }
+        result_manifest=restore_manifest(FACTORY_KEY_PATH,digest,blob,length);
+        if (!result_manifest) result_manifest=restore_manifest(KEY_PATH,digest,blob,length);
+        if (!result_manifest) result_manifest=restore_manifest(KEY_PATH ".bak",digest,blob,length);
+        if (!result_manifest && read_install_qr(key)) {
+            result_manifest=decrypt(blob,length,key);
+            save_key=true;
         }
     } else {
         u64 started=osGetTime();
@@ -216,7 +211,7 @@ void forge_mode_pump(void) {
     json_decref(manifest);manifest=result_manifest;result_manifest=NULL;state=result_state;
 }
 bool forge_mode_unlock(const char *code) {
-    if(FORGE_FACTORY_ACTIVATION||worker||state==FORGE_ENABLED||!code||!*code||strlen(code)>=sizeof password)return false;
+    if(worker||state==FORGE_ENABLED||!code||!*code||strlen(code)>=sizeof password)return false;
     snprintf(password,sizeof password,"%s",code);return begin(false);
 }
 ForgeModeState forge_mode_state(void){return state;}
@@ -230,7 +225,6 @@ json_t *forge_mode_data(const char *id) {
     return json_is_array(entry)?entry:json_object_get(entry,"data");
 }
 json_t *forge_mode_plan(const char *id,json_t *base) {
-    if(FORGE_FACTORY_ACTIVATION && !forge_mode_enabled())return NULL;
     if(!json_is_array(base)||!json_array_size(base))return NULL;
     // Only the authenticated manifest may supply an encrypted member and its key.
     size_t i;json_t *step;

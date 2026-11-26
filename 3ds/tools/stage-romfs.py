@@ -23,7 +23,7 @@ GZIP = ('gfx/fonts.bin', 'gfx/kerning.bin', 'catalog.json', 'strings.json', 'uni
 
 if target.exists(): shutil.rmtree(target)
 moved = {Path(m).name for m in store_packs.MOVED}
-shutil.copytree(source, target, ignore=shutil.ignore_patterns('banner', '.DS_Store', 'forge-default.key', 'personal-assets.fme', 'forge-code-assets.fme', *moved))
+shutil.copytree(source, target, ignore=shutil.ignore_patterns('banner', '.DS_Store', 'forge-default.key', 'personal-assets.fme', *moved))
 if private_manifest := os.environ.get('FORGE_PERSONAL_MANIFEST'):
     sealed = Path(private_manifest).read_bytes()
     # Same bound as the console (forge_mode.c MANIFEST_MAX), read from the source so they never differ.
@@ -32,8 +32,6 @@ if private_manifest := os.environ.get('FORGE_PERSONAL_MANIFEST'):
     if len(sealed) < 56 or len(sealed) > 56 + limit or sealed[:4] != b'FM01':
         raise ValueError('Expected a sealed Forge Mode manifest')
     (target / 'personal-assets.fme').write_bytes(sealed)
-else:
-    shutil.copyfile(source / 'forge-code-assets.fme', target / 'forge-code-assets.fme')
 if activation := os.environ.get('FORGE_DEFAULT_ACTIVATION'):
     if not private_manifest:
         raise ValueError('FORGE_DEFAULT_ACTIVATION requires FORGE_PERSONAL_MANIFEST')

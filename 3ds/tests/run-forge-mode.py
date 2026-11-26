@@ -13,19 +13,10 @@ const build={tag:'Preview 1',forgeTitleId:'0004000012345600',o3ds:false,download
 const plain=JSON.stringify({demo:[file],preview:{data:[data],build}});
 const aes=c.createCipheriv('aes-256-gcm',key,iv);aes.setAAD(Buffer.from('forge.store/private-assets/v1'));
 const sealed=Buffer.concat([aes.update(plain),aes.final()]),head=Buffer.alloc(56);head.write('FM01');head.writeUInt32LE(10000,4);salt.copy(head,8);iv.copy(head,24);aes.getAuthTag().copy(head,36);head.writeUInt32LE(sealed.length,52);
-const blob=Buffer.concat([head,sealed]);
-fs.writeFileSync('romfs:/personal-assets.fme',blob);
-fs.writeFileSync('factory-key',Buffer.concat([Buffer.from('FMK1'),c.createHash('sha256').update(blob).digest(),key]));
+fs.writeFileSync('romfs:/personal-assets.fme',Buffer.concat([head,sealed]));
 '''
 with tempfile.TemporaryDirectory(prefix='forge-mode-test-') as temp:
  p=pathlib.Path(temp);(p/'romfs:').mkdir();(p/'sdmc:/3ds/forge-store').mkdir(parents=True)
  subprocess.run(['node','-e',vector],cwd=p,check=True)
  cmd=['clang','-std=gnu11','-g','-O1','-Wall','-Wextra','-fsanitize=address,undefined','-I/opt/homebrew/include',str(root/'tests/forge-mode.c'),'-L/opt/homebrew/lib','-ljansson','-lcrypto','-o',str(p/'test')]
  subprocess.run(cmd,check=True);subprocess.run([str(p/'test')],cwd=p,check=True)
- (p/'sdmc:/3ds/forge-store/forge-mode.key.bak').unlink()
- subprocess.run([str(p/'test'),'code-catalog'],cwd=p,check=True)
- (p/'sdmc:/3ds/forge-store/forge-mode.key').unlink()
- (p/'romfs:/forge-code-assets.fme').rename(p/'romfs:/personal-assets.fme')
- (p/'romfs:/forge-default.key').rename(p/'factory-key')
- subprocess.run([*cmd,'-DFORGE_FACTORY_ACTIVATION=1'],check=True)
- subprocess.run([str(p/'test')],cwd=p,check=True)

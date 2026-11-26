@@ -34,11 +34,8 @@ zsh "$D/tools/build-webp.sh" > "$OUT/webp-build.log" 2>&1
 # FORGE_DUMP_URL=http://<mac>:<port>/<token> also sends each dump to tools/dump-server.py.
 DEBUG_FLAGS=(-DFORGE_DEBUG=${FORGE_DEBUG:-0})
 [[ -n $FORGE_DUMP_URL ]] && DEBUG_FLAGS+=("-DFORGE_DUMP_URL=\"$FORGE_DUMP_URL\"")
-FACTORY_ACTIVATION=0
-[[ -z ${FORGE_DEFAULT_ACTIVATION:-} ]] || FACTORY_ACTIVATION=1
 CFLAGS=($ARCH -O2 -g -std=gnu11 -Wall -Wno-unused-parameter -Wno-missing-field-initializers $DEBUG_FLAGS
-        -DFORGE_BUILD_UNIX=$(date -u +%s) -DFORGE_FACTORY_ACTIVATION=$FACTORY_ACTIVATION
-        -mword-relocations -ffunction-sections -fdata-sections -D__3DS__
+        -DFORGE_BUILD_UNIX=$(date -u +%s) -mword-relocations -ffunction-sections -fdata-sections -D__3DS__
         -I source -I "$D/vendor/libwebp-1.6.0/src" -I "$DEVKITPRO/portlibs/3ds/include/freetype2" -I "$DEVKITPRO/libctru/include" -I "$DEVKITPRO/portlibs/3ds/include")
 # Compiler flags are part of the cache key; debug/public builds must never mix objects.
 CONFIG="${CFLAGS:#-DFORGE_BUILD_UNIX=*}"

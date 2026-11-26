@@ -1,5 +1,5 @@
 #pragma once
 // Increase for each distributable update; never use a wall clock at runtime.
-#define STORE_BUILD 2026112601LL
-#define STORE_VERSION "1.4.5"
+#define STORE_BUILD 2026112507LL
+#define STORE_VERSION "1.4.4"
 #define STORE_TITLE_ID 0x000400000F0F5E00ULL
