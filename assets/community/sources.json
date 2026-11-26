@@ -1019,14 +1019,14 @@
   {
     "app": "silenthill",
     "kind": "icon",
-    "sha256": "2becbff6849007790aa3867c7cfbc85767fcd59e643a7c785cdb32544700f17b",
+    "url": "https://raw.githubusercontent.com/platonovns/sh-3ds/94196dc4b5f8ba39a6cf32b6fc8085d10cd71d79/3ds_port/packaging/icon.png",
+    "sha256": "9c14db37c47db5bd2de310803efd4d3b2e708874120c0f436390a7f56b5ecd84",
     "size": [
-      680,
-      680
+      48,
+      48
     ],
     "output": "assets/community/silenthill/icon.webp",
-    "derivation": "Full image resized to 512 px.",
-    "note": "Silent Hill artwork supplied by me for the store icon; Konami game artwork."
+    "derivation": "Official port icon (its CIA icon), unchanged and lossless."
   },
   {
     "app": "silenthill",

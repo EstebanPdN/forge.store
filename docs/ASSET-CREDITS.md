@@ -35,7 +35,7 @@ Native RomFS contains generated versions of these visual/audio inputs plus a Uni
 | `assets/community/butterscotch/logo.webp` | https://raw.githubusercontent.com/efimandreev0/Butterscotch/main/3ds/banner.png | `1c84a9ab69c05e251f59257a8ffbc1529538ebc34e3ae4ee5f6e2fd1620f48f3` |
 | `assets/community/celeste3ds/background.webp` | Celeste key art supplied by me for the store banner; Maddy Makes Games artwork. | `5159ed906a0938479abdf1bae30012abfa0080a8786744dd4d5759dfb9f55d5b` |
 | `assets/community/celeste3ds/icon.webp` | Official Celeste PC game icon (Celeste.png) from my copy of the game; Maddy Makes Games artwork. | `6d73e81fec2f52b8c1f7a274e6fb117c1f30f1f6af0c849f14ac23e093e65e2d` |
-| `assets/community/celeste3ds/logo.webp` | https://raw.githubusercontent.com/alberdura/Celeste3DS-releases/48c22c144ebf883ae1f879634d44366e77df5d0d/screenshots/01_menu.png | `ab3e611ebd3bf142c10cb113a52d311473acbbbf4af86c81e63edb497856fc3b` |
+| `assets/community/celeste3ds/logo.webp` | https://raw.githubusercontent.com/alberdura/Celeste3DS-releases/48c22c144ebf883ae1f879634d44366e77df5d0d/screenshots/01_menu.png | `983e6a80caa01fa5518f6a5e7951a61ea81b522cebcad4d9507b1eca9c769b46` |
 | `assets/community/checkpoint/background.webp` | https://i.imgur.com/EaY1vRB.jpeg | `88f5a1b0adaae419449c943ef65e87b90d831ba73328782a2731f7dd183ec787` |
 | `assets/community/checkpoint/icon.webp` | https://raw.githubusercontent.com/BernardoGiordano/Checkpoint/master/switch/icon.jpg | `876f635c657c6e42b93a815e96805be81c37c37f3d293b271dba8b95181fc180` |
 | `assets/community/cover-sources.json` | Official repository artwork; source URLs and crops in assets/community/sources.json | `fea28dfb46eecfcd16af90b592b72fad1f1548c2dff35081e8bf1d1b7c55281d` |
@@ -99,7 +99,7 @@ Native RomFS contains generated versions of these visual/audio inputs plus a Uni
 | `assets/community/retroarch/background.webp` | https://raw.githubusercontent.com/libretro/retroarch-assets/master/branding/retroarch_nologo_bg.png | `90b471251af9a0043f6c74c33936af58a78603018744cf74bf3cabf68d5de575` |
 | `assets/community/retroarch/icon.webp` | https://raw.githubusercontent.com/libretro/RetroArch/master/media/ico_src/icon.svg | `02446ea5bc98477b2be46456c2f0fdc264453fb6d9737dcda2534a4cfb919fdf` |
 | `assets/community/silenthill/background.webp` | Silent Hill gameplay capture supplied by me for the store banner; Konami game imagery. | `fac13f3a9ddcaa79f3249209c8c23c38236f55641e63079f4c7de66fbc72b088` |
-| `assets/community/silenthill/icon.webp` | Silent Hill artwork supplied by me for the store icon; Konami game artwork. | `886e4b245f50ccce89abcaf82ff39ddba3a2374d060172bfecd8b89ad80011fe` |
+| `assets/community/silenthill/icon.webp` | https://raw.githubusercontent.com/platonovns/sh-3ds/94196dc4b5f8ba39a6cf32b6fc8085d10cd71d79/3ds_port/packaging/icon.png | `2a52b24600b3fd8fd1a9b41b13e8c340bdad400ddc5dec63be9ae6a5ca954ade` |
 | `assets/community/silenthill/logo.webp` | https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Logos/Silent%20Hill%20(USA).png | `1330601608d73973f04bb08a7d6a3c34625123c745108173c468f6d9012cfc42` |
 | `assets/community/snes9x/background.webp` | https://github.com/libretro-thumbnails | `d66ba71ed346eb933c7e9a2dc0029565a5206ce3fd3f0e6f698ec66aa00a1fe8` |
 | `assets/community/snes9x/icon.webp` | https://raw.githubusercontent.com/matbo87/snes9x_3ds/master/resources/icon.png | `3e3962c40cc8ff77de5040db4bd7c18665e20eea4d18ce59024070cdfc6a3888` |
@@ -110,7 +110,7 @@ Native RomFS contains generated versions of these visual/audio inputs plus a Uni
 | `assets/community/snes9x/shot-2-top.webp` | Official repository artwork; source URLs and crops in assets/community/sources.json | `d4d474d2d22141b6017c7666376dccfd778f5b24a7dcca53feb186dfa892cc3f` |
 | `assets/community/snes9x/shot-3-bottom.webp` | Official repository artwork; source URLs and crops in assets/community/sources.json | `289a1d815b6e72edcc247c6fa0e20c97917357066ec33a21a6bd7dceea355a64` |
 | `assets/community/snes9x/shot-3-top.webp` | Official repository artwork; source URLs and crops in assets/community/sources.json | `7e0b831e35f17f116126aeac2cc169280516fab7600bdecd4775b260ac049574` |
-| `assets/community/sources.json` | Official repository artwork; source URLs and crops in assets/community/sources.json | `9a0e7c8affb2f4554532cf42fc6aaf23948ab40daa50bb0b562324ec55266d4f` |
+| `assets/community/sources.json` | Official repository artwork; source URLs and crops in assets/community/sources.json | `084ee39ace092f463e3caa977d9f99355ec2caea43e0a8a1637a31fa9ea860cc` |
 | `assets/community/starhaven/icon.webp` | https://raw.githubusercontent.com/SecondaryLifer/StarHaven/main/port/3ds/cia/icon.png | `4defa1929f4fcacbaba9a57dfe8dbbbc0e3d09414a61141430dd22b098a5b079` |
 | `assets/community/starhaven/shot-1-bottom.webp` | Official repository artwork; source URLs and crops in assets/community/sources.json | `466f0fd69faf07a5b9501cfcf85f41a8ad33e8202e54b76e980d0394908b0188` |
 | `assets/community/starhaven/shot-1-top.webp` | Official repository artwork; source URLs and crops in assets/community/sources.json | `b93b8d82b7d2a49955a1cde18fd1fce4ab0975aa4600c29a4d1f1ae12682d094` |

@@ -191,8 +191,8 @@
     },
     {
       "path": "assets/community/celeste3ds/logo.webp",
-      "bytes": 7768,
-      "sha256": "ab3e611ebd3bf142c10cb113a52d311473acbbbf4af86c81e63edb497856fc3b",
+      "bytes": 7696,
+      "sha256": "983e6a80caa01fa5518f6a5e7951a61ea81b522cebcad4d9507b1eca9c769b46",
       "source_context": "https://raw.githubusercontent.com/alberdura/Celeste3DS-releases/48c22c144ebf883ae1f879634d44366e77df5d0d/screenshots/01_menu.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -639,9 +639,9 @@
     },
     {
       "path": "assets/community/silenthill/icon.webp",
-      "bytes": 20080,
-      "sha256": "886e4b245f50ccce89abcaf82ff39ddba3a2374d060172bfecd8b89ad80011fe",
-      "source_context": "Silent Hill artwork supplied by me for the store icon; Konami game artwork.",
+      "bytes": 3432,
+      "sha256": "2a52b24600b3fd8fd1a9b41b13e8c340bdad400ddc5dec63be9ae6a5ca954ade",
+      "source_context": "https://raw.githubusercontent.com/platonovns/sh-3ds/94196dc4b5f8ba39a6cf32b6fc8085d10cd71d79/3ds_port/packaging/icon.png",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
@@ -716,8 +716,8 @@
     },
     {
       "path": "assets/community/sources.json",
-      "bytes": 37724,
-      "sha256": "9a0e7c8affb2f4554532cf42fc6aaf23948ab40daa50bb0b562324ec55266d4f",
+      "bytes": 37795,
+      "sha256": "084ee39ace092f463e3caa977d9f99355ec2caea43e0a8a1637a31fa9ea860cc",
       "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
