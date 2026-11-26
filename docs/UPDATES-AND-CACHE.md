@@ -157,7 +157,8 @@ installation completes it. An uninstallation only ever removes.
 As FBI's "Install from URL" does, a CIA downloads straight into AM: each 256 KB block is
 written to the `AM_StartCiaInstall` handle as it arrives, with no temporary file, no kept
 copy and no second read. The title ID comes from the CIA header (FBI's `cia_get_title_id`);
-the catalog's SHA-256 is computed on the way and compared before `AM_FinishCiaInstall`.
+the catalog's SHA-256 is computed on the way. The store verifies the download and places
+the game's files on the SD card before `AM_FinishCiaInstall` makes the streamed CIA visible.
 The installed record keeps that digest under `title:<id>`, so the same CIA is never
 downloaded again. Plans run the game's folders first, then its data files, then the CIA.
 Progress is the bytes downloaded over the bytes to download.

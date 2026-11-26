@@ -135,7 +135,7 @@ static const char *host_fs_path;
 static u64 host_title;
 static uint16_t host_version = 1;
 static bool host_am_fail, host_am_file, host_am_fail_finish;
-static int host_am_starts, host_am_overwrites;
+static int host_am_starts, host_am_overwrites, host_am_cancels;
 static char host_am_head[64];
 static size_t host_am_head_len;
 static void host_am_load(void) {
@@ -177,7 +177,7 @@ static Result FSFILE_Write(Handle h,u32*w,u64 off,const void*b,size_t n,int flag
  if (off==0) {host_am_head_len=n<sizeof host_am_head?n:sizeof host_am_head;memcpy(host_am_head,b,host_am_head_len);}
  *w=(u32)n;return 0;
 }
-static Result AM_CancelCIAInstall(Handle h) {return 0;}
+static Result AM_CancelCIAInstall(Handle h) {host_am_cancels++;return 0;}
 // AM commits atomically: the title changes only once the install finishes.
 static Result AM_FinishCiaInstall(Handle h) {
  if(host_am_observe)host_am_observe(true);

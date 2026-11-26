@@ -101,6 +101,44 @@ static void test_cia_stream(void) {
     json_decref(job.release);json_decref(other.release);json_decref(wrong.release);memset(&tx,0,sizeof tx);host_title=0;
 }
 
+static const char *disc_output = "sdmc:/3ds/DuskLight/zelda.twilight";
+static void observe_disc_before_commit(bool finishing) {
+    if (finishing) equal(disc_output, "verified data");
+}
+
+static void test_stream_commit_after_files(void) {
+    for (int scenario = 0; scenario < 3; ++scenario) {
+        Job job = make_job();
+        assert(tx_begin(&job));
+        stage(&job, disc_output, "verified data");
+        assert(AM_StartCiaInstall(MEDIATYPE_SD, &tx.cia_stream_handle)==0);
+        const char cia[] = "CIA:0004000012345600:3";
+        u32 written = 0;
+        assert(FSFILE_Write(tx.cia_stream_handle,&written,0,cia,sizeof cia,0)==0);
+        tx.cia_stream_pending = true;
+        host_am_observe = observe_disc_before_commit;
+        host_am_fail_finish = scenario == 1;
+        host_am_cancels = 0;
+        if (scenario == 0) {
+            host_rename_calls = 0;
+            host_rename_fail_at = 1;
+        }
+        assert(!path_exists(disc_output) && !host_title);
+        bool ok = tx_publish(&job) && finish_streamed_cia(&job);
+        host_rename_fail_at = 0;
+        assert(ok==(scenario==2));
+        assert(tx_finish(&job,ok));
+        assert(host_am_cancels==(ok?0:1));
+        assert(path_exists(disc_output)==ok && (host_title!=0)==ok);
+        if (ok) remove(disc_output);
+        host_title = 0;
+        host_am_observe = NULL;
+        host_am_fail_finish = false;
+        clear_job(&job);
+    }
+    puts("PASS: a streamed CIA is committed only after its data files reach the SD");
+}
+
 // The same CIA, recorded with its SHA-256 and still installed, is not downloaded again.
 static void test_recorded_cia(void) {
     const char *want = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
@@ -151,6 +189,7 @@ int main(void) {
  assert(!mkdir("sdmc:",0777));assert(!mkdir("sdmc:/3ds",0777));assert(!mkdir(DATA_DIR,0777));
  test_cia_head();
  test_cia_stream();
+ test_stream_commit_after_files();
  test_recorded_cia();
  test_hash_cache();
  const char *live="sdmc:/3ds/demo.3dsx";put(live,"old");

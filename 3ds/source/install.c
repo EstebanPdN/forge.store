@@ -104,6 +104,8 @@ typedef struct {
     char cia_streamed[PATH_CAP];  // catalog path of the CIA that went straight into AM
     char cia_digest[65];          // its SHA-256, computed while it streamed
     bool cia_reused;              // the same CIA is already installed: nothing to download
+    Handle cia_stream_handle;
+    bool cia_stream_pending;
 } Transaction;
 static Transaction tx;
 static u64 job_serial;
@@ -281,6 +283,7 @@ static bool tx_begin(Job *j) {
 }
 
 static bool tx_finish(Job *j, bool success) {
+    if (tx.cia_stream_pending) AM_CancelCIAInstall(tx.cia_stream_handle);
     bool ok = true;
     for (int i = tx.count - 1; i >= 0; --i) {
         TxFile *e = &tx.files[i];
@@ -1001,23 +1004,26 @@ static bool stream_cia(Job *j, JobStep *st, const char *url, const char *path, u
         if (k.open) AM_CancelCIAInstall(k.am);
         return false;
     }
-    j->phase = PHASE_FINISH;
-    // The markers tell recovery whether AM may have replaced the title.
-    tx_mark(TX_CIA_STARTED);
-    Result fr = AM_FinishCiaInstall(k.am);
-    if (R_FAILED(fr)) {
-        AM_CancelCIAInstall(k.am);
-        j->phase = PHASE_STEPS;
-        return fail(j, "CIA 0x%08lX", fr);
-    }
-    tx_mark(TX_CIA_FINISHED);
-    tx.cia_attempted = true;
-    j->no_cancel = true;  // the title is installed: what is left only records it
-    j->cancel = false;
-    j->phase = PHASE_STEPS;
+    // AM has the verified bytes, but publishing the title must wait for its game files.
+    tx.cia_stream_handle = k.am;
+    tx.cia_stream_pending = true;
     j->done_bytes = d.base + d.written;
     snprintf(tx.cia_streamed, sizeof tx.cia_streamed, "%s", path);
     memcpy(tx.cia_digest, hex, 65);
+    return true;
+}
+
+static bool finish_streamed_cia(Job *j) {
+    if (!tx.cia_stream_pending) return true;
+    if (j->cancel) return false;
+    if (!tx_mark(TX_CIA_STARTED)) return fail(j, "Cannot record CIA installation");
+    j->no_cancel = true;
+    Result result = AM_FinishCiaInstall(tx.cia_stream_handle);
+    if (R_FAILED(result)) return fail(j, "CIA 0x%08lX", result);
+    tx.cia_stream_pending = false;
+    tx.cia_attempted = true;
+    j->cancel = false;
+    tx_mark(TX_CIA_FINISHED);
     return true;
 }
 
@@ -1261,8 +1267,8 @@ static bool tx_settle(json_t *journal, bool *completed) {
         }
     }
     if (forward) {
-        // Since 1.4.2 AM commits the CIA before the data files take their places: finish
-        // placing them (a cut there leaves each file staged, backed up or already moved).
+        // Older installs could commit the CIA before placing its data. Finish moving
+        // any files still staged before clearing the recovery inventory.
         for (size_t i = 0; i < count && ok; i++) {
             TxEntry *e = &entries[i];
             if (!e->publish || !exists(e->stage)) continue;
@@ -2046,9 +2052,11 @@ static void run(Job *j) {
     }
     j->cancel = false;
     // The data files were staged first; they take their places now (renames only).
-    if (!tx_publish(j) || !hash_published(j)) {
+    if (!tx_publish(j) || !hash_published(j) || !finish_streamed_cia(j)) {
         if (tx.cia_attempted) { tx_after_title(j); return; }
-        tx_finish(j, false); j->state = JOB_FAILED; return;
+        bool restored = tx_finish(j, false);
+        j->state = restored && j->cancel ? JOB_CANCELLED : JOB_FAILED;
+        return;
     }
     finish_record(j);
 }
