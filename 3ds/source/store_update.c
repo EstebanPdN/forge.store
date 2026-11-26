@@ -8,7 +8,8 @@
 #include <dirent.h>
 #include <unistd.h>
 
-#define UPDATE_BASE "https://raw.githubusercontent.com/EstebanPdN/forge.store/main/builds/3ds/"
+#define UPDATE_API "https://api.github.com/repos/EstebanPdN/forge.store/releases/latest"
+#define UPDATE_RELEASE "https://github.com/EstebanPdN/forge.store/releases/"
 static Thread worker;
 static int state = UPDATE_CHECKING;
 static bool cancelled, homebrew;
@@ -94,7 +95,7 @@ static CURL *request(const char *url) {
     curl_easy_setopt(c, CURLOPT_NOSIGNAL, 1L);
     return c;
 }
-static bool install_cia(const char *path, uint64_t bytes) {
+static bool install_cia(const char *path, uint64_t bytes, uint16_t version) {
     Handle input = 0, output = 0;
     AM_TitleInfo info;
     if (R_FAILED(FSUSER_OpenFileDirectly(&input, ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, ""),
@@ -104,7 +105,7 @@ static bool install_cia(const char *path, uint64_t bytes) {
     FSFILE_Close(input);
     u64 running = 0;
     APT_GetProgramID(&running);
-    if (R_FAILED(r) || info.titleID != STORE_TITLE_ID || running != STORE_TITLE_ID || stopped())
+    if (R_FAILED(r) || info.titleID != STORE_TITLE_ID || info.version != version || running != STORE_TITLE_ID || stopped())
         return false;
     struct statvfs space;
     if (statvfs("sdmc:/", &space) || (uint64_t)space.f_bavail * space.f_frsize < bytes + 8 * 1024 * 1024)
@@ -203,49 +204,53 @@ static void tidy_homebrew(void) {
         }
     closedir(d);
 }
+static json_t *release_metadata(const char *url, long *status) {
+    u64 elapsed = osGetTime() - started_at;
+    if (elapsed >= 4500 || stopped()) return NULL;
+    CURL *c = request(url);
+    if (!c) return NULL;
+    metadata_size = 0;
+    curl_easy_setopt(c, CURLOPT_TIMEOUT_MS, (long)(4500 - elapsed));
+    curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, receive_metadata);
+    CURLcode rc = curl_easy_perform(c);
+    curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, status);
+    curl_easy_cleanup(c);
+    return rc == CURLE_OK && *status == 200 && !stopped()
+               ? json_loadb(metadata, metadata_size, JSON_REJECT_DUPLICATES, NULL)
+               : NULL;
+}
 static void run(void *unused) {
     tidy_homebrew();
     if (homebrew && access("romfs:/personal-assets.fme", F_OK) == 0) {
         publish(UPDATE_CURRENT);
         return;
     }
-    // Both launchers read update.json from the repository. The GitHub API allows 60
-    // requests an hour per connection and the store's own pages use them up, which made
-    // the CIA check fail silently (1.4 consoles were not offered 1.4.1).
-    char download_url[256];
-    snprintf(download_url, sizeof download_url, UPDATE_BASE "%s", homebrew ? "forge-store.3dsx" : "forge-store.cia");
-    CURL *c = request(UPDATE_BASE "update.json");
-    if (!c) {
-        publish(UPDATE_OFFLINE);
-        return;
-    }
-    curl_easy_setopt(c, CURLOPT_TIMEOUT_MS, 4500L);
-    curl_easy_setopt(c, CURLOPT_WRITEFUNCTION, receive_metadata);
-    CURLcode rc = curl_easy_perform(c);
-    curl_easy_cleanup(c);
-    if (rc != CURLE_OK || stopped()) {
-        publish(UPDATE_OFFLINE);
-        return;
-    }
-    json_t *root = json_loadb(metadata, metadata_size, JSON_REJECT_DUPLICATES, NULL);
+    char tag[12], expected[65], download_url[256];
     uint64_t bytes = 0;
-    int64_t build = 0;
-    char expected[65];
-    bool newer = false, valid;
-    valid = store_update_metadata(root, homebrew, &bytes, expected, &build);
-    if (valid) store_update_version_label(root, build, offered_version, sizeof offered_version);
-    newer = valid && build > STORE_BUILD;
+    uint16_t version, current;
+    long status = 0;
+    json_t *root = release_metadata(UPDATE_API, &status);
+    bool valid = store_update_release(root, homebrew, tag, &version, &bytes, expected);
     json_decref(root);
+    if (!valid && (status == 403 || status == 429) && !stopped()) {
+        root = release_metadata(UPDATE_RELEASE "latest/download/update.json", &status);
+        valid = store_update_release_manifest(root, homebrew, tag, &version, &bytes, expected);
+        json_decref(root);
+    }
+    valid = valid && store_update_version_code(STORE_VERSION, &current);
     if (!valid) {
         publish(UPDATE_OFFLINE);
         return;
     }
-    if (!newer) {
+    if (version <= current) {
         int expected_state = UPDATE_CHECKING;
         __atomic_compare_exchange_n(&state, &expected_state, UPDATE_CURRENT, false, __ATOMIC_ACQ_REL,
                                     __ATOMIC_ACQUIRE);
         return;
     }
+    snprintf(offered_version, sizeof offered_version, "%s", tag + 1);
+    snprintf(download_url, sizeof download_url, UPDATE_RELEASE "download/%s/forge-store-%s.%s",
+             tag, tag, homebrew ? "3dsx" : "cia");
     // Publish all offer metadata before the main thread renders the prompt. The
     // deadline applies only to checking, never to the user's time to decide.
     int expected_state = UPDATE_CHECKING;
@@ -273,8 +278,8 @@ static void run(void *unused) {
     publish(UPDATE_DOWNLOADING);
     mbedtls_sha256_init(&d.hash);
     mbedtls_sha256_starts_ret(&d.hash, 0);
-    c = request(download_url);
-    rc = CURLE_FAILED_INIT;
+    CURL *c = request(download_url);
+    CURLcode rc = CURLE_FAILED_INIT;
     if (c) {
         curl_easy_setopt(c, CURLOPT_TIMEOUT, 900L);
         curl_easy_setopt(c, CURLOPT_LOW_SPEED_LIMIT, 1024L);
@@ -300,7 +305,7 @@ static void run(void *unused) {
     if (ok) {
         __atomic_store_n(&received, 0, __ATOMIC_RELAXED);
         publish(UPDATE_INSTALLING);
-        ok = homebrew ? install_homebrew(staged) : install_cia(staged, bytes);
+        ok = homebrew ? install_homebrew(staged) : install_cia(staged, bytes, version);
     }
     unlink(staged);
     publish(ok ? UPDATE_DONE : UPDATE_FAILED);

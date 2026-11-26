@@ -5,27 +5,25 @@
 The native store checks for its own updates on every launch, before the usual introduction.
 This check is always enabled. It is separate from game releases and the Store resources package.
 
-Both launchers read the compact `builds/3ds/update.json` manifest from raw.githubusercontent.com
-and download `forge-store.cia` or `forge-store.3dsx` beside it. Until 1.4.1 the CIA asked the
-GitHub API, whose 60 requests an hour per connection the store's own pages can use up; the
-check then failed silently.
+Both launchers check GitHub’s latest stable release and select the versioned CIA or
+3DSX for that exact tag. If the GitHub API rate-limits the request, the store checks
+the compact update manifest attached to the latest release.
 A confirmed current build shows a success message; an unavailable or invalid response
 continues to the introduction without claiming that the installation is up to date.
 
 - Metadata is limited to 16 KiB. The network request has a 2.5-second connection timeout and
   4.5-second total timeout. A separate main-thread deadline ends the check after five seconds,
   even if the platform resolver has not returned. A late response cannot start an update.
-- The manifest must contain a positive integer `store_build`, a bounded file size and a
-  lowercase SHA-256 digest. Download destinations and binary URLs are fixed in the application.
-- Updates require a larger build number. The touch screen shows a bounded `version`
-  label, falling back to the numeric build if the label is absent or invalid. No binary request,
-  staging file or installation starts before **Yes**. **No** fades both screens to black and
+- Release tags use numeric versions compatible with the CIA title-version format.
+  Both the asset size and SHA-256 are checked.
+- Updates require a newer version. The touch screen shows the version from the release.
+  No binary request, staging file or installation starts before **Yes**. **No** fades both screens to black and
   closes the store. This decision has no timeout; HOME/exit can cancel the waiting worker.
 - After confirmation, the complete file is staged on SD, flushed,
   and checked against its declared size and hash before installation. Failed downloads leave
   the running application available; the next launch checks again.
 - CIA updates require both the staged CIA and the running title to match the store's fixed
-  title ID, `000400000F0F5E00`. Installation uses AM's overwrite transaction and finalizes only
+  title ID, `000400000F0F5E00`. The staged CIA version must match the release tag. Installation uses AM's overwrite transaction and finalizes only
   after every byte was written. It never deletes the installed title to make room.
 - 3DSX updates require the actual `sdmc:/.../*.3dsx` launch path. The old executable is retained
   beside it as `*.forge-previous.3dsx`. A failed replacement attempts to restore it. FAT rename
@@ -51,7 +49,8 @@ restart and interrupted-write recovery still require physical-console qualificat
 2. Build with `FORGE_DEBUG=0 zsh 3ds/build.sh` and complete the applicable checks.
 3. Run `python3 tools/package-build.py`. It copies CIA/3DSX and generates `SHA256SUMS`, the full
    source fingerprint manifest and the compact `update.json` from those exact files.
-4. Publish all generated metadata/binary outputs together with the matching source. Repository checks
+4. Attach `update.json` to the GitHub release alongside the versioned CIA and 3DSX.
+   Publish generated metadata and binaries with the matching source. Repository checks
    reject disagreement between the compact update record and the full build manifest.
 5. Verify the anonymous download URLs and the startup check against the published record.
 

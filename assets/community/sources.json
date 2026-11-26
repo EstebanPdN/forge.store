@@ -992,5 +992,29 @@
       311
     ],
     "derivation": "AI-assisted reconstruction of the wordmark inside the existing handheld icon, built-in image_gen; exact prompt in docs/ART-DIRECTION.md."
+  },
+  {
+    "app": "celeste3ds",
+    "kind": "icon",
+    "url": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.0.3/Celeste3DS.3dsx",
+    "sha256": "109c466f610a36be1ef3539323e25b8d5ce24891bfa9e0d4ad7da8eeb18455e4",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/celeste3ds/icon.webp",
+    "derivation": "Original large SMDH icon from the upstream 3DSX."
+  },
+  {
+    "app": "silenthill",
+    "kind": "icon",
+    "url": "https://github.com/platonovns/sh-3ds/releases/download/sh-3ds-v0.9.1.1/SH-3DS-v0.9.1.1.3dsx",
+    "sha256": "9aaaa269dfab4e0c9bb4ba8a70d39fecf13e79d7cce9b348dce46c8e762ddc81",
+    "size": [
+      48,
+      48
+    ],
+    "output": "assets/community/silenthill/icon.webp",
+    "derivation": "Original large SMDH icon from the upstream 3DSX."
   }
 ]

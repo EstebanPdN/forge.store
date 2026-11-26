@@ -176,6 +176,13 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/celeste3ds/icon.webp",
+      "bytes": 394,
+      "sha256": "4b990addd20cf30f27a59c396d513be792750e472c75ca5839adec589e73e6ef",
+      "source_context": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.0.3/Celeste3DS.3dsx",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/checkpoint/background.webp",
       "bytes": 41548,
       "sha256": "88f5a1b0adaae419449c943ef65e87b90d831ba73328782a2731f7dd183ec787",
@@ -610,6 +617,13 @@
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
+      "path": "assets/community/silenthill/icon.webp",
+      "bytes": 488,
+      "sha256": "2ccc59b222de6c3f4bd686e5679e565dbf8947a1f73fde2eba412dc56d95914d",
+      "source_context": "https://github.com/platonovns/sh-3ds/releases/download/sh-3ds-v0.9.1.1/SH-3DS-v0.9.1.1.3dsx",
+      "rights": "No blanket reuse license; see LICENSE.md."
+    },
+    {
       "path": "assets/community/snes9x/background.webp",
       "bytes": 71284,
       "sha256": "d66ba71ed346eb933c7e9a2dc0029565a5206ce3fd3f0e6f698ec66aa00a1fe8",
@@ -674,8 +688,8 @@
     },
     {
       "path": "assets/community/sources.json",
-      "bytes": 35371,
-      "sha256": "6934ee995f808ce1a08a0315e69be921fd8903005c3e6af1c9f10769dc1afbf0",
+      "bytes": 36181,
+      "sha256": "80da5f89c51d94617804d16e553f0f144dd5b812e8877f4c98bd73e028b6e515",
       "source_context": "Official repository artwork; source URLs and crops in assets/community/sources.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
@@ -3278,15 +3292,15 @@
     },
     {
       "path": "assets/reader-data/manifest.json",
-      "bytes": 51665,
-      "sha256": "22a4974bfee8cd7d7b454af3342ca62adf2f477848a2ab31d9812b2dd8d5fd8a",
+      "bytes": 57298,
+      "sha256": "ab7e0736d3ddaa8691e72df90c142af8c9390f4f823e4251236792f0deee1f29",
       "source_context": "Public GitHub reader snapshots; exact endpoints and hashes in assets/reader-data/manifest.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },
     {
       "path": "assets/reader-data/pages.json",
-      "bytes": 1348930,
-      "sha256": "812c46ac8e1c98abf7d384be8a2cf2396825e6f85d3e4eedfb012586c266a333",
+      "bytes": 1682057,
+      "sha256": "02642e77f7e789268c3188dccf90b0e46c24226026ac6fd8480ab6ed8ae36c86",
       "source_context": "Public GitHub reader snapshots; exact endpoints and hashes in assets/reader-data/manifest.json",
       "rights": "No blanket reuse license; see LICENSE.md."
     },

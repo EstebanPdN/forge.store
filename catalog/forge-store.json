@@ -3996,6 +3996,324 @@
       }
     },
     {
+      "id": "celeste3ds",
+      "title": "Celeste 3DS",
+      "fullTitle": "Celeste 3DS",
+      "category": "community",
+      "author": "alberdura",
+      "origin": {
+        "platform": "PC",
+        "year": 2018
+      },
+      "color": "#ba679e",
+      "status": "released",
+      "repo": "alberdura/Celeste3DS-releases",
+      "sourceUrl": "https://github.com/alberdura/Celeste3DS-releases",
+      "stars": 27,
+      "icon": "assets/community/celeste3ds/icon.webp",
+      "banner": {
+        "gradient": [
+          "#20243d",
+          "#553551",
+          "#cb8bab"
+        ],
+        "fx": "pixels",
+        "cardIcon": true
+      },
+      "tagline": {
+        "es": "Celeste nativo para Nintendo 3DS.",
+        "en": "Native Celeste for Nintendo 3DS.",
+        "pt": "Celeste nativo para Nintendo 3DS.",
+        "it": "Celeste nativo per Nintendo 3DS.",
+        "fr": "Celeste natif sur Nintendo 3DS.",
+        "de": "Nativer Celeste-Port für Nintendo 3DS.",
+        "ru": "Нативный порт Celeste для Nintendo 3DS.",
+        "ja": "Celeste の Nintendo 3DS ネイティブ移植。"
+      },
+      "description": {
+        "es": "Celeste nativo para Nintendo 3DS.",
+        "en": "Native Celeste for Nintendo 3DS.",
+        "pt": "Celeste nativo para Nintendo 3DS.",
+        "it": "Celeste nativo per Nintendo 3DS.",
+        "fr": "Celeste natif sur Nintendo 3DS.",
+        "de": "Nativer Celeste-Port für Nintendo 3DS.",
+        "ru": "Нативный порт Celeste для Nintendo 3DS.",
+        "ja": "Celeste の Nintendo 3DS ネイティブ移植。"
+      },
+      "compat": {
+        "o3ds": true,
+        "n3ds": true,
+        "stereo": false
+      },
+      "folder": "/3ds/celeste3ds/",
+      "requires": [
+        {
+          "id": "data1",
+          "label": {
+            "es": "Archivos de Celeste para PC",
+            "en": "Celeste PC game data",
+            "pt": "Arquivos de Celeste para PC",
+            "it": "File di Celeste per PC",
+            "fr": "Fichiers PC de Celeste",
+            "de": "Celeste-PC-Spieldaten",
+            "ru": "Данные Celeste для ПК",
+            "ja": "PC 版 Celeste のデータ"
+          },
+          "path": "/3ds/celeste3ds/Content/Maps/1-ForsakenCity.bin",
+          "help": {
+            "es": "Copia la carpeta Content de tu Celeste de PC. El primer arranque prepara la caché.",
+            "en": "Copy the Content folder from your PC copy of Celeste. The first launch prepares the cache.",
+            "pt": "Copie a pasta Content de Celeste para PC. A primeira execução prepara o cache.",
+            "it": "Copia la cartella Content di Celeste per PC. Il primo avvio prepara la cache.",
+            "fr": "Copiez le dossier Content de Celeste sur PC. Le premier démarrage prépare le cache.",
+            "de": "Kopiere den Content-Ordner deiner PC-Version. Beim ersten Start wird der Cache erstellt.",
+            "ru": "Скопируйте папку Content из ПК-версии. Кэш создаётся при первом запуске.",
+            "ja": "PC 版の Content フォルダーをコピーしてください。初回起動時にキャッシュを作成します。"
+          }
+        }
+      ],
+      "detect": {
+        "ids": [
+          998748
+        ],
+        "files": [
+          "/3ds/celeste3ds/Celeste3DS.3dsx"
+        ]
+      },
+      "install": {
+        "cia": [
+          {
+            "type": "downloadRelease",
+            "asset": "cia",
+            "output": "%TMP%/Celeste3DS.cia"
+          },
+          {
+            "type": "installCia",
+            "file": "%TMP%/Celeste3DS.cia"
+          },
+          {
+            "type": "deleteFile",
+            "file": "%TMP%/Celeste3DS.cia"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data1"
+          }
+        ],
+        "3dsx": [
+          {
+            "type": "downloadRelease",
+            "asset": "3dsx",
+            "output": "/3ds/celeste3ds/Celeste3DS.3dsx"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data1"
+          }
+        ]
+      },
+      "releases": {
+        "stable": {
+          "tag": "v1.0.3",
+          "date": "2026-11-24",
+          "assets": {
+            "3dsx": {
+              "name": "Celeste3DS.3dsx",
+              "size": 910720,
+              "url": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.0.3/Celeste3DS.3dsx",
+              "sha256": "109c466f610a36be1ef3539323e25b8d5ce24891bfa9e0d4ad7da8eeb18455e4"
+            },
+            "cia": {
+              "name": "Celeste3DS.cia",
+              "size": 647104,
+              "url": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.0.3/Celeste3DS.cia",
+              "sha256": "f7ee96a3bc277336ee162ace2ff5e6fb070456a9373ddbe5ca332adfea614320"
+            }
+          },
+          "publishedAt": "2026-11-24T23:55:38Z",
+          "assetUpdated": "2026-11-24T23:55:38Z",
+          "ciaTitle": "000400000f3d5c00",
+          "ciaVersion": 0
+        }
+      },
+      "verifiedAt": "2026-11-26"
+    },
+    {
+      "id": "silenthill",
+      "title": "Silent Hill",
+      "fullTitle": "Silent Hill",
+      "category": "community",
+      "author": "platonovns",
+      "origin": {
+        "platform": "PlayStation",
+        "year": 1999
+      },
+      "color": "#777e62",
+      "status": "released",
+      "repo": "platonovns/sh-3ds",
+      "sourceUrl": "https://github.com/platonovns/sh-3ds",
+      "stars": 8,
+      "icon": "assets/community/silenthill/icon.webp",
+      "banner": {
+        "gradient": [
+          "#171a17",
+          "#3b4037",
+          "#939866"
+        ],
+        "fx": "dust",
+        "cardIcon": true
+      },
+      "tagline": {
+        "es": "Silent Hill nativo para New Nintendo 3DS, con mapa en la pantalla táctil.",
+        "en": "Native Silent Hill for New Nintendo 3DS with a touchscreen map.",
+        "pt": "Silent Hill nativo para New Nintendo 3DS, com mapa na tela tátil.",
+        "it": "Silent Hill nativo per New Nintendo 3DS, con mappa sul touch screen.",
+        "fr": "Silent Hill natif sur New Nintendo 3DS avec carte tactile.",
+        "de": "Nativer Silent-Hill-Port für New Nintendo 3DS mit Touchscreen-Karte.",
+        "ru": "Нативный Silent Hill для New Nintendo 3DS с картой на сенсорном экране.",
+        "ja": "タッチ画面にマップを表示する New Nintendo 3DS 向け Silent Hill 移植。"
+      },
+      "description": {
+        "es": "Silent Hill nativo para New Nintendo 3DS, con mapa en la pantalla táctil.",
+        "en": "Native Silent Hill for New Nintendo 3DS with a touchscreen map.",
+        "pt": "Silent Hill nativo para New Nintendo 3DS, com mapa na tela tátil.",
+        "it": "Silent Hill nativo per New Nintendo 3DS, con mappa sul touch screen.",
+        "fr": "Silent Hill natif sur New Nintendo 3DS avec carte tactile.",
+        "de": "Nativer Silent-Hill-Port für New Nintendo 3DS mit Touchscreen-Karte.",
+        "ru": "Нативный Silent Hill для New Nintendo 3DS с картой на сенсорном экране.",
+        "ja": "タッチ画面にマップを表示する New Nintendo 3DS 向け Silent Hill 移植。"
+      },
+      "compat": {
+        "o3ds": false,
+        "n3ds": true,
+        "stereo": false
+      },
+      "folder": "/3ds/silenthill/",
+      "requires": [
+        {
+          "id": "data1",
+          "label": {
+            "es": "Imagen del disco de Silent Hill",
+            "en": "Silent Hill disc image",
+            "pt": "Imagem do disco de Silent Hill",
+            "it": "Immagine disco di Silent Hill",
+            "fr": "Image disque de Silent Hill",
+            "de": "Silent-Hill-Disc-Abbild",
+            "ru": "Образ диска Silent Hill",
+            "ja": "Silent Hill のディスクイメージ"
+          },
+          "path": "/3ds/silenthill/sh1.bin",
+          "help": {
+            "es": "Usa Silent Hill USA SLUS-00707 v1.1, en BIN/CUE MODE2/2352 de una pista.",
+            "en": "Use Silent Hill USA SLUS-00707 v1.1, as a single-track MODE2/2352 BIN/CUE.",
+            "pt": "Use Silent Hill USA SLUS-00707 v1.1 em BIN/CUE MODE2/2352 de faixa única.",
+            "it": "Usa Silent Hill USA SLUS-00707 v1.1 in BIN/CUE MODE2/2352 a traccia singola.",
+            "fr": "Utilisez Silent Hill USA SLUS-00707 v1.1 en BIN/CUE MODE2/2352 à piste unique.",
+            "de": "Verwende Silent Hill USA SLUS-00707 v1.1 als einspurige MODE2/2352-BIN/CUE.",
+            "ru": "Используйте Silent Hill USA SLUS-00707 v1.1 в формате BIN/CUE MODE2/2352 с одной дорожкой.",
+            "ja": "Silent Hill USA SLUS-00707 v1.1 の単一トラック MODE2/2352 BIN/CUE を使用してください。"
+          }
+        },
+        {
+          "id": "data2",
+          "label": {
+            "es": "Archivo CUE de Silent Hill",
+            "en": "Silent Hill CUE file",
+            "pt": "Arquivo CUE de Silent Hill",
+            "it": "File CUE di Silent Hill",
+            "fr": "Fichier CUE de Silent Hill",
+            "de": "Silent-Hill-CUE-Datei",
+            "ru": "Файл CUE Silent Hill",
+            "ja": "Silent Hill の CUE ファイル"
+          },
+          "path": "/3ds/silenthill/sh1.cue",
+          "help": {
+            "es": "Usa Silent Hill USA SLUS-00707 v1.1, en BIN/CUE MODE2/2352 de una pista.",
+            "en": "Use Silent Hill USA SLUS-00707 v1.1, as a single-track MODE2/2352 BIN/CUE.",
+            "pt": "Use Silent Hill USA SLUS-00707 v1.1 em BIN/CUE MODE2/2352 de faixa única.",
+            "it": "Usa Silent Hill USA SLUS-00707 v1.1 in BIN/CUE MODE2/2352 a traccia singola.",
+            "fr": "Utilisez Silent Hill USA SLUS-00707 v1.1 en BIN/CUE MODE2/2352 à piste unique.",
+            "de": "Verwende Silent Hill USA SLUS-00707 v1.1 als einspurige MODE2/2352-BIN/CUE.",
+            "ru": "Используйте Silent Hill USA SLUS-00707 v1.1 в формате BIN/CUE MODE2/2352 с одной дорожкой.",
+            "ja": "Silent Hill USA SLUS-00707 v1.1 の単一トラック MODE2/2352 BIN/CUE を使用してください。"
+          }
+        }
+      ],
+      "detect": {
+        "ids": [
+          1004497
+        ],
+        "files": [
+          "/3ds/silenthill/SH-3DS.3dsx"
+        ]
+      },
+      "install": {
+        "cia": [
+          {
+            "type": "downloadRelease",
+            "asset": "cia",
+            "output": "%TMP%/SH-3DS-v0.9.1.1.cia"
+          },
+          {
+            "type": "installCia",
+            "file": "%TMP%/SH-3DS-v0.9.1.1.cia"
+          },
+          {
+            "type": "deleteFile",
+            "file": "%TMP%/SH-3DS-v0.9.1.1.cia"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data1"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data2"
+          }
+        ],
+        "3dsx": [
+          {
+            "type": "downloadRelease",
+            "asset": "3dsx",
+            "output": "/3ds/silenthill/SH-3DS.3dsx"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data1"
+          },
+          {
+            "type": "requireFile",
+            "ref": "data2"
+          }
+        ]
+      },
+      "releases": {
+        "stable": {
+          "tag": "sh-3ds-v0.9.1.1",
+          "date": "2026-11-04",
+          "assets": {
+            "3dsx": {
+              "name": "SH-3DS-v0.9.1.1.3dsx",
+              "size": 3555676,
+              "url": "https://github.com/platonovns/sh-3ds/releases/download/sh-3ds-v0.9.1.1/SH-3DS-v0.9.1.1.3dsx",
+              "sha256": "9aaaa269dfab4e0c9bb4ba8a70d39fecf13e79d7cce9b348dce46c8e762ddc81"
+            },
+            "cia": {
+              "name": "SH-3DS-v0.9.1.1.cia",
+              "size": 2507200,
+              "url": "https://github.com/platonovns/sh-3ds/releases/download/sh-3ds-v0.9.1.1/SH-3DS-v0.9.1.1.cia",
+              "sha256": "f54965942a3f2013cccb425d3efc44a45ff9dc1172aef149eb5422bd040d9bec"
+            }
+          },
+          "publishedAt": "2026-11-04T18:16:40Z",
+          "assetUpdated": "2026-11-04T18:16:19Z",
+          "ciaTitle": "000400000f53d190",
+          "ciaVersion": 145
+        }
+      },
+      "verifiedAt": "2026-11-26"
+    },
+    {
       "id": "rvc",
       "title": "Red Viper Color",
       "category": "emulators",
@@ -6752,649 +7070,6 @@
         ],
         "uu": "Geometry Dash 3DS"
       }
-    },
-    {
-      "id": "xash3ds",
-      "repo": "masterfeizz/Xash3DS",
-      "category": "community",
-      "title": "Half-Life 1",
-      "fullTitle": "Half-Life 1 · Xash3DS",
-      "author": "masterfeizz",
-      "status": "released",
-      "tagline": {
-        "es": "Motor Xash3D para jugar Half-Life en 3DS. Requiere los datos originales de tu copia de Half-Life.",
-        "en": "Xash3D engine for Half-Life on 3DS. Requires the original data from your own copy of Half-Life.",
-        "pt": "Motor Xash3D para Half-Life no 3DS. Requer os dados originais da sua própria cópia de Half-Life.",
-        "it": "Motore Xash3D per giocare a Half-Life su 3DS. Richiede i dati originali della tua copia di Half-Life.",
-        "fr": "Moteur Xash3D pour jouer à Half-Life sur 3DS. Requiert les données d'origine de votre propre copie de Half-Life.",
-        "de": "Xash3D-Engine für Half-Life auf 3DS. Benötigt die Originaldaten aus deiner eigenen Half-Life-Kopie.",
-        "ru": "Движок Xash3D для Half-Life на 3DS. Нужны оригинальные данные из вашей копии Half-Life.",
-        "ja": "3DSでHalf-Lifeを動かすXash3Dエンジン。お手持ちのHalf-Lifeのオリジナルデータが必要です。"
-      },
-      "description": {
-        "es": "Motor Xash3D para jugar Half-Life en 3DS. Requiere los datos originales de tu copia de Half-Life.",
-        "en": "Xash3D engine for Half-Life on 3DS. Requires the original data from your own copy of Half-Life.",
-        "pt": "Motor Xash3D para Half-Life no 3DS. Requer os dados originais da sua própria cópia de Half-Life.",
-        "it": "Motore Xash3D per giocare a Half-Life su 3DS. Richiede i dati originali della tua copia di Half-Life.",
-        "fr": "Moteur Xash3D pour jouer à Half-Life sur 3DS. Requiert les données d'origine de votre propre copie de Half-Life.",
-        "de": "Xash3D-Engine für Half-Life auf 3DS. Benötigt die Originaldaten aus deiner eigenen Half-Life-Kopie.",
-        "ru": "Движок Xash3D для Half-Life на 3DS. Нужны оригинальные данные из вашей копии Half-Life.",
-        "ja": "3DSでHalf-Lifeを動かすXash3Dエンジン。お手持ちのHalf-Lifeのオリジナルデータが必要です。"
-      },
-      "color": "#647a95",
-      "folder": "/xash3d/",
-      "shots": [],
-      "requires": [
-        {
-          "id": "data",
-          "label": {
-            "es": "Datos de tu Half-Life",
-            "en": "Your Half-Life data",
-            "pt": "Seus dados de Half-Life",
-            "it": "I dati del tuo Half-Life",
-            "fr": "Vos données Half-Life",
-            "de": "Deine Half-Life-Daten",
-            "ru": "Ваши данные Half-Life",
-            "ja": "お手持ちのHalf-Lifeデータ"
-          },
-          "path": "/xash3d/valve/pak0.pak",
-          "help": {
-            "es": "Copia la carpeta valve de tu instalación de Half-Life en /xash3d/.",
-            "en": "Copy the valve folder from your Half-Life installation to /xash3d/.",
-            "pt": "Copie a pasta valve da sua instalação de Half-Life para /xash3d/.",
-            "it": "Copia la cartella valve dalla tua installazione di Half-Life in /xash3d/.",
-            "fr": "Copiez le dossier valve de votre installation de Half-Life dans /xash3d/.",
-            "de": "Kopiere den Ordner valve aus deiner Half-Life-Installation nach /xash3d/.",
-            "ru": "Скопируйте папку valve из установленной Half-Life в /xash3d/.",
-            "ja": "Half-Lifeのインストール先にあるvalveフォルダを/xash3d/にコピーしてください。"
-          },
-          "detect": [
-            {
-              "dir": "/xash3d/valve/",
-              "names": [
-                "pak0.pak"
-              ],
-              "magic": [
-                {
-                  "at": 0,
-                  "any": [
-                    "PACK"
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "compat": {
-        "o3ds": true,
-        "n3ds": true,
-        "stereo": false
-      },
-      "banner": {
-        "gradient": [
-          "#261b16",
-          "#5b3218",
-          "#e99023"
-        ],
-        "fx": "embers",
-        "cardIcon": true,
-        "bg": "assets/community/xash3ds/background.webp",
-        "bgPos": "50% 50%"
-      },
-      "sourceUrl": "https://github.com/masterfeizz/Xash3DS",
-      "verifiedAt": "2026-11-12",
-      "icon": "assets/community/xash3ds/icon.webp",
-      "releases": {
-        "stable": {
-          "tag": "v0.2",
-          "date": "2019-09-14",
-          "assets": {
-            "cia": {
-              "name": "Xash3DS.cia",
-              "size": 1756608,
-              "url": "https://github.com/masterfeizz/Xash3DS/releases/download/v0.2/Xash3DS.cia",
-              "sha256": "747f5bd571c3da5e934c7c14b689bea5f8be86ac21441aa23d2c4eca20a73b59"
-            },
-            "3dsx": {
-              "name": "Xash3DS.3dsx",
-              "size": 2967756,
-              "url": "https://github.com/masterfeizz/Xash3DS/releases/download/v0.2/Xash3DS.3dsx",
-              "sha256": "994ee8f6acfbdfacdf6daff263efca9b051ffc94344c0409d735fc0d276f8ab6"
-            }
-          },
-          "notes": {
-            "es": [
-              "Consulta el historial completo en GitHub."
-            ],
-            "en": [
-              "Read the full changelog on GitHub."
-            ],
-            "pt": [
-              "Leia o changelog completo no GitHub."
-            ],
-            "it": [
-              "Leggi il changelog completo su GitHub."
-            ],
-            "fr": [
-              "Consultez le journal complet sur GitHub."
-            ],
-            "de": [
-              "Das vollständige Changelog findest du auf GitHub."
-            ],
-            "ru": [
-              "Полный список изменений — на GitHub."
-            ],
-            "ja": [
-              "詳しい更新履歴はGitHubでご覧ください。"
-            ]
-          },
-          "ciaTitle": "000400000ff12800",
-          "ciaVersion": 2048
-        }
-      },
-      "install": {
-        "cia": [
-          {
-            "type": "downloadUrl",
-            "name": "extras.pak",
-            "url": "https://github.com/masterfeizz/Xash3DS/releases/download/v0.2/extras.pak",
-            "size": 3947633,
-            "sha256": "b3783f366f785fb1ac9bdacc6c677324b0507a4d98358a3ec94af3a088e363ce",
-            "output": "/xash3d/valve/extras.pak"
-          },
-          {
-            "type": "downloadRelease",
-            "asset": "cia",
-            "output": "%TMP%/Xash3DS.cia"
-          },
-          {
-            "type": "installCia",
-            "file": "%TMP%/Xash3DS.cia"
-          },
-          {
-            "type": "deleteFile",
-            "file": "%TMP%/Xash3DS.cia"
-          },
-          {
-            "type": "requireFile",
-            "ref": "data"
-          }
-        ],
-        "3dsx": [
-          {
-            "type": "downloadUrl",
-            "name": "extras.pak",
-            "url": "https://github.com/masterfeizz/Xash3DS/releases/download/v0.2/extras.pak",
-            "size": 3947633,
-            "sha256": "b3783f366f785fb1ac9bdacc6c677324b0507a4d98358a3ec94af3a088e363ce",
-            "output": "/xash3d/valve/extras.pak"
-          },
-          {
-            "type": "downloadRelease",
-            "asset": "3dsx",
-            "output": "/3ds/Xash3DS.3dsx"
-          },
-          {
-            "type": "requireFile",
-            "ref": "data"
-          }
-        ]
-      },
-      "releasePinned": true,
-      "stars": 184,
-      "origin": {
-        "platform": "PC",
-        "year": 1998
-      },
-      "pixelIcon": false,
-      "detect": {
-        "ids": [
-          1044776
-        ],
-        "files": [
-          "%3DSX%/Xash3DS.3dsx"
-        ],
-        "uu": "Xash3DS"
-      }
-    },
-    {
-      "id": "ctrquake",
-      "title": "Quake · ctrQuake",
-      "fullTitle": "Quake · ctrQuake",
-      "category": "community",
-      "author": "masterfeizz",
-      "credits": "Quake (id Software)",
-      "origin": {
-        "platform": "PC",
-        "year": 1996
-      },
-      "color": "#7a4a2a",
-      "status": "released",
-      "repo": "masterfeizz/ctrQuake",
-      "stars": 105,
-      "icon": "assets/community/ctrquake/icon.webp",
-      "banner": {
-        "fx": "dust",
-        "gradient": [
-          "#1e1713",
-          "#4b3123",
-          "#ad6840"
-        ],
-        "cardIcon": true,
-        "bg": "assets/community/ctrquake/background.webp",
-        "bgPos": "50% 50%"
-      },
-      "shots": [],
-      "tagline": {
-        "es": "Quake nativo para 3DS. Copia los archivos PAK de tu juego en /3ds/ctrQuake/id1/.",
-        "en": "Native Quake for 3DS. Copy your game’s PAK files into /3ds/ctrQuake/id1/.",
-        "pt": "Quake nativo para 3DS. Copie os arquivos PAK do seu jogo para /3ds/ctrQuake/id1/.",
-        "it": "Quake nativo per 3DS. Copia i file PAK del tuo gioco in /3ds/ctrQuake/id1/.",
-        "fr": "Quake natif pour 3DS. Copiez les fichiers PAK de votre jeu dans /3ds/ctrQuake/id1/.",
-        "de": "Natives Quake für 3DS. Kopiere die PAK-Dateien deines Spiels nach /3ds/ctrQuake/id1/.",
-        "ru": "Нативный Quake для 3DS. Скопируйте PAK-файлы своей игры в /3ds/ctrQuake/id1/.",
-        "ja": "3DS向けネイティブ版Quake。ゲームのPAKファイルを/3ds/ctrQuake/id1/にコピーしてください。"
-      },
-      "description": {
-        "es": "Quake nativo para 3DS. Copia los archivos PAK de tu juego en /3ds/ctrQuake/id1/.",
-        "en": "Native Quake for 3DS. Copy your game’s PAK files into /3ds/ctrQuake/id1/.",
-        "pt": "Quake nativo para 3DS. Copie os arquivos PAK do seu jogo para /3ds/ctrQuake/id1/.",
-        "it": "Quake nativo per 3DS. Copia i file PAK del tuo gioco in /3ds/ctrQuake/id1/.",
-        "fr": "Quake natif pour 3DS. Copiez les fichiers PAK de votre jeu dans /3ds/ctrQuake/id1/.",
-        "de": "Natives Quake für 3DS. Kopiere die PAK-Dateien deines Spiels nach /3ds/ctrQuake/id1/.",
-        "ru": "Нативный Quake для 3DS. Скопируйте PAK-файлы своей игры в /3ds/ctrQuake/id1/.",
-        "ja": "3DS向けネイティブ版Quake。ゲームのPAKファイルを/3ds/ctrQuake/id1/にコピーしてください。"
-      },
-      "features": {
-        "es": [
-          "Crea y únete a servidores online",
-          "Dithering activable",
-          "Versiones 3DSX y CIA"
-        ],
-        "en": [
-          "Host and join online servers",
-          "Toggleable dithering",
-          "3DSX and CIA builds"
-        ],
-        "pt": [
-          "Crie e entre em servidores online",
-          "Dithering ativável",
-          "Builds 3DSX e CIA"
-        ],
-        "it": [
-          "Crea server online o unisciti",
-          "Dithering attivabile",
-          "Versioni 3DSX e CIA"
-        ],
-        "fr": [
-          "Créez ou rejoignez des serveurs en ligne",
-          "Tramage activable",
-          "Versions 3DSX et CIA"
-        ],
-        "de": [
-          "Online-Server hosten und beitreten",
-          "Dithering umschaltbar",
-          "Builds als 3DSX und CIA"
-        ],
-        "ru": [
-          "Создание онлайн-серверов и подключение к ним",
-          "Отключаемый дизеринг",
-          "Сборки 3DSX и CIA"
-        ],
-        "ja": [
-          "オンラインサーバーのホストと参加",
-          "ディザリングの切り替え",
-          "3DSX版とCIA版"
-        ]
-      },
-      "compat": {
-        "o3ds": true,
-        "n3ds": true,
-        "stereo": false
-      },
-      "folder": "/3ds/ctrQuake/",
-      "releases": {
-        "stable": {
-          "tag": "v0.8",
-          "date": "2016-09-13",
-          "assets": {
-            "cia": {
-              "name": "ctrQuake.cia",
-              "size": 984000,
-              "url": "https://github.com/masterfeizz/ctrQuake/releases/download/v0.8/ctrQuake.cia",
-              "sha256": "a7f37df235c0b63738959bdf66a65f113c61193908f806c7125a007ae2ce7786"
-            }
-          },
-          "notes": {
-            "es": [
-              "Consulta el historial completo en GitHub."
-            ],
-            "en": [
-              "Read the full changelog on GitHub."
-            ],
-            "pt": [
-              "Leia o changelog completo no GitHub."
-            ],
-            "it": [
-              "Leggi il changelog completo su GitHub."
-            ],
-            "fr": [
-              "Consultez le journal complet sur GitHub."
-            ],
-            "de": [
-              "Das vollständige Changelog findest du auf GitHub."
-            ],
-            "ru": [
-              "Полный список изменений — на GitHub."
-            ],
-            "ja": [
-              "詳しい更新履歴はGitHubでご覧ください。"
-            ]
-          },
-          "ciaTitle": "000400000ff12300",
-          "ciaVersion": 0,
-          "assetUpdated": "2016-09-13T02:37:57Z",
-          "publishedAt": "2016-09-13T02:38:10Z"
-        }
-      },
-      "requires": [
-        {
-          "id": "data",
-          "label": {
-            "es": "pak0.pak de tu Quake (id1)",
-            "en": "pak0.pak from your Quake (id1)",
-            "pt": "pak0.pak do seu Quake (id1)",
-            "it": "pak0.pak dal tuo Quake (id1)",
-            "fr": "pak0.pak de votre Quake (id1)",
-            "de": "pak0.pak aus deinem Quake (id1)",
-            "ru": "pak0.pak из вашего Quake (id1)",
-            "ja": "お手持ちのQuakeのpak0.pak（id1）"
-          },
-          "path": "/3ds/ctrQuake/id1/pak0.pak",
-          "size": 18689235,
-          "help": {
-            "es": "Copia pak0.pak (y pak1.pak si lo tienes) en la carpeta id1.",
-            "en": "Copy pak0.pak (and pak1.pak if you have it) into the id1 folder.",
-            "pt": "Copie o pak0.pak (e o pak1.pak, se tiver) para a pasta id1.",
-            "it": "Copia pak0.pak (e pak1.pak se ce l'hai) nella cartella id1.",
-            "fr": "Copiez pak0.pak (et pak1.pak si vous l'avez) dans le dossier id1.",
-            "de": "Kopiere pak0.pak (und pak1.pak, falls vorhanden) in den Ordner id1.",
-            "ru": "Скопируйте pak0.pak (и pak1.pak, если есть) в папку id1.",
-            "ja": "pak0.pak（あればpak1.pakも）をid1フォルダにコピーしてください。"
-          },
-          "detect": [
-            {
-              "dir": "/3ds/ctrQuake/id1/",
-              "names": [
-                "pak0.pak"
-              ],
-              "magic": [
-                {
-                  "at": 0,
-                  "any": [
-                    "PACK"
-                  ]
-                }
-              ]
-            }
-          ]
-        }
-      ],
-      "install": {
-        "cia": [
-          {
-            "type": "downloadRelease",
-            "asset": "cia",
-            "output": "%TMP%/ctrQuake.cia"
-          },
-          {
-            "type": "installCia",
-            "file": "%TMP%/ctrQuake.cia"
-          },
-          {
-            "type": "deleteFile",
-            "file": "%TMP%/ctrQuake.cia"
-          },
-          {
-            "type": "requireFile",
-            "ref": "data"
-          }
-        ]
-      },
-      "sourceUrl": "https://github.com/masterfeizz/ctrQuake",
-      "verifiedAt": "2026-11-12",
-      "iconBackground": "#d5b88c",
-      "detect": {
-        "ids": [
-          1044771
-        ],
-        "files": [
-          "%3DSX%/ctrQuake.3dsx"
-        ],
-        "uu": "ctrQuake"
-      }
-    },
-    {
-      "id": "openlara",
-      "title": "OpenLara",
-      "category": "community",
-      "author": "XProger",
-      "credits": "Motor libre de Tomb Raider clásico",
-      "origin": {
-        "platform": "PS1 / PC",
-        "year": 1996
-      },
-      "color": "#c9a227",
-      "status": "released",
-      "repo": "XProger/OpenLara",
-      "stars": 5151,
-      "icon": "assets/community/openlara/icon.webp",
-      "banner": {
-        "fx": "dust",
-        "gradient": [
-          "#141e29",
-          "#304555",
-          "#96b9b1"
-        ],
-        "cardIcon": true,
-        "bg": "assets/community/openlara/background.webp",
-        "bgPos": "50% 50%"
-      },
-      "shots": [],
-      "tagline": {
-        "es": "Motor abierto de Tomb Raider. Requiere los niveles y sonidos originales en /3ds/OpenLara/.",
-        "en": "Open-source Tomb Raider engine. Requires original levels and sounds in /3ds/OpenLara/.",
-        "pt": "Motor de Tomb Raider de código aberto. Requer as fases e sons originais em /3ds/OpenLara/.",
-        "it": "Motore open source di Tomb Raider. Richiede i livelli e i suoni originali in /3ds/OpenLara/.",
-        "fr": "Moteur open source de Tomb Raider. Requiert les niveaux et sons d'origine dans /3ds/OpenLara/.",
-        "de": "Open-Source-Engine für Tomb Raider. Benötigt Original-Level und -Sounds in /3ds/OpenLara/.",
-        "ru": "Открытый движок Tomb Raider. Нужны оригинальные уровни и звуки в /3ds/OpenLara/.",
-        "ja": "オープンソースのTomb Raiderエンジン。/3ds/OpenLara/にオリジナルのレベルとサウンドが必要です。"
-      },
-      "description": {
-        "es": "Motor abierto de Tomb Raider. Requiere los niveles y sonidos originales en /3ds/OpenLara/.",
-        "en": "Open-source Tomb Raider engine. Requires original levels and sounds in /3ds/OpenLara/.",
-        "pt": "Motor de Tomb Raider de código aberto. Requer as fases e sons originais em /3ds/OpenLara/.",
-        "it": "Motore open source di Tomb Raider. Richiede i livelli e i suoni originali in /3ds/OpenLara/.",
-        "fr": "Moteur open source de Tomb Raider. Requiert les niveaux et sons d'origine dans /3ds/OpenLara/.",
-        "de": "Open-Source-Engine für Tomb Raider. Benötigt Original-Level und -Sounds in /3ds/OpenLara/.",
-        "ru": "Открытый движок Tomb Raider. Нужны оригинальные уровни и звуки в /3ds/OpenLara/.",
-        "ja": "オープンソースのTomb Raiderエンジン。/3ds/OpenLara/にオリジナルのレベルとサウンドが必要です。"
-      },
-      "features": {
-        "es": [
-          "Motor de código abierto",
-          "Compilación para 3DS",
-          "Usa los datos de tu copia"
-        ],
-        "en": [
-          "Open-source engine",
-          "3DS build",
-          "Uses data from your copy"
-        ],
-        "pt": [
-          "Motor de código aberto",
-          "Build para 3DS",
-          "Usa os dados da sua cópia"
-        ],
-        "it": [
-          "Motore open source",
-          "Build per 3DS",
-          "Usa i dati della tua copia"
-        ],
-        "fr": [
-          "Moteur open source",
-          "Version 3DS",
-          "Utilise les données de votre copie"
-        ],
-        "de": [
-          "Open-Source-Engine",
-          "3DS-Build",
-          "Nutzt Daten aus deiner Kopie"
-        ],
-        "ru": [
-          "Движок с открытым кодом",
-          "Сборка для 3DS",
-          "Данные из вашей копии"
-        ],
-        "ja": [
-          "オープンソースエンジン",
-          "3DS版",
-          "お手持ちのデータを使用"
-        ]
-      },
-      "compat": {
-        "o3ds": true,
-        "n3ds": true,
-        "stereo": false
-      },
-      "folder": "/3ds/OpenLara/",
-      "releases": {
-        "stable": {
-          "tag": "latest",
-          "date": "2019-01-11",
-          "assets": {
-            "3dsx": {
-              "name": "OpenLara_3ds.zip",
-              "size": 599718,
-              "url": "https://github.com/XProger/OpenLara/releases/download/latest/OpenLara_3ds.zip",
-              "sha256": "567709637caaaa0b929a25729398e380a0242a2e4478c3133b6d24e79117f899"
-            }
-          },
-          "notes": {
-            "es": [
-              "Consulta el historial completo en GitHub."
-            ],
-            "en": [
-              "Read the full changelog on GitHub."
-            ],
-            "pt": [
-              "Leia o changelog completo no GitHub."
-            ],
-            "it": [
-              "Leggi il changelog completo su GitHub."
-            ],
-            "fr": [
-              "Consultez le journal complet sur GitHub."
-            ],
-            "de": [
-              "Das vollständige Changelog findest du auf GitHub."
-            ],
-            "ru": [
-              "Полный список изменений — на GitHub."
-            ],
-            "ja": [
-              "詳しい更新履歴はGitHubでご覧ください。"
-            ]
-          }
-        }
-      },
-      "requires": [
-        {
-          "id": "data",
-          "label": {
-            "es": "Niveles de tu Tomb Raider",
-            "en": "Levels from your Tomb Raider",
-            "pt": "Fases do seu Tomb Raider",
-            "it": "I livelli del tuo Tomb Raider",
-            "fr": "Niveaux de votre Tomb Raider",
-            "de": "Level aus deinem Tomb Raider",
-            "ru": "Уровни из вашего Tomb Raider",
-            "ja": "お手持ちのTomb Raiderのレベル"
-          },
-          "path": "/3ds/OpenLara/",
-          "help": {
-            "es": "Coloca los datos como indica el README de OpenLara.",
-            "en": "Place the data as the OpenLara README explains.",
-            "pt": "Coloque os dados como explica o README do OpenLara.",
-            "it": "Disponi i dati come spiega il README di OpenLara.",
-            "fr": "Placez les données comme l'indique le README d'OpenLara.",
-            "de": "Lege die Daten ab, wie in der README von OpenLara beschrieben.",
-            "ru": "Разместите данные так, как описано в README OpenLara.",
-            "ja": "OpenLaraのREADMEの説明どおりにデータを配置してください。"
-          },
-          "example": "DATA/GYM.PHD",
-          "detect": [
-            {
-              "dir": "/3ds/OpenLara/",
-              "names": [
-                "GYM.PHD",
-                "assault.TR2"
-              ]
-            },
-            {
-              "dir": "/3ds/OpenLara/DATA/",
-              "names": [
-                "GYM.PHD",
-                "GYM.SAT",
-                "ASSAULT.TR2",
-                "ASSAULT.PSX",
-                "JUNGLE.TR2",
-                "JUNGLE.PSX",
-                "angkor1.tr4"
-              ]
-            },
-            {
-              "dir": "/3ds/OpenLara/PSXDATA/",
-              "names": [
-                "GYM.PSX"
-              ]
-            }
-          ]
-        }
-      ],
-      "install": {
-        "3dsx": [
-          {
-            "type": "downloadUrl",
-            "name": "OpenLara_3ds.zip",
-            "url": "https://github.com/XProger/OpenLara/releases/download/latest/OpenLara_3ds.zip",
-            "output": "%TMP%/OpenLara_3ds.zip",
-            "size": 599718,
-            "sha256": "567709637caaaa0b929a25729398e380a0242a2e4478c3133b6d24e79117f899"
-          },
-          {
-            "type": "extractFile",
-            "file": "%TMP%/OpenLara_3ds.zip",
-            "input": "^OpenLara.3dsx",
-            "output": "/3ds/OpenLara/OpenLara.3dsx"
-          },
-          {
-            "type": "deleteFile",
-            "file": "%TMP%/OpenLara_3ds.zip"
-          },
-          {
-            "type": "requireFile",
-            "ref": "data"
-          }
-        ]
-      },
-      "fullTitle": "OpenLara",
-      "sourceUrl": "https://github.com/XProger/OpenLara",
-      "verifiedAt": "2026-11-12",
-      "releasePinned": true,
-      "pixelIcon": false
     },
     {
       "id": "snes9x",

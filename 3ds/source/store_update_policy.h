@@ -6,25 +6,27 @@
 #include <strings.h>
 #include <stdio.h>
 #include "store_version.h"
-static inline void store_update_version_label(json_t *root,int64_t build,char *out,size_t cap) {
-    const char *label=json_string_value(json_object_get(root,"version"));
-    bool valid=label&&*label&&strlen(label)<=32;
-    if(valid)for(const char *p=label;*p;p++)
-        if(!((*p>='0'&&*p<='9')||(*p>='A'&&*p<='Z')||(*p>='a'&&*p<='z')||*p=='.'||*p=='-'||*p=='_')){valid=false;break;}
-    if(valid)snprintf(out,cap,"%s",label);else snprintf(out,cap,"%lld",(long long)build);
+// CIA versions use six bits each for major and minor and four for patch.
+static inline bool store_update_version_code(const char *version, uint16_t *code) {
+    if (!version || !*version) return false;
+    unsigned parts[3] = {0}, limit[] = {63, 63, 15};
+    for (unsigned i = 0; i < 3; i++) {
+        const char *start = version;
+        while (*version >= '0' && *version <= '9') {
+            parts[i] = parts[i] * 10 + (*version++ - '0');
+            if (version - start > 2 || parts[i] > limit[i]) return false;
+        }
+        if (version == start) return false;
+        if (!*version && i >= 1) {
+            *code = (parts[0] << 10) | (parts[1] << 4) | parts[2];
+            return true;
+        }
+        if (i == 2 || *version++ != '.') return false;
+    }
+    return false;
 }
-// Manifest is fetched over verified HTTPS from the fixed, trusted repository.
-// Reject malformed metadata before choosing a destination or creating an AM handle.
-static inline bool store_update_metadata(json_t *root, bool homebrew, uint64_t *bytes, char hash[65],
-                                         int64_t *build) {
-    json_t *version = json_object_get(root, "store_build");
-    if (!json_is_integer(version) || json_integer_value(version) <= 0)
-        return false;
-    *build = json_integer_value(version);
-    json_t *file =
-        json_object_get(json_object_get(root, "files"), homebrew ? "forge-store.3dsx" : "forge-store.cia");
-    json_t *size = json_object_get(file, "bytes");
-    const char *sha = json_string_value(json_object_get(file, "sha256"));
+
+static inline bool store_update_file(json_t *size, const char *sha, uint64_t *bytes, char hash[65]) {
     if (!json_is_integer(size) || json_integer_value(size) < 32 ||
         json_integer_value(size) > 96 * 1024 * 1024 || !sha || strlen(sha) != 64)
         return false;
@@ -34,6 +36,41 @@ static inline bool store_update_metadata(json_t *root, bool homebrew, uint64_t *
     *bytes = json_integer_value(size);
     memcpy(hash, sha, 65);
     return true;
+}
+
+// Use the versioned asset GitHub lists on the latest stable release. Build the URL
+// from the validated tag and expected name, independent of URLs in the response.
+static inline bool store_update_release(json_t *root, bool homebrew, char tag[12],
+                                        uint16_t *code, uint64_t *bytes, char hash[65]) {
+    const char *name = json_string_value(json_object_get(root, "tag_name"));
+    if (!name || name[0] != 'v' || !store_update_version_code(name + 1, code) ||
+        !json_is_false(json_object_get(root, "draft")) || !json_is_false(json_object_get(root, "prerelease")))
+        return false;
+    snprintf(tag, 12, "%s", name);
+    char asset[40];
+    snprintf(asset, sizeof asset, "forge-store-%s.%s", tag, homebrew ? "3dsx" : "cia");
+    size_t i;
+    json_t *entry;
+    json_array_foreach(json_object_get(root, "assets"), i, entry) {
+        const char *file = json_string_value(json_object_get(entry, "name"));
+        if (!file || strcmp(file, asset)) continue;
+        const char *digest = json_string_value(json_object_get(entry, "digest"));
+        return digest && !strncmp(digest, "sha256:", 7) &&
+               store_update_file(json_object_get(entry, "size"), digest + 7, bytes, hash);
+    }
+    return false;
+}
+
+// Every new release also ships the compact manifest as a release asset. This path
+// still follows GitHub's latest release when its REST API quota is exhausted.
+static inline bool store_update_release_manifest(json_t *root, bool homebrew, char tag[12],
+                                                 uint16_t *code, uint64_t *bytes, char hash[65]) {
+    const char *version = json_string_value(json_object_get(root, "version"));
+    if (!store_update_version_code(version, code)) return false;
+    snprintf(tag, 12, "v%s", version);
+    json_t *file = json_object_get(json_object_get(root, "files"), homebrew ? "forge-store.3dsx" : "forge-store.cia");
+    return store_update_file(json_object_get(file, "bytes"),
+                             json_string_value(json_object_get(file, "sha256")), bytes, hash);
 }
 
 // The Homebrew Launcher shows a folder of /3ds/ as an app, with its icon, only when it

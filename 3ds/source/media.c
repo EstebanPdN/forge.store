@@ -120,6 +120,11 @@ static unsigned load_packs(void) {
     }
     return count;
 }
+static bool has_expected_size(const Entry *entry, const char *path) {
+    struct stat st;
+    return !stat(path, &st) && S_ISREG(st.st_mode) && st.st_size == entry->view.total;
+}
+
 static void load_manifest(void) {
     unsigned packs = load_packs(), count = packs;
     struct stat st;
@@ -167,7 +172,11 @@ static void load_manifest(void) {
             // Preserve existing cache filenames. The content hash makes any ambiguous
             // app/id hyphen boundary share only identical verified content.
             snprintf(e->view.path, sizeof e->view.path, MEDIA_CACHE "/%s-%s-%s.fvid", app, id, e->hash);
-            e->view.state = MEDIA_QUEUED;
+            // All locally present previews contribute their bytes from the first snapshot.
+            // The worker still hashes each one before making it available to the player.
+            bool cached = has_expected_size(e, e->view.path);
+            e->view.state = cached ? MEDIA_VERIFYING : MEDIA_QUEUED;
+            e->view.received = cached ? e->view.total : 0;
             e->eligible = true;
         }
         count++;
@@ -179,6 +188,7 @@ publish:
     if (q.suspended) for (unsigned i = packs; i < count; i++) {
         q.entries[i].eligible = false;
         q.entries[i].view.state = MEDIA_CLEARED;
+        q.entries[i].view.received = 0;
     }
     q.count = count;
     q.loading = false;
@@ -186,8 +196,7 @@ publish:
 }
 
 static bool valid_file(unsigned index, const Entry *job, const char *path) {
-    struct stat st;
-    if (stat(path, &st) || !S_ISREG(st.st_mode) || st.st_size != job->view.total || interrupted()) return false;
+    if (interrupted() || !has_expected_size(job, path)) return false;
     FILE *f = fopen(path, "rb");
     if (!f) return false;
     phase(index, MEDIA_VERIFYING);
@@ -288,12 +297,15 @@ static void run_item(unsigned index) {
     ok = true;
 done:
     remove(tmp);
+    bool still_cached = job.view.state == MEDIA_VERIFYING && !attempted && has_expected_size(&job, job.view.path);
     lock();
     Entry *e = &q.entries[index];
     if (interrupted()) {
         if (attempted && e->view.attempts) e->view.attempts--;
-        if (!LOAD(q.clear_pending) || e->pack >= 0) e->view.state = MEDIA_QUEUED;
-        e->view.received = 0;
+        if (!LOAD(q.clear_pending) || e->pack >= 0) {
+            e->view.state = still_cached ? MEDIA_VERIFYING : MEDIA_QUEUED;
+            e->view.received = still_cached ? e->view.total : 0;
+        }
     } else if (ok) {
         if (e->pack >= 0) asset_pack_publish((unsigned)e->pack);  // art waiting for it loads now
         e->view.state = MEDIA_COMPLETED;
@@ -347,7 +359,7 @@ static void worker(void *unused) {
                     q.priority = (int)i;
             for (unsigned i = 0; i < q.count; i++) {
                 Entry *e = &q.entries[i];
-                if (e->eligible && (e->view.state == MEDIA_QUEUED ||
+                if (e->eligible && (e->view.state == MEDIA_QUEUED || e->view.state == MEDIA_VERIFYING ||
                     (e->view.state == MEDIA_ERROR && now >= e->retry_at))) {
                     if (next < 0 || (int)i == q.priority) next = (int)i;
                     if ((int)i == q.priority) break;
@@ -408,7 +420,7 @@ bool media_prioritize(const char *app, const char *id) {
     if (!q.initialized) return false;
     lock(); int i = find_locked(app, id);
     bool ok = i >= 0 && q.entries[i].eligible && !LOAD(q.clear_pending);
-    if (ok && q.entries[i].view.state == MEDIA_QUEUED) q.priority = i;
+    if (ok && (q.entries[i].view.state == MEDIA_QUEUED || q.entries[i].view.state == MEDIA_VERIFYING)) q.priority = i;
     unlock(); return ok;
 }
 static bool retry_locked(unsigned i) {

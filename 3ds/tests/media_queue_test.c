@@ -99,7 +99,14 @@ int main(int argc, char **argv) {
     assert(media_take_ready() && !media_take_ready());
     assert(media_request("app", "video0") && media_poll() == 1 && *media_path());
     pass("auto-all, priority, partial never ready, navigation cancel preserves queue, ready watcher");
-    finish(); calls = 0; start(); WAIT_FOR(state(0, MEDIA_COMPLETED) && state(1, MEDIA_COMPLETED) && state(2, MEDIA_COMPLETED));
+    finish(); calls = 0; media_set_paused(true); start();
+    for (unsigned i = 0; i < 3; i++) {
+        assert(state(i, MEDIA_VERIFYING) && item(i).received == item(i).total);
+        assert(!media_path_ready(item(i).path));
+    }
+    assert(calls == 0);
+    media_set_paused(false);
+    WAIT_FOR(state(0, MEDIA_COMPLETED) && state(1, MEDIA_COMPLETED) && state(2, MEDIA_COMPLETED));
     assert(calls == 0); pass("next-launch cache hits are SHA-256 verified without downloads");
     assert(media_clear()); assert(!media_path_ready(item(0).path)); WAIT_FOR(media_clear_poll() == 1);
     assert(access(item(0).path, F_OK) != 0); assert(media_start());

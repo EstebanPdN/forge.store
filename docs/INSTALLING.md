@@ -11,17 +11,17 @@
 ## Install the CIA (recommended)
 
 1. Open **FBI → Remote Install → Scan QR Code**.
-2. Scan the QR code in the [README](../README.md#download-and-installation). It downloads the CIA from the v1.4.2 release.
+2. Scan the QR code in the [README](../README.md#download-and-installation). It downloads the CIA from the v1.4.3 release.
 3. Confirm the installation and return to the HOME Menu. **forge.store** appears with its
    own banner.
 
-You can also download [forge-store.cia](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.2/forge-store-v1.4.2.cia),
-check it against [SHA256SUMS.txt](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.2/SHA256SUMS.txt), copy it to the SD card and install it
+You can also download [forge-store.cia](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.3/forge-store-v1.4.3.cia),
+check it against [SHA256SUMS.txt](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.3/SHA256SUMS.txt), copy it to the SD card and install it
 from FBI. The CIA identity never changes: product `CTR-H-FRGS`, unique ID `0xF0F5E`.
 
 ## Install the 3DSX
 
-Copy [forge-store.3dsx](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.2/forge-store-v1.4.2.3dsx)
+Copy [forge-store.3dsx](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.3/forge-store-v1.4.3.3dsx)
 as `sdmc:/3ds/forge-store/forge-store.3dsx` and open it from the Homebrew Launcher.
 
 ## First start

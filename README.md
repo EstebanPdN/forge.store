@@ -16,7 +16,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/EstebanPdN/forge.store/releases/tag/v1.4.2"><img src="docs/badges/status.svg" alt="Release v1.4.2" height="22"></a>
+  <a href="https://github.com/EstebanPdN/forge.store/releases/tag/v1.4.3"><img src="docs/badges/status.svg" alt="Release v1.4.3" height="22"></a>
   <a href="docs/INSTALLING.md"><img src="docs/badges/platform.svg" alt="Old and New Nintendo 3DS" height="22"></a>
   <a href="docs/MEDIA.md"><img src="docs/badges/resources.svg" alt="Store resources: 16.04 MB" height="22"></a>
   <a href="#license-and-legal-notice"><img src="docs/badges/license.svg" alt="Component-specific licenses" height="22"></a>
@@ -61,11 +61,11 @@ files tell you exactly which file to place on the SD card.
 ## Download and installation
 
 <p>
-  <a href="https://github.com/EstebanPdN/forge.store/releases/download/v1.4.2/forge-store-v1.4.2.cia"><img src="docs/images/download-cia.svg" alt="Download forge.store CIA" width="210" height="46"></a>
-  <a href="https://github.com/EstebanPdN/forge.store/releases/download/v1.4.2/forge-store-v1.4.2.3dsx"><img src="docs/images/download-3dsx.svg" alt="Download Homebrew Launcher 3DSX" width="210" height="46"></a>
+  <a href="https://github.com/EstebanPdN/forge.store/releases/download/v1.4.3/forge-store-v1.4.3.cia"><img src="docs/images/download-cia.svg" alt="Download forge.store CIA" width="210" height="46"></a>
+  <a href="https://github.com/EstebanPdN/forge.store/releases/download/v1.4.3/forge-store-v1.4.3.3dsx"><img src="docs/images/download-3dsx.svg" alt="Download Homebrew Launcher 3DSX" width="210" height="46"></a>
 </p>
 
-**[Download v1.4.2](https://github.com/EstebanPdN/forge.store/releases/tag/v1.4.2)** · [Changelog](CHANGELOG.md#forgestore-142)
+**[Download v1.4.3](https://github.com/EstebanPdN/forge.store/releases/tag/v1.4.3)** · [Changelog](CHANGELOG.md#forgestore-143)
 
 <img align="right" src="docs/images/forge-store-qr.png" alt="QR code for the forge.store CIA" width="160">
 
@@ -78,8 +78,8 @@ files tell you exactly which file to place on the SD card.
    background. You can browse and install while it finishes.
 
 Keep at least 100 MB free for the store and its resources; each game needs its own space.
-Compare your download with [SHA256SUMS.txt](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.2/SHA256SUMS.txt) before installing.
-The buttons and QR code above install v1.4.2. Each
+Compare your download with [SHA256SUMS.txt](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.3/SHA256SUMS.txt) before installing.
+The buttons and QR code above install v1.4.3. Each
 [GitHub release](https://github.com/EstebanPdN/forge.store/releases) keeps its own CIA, 3DSX and QR code.
 
 **Updates are built in.** Every launch checks for a newer store build. Choose **Yes** to

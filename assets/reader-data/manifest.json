@@ -605,6 +605,34 @@
       "sha256": "a242d69ecafbb88450d214df8e210cb3d9aea94725a8647021ca22f3419dbd57"
     },
     {
+      "url": "https://api.github.com/repos/alberdura/Celeste3DS-releases",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/825563761eb096e1255b8e8c738c6b235870b172f1b8943e736a49ee41bf5372",
+      "bytes": 5577,
+      "sha256": "dd03ff55618ed853f34abd02b4f0f0e36db44c46c5a9beec71366712f477127c"
+    },
+    {
+      "url": "https://api.github.com/repos/alberdura/Celeste3DS-releases/commits?per_page=10",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/4eb313f43813fbd2db8faf5d23835c77c4af259d4996a1bb37c8c248f3e0ebac",
+      "bytes": 9724,
+      "sha256": "656be1663d58a258c187767a860d54e0b2edc5a7ef2df010ce268d61c2641785"
+    },
+    {
+      "url": "https://api.github.com/repos/alberdura/Celeste3DS-releases/readme",
+      "accept": "application/vnd.github.raw+json",
+      "file": "3ds/romfs/reader-data/a6e217740cb7aeaddf5d3e35c5b33e82faa61e4a8811958aeb7976e0aac4aad3",
+      "bytes": 5845,
+      "sha256": "593a3deccd96992353f94753422d3bdfaf5ca0c0e51169f208dce6fd88016d8c"
+    },
+    {
+      "url": "https://api.github.com/repos/alberdura/Celeste3DS-releases/releases?per_page=12",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/f79bdb17653a9517a19158efedc1408a3762dba5add099dac9aa49e127069c0a",
+      "bytes": 15654,
+      "sha256": "da98a39a5d9c55b047261cba9e389b64f441537ce23981dba77fe4d8dd59ae38"
+    },
+    {
       "url": "https://api.github.com/repos/ankushKun/3dsDL",
       "accept": "application/vnd.github+json",
       "file": "3ds/romfs/reader-data/5ef833b430081634c0c3414d559236bd007b2f7bb6eb16c27c7a64736c38ed7c",
@@ -1079,6 +1107,34 @@
       "file": "3ds/romfs/reader-data/c9e28a157325d3f5298693980fb0eb73692c8b8aae9a69181a395048284a74b4",
       "bytes": 2938,
       "sha256": "9f608554404e0f833be74e9d2acf35815c3580f6b1771085c5d9128a27f1bfdb"
+    },
+    {
+      "url": "https://api.github.com/repos/platonovns/sh-3ds",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/9fdc81af03fda4bb88de40cc2b445bcca6f5a275f2bfb79206647b517593fd61",
+      "bytes": 5177,
+      "sha256": "de77d09281f2ab4668809fcd9bfbe9561940ffbc3ea8372c075e5f56b812c440"
+    },
+    {
+      "url": "https://api.github.com/repos/platonovns/sh-3ds/commits?per_page=10",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/71e59a5bcdbd806756260236eaee573ee859f9623744c8b6f4cb39ce29be0205",
+      "bytes": 23253,
+      "sha256": "83daeaef827e76373af9275c5a09773d1d27c0483c2513b36b4aa577fefb69f1"
+    },
+    {
+      "url": "https://api.github.com/repos/platonovns/sh-3ds/readme",
+      "accept": "application/vnd.github.raw+json",
+      "file": "3ds/romfs/reader-data/a6cfa66b20061ef82d8a7aded1a973bb210fdd95e3ee5f1166328ef1d15b4485",
+      "bytes": 8105,
+      "sha256": "50c0048225aed8311048141b154d25abdfe1d4899d01bf89b0522475e5a55a18"
+    },
+    {
+      "url": "https://api.github.com/repos/platonovns/sh-3ds/releases?per_page=12",
+      "accept": "application/vnd.github+json",
+      "file": "3ds/romfs/reader-data/90029c25e7a75b0c091b0e55db24e3807ffb0b2eb5e0a11aebbf505ea035438c",
+      "bytes": 11818,
+      "sha256": "a2282cb74336e5020d948f0025062b164d3af2d1683ed6ef5dbc2fe8b19de440"
     },
     {
       "url": "https://api.github.com/users/EstebanPdN",

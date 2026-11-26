@@ -1,5 +1,11 @@
 # Changelog
 
+## forge.store 1.4.3
+
+- Find Celeste 3DS and Silent Hill in Community. Silent Hill requires a New Nintendo 3DS.
+- Downloads now shows when the store is checking resources already saved on your SD card.
+- Update from the latest stable GitHub release. The store downloads the launcher for that version after you confirm.
+
 ## forge.store 1.4.2
 
 - Progress shows the real download, with no long pauses.
