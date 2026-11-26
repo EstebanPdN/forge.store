@@ -10,6 +10,7 @@
 #include "rom_find.h"
 #include <ctype.h>
 #include <errno.h>
+#include <strings.h>
 #include <time.h>
 #include <sys/stat.h>
 #include <unistd.h>
@@ -287,6 +288,19 @@ static void layer_from(Layer *l, json_t *m) {
     l->h = json_integer_value(json_object_get(m, "h"));
 }
 
+static bool hidden_repo(json_t *app) {
+    const char *repo = json_string_value(json_object_get(app, "repo"));
+    if (!repo) return false;
+    size_t index;
+    json_t *entry;
+    json_array_foreach(json_object_get(CATALOG, "apps"), index, entry) {
+        if (!json_is_true(json_object_get(entry, "hidden"))) continue;
+        const char *hidden = json_string_value(json_object_get(entry, "repo"));
+        if (hidden && !strcasecmp(repo, hidden)) return true;
+    }
+    return false;
+}
+
 bool catalog_load(void) {
     json_error_t e;
     CATALOG = asset_json("romfs:/catalog.json", 0, &e);
@@ -305,6 +319,7 @@ bool catalog_load(void) {
     }
     NAPPS = 0;
     json_array_foreach(json_object_get(CATALOG, "apps"), i, v) {
+        if (json_is_true(json_object_get(v, "hidden"))) continue;
         if (NAPPS >= MAX_APPS)
             break;
         App *a = &APPS[NAPPS];
@@ -312,7 +327,8 @@ bool catalog_load(void) {
         for (int k=0;k<3;k++) a->shot_index[k]=-1;
         a->j = v;
         release_update_date(v, a->updated);
-        a->icon = NAPPS++;
+        a->icon = (int)i;  // The icon sheet still follows the full catalog.
+        NAPPS++;
         a->id = json_string_value(json_object_get(v, "id"));
         a->title = json_string_value(json_object_get(v, "title"));
         a->full = json_string_value(json_object_get(v, "fullTitle"));
@@ -359,13 +375,15 @@ bool catalog_load(void) {
     base_categories = NCATS;
     json_t *u = asset_json("romfs:/universal.json", 0, NULL);
     json_array_foreach(json_object_get(u, "apps"), i, v) {
+        if (hidden_repo(v)) continue;
         if (NAPPS >= MAX_APPS)
             break;
         App *a = &APPS[NAPPS];
         a->j = v;
         release_update_date(v, a->updated);
         a->universal = true;
-        a->icon = NAPPS++;
+        a->icon = BUILTIN_APPS + (int)i;
+        NAPPS++;
         a->id = json_string_value(json_object_get(v, "id"));
         a->title = json_string_value(json_object_get(v, "title"));
         a->full = a->title;
@@ -1929,7 +1947,9 @@ bool catalog_apply_universal(json_t *apps){
     }json_decref(ids);if(!valid)return false;
     live=json_incref(apps);for(int i=BUILTIN_APPS;i<total_apps;i++)APPS[i].retired=true;
     int added=0,updated=0;
-    json_array_foreach(apps,k,v){const char *id=json_string_value(json_object_get(v,"id"));App *a=NULL;
+    json_array_foreach(apps,k,v){
+        if(hidden_repo(v))continue;
+        const char *id=json_string_value(json_object_get(v,"id"));App *a=NULL;
         for(int i=BUILTIN_APPS;i<total_apps;i++)if(!strcmp(APPS[i].id,id)){a=&APPS[i];break;}
         if(!a){if(total_apps>=MAX_APPS)continue;a=&APPS[total_apps++];memset(a,0,sizeof *a);a->icon=-1;added++;}else updated++;
         a->j=v;a->retired=false;a->id=id;a->title=json_string_value(json_object_get(v,"title"));a->full=a->title;a->author=json_string_value(json_object_get(v,"author"));a->repo=json_string_value(json_object_get(v,"repo"));a->category="universal";a->status="released";a->folder="/3ds/";a->universal=true;a->old_ok=true;a->pixel_icon=true;release_update_date(v,a->updated);a->stars=json_integer_value(json_object_get(v,"stars"));a->has_stars=json_is_integer(json_object_get(v,"stars"));a->featured=json_is_true(json_object_get(v,"featured"));a->color=hexcolor(json_string_value(json_object_get(v,"color")));a->fx=json_string_value(json_object_get(json_object_get(v,"banner"),"fx"));a->mid.i=a->logo.i=-1;

@@ -6,12 +6,12 @@
   "dump_upload": false,
   "files": {
     "forge-store.cia": {
-      "bytes": 10965952,
-      "sha256": "00131e004c4ac813c76b4a211be8e504a4c27fca4c3e03fd62abcccae1f8bbd2"
+      "bytes": 10970048,
+      "sha256": "1c558b4c0c61ef203d4b2e9f7f404d1f4199dbc625c7d0ef5146d1d32d780635"
     },
     "forge-store.3dsx": {
-      "bytes": 11623528,
-      "sha256": "45e241753bd6c7b2749b3f04d0c9b7a31e1d00a5108ccc125610ccf8927e603a"
+      "bytes": 11623904,
+      "sha256": "398b70fb047fe1191d10ffd70c10852a72bab89c225262aa105ee974bb5159f2"
     }
   },
   "source_sha256": {
@@ -25,7 +25,7 @@
     "3ds/source/audio_gain.h": "6e2099c544a013c98f8dca2b3349a6f8daa5bf67fee0576fe2c17d7f7fe43235",
     "3ds/source/background.c": "eebb34feba0b743c384ffadc86a1dccc0ce4e78390414c4f3ea14349c92bd836",
     "3ds/source/background.h": "554ba44c3d98bd079bd9a5ed2328dcad61a5254909808291965b6be93e0d237b",
-    "3ds/source/catalog.c": "85512403bc64f088a76ad41a5d6aae6190f90947c4866fe203ae76c7a3796ae0",
+    "3ds/source/catalog.c": "d36e185cd55a3d2116ed6fba231fd69ac2ac1e5ced1341c60ae4709841de3ef9",
     "3ds/source/catalog.h": "f1e58d229d4b7add6324ed1184c1ceb7c520b2a135f0216340332fe5aee452c0",
     "3ds/source/catalog_remote.c": "976b14d6188914e3dbb6fb6d9f6b4359a3c3a9615e5237982799e92361fa046c",
     "3ds/source/catalog_remote.h": "d777fa46b4b1a56e7322057e5009db8b4be45ab1e7a31b3eb511f32cd930fa7f",

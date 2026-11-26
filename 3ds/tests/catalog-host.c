@@ -175,6 +175,17 @@ static void requirements(void) {
 
 static void search_and_releases(void) {
     CHECK(catalog_load());App *out[512];
+    size_t index;
+    json_t *entry;
+    int visible = 0;
+    json_array_foreach(json_object_get(CATALOG,"apps"),index,entry) {
+        if (json_is_true(json_object_get(entry,"hidden"))) continue;
+        same(APPS[visible].id,str(entry,"id"));
+        CHECK(APPS[visible++].icon==(int)index);
+    }
+    CHECK(visible==BUILTIN_APPS);
+    CHECK(catalog_search("Butterscotch",out,512)==0);
+    CHECK(catalog_search("Mario Kart Wii Redux",out,512)==0);
     CHECK(catalog_search(" \t\xC2\xA0",out,512)==5);
     const char *ids[]={"alttp","minish","mk64","doom","starwing"};
     for(int i=0;i<5;i++)same(out[i]->id,ids[i]);
@@ -225,6 +236,10 @@ static void live_universal(void){
     App *known=&APPS[BUILTIN_APPS];int icon=known->icon;const char *old_title=known->title;json_t *apps=json_array(),*update=json_deep_copy(known->j),*added=json_deep_copy(known->j);
     json_object_set_new(update,"title",json_string("Refreshed universal title"));json_array_append_new(apps,update);
     json_object_set_new(added,"id",json_string("udb-new-fixture"));json_object_set_new(added,"title",json_string("New live entry"));json_array_append_new(apps,added);
+    json_t *mirror=json_deep_copy(known->j);
+    json_object_set_new(mirror,"id",json_string("udb-hidden-fixture"));
+    json_object_set_new(mirror,"repo",json_string("EFIMANDREEV0/BUTTERSCOTCH"));
+    json_array_append_new(apps,mirror);
     json_t *bad=json_pack("[{}]");CHECK(!catalog_apply_universal(bad));json_decref(bad);
     bad=json_array();json_array_append(bad,update);json_array_append(bad,update);CHECK(!catalog_apply_universal(bad));json_decref(bad);
     CHECK(catalog_apply_universal(apps));CHECK(NAPPS==original_total+1);CHECK(known==&APPS[BUILTIN_APPS]&&known->icon==icon);same(known->title,"Refreshed universal title");CHECK(old_title&&*old_title);CHECK(!known->retired);CHECK(APPS[BUILTIN_APPS+1].retired);
