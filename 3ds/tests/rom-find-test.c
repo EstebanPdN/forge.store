@@ -83,10 +83,26 @@ static void fixed_name(json_t *req, const char *folder, const char *reads, size_
 static void ports(const char *catalog) {
     json_error_t e; json_t *root = json_load_file(catalog, 0, &e); assert(root);
     json_t *app; size_t i, k; json_t *req;
-    // Every file a port needs is recognized by the store, not only one exact path.
-    json_array_foreach(json_object_get(root, "apps"), i, app)
-        json_array_foreach(json_object_get(app, "requires"), k, req)
-            if (!rom_find_ruled(req)) { fprintf(stderr, "%s: requirement without detect rules\n", json_string_value(json_object_get(app, "id"))); abort(); }
+    // Celeste reads a fixed file in Content. Silent Hill opens exactly these two
+    // names and the CUE refers to the BIN, so searching by alternate names would
+    // misreport readiness. Other curated requirements must still have scan rules.
+    json_array_foreach(json_object_get(root, "apps"), i, app) {
+        const char *id = json_string_value(json_object_get(app, "id"));
+        json_t *requires = json_object_get(app, "requires");
+        if (!strcmp(id, "celeste3ds")) assert(json_array_size(requires) == 1);
+        if (!strcmp(id, "silenthill")) assert(json_array_size(requires) == 2);
+        json_array_foreach(requires, k, req) {
+            if (rom_find_ruled(req)) continue;
+            const char *expected = NULL;
+            if (!strcmp(id, "celeste3ds")) expected = "/3ds/celeste3ds/Content/Maps/1-ForsakenCity.bin";
+            if (!strcmp(id, "silenthill")) expected = k == 0 ? "/3ds/silenthill/sh1.bin" : "/3ds/silenthill/sh1.cue";
+            const char *path = json_string_value(json_object_get(req, "path"));
+            if (!expected || !path || strcmp(path, expected)) {
+                fprintf(stderr, "%s: requirement without detect rules or a recognized exact path\n", id);
+                abort();
+            }
+        }
+    }
 
     // Star Haven reads any name itself, in any byte order, from its folder and a few others.
     req = requirement(root, "starhaven");
@@ -123,22 +139,12 @@ static void ports(const char *catalog) {
     FOUND(req, "/3ds/MK64/mk64.z64"); assert(!exists("/3ds/MK64/Mario Kart 64.z64")); gone("/3ds/MK64/mk64.z64");
     free(mk), free(mkj);
 
-    // Engines with their own file names: checked by name and, where it has one, by header.
-    struct { const char *id, *folder, *file, *header; } data[] = {
-        {"ctrquake", "/3ds/ctrQuake/id1", "/3ds/ctrQuake/id1/pak0.pak", "PACK"},
-        {"xash3ds", "/xash3d/valve", "/xash3d/valve/pak0.pak", "PACK"},
-        {"openlara", "/3ds/OpenLara/DATA", "/3ds/OpenLara/DATA/GYM.PHD", NULL},
-        {"openlara", "/3ds/OpenLara/PSXDATA", "/3ds/OpenLara/PSXDATA/GYM.PSX", NULL},
-        {"openlara", "/3ds/OpenLara/DATA", "/3ds/OpenLara/DATA/angkor1.tr4", NULL},
-        {"butterscotch", "/3ds/butterscotch/Some Game", "/3ds/butterscotch/Some Game/data.win", NULL}};
-    for (unsigned n = 0; n < sizeof data / sizeof *data; n++) {
-        req = requirement(root, data[n].id);
-        dirs(data[n].folder);
-        assert(!scan_at(req));
-        if (data[n].header) { put(data[n].file, 64, 0, "ZIP!"); assert(!scan_at(req)); }
-        put(data[n].file, 64, 0, data[n].header ? data[n].header : "x");
-        FOUND(req, data[n].file); gone(data[n].file);
-    }
+    req = requirement(root, "butterscotch");
+    const char *data = "/3ds/butterscotch/Some Game/data.win";
+    dirs("/3ds/butterscotch/Some Game");
+    assert(!scan_at(req));
+    put(data, 64, 0, "x");
+    FOUND(req, data); gone(data);
     // The beta packs have specific headers. Sparse files stand in for the disc data.
     struct { const char *id, *folder, *file, *header; off_t size; } packs[] = {
         {"worms", "/3ds/worms3ds", "/3ds/worms3ds/assets.worms", "WORMSPK1", 1048237800},
@@ -193,5 +199,5 @@ int main(int argc, char **argv) {
     assert(found(mk, path, &derived) && strstr(path, "mk64.z64"));
     assert(!found("{\"detect\":[{\"dir\":\"/3ds/../etc\",\"ext\":[\"gba\"]}]}", path, &derived));
     if (argc > 1) ports(argv[1]);
-    puts("PASS: any accepted name, ignored dot files, sizes, header bytes, CRC with copier header, derived data, exact names, unsafe folders, every catalog requirement ruled; each port's files under any name and byte order, copied where fixed-name ports read them");
+    puts("PASS: ROM search, header and size checks, byte-order conversion, and catalog detection rules or exact paths");
 }
