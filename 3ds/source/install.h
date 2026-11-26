@@ -35,6 +35,7 @@ typedef struct {
     json_t *release, *script;
     volatile JobState state;
     volatile InstallPhase phase;
+    volatile bool waiting_connection;
     volatile bool streaming;  // the CIA is downloading straight into the 3DS installer
     volatile bool no_cancel;  // the title is installed: only its record is left to save
     bool unknown_size;

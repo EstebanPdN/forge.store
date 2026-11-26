@@ -3,6 +3,8 @@
 ## forge.store 1.4.5
 
 - HOTFIX: Forge Mode activation works again from Settings → Console.
+- Interrupted port downloads wait for Wi-Fi and resume automatically. You can cancel while waiting.
+- The installer places game data on the SD before adding the title to HOME.
 
 ## forge.store 1.4.4
 

@@ -401,6 +401,8 @@ typedef struct {
     u64 last_tick;
     u64 written, expected;
     ForgeZipStream *zip;
+    bool resumable; // the caller verifies a pinned digest before publication
+    long response;
     const char *range;
     u64 range_start, range_end; // offsets within this encrypted member
     mbedtls_sha256_context *sha; // the file's digest, fed with exactly the bytes written
@@ -413,6 +415,7 @@ static size_t on_write(char *data, size_t size, size_t nmemb, void *user) {
     if (size && nmemb > SIZE_MAX / size) return 0;
     size_t len = size * nmemb;
     if (d->job && d->job->cancel) return 0;
+    if (len && d->job) d->job->waiting_connection = false;
     if (d->mem) {
         if (len >= d->mem_cap - d->mem_len)
             return 0;
@@ -467,7 +470,7 @@ static int on_progress(void *user, curl_off_t total, curl_off_t now, curl_off_t 
     return 0;
 }
 
-static CURLcode fetch(const char *url, Dl *d, char *err, size_t errn) {
+static CURLcode fetch_once(const char *url, Dl *d, char *err, size_t errn) {
     if (!url || strncmp(url, "https://", 8)) return CURLE_URL_MALFORMAT;
     CURL *c = curl_easy_init();
     if (!c)
@@ -477,6 +480,7 @@ static CURLcode fetch(const char *url, Dl *d, char *err, size_t errn) {
     curl_easy_setopt(c, CURLOPT_TIMEOUT, 0L); // progressing installations have no total deadline
     curl_easy_setopt(c, CURLOPT_URL, url);
     if (d->range) curl_easy_setopt(c, CURLOPT_RANGE, d->range);
+    else if (d->written && d->resumable) curl_easy_setopt(c, CURLOPT_RESUME_FROM_LARGE, (curl_off_t)d->written);
     curl_easy_setopt(c, CURLOPT_PROTOCOLS_STR, "https");
     curl_easy_setopt(c, CURLOPT_REDIR_PROTOCOLS_STR, "https");
     curl_easy_setopt(c, CURLOPT_FOLLOWLOCATION, 1L);
@@ -495,15 +499,52 @@ static CURLcode fetch(const char *url, Dl *d, char *err, size_t errn) {
     curl_easy_setopt(c, CURLOPT_ERRORBUFFER, ebuf);
     d->last_tick = svcGetSystemTick();
     CURLcode r = curl_easy_perform(c);
-    if (d->range && r == CURLE_OK) {
-        long status = 0;
-        curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &status);
-        if (status != 206) r = CURLE_RANGE_ERROR;
-    }
+    curl_easy_getinfo(c, CURLINFO_RESPONSE_CODE, &d->response);
+    if (d->range && r == CURLE_OK && d->response != 206) r = CURLE_RANGE_ERROR;
     if (r != CURLE_OK)
         network_error(err, errn, !d->range && ebuf[0] ? ebuf : curl_easy_strerror(r));
     curl_easy_cleanup(c);
     return r;
+}
+
+// Only the installation worker touches this flag. A fresh step reopens its SD/AM
+// sink when the transport cannot safely append to it.
+static bool restart_download;
+
+static bool connection_lost(CURLcode r) {
+    return r == CURLE_COULDNT_RESOLVE_HOST || r == CURLE_COULDNT_CONNECT ||
+           r == CURLE_OPERATION_TIMEDOUT || r == CURLE_PARTIAL_FILE ||
+           r == CURLE_RECV_ERROR || r == CURLE_SEND_ERROR || r == CURLE_GOT_NOTHING;
+}
+
+static bool wait_connection(Job *j) {
+    j->waiting_connection = true;
+    j->speed = 0;
+    j->error[0] = 0;
+    for (int i = 0; i < 30 && !quit && !j->cancel; ++i) svcSleepThread(100000000);
+    return !quit && !j->cancel;
+}
+
+static CURLcode fetch(const char *url, Dl *d, char *err, size_t errn) {
+    for (;;) {
+        if (quit || d->job->cancel) return CURLE_ABORTED_BY_CALLBACK;
+        u64 start = d->written;
+        CURLcode r = fetch_once(url, d, err, errn);
+        if (start && !d->range && (r == CURLE_RANGE_ERROR || d->response == 416)) restart_download = true;
+        if (!connection_lost(r)) return r;
+        if (!wait_connection(d->job)) return CURLE_ABORTED_BY_CALLBACK;
+        if (d->mem) {
+            d->mem_len = 0;
+            d->mem[0] = 0;
+        } else if (d->written && (!d->resumable || d->written == d->expected ||
+                                  (d->range && d->written > start && d->response != 206))) {
+            restart_download = true;
+            return r;
+        } else if (d->range && d->written > start) {
+            return r; // fetch_member rebuilds the range from the accepted bytes
+        }
+        err[0] = 0;
+    }
 }
 
 #ifndef FORGE_ZIP_REQUEST_MAX
@@ -520,7 +561,10 @@ static CURLcode fetch_member(const char *url, Dl *d, uint32_t offset, char *err,
                  (unsigned long long)(offset + d->range_end - 1));
         d->range = range;
         CURLcode result = fetch(url, d, err, errn);
+        if (connection_lost(result) && !restart_download && d->written > d->range_start &&
+            !quit && !d->job->cancel) continue;
         if (result != CURLE_OK) return result;
+        err[0] = 0;
         if (d->written != d->range_end) {
             snprintf(err,errn,"Incomplete encrypted resource range");
             return CURLE_PARTIAL_FILE;
@@ -529,7 +573,7 @@ static CURLcode fetch_member(const char *url, Dl *d, uint32_t offset, char *err,
     return CURLE_OK;
 }
 
-static bool download_to_file(Job *j, JobStep *st, const char *url, const char *path, u64 expected, const ForgeZipMember *member) {
+static bool download_to_file(Job *j, JobStep *st, const char *url, const char *path, u64 expected, const ForgeZipMember *member, const char *digest_pin) {
     if (expected > FILE_LIMIT || !free_space(expected)) return fail(j, "Insufficient SD space or file too large");
     TxFile *entry = tx_file(j, path);
     if (!entry) return false;
@@ -549,7 +593,7 @@ static bool download_to_file(Job *j, JobStep *st, const char *url, const char *p
     static mbedtls_sha256_context sha;
     mbedtls_sha256_init(&sha);
     mbedtls_sha256_starts_ret(&sha, 0);
-    Dl d = {.job = j, .step = st, .f = f, .base = j->done_bytes, .expected = expected, .sha = &sha};
+    Dl d = {.job = j, .step = st, .f = f, .resumable = digest_pin && strlen(digest_pin) == 64, .base = j->done_bytes, .expected = expected, .sha = &sha};
     if (member) {
         d.zip = malloc(sizeof *d.zip);
         if (!d.zip || !forge_zip_begin(d.zip, member, expected)) {
@@ -987,7 +1031,7 @@ static bool stream_cia(Job *j, JobStep *st, const char *url, const char *path, u
     struct CiaSink k = {.j = j, .buf = block};
     mbedtls_sha256_init(&sha);
     mbedtls_sha256_starts_ret(&sha, 0);
-    Dl d = {.job = j, .step = st, .base = j->done_bytes, .expected = expected, .sha = &sha, .cia = &k};
+    Dl d = {.job = j, .step = st, .base = j->done_bytes, .expected = expected, .sha = &sha, .resumable = want && strlen(want) == 64, .cia = &k};
     j->streaming = true;
     CURLcode r = fetch(url, &d, j->error, sizeof j->error);
     bool ok = r == CURLE_OK && !j->cancel && d.written && (!expected || d.written == expected);
@@ -1659,7 +1703,7 @@ static bool run_step(Job *j, JobStep *st) {
         ForgeZipMember member;
         if(zip&&(!str(s,"sha256")||!forge_zip_member(zip,&member)))return fail(j,"Invalid encrypted resource");
         if(!preserve_personal(j,path,prior))return false;
-        if(!download_to_file(j, st, url, path, (u64)size, zip?&member:NULL))return false;
+        if(!download_to_file(j, st, url, path, (u64)size, zip?&member:NULL,str(s,"sha256")))return false;
         if(!verify_download(j,st,path,str(s,"sha256")))return false;
         if(unpack)return extract(j,st,tx_read(path),NULL,path2,true);
         if(personal){TxFile *e=tx_find(path);if(!e)return fail(j,"Missing personal-resource transaction");e->personal=true;strcpy(e->replace_hash,prior);}
@@ -1672,7 +1716,7 @@ static bool run_step(Job *j, JobStep *st) {
         json_int_t size = json_integer_value(json_object_get(asset, "size"));
         if (size < 0) return fail(j, "Invalid download size");
         if (cia_target(j, path)) return stream_cia(j, st, url, path, (u64)size, str(asset, "sha256"));
-        return download_to_file(j, st, url, path, (u64)size, NULL)&&verify_download(j,st,path,str(asset,"sha256"));
+        return download_to_file(j, st, url, path, (u64)size, NULL,str(asset,"sha256"))&&verify_download(j,st,path,str(asset,"sha256"));
     }
     if (!strcmp(type, "verifySha256")) {
         if (!sd_path(path, sizeof path, str(s, "file"))) return fail(j, "Invalid or oversized catalog path");
@@ -2030,7 +2074,16 @@ static void run(Job *j) {
             j->state = JOB_FAILED;
             return;
         }
-        bool ok = run_step(j, st);
+        u64 base = j->done_bytes;
+        bool ok;
+        do {
+            restart_download = false;
+            j->done_bytes = base;
+            st->progress = 0;
+            j->error[0] = 0;
+            ok = run_step(j, st);
+        } while (!ok && restart_download && !quit && !j->cancel);
+        j->waiting_connection = false;
         if (j->cancel)
             break;
         if (!ok) {
@@ -2366,6 +2419,7 @@ int job_percent(Job *j) {
 
 const char *job_activity(Job *j) {
     if(j->state==JOB_QUEUED)return T("install.queued");
+    if(j->waiting_connection)return T("install.waitConnection");
     if(j->phase==PHASE_CHECK)return T("install.checkSD");
     if(j->phase==PHASE_FINISH)return T("install.finalizing");
     if(j->phase==PHASE_WRITE || j->streaming)return T("install.title");

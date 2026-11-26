@@ -2,7 +2,15 @@
 #include "../source/install.c"
 #include <assert.h>
 static bool path_exists(const char *p) {struct stat st;return !stat(p,&st);}
-static void svcSleepThread(u64 ns) {if(host_auto_ack) install_poll(NULL);}
+static Job *cancel_waiting;
+static void svcSleepThread(u64 ns) {
+    if (cancel_waiting) {
+        assert(cancel_waiting->waiting_connection);
+        assert(!strcmp(job_activity(cancel_waiting), "install.waitConnection"));
+        install_cancel(cancel_waiting);
+    }
+    if (host_auto_ack) install_poll(NULL);
+}
 static void put(const char *p,const char*s) {FILE*f=fopen(p,"wb");assert(f);assert(fwrite(s,1,strlen(s),f)==strlen(s));assert(!fclose(f));}
 static void equal(const char*p,const char*s) {char b[256]={0};FILE*f=fopen(p,"rb");assert(f);fread(b,1,sizeof b-1,f);fclose(f);assert(!strcmp(b,s));}
 static Job make_job(void) {Job j={0};return j;}
@@ -178,8 +186,48 @@ static void test_hash_cache(void) {
     assert(!hash_cache_lookup(path, b));
 }
 
-int main(void) {
+// Run the full installer against the loopback TLS server. Its second asset
+// disconnects mid-body and then ignores Range, forcing a clean file restart.
+static void test_restart(const char *url, const char *digest) {
+    assert(!mkdir("sdmc:",0777) && !mkdir("sdmc:/3ds",0777) && !mkdir(DATA_DIR,0777));
+    Job *j = &jobs[0];
+    App app = {.id = "reconnect"};
+    j->app = &app;
+    j->script = json_array();
+    njobs = 1;
+    net_ok = host_auto_ack = true;
+    for (int i = 0; i < 2; i++) {
+        char source[160], path[80];
+        snprintf(source, sizeof source, "%s/%d", url, i);
+        snprintf(path, sizeof path, "/3ds/reconnect/%d", i);
+        json_t *step = json_pack("{s:s,s:s,s:s,s:i,s:s}", "type", "downloadUrl", "url", source,
+                                 "output", path, "size", 32768, "sha256", digest);
+        json_array_append_new(j->script, step);
+        j->steps[i].raw = step;
+        j->steps[i].bytes = true;
+        j->nsteps++;
+    }
+    run(j);
+    if (j->state != JOB_DONE) fprintf(stderr, "restart test: %s\n", j->error);
+    assert(j->state == JOB_DONE && j->done_bytes == 65536 && !j->waiting_connection);
+    for (int i = 0; i < 2; i++) {
+        char path[80], hex[65];
+        snprintf(path, sizeof path, "sdmc:/3ds/reconnect/%d", i);
+        assert(sha256_file(path, hex, &j->steps[i], &j->cancel) && !strcmp(hex, digest));
+    }
+    json_decref(j->script);
+    clear_job(j);
+}
+
+int main(int argc, char **argv) {
+ if (argc == 3) { test_restart(argv[1], argv[2]); return 0; }
  test_forge_zip();test_progress();
+ Job offline = {.state = JOB_RUNNING};
+ cancel_waiting = &offline;
+ assert(!wait_connection(&offline) && offline.cancel);
+ cancel_waiting = NULL;
+ assert(connection_lost(CURLE_PARTIAL_FILE) && connection_lost(CURLE_RECV_ERROR));
+ assert(!connection_lost(CURLE_WRITE_ERROR) && !connection_lost(CURLE_PEER_FAILED_VERIFICATION));
  Job rate_job={0};JobStep rate_step={0};
  Dl rate={.job=&rate_job,.step=&rate_step,.expected=100,.written=90,.last_bytes=70};
  rate.last_tick=svcGetSystemTick()-SYSCLOCK_ARM11;

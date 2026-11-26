@@ -7,11 +7,11 @@
   "files": {
     "forge-store.cia": {
       "bytes": 10970048,
-      "sha256": "3cf09093caef61f1b6adc8ec3b388069a8bb962ce1255ac2083547d2e28a7b52"
+      "sha256": "518b6032aaea05454a0f3734207d32b2778d51485723ebac67720d4e615390b9"
     },
     "forge-store.3dsx": {
-      "bytes": 11624052,
-      "sha256": "d6444da034db598bc6b342a1acfe6af43c3d0ec7fa366f7150560adf3dc60ab4"
+      "bytes": 11625124,
+      "sha256": "1fdad218769e2c754cdd193b06fd2a103787ad42cdda906adce994b84802a768"
     }
   },
   "source_sha256": {
@@ -69,8 +69,8 @@
     "3ds/source/http_cache.h": "4b66eb44bf34b6fba3881643740f9b03faff0733746314b7b97095dea799800e",
     "3ds/source/image_round.c": "73878002971755f1ae9f15c42974314c3399f282f3dc5b584a1944f9e3dbd7ab",
     "3ds/source/image_round.h": "86c3d588bccac3851cfe83f1ca1b1a23fbb775de77afa3c3c1b93f93c4c4fa10",
-    "3ds/source/install.c": "3401c28959c9e9706e9abb620a578147f16ed0dbc760354561c81b836111d12a",
-    "3ds/source/install.h": "5331278b696d608ba8eb2eff00a9372caaec11f22af6a3859b40a7cf84cda17b",
+    "3ds/source/install.c": "61abfdbfc41d6210dd067bb3b53f95c0bc17d3d5eb5472d2819644f07543d1b2",
+    "3ds/source/install.h": "43d6b90eb6bd7fe7bcbbb00cc1d385707dcd711dabf5638f742cea54c73d5691",
     "3ds/source/install_plan.c": "9de40a63aaa24cfef895c2212d9c1f0ef2fedb00833f52a63f349a3fa47e041c",
     "3ds/source/install_plan.h": "9983e9f3760d6f4a09f744b4227956b9f6452b31df7f5140d419a79e6d568590",
     "3ds/source/install_rules.h": "9dc70a91f408a0a603f71fde190244f834df6fead8e3c4b400599be9467b0667",

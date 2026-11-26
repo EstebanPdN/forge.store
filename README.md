@@ -48,7 +48,7 @@ files tell you exactly which file to place on the SD card.
   </tr>
   <tr>
     <td width="50%" valign="top"><strong>Look before you install</strong><br>A native GitHub reader for READMEs, releases, images and repository details.</td>
-    <td width="50%" valign="top"><strong>Download, install, play</strong><br>Follow CIA downloads and installation by bytes written. Updates reuse verified files on the SD card.</td>
+    <td width="50%" valign="top"><strong>Download, install, play</strong><br>Follow CIA downloads and installation by bytes written. If Wi-Fi drops, the store waits for the connection and retries the interrupted file. Verified files are reused.</td>
   </tr>
   <tr>
     <td width="50%" valign="top"><strong>Made for two screens</strong><br>400×240 above, 320×240 touch below, crisp native type, light and dark themes and eight languages.</td>
