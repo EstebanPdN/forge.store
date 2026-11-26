@@ -4075,9 +4075,6 @@
       "detect": {
         "ids": [
           998748
-        ],
-        "files": [
-          "/3ds/celeste3ds/Celeste3DS.3dsx"
         ]
       },
       "install": {
@@ -4242,9 +4239,6 @@
       "detect": {
         "ids": [
           1004497
-        ],
-        "files": [
-          "/3ds/silenthill/SH-3DS.3dsx"
         ]
       },
       "install": {
