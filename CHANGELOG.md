@@ -1,5 +1,9 @@
 # Changelog
 
+## forge.store 1.4.4
+
+- Pressing HOME no longer freezes the console.
+
 ## forge.store 1.4.3
 
 - Find Celeste 3DS and Silent Hill in Community. Silent Hill requires a New Nintendo 3DS.
