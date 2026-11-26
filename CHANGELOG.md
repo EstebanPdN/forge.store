@@ -3,6 +3,9 @@
 ## forge.store 1.4.4
 
 - Pressing HOME no longer freezes the console.
+- Downloads keep going with the lid closed.
+- Large ROM sets show as a single "Download ROMs" row.
+- New icons and banners for Celeste 3DS and Silent Hill.
 
 ## forge.store 1.4.3
 
