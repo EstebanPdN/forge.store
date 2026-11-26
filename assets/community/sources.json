@@ -996,25 +996,63 @@
   {
     "app": "celeste3ds",
     "kind": "icon",
-    "url": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.0.3/Celeste3DS.3dsx",
-    "sha256": "109c466f610a36be1ef3539323e25b8d5ce24891bfa9e0d4ad7da8eeb18455e4",
+    "sha256": "4e1aca39ad68bfad8c0d62eec9a49e2e3d5aee19be04a30328e13d4bae02e72e",
     "size": [
-      48,
-      48
+      512,
+      512
     ],
     "output": "assets/community/celeste3ds/icon.webp",
-    "derivation": "Original large SMDH icon from the upstream 3DSX."
+    "derivation": "Exact 16×16 pixel grid of the 512 px original (32 px blocks), lossless; drawn nearest-neighbour on #1f2440.",
+    "note": "Official Celeste PC game icon (Celeste.png) from my copy of the game; Maddy Makes Games artwork."
+  },
+  {
+    "app": "celeste3ds",
+    "kind": "background",
+    "sha256": "22638d06b73a3310886e1dcac44522a8f43989164fd9372772ef4ffdceb4507f",
+    "size": [
+      1920,
+      1080
+    ],
+    "output": "assets/community/celeste3ds/background.webp",
+    "note": "Celeste key art supplied by me for the store banner; Maddy Makes Games artwork."
   },
   {
     "app": "silenthill",
     "kind": "icon",
-    "url": "https://github.com/platonovns/sh-3ds/releases/download/sh-3ds-v0.9.1.1/SH-3DS-v0.9.1.1.3dsx",
-    "sha256": "9aaaa269dfab4e0c9bb4ba8a70d39fecf13e79d7cce9b348dce46c8e762ddc81",
+    "sha256": "2becbff6849007790aa3867c7cfbc85767fcd59e643a7c785cdb32544700f17b",
     "size": [
-      48,
-      48
+      680,
+      680
     ],
     "output": "assets/community/silenthill/icon.webp",
-    "derivation": "Original large SMDH icon from the upstream 3DSX."
+    "derivation": "Full image resized to 512 px.",
+    "note": "Silent Hill artwork supplied by me for the store icon; Konami game artwork."
+  },
+  {
+    "app": "silenthill",
+    "kind": "background",
+    "sha256": "e9b59bdc25ab474b4fadaecbde4069c114a283c78faf9b23a78aca9983ee957a",
+    "size": [
+      1600,
+      800
+    ],
+    "output": "assets/community/silenthill/background.webp",
+    "note": "Silent Hill gameplay capture supplied by me for the store banner; Konami game imagery."
+  },
+  {
+    "app": "silenthill",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/libretro-thumbnails/Sony_-_PlayStation/master/Named_Logos/Silent%20Hill%20(USA).png",
+    "sha256": "96aa1e0374cbfb811bb7533002f8c19f6539827058cc82e163ce9412e0954f25",
+    "output": "assets/community/silenthill/logo.webp",
+    "note": "Trimmed to its visible bounds."
+  },
+  {
+    "app": "celeste3ds",
+    "kind": "logo",
+    "url": "https://raw.githubusercontent.com/alberdura/Celeste3DS-releases/48c22c144ebf883ae1f879634d44366e77df5d0d/screenshots/01_menu.png",
+    "sha256": "4084bc011c64fc444518b34126f164289f7526bdd6eb7bdfd5dc746f7e776bc2",
+    "output": "assets/community/celeste3ds/logo.webp",
+    "note": "CELESTE wordmark cut from the port menu capture at its native size; background and mountain removed."
   }
 ]

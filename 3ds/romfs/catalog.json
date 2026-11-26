@@ -4018,7 +4018,9 @@
           "#cb8bab"
         ],
         "fx": "pixels",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/celeste3ds/background.webp",
+        "logo": "assets/community/celeste3ds/logo.webp"
       },
       "tagline": {
         "es": "Celeste nativo para Nintendo 3DS.",
@@ -4133,7 +4135,9 @@
           "ciaVersion": 0
         }
       },
-      "verifiedAt": "2026-11-26"
+      "verifiedAt": "2026-11-26",
+      "iconBackground": "#1f2440",
+      "pixelIcon": true
     },
     {
       "id": "silenthill",
@@ -4158,7 +4162,9 @@
           "#939866"
         ],
         "fx": "dust",
-        "cardIcon": true
+        "cardIcon": true,
+        "bg": "assets/community/silenthill/background.webp",
+        "logo": "assets/community/silenthill/logo.webp"
       },
       "tagline": {
         "es": "Silent Hill nativo para New Nintendo 3DS, con mapa en la pantalla táctil.",

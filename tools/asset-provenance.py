@@ -4,7 +4,7 @@ from pathlib import Path
 import hashlib,json
 ROOT=Path(__file__).resolve().parents[1]
 apps={a['id']:a for a in json.loads((ROOT/'catalog/forge-store.json').read_text())['apps']}
-community={x['output']:x['url'] for x in json.loads((ROOT/'assets/community/sources.json').read_text()) if 'output' in x}
+community={x['output']:x.get('url') or x.get('note') for x in json.loads((ROOT/'assets/community/sources.json').read_text()) if 'output' in x}
 items=[]
 for p in sorted((ROOT/'assets').rglob('*')):
     if not p.is_file() or p.name=='provenance.json' or p.name.startswith('.'):continue
