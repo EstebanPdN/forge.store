@@ -6032,19 +6032,19 @@
       "releases": {
         "stable": {
           "tag": "rolling",
-          "date": "2026-11-15",
+          "date": "2026-11-25",
           "assets": {
             "cia": {
               "name": "DK64Recompiled3D-3ds.cia",
-              "size": 5843904,
+              "size": 5862336,
               "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds.cia",
-              "sha256": "c8290d22772ef99d468b4fc7a765be6f04c75462add3e4759900c7cdca7721bc"
+              "sha256": "f447832dfe12fd1102515a4194703292185419ce808f78f6bdc4dbf2ad931af7"
             },
             "3dsx": {
-              "name": "DK64Recompiled3D-3ds-2dde0a3.zip",
-              "size": 4171831,
-              "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-2dde0a3.zip",
-              "sha256": "d594d89c01121e6863dcee7a8e298cd3db7855c0aa8b952ee870bfccfe1e42e5"
+              "name": "DK64Recompiled3D-3ds-8ea3af7.zip",
+              "size": 4187596,
+              "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-8ea3af7.zip",
+              "sha256": "b7d42bdbd1e03a0cad5f3f93cce13a279fc500fdf71f294b29e118a07414e6e3"
             }
           },
           "notes": {
@@ -6073,6 +6073,8 @@
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
           },
+          "assetUpdated": "2026-11-25T21:22:57Z",
+          "publishedAt": "2026-11-25T21:22:59Z",
           "ciaTitle": "000400000f534e00",
           "ciaVersion": 0
         }
@@ -6100,21 +6102,21 @@
         "3dsx": [
           {
             "type": "downloadUrl",
-            "name": "DK64Recompiled3D-3ds-2dde0a3.zip",
-            "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-2dde0a3.zip",
-            "output": "%TMP%/DK64Recompiled3D-3ds-2dde0a3.zip",
-            "size": 4171831,
-            "sha256": "d594d89c01121e6863dcee7a8e298cd3db7855c0aa8b952ee870bfccfe1e42e5"
+            "name": "DK64Recompiled3D-3ds-8ea3af7.zip",
+            "url": "https://github.com/oneup03/Donkey-Kong-64-3D/releases/download/rolling/DK64Recompiled3D-3ds-8ea3af7.zip",
+            "output": "%TMP%/DK64Recompiled3D-3ds-8ea3af7.zip",
+            "size": 4187596,
+            "sha256": "b7d42bdbd1e03a0cad5f3f93cce13a279fc500fdf71f294b29e118a07414e6e3"
           },
           {
             "type": "extractFile",
-            "file": "%TMP%/DK64Recompiled3D-3ds-2dde0a3.zip",
+            "file": "%TMP%/DK64Recompiled3D-3ds-8ea3af7.zip",
             "input": "^3ds/DK64",
             "output": "/3ds/DK64"
           },
           {
             "type": "deleteFile",
-            "file": "%TMP%/DK64Recompiled3D-3ds-2dde0a3.zip"
+            "file": "%TMP%/DK64Recompiled3D-3ds-8ea3af7.zip"
           },
           {
             "type": "requireFile",
@@ -6357,19 +6359,19 @@
       "releases": {
         "stable": {
           "tag": "rolling",
-          "date": "2026-11-14",
+          "date": "2026-11-25",
           "assets": {
             "cia": {
               "name": "BanjoRecompiled3D-3ds.cia",
               "size": 7482304,
               "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds.cia",
-              "sha256": "1275952f7279d8e2725f71588eecc73f1119c309869ddf8576daa3618a68d370"
+              "sha256": "e9a8ab6f26ed56f16f339fd82cba64d1f4142d6348442d66bbc551b14e44cb2d"
             },
             "3dsx": {
-              "name": "BanjoRecompiled3D-3ds-b11010f.zip",
-              "size": 5499606,
-              "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-b11010f.zip",
-              "sha256": "edd4f324a37fc898736e8b969e0431a033d75fdc5c693059e41a594af05442ab"
+              "name": "BanjoRecompiled3D-3ds-6a67fc3.zip",
+              "size": 5499605,
+              "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-6a67fc3.zip",
+              "sha256": "82d1bd204f95087741ebe4909dfa7b295035e3264b2af2c795856069d4067598"
             }
           },
           "notes": {
@@ -6398,6 +6400,8 @@
               "詳しい更新履歴はGitHubでご覧ください。"
             ]
           },
+          "assetUpdated": "2026-11-25T22:05:29Z",
+          "publishedAt": "2026-11-25T22:05:32Z",
           "ciaTitle": "000400000f5b4e00",
           "ciaVersion": 0
         }
@@ -6425,21 +6429,21 @@
         "3dsx": [
           {
             "type": "downloadUrl",
-            "name": "BanjoRecompiled3D-3ds-b11010f.zip",
-            "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-b11010f.zip",
-            "output": "%TMP%/BanjoRecompiled3D-3ds-b11010f.zip",
-            "size": 5499606,
-            "sha256": "edd4f324a37fc898736e8b969e0431a033d75fdc5c693059e41a594af05442ab"
+            "name": "BanjoRecompiled3D-3ds-6a67fc3.zip",
+            "url": "https://github.com/oneup03/BanjoRecomp3D/releases/download/rolling/BanjoRecompiled3D-3ds-6a67fc3.zip",
+            "output": "%TMP%/BanjoRecompiled3D-3ds-6a67fc3.zip",
+            "size": 5499605,
+            "sha256": "82d1bd204f95087741ebe4909dfa7b295035e3264b2af2c795856069d4067598"
           },
           {
             "type": "extractFile",
-            "file": "%TMP%/BanjoRecompiled3D-3ds-b11010f.zip",
+            "file": "%TMP%/BanjoRecompiled3D-3ds-6a67fc3.zip",
             "input": "^3ds/BanjoRecomp",
             "output": "/3ds/BanjoRecomp"
           },
           {
             "type": "deleteFile",
-            "file": "%TMP%/BanjoRecompiled3D-3ds-b11010f.zip"
+            "file": "%TMP%/BanjoRecompiled3D-3ds-6a67fc3.zip"
           },
           {
             "type": "requireFile",
