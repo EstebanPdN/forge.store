@@ -1,6 +1,10 @@
 #include "background.h"
+#ifdef BACKGROUND_HOST_TEST
+#include "../tests/background_host_platform.h"
+#else
 #include "common.h"
 #include "audio.h"
+#endif
 
 // mcu::HWC register 0x2D: the notification LED pattern (3dbrew "MCU Services").
 typedef struct {
@@ -23,10 +27,22 @@ static void led_write(bool blink) {
     led_on = blink && led_ok;
 }
 
+// HOME Menu freeze (1.4.2 and the first 1.4.3 build): gsp::Lcd allows very few sessions
+// and the HOME Menu needs one. Opening it on the first frame and keeping it made HOME wait
+// forever on an Old 3DS. The session exists only while the screens are off with the lid
+// closed; 3ds/tests/run-background.py fails if a frame with the lid open still holds it.
 static void screens(bool on) {
+    if (on) {
+        if (!lcd_off) return;
+        if (lcd_ok) GSPLCD_PowerOnAllBacklights();
+        if (lcd_ok) gspLcdExit();
+        lcd_ok = lcd_off = false;
+        return;
+    }
+    if (lcd_off) return;
     if (!lcd_ok) lcd_ok = R_SUCCEEDED(gspLcdInit());
-    if (!lcd_ok || lcd_off == !on) return;
-    if (R_SUCCEEDED(on ? GSPLCD_PowerOnAllBacklights() : GSPLCD_PowerOffAllBacklights())) lcd_off = !on;
+    if (lcd_ok && R_SUCCEEDED(GSPLCD_PowerOffAllBacklights())) lcd_off = true;
+    else if (lcd_ok) { gspLcdExit(); lcd_ok = false; }
 }
 
 void background_update(bool busy, bool input) {
@@ -58,9 +74,7 @@ bool background_lid_closed(void) { return lid_closed && lcd_off; }
 
 void background_exit(void) {
     if (led_on) led_write(false);
-    if (lcd_off) screens(true);
-    if (lcd_ok) gspLcdExit();
-    lcd_ok = false;
+    screens(true);
     if (sleep_blocked) aptSetSleepAllowed(true);
     sleep_blocked = false;
 }

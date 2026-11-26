@@ -23,6 +23,8 @@ if [[ -n $(find "$D/romfs" -name '*.fvid' -print -quit) ]]; then
   echo "Move encoded videos to 3ds/media before building." >&2
   exit 1
 fi
+# HOME Menu freeze guard (see AGENTS.md): no build may keep gsp::Lcd open with the lid open.
+python3 "$D/tests/run-background.py" > "$OUT/background-test.log" 2>&1 || { cat "$OUT/background-test.log" >&2; echo "background.c holds a system service the HOME Menu needs; see AGENTS.md" >&2; exit 1; }
 python3 "$D/tools/media-manifest.py"
 python3 "$D/tools/stage-romfs.py"
 ARCH=(-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft)
