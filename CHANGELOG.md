@@ -1,38 +1,15 @@
 # Changelog
 
-## forge.store 1.4.5
+## forge.store 1.5
 
-- HOTFIX: Forge Mode activation works again from Settings → Console.
-- Interrupted port downloads wait for Wi-Fi and resume automatically. You can cancel while waiting.
-- The installer places game data on the SD before adding the title to HOME.
-
-## forge.store 1.4.4
-
-- Pressing HOME no longer freezes the console.
-- Downloads keep going with the lid closed.
-- Large ROM sets show as a single "Download ROMs" row.
-- New icons and banners for Celeste 3DS and Silent Hill.
-
-## forge.store 1.4.3
-
-- Find Celeste 3DS and Silent Hill in Community. Silent Hill requires a New Nintendo 3DS.
-- Downloads now shows when the store is checking resources already saved on your SD card.
-- Update from the latest stable GitHub release. The store downloads the launcher for that version after you confirm.
-
-## forge.store 1.4.2
-
-- Progress shows the real download, with no long pauses.
-- CIAs install while they download, like FBI.
-- The game folder and its files come first, the CIA last.
-- Files already on your SD card are not downloaded again.
-- Uninstall only the app, or the app and its files.
-- Open always starts an installed game.
-- Super Mario 64 DS installs the current beta-01.
-- Store updates now always show up.
-- Downloads keep going with the lid closed. The green light blinks when they finish.
-- My betas show one purple hammer. No more "Uses your ROM" tag.
-- Old 3DS shows when a game needs a New 3DS.
-- The intro shows the store version.
+- Forge Mode activation works again in **Settings → Console**.
+- If Wi-Fi drops during a port download, the store waits and reconnects automatically. It resumes from accepted bytes when the source and SHA-256 allow it, or restarts the interrupted file. You can cancel while waiting.
+- CIA downloads stream directly to the installer. Game files reach their SD folder before the title appears in HOME. The progress bar tracks bytes and reaches 100% after installation succeeds.
+- Updates check files already on your SD card, reuse verified downloads and repair missing files. Downloads shows when the store is checking. Open launches an installed game, and uninstall lets you choose whether to keep its files.
+- Pressing HOME works again. Downloads continue with the lid closed and the green light blinks when they finish. Large ROM sets share one download row.
+- Celeste 3DS and Silent Hill appear in Community with new icons and banners. Silent Hill requires a New 3DS. Old 3DS and 2DS show a compatibility message for New 3DS-only games.
+- Super Mario 64 DS installs the current beta-01. My public betas use one purple hammer and their full-color artwork.
+- The intro displays the store version. On startup, the public store checks for the latest stable release and installs the matching CIA or 3DSX after you confirm.
 
 ## forge.store 1.4
 
