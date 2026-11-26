@@ -11,17 +11,17 @@
 ## Install the CIA (recommended)
 
 1. Open **FBI → Remote Install → Scan QR Code**.
-2. Scan the QR code in the [README](../README.md#download-and-installation). It downloads the CIA from the v1.4.4 release.
+2. Scan the QR code in the [README](../README.md#download-and-installation). It downloads the CIA from the v1.4.5 release.
 3. Confirm the installation and return to the HOME Menu. **forge.store** appears with its
    own banner.
 
-You can also download [forge-store.cia](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.4/forge-store-v1.4.4.cia),
-check it against [SHA256SUMS.txt](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.4/SHA256SUMS.txt), copy it to the SD card and install it
+You can also download [forge-store.cia](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.5/forge-store-v1.4.5.cia),
+check it against [SHA256SUMS.txt](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.5/SHA256SUMS.txt), copy it to the SD card and install it
 from FBI. The CIA identity never changes: product `CTR-H-FRGS`, unique ID `0xF0F5E`.
 
 ## Install the 3DSX
 
-Copy [forge-store.3dsx](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.4/forge-store-v1.4.4.3dsx)
+Copy [forge-store.3dsx](https://github.com/EstebanPdN/forge.store/releases/download/v1.4.5/forge-store-v1.4.5.3dsx)
 as `sdmc:/3ds/forge-store/forge-store.3dsx` and open it from the Homebrew Launcher.
 
 ## First start
@@ -82,11 +82,11 @@ Downloads or restart the store.
 
 ## Forge Mode
 
-The public edition downloads the public files listed in each installation plan. It ships
-without personal download sources. In a personal edition, **Settings → Console** opens the secret-code keyboard. A valid personal code authenticates
-the encrypted resource manifest, animates the forge into a check and saves activation
-locally. The orange **forge mode enabled** indicator stays beside the console model after
-restarting. The code and personal download addresses never appear in logs.
+In the public edition, open **Settings → Console** to enter your Forge Mode code. A valid
+code unlocks the encrypted catalog and saves activation on the SD card. The orange
+**forge mode enabled** indicator stays beside the console model after restarting. Open
+a supported port and choose **Download** to fetch its missing files. The code and download
+addresses stay out of logs.
 
 For configured ports, installation downloads missing personal files through the same
 size- and hash-checked transaction. Matching files are reused. When a personal resource has changed, the installer keeps the previous file beside its replacement with a numbered .forge-backup suffix. New personal files roll

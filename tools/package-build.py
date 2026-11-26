@@ -9,11 +9,14 @@ if '-DFORGE_DEBUG=0' not in flags or 'FORGE_DUMP_URL' in flags:
     raise SystemExit('Rebuild with FORGE_DEBUG=0 and without FORGE_DUMP_URL before packaging')
 # Check both finished packages before copying either of them. RomFS directory
 # entries use UTF-16LE. Staging alone cannot identify a stale personal binary.
+code_catalog = ROOT/'3ds/romfs/forge-code-assets.fme'
 for name in ('forge-store.cia','forge-store.3dsx'):
     binary=(source/name).read_bytes()
     if any(entry.encode('utf-16le') in binary for entry in ('personal-assets.fme','forge-default.key')):
         raise SystemExit('Personal RomFS in '+name+'; rebuild the public edition before packaging')
-watched=sorted([* (ROOT/'3ds/source').rglob('*.c'),*(ROOT/'3ds/source').rglob('*.h'),*(ROOT/'3ds/source').rglob('*.inc'),ROOT/'3ds/build.sh',ROOT/'3ds/forge-store.rsf',ROOT/'3ds/tools/stage-romfs.py',ROOT/'3ds/tools/store_packs.py',ROOT/'3ds/tools/vorbis-encode.c'])
+    if 'forge-code-assets.fme'.encode('utf-16le') not in binary or code_catalog.read_bytes() not in binary:
+        raise SystemExit('Missing approved code-activated catalog in '+name)
+watched=sorted([* (ROOT/'3ds/source').rglob('*.c'),*(ROOT/'3ds/source').rglob('*.h'),*(ROOT/'3ds/source').rglob('*.inc'),ROOT/'3ds/build.sh',ROOT/'3ds/forge-store.rsf',ROOT/'3ds/tools/stage-romfs.py',ROOT/'3ds/tools/store_packs.py',ROOT/'3ds/tools/vorbis-encode.c',code_catalog])
 oldest=min((source/n).stat().st_mtime for n in ['forge-store.cia','forge-store.3dsx'])
 if any(p.stat().st_mtime>oldest for p in watched):raise SystemExit('Source changed after compilation; rebuild')
 dest.mkdir(parents=True,exist_ok=True)

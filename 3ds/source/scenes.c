@@ -1383,6 +1383,11 @@ static float sheet_format_y(void) { return 54+(app_has_channel_choice(dapp)?88:0
 
 static void start_install(void) {
     if (!sheet_compatible()) { sfx("error"); toast(T("confirm.blockedNew"),DANGER); return; }
+    if (FORGE_FACTORY_ACTIVATION && !forge_mode_enabled()) {
+        bool checking = forge_mode_state() == FORGE_CHECKING;
+        toast(T(checking ? "forge.catalogLoading" : "forge.catalogError"), checking ? AMBER : DANGER);
+        return;
+    }
     Job *j = install_start(dapp, sheet_cia, sheet_exp);
     sheet_on = false;
     retry_count = 0;
@@ -2277,9 +2282,11 @@ static void detail_bottom(float sa) {
         button_round(5,205,removable?250:280,28,lbl,"update",dtab==1 && shot_i<0?NULL:"A",BTN_PRIMARY,a);
     } else if (st == ST_INSTALLED || st == ST_NEEDS_FILE) {
         // Installed: open it, or pick another build (stable or experimental) to switch to.
+        bool repair = st == ST_NEEDS_FILE && json_array_size(forge_mode_data(dapp->id));
         snprintf(lbl,sizeof lbl,"%s",T("action.open"));
         button_round(5,205,DETAIL_OPEN_W,28,lbl,"play",NULL,BTN_MINT,a);
-        button_round(DETAIL_UPDATE_X,205,(removable?255:285)-DETAIL_UPDATE_X,28,T("native.update"),"update",NULL,BTN_SURFACE,a);
+        button_round(DETAIL_UPDATE_X,205,(removable?255:285)-DETAIL_UPDATE_X,28,
+            T(repair?"action.download":"native.update"),repair?"download":"update",NULL,repair?BTN_PRIMARY:BTN_SURFACE,a);
     } else if (st == ST_BUSY) {
         Job *j = install_job(dapp);
         float p = j ? job_progress(j) : 0;

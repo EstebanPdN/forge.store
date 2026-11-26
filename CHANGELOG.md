@@ -1,5 +1,9 @@
 # Changelog
 
+## forge.store 1.4.5
+
+- HOTFIX: Forge Mode activation works again from Settings → Console.
+
 ## forge.store 1.4.4
 
 - Pressing HOME no longer freezes the console.

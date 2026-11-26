@@ -1,5 +1,6 @@
 #include "store_update.h"
 #include "store_update_policy.h"
+#include "forge_mode.h"
 #include "network.h"
 #include "hbl_launch.h"
 #include <mbedtls/sha256.h>
@@ -221,7 +222,7 @@ static json_t *release_metadata(const char *url, long *status) {
 }
 static void run(void *unused) {
     tidy_homebrew();
-    if (homebrew && access("romfs:/personal-assets.fme", F_OK) == 0) {
+    if (FORGE_FACTORY_ACTIVATION || access("romfs:/personal-assets.fme", F_OK) == 0) {
         publish(UPDATE_CURRENT);
         return;
     }

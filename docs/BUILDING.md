@@ -34,14 +34,16 @@ unchanged. Public builds use `FORGE_DEBUG=0` by default.
 To reproduce a personal build, set `FORGE_PERSONAL_MANIFEST` to the path of its sealed
 `FM01` file when invoking the same build command. Staging copies it to RomFS for both
 the CIA and the 3DSX. Keep the personal manifest and resulting binaries under `.local/`.
-Public builds exclude the personal manifest, including the historical fixture in the source tree.
+Public builds include the versioned `forge-code-assets.fme` catalog. The code is entered on
+the console. Keep both the personal manifest and the activation key out of public builds.
 A personal FBI install QR can pass a fresh AES key through its URL fragment. On first launch
 the store authenticates the manifest with that key and saves the activation on the SD card.
-Keep the QR private and open the store before scanning another FBI download. Personal CIAs offer newer public release CIAs. Accepting one replaces the embedded personal
-manifest and activation. Personal 3DSX builds skip the public self-update feed.
+Keep the QR private and open the store before scanning another FBI download.
+Personal builds skip the public self-update feed.
 For an offline edition that carries its own decryption key, also set `FORGE_DEFAULT_ACTIVATION` to the matching
 FMK1 activation file. Both packages carry the activation and can open the personal catalog
-on first launch with a fresh SD card.
+on first launch with a fresh SD card. This build requires the matching embedded
+activation before it will install any ports.
 Changing compiler/debug flags invalidates cached objects. Do not share a changing executable
 with an active emulator: the runner copies an immutable execution image before launch.
 
