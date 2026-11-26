@@ -22,3 +22,12 @@ static void aptSetSleepAllowed(bool allowed) { sleep_rejected = !allowed; }
 static Result PTMU_GetShellState(u8 *out) { *out = shell_open; return 0; }
 static Result MCUHWC_WriteRegister(u8 reg, const void *data, uint32_t size) { return 0; }
 static void music_lid(bool closed) { lid_music = closed; }
+
+static int ndm_sessions, ndm_exclusive, ndm_locks;
+#define NDM_EXCLUSIVE_STATE_INFRASTRUCTURE 1
+static Result ndmuInit(void) { assert(ndm_sessions == 0); ndm_sessions++; return 0; }
+static void ndmuExit(void) { assert(ndm_sessions == 1); ndm_sessions--; }
+static Result NDMU_EnterExclusiveState(int state) { assert(ndm_sessions == 1); ndm_exclusive = 1; return 0; }
+static Result NDMU_LeaveExclusiveState(void) { assert(ndm_sessions == 1); ndm_exclusive = 0; return 0; }
+static Result NDMU_LockState(void) { assert(ndm_sessions == 1); ndm_locks = 1; return 0; }
+static Result NDMU_UnlockState(void) { assert(ndm_sessions == 1); ndm_locks = 0; return 0; }

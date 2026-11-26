@@ -2273,6 +2273,21 @@ static Job *install_start_plan(App *a, bool cia, bool experimental, json_t *scri
             snprintf(st->label, sizeof st->label, "%s", T(key));
         }
     }
+    // Five or more personal downloads in a row show as one "Download ROMs" row.
+    for (int first = 0; first < j->nsteps;) {
+        int end = first;
+        while (end < j->nsteps && j->steps[end].bytes && json_is_true(json_object_get(j->steps[end].raw, "personal")) &&
+               !json_object_get(j->steps[end].raw, "unpackTo")) end++;
+        if (end - first >= 5) {
+            JobStep *lead = &j->steps[first];
+            lead->group = end - first;
+            char n[12];
+            snprintf(n, sizeof n, "%d", lead->group);
+            tvars(lead->label, sizeof lead->label, T("install.step.downloadRoms"), "n", n, NULL, NULL);
+            for (int k = first + 1; k < end; k++) j->steps[k].leader = first + 1;
+        }
+        first = end > first ? end : first + 1;
+    }
     j->state = JOB_QUEUED;
     if (slot == njobs)
         njobs++;

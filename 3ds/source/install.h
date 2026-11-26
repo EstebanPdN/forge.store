@@ -17,6 +17,10 @@ typedef struct {
     int extracted;
     bool reuse;
     bool bytes;  // a download: progress is in bytes
+    // A long run of personal downloads (Red Viper's 46 ROMs and palettes) shows as one row:
+    // its first step carries the group's size, the others point back to it.
+    int group;   // first step of a group: how many steps it shows (0: not grouped)
+    int leader;  // a hidden step: index of its group's first step + 1 (0: shown)
 } JobStep;
 
 #define INSTALL_MAX_STEPS 64

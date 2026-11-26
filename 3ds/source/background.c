@@ -12,7 +12,7 @@ typedef struct {
     u8 red[32], green[32], blue[32];
 } LedPattern;
 
-static bool sleep_blocked, lid_closed, lcd_ok, lcd_off, led_on, led_ok = true;
+static bool sleep_blocked, lid_closed, lcd_ok, lcd_off, led_on, led_ok = true, ndm_ok, ndm_entered, ndm_locked;
 static int poll_frames;
 
 static void led_write(bool blink) {
@@ -27,16 +27,18 @@ static void led_write(bool blink) {
     led_on = blink && led_ok;
 }
 
-// HOME Menu freeze (1.4.2 and the first 1.4.3 build): gsp::Lcd allows very few sessions
-// and the HOME Menu needs one. Opening it on the first frame and keeping it made HOME wait
-// forever on an Old 3DS. The session exists only while the screens are off with the lid
-// closed; 3ds/tests/run-background.py fails if a frame with the lid open still holds it.
+// HOME Menu freeze (1.4.2 and the first 1.4.3 build): gsp::Lcd and ndm:u allow very few
+// sessions and the HOME Menu needs them too. A session held for the whole run made HOME
+// wait forever on an Old 3DS. Each one is opened only while it is in use and closed right
+// after; 3ds/tests/run-background.py fails if a frame with the lid open holds gsp::Lcd or
+// an idle store holds ndm:u.
 static void screens(bool on) {
     if (on) {
         if (!lcd_off) return;
-        if (lcd_ok) GSPLCD_PowerOnAllBacklights();
+        if (lcd_ok && R_SUCCEEDED(GSPLCD_PowerOnAllBacklights())) lcd_off = false;
         if (lcd_ok) gspLcdExit();
-        lcd_ok = lcd_off = false;
+        lcd_ok = false;
+        lcd_off = false;
         return;
     }
     if (lcd_off) return;
@@ -45,9 +47,26 @@ static void screens(bool on) {
     else if (lcd_ok) { gspLcdExit(); lcd_ok = false; }
 }
 
+// hShop's 3hs (ctr::lockNDM): rejecting sleep is not enough, the network daemon drops Wi-Fi
+// when the lid closes. Holding the infrastructure state keeps the connection up.
+static void network_hold(bool hold) {
+    if (hold) {
+        aptSetSleepAllowed(false);
+        if (!ndm_ok) ndm_ok = R_SUCCEEDED(ndmuInit());
+        ndm_entered = ndm_ok && R_SUCCEEDED(NDMU_EnterExclusiveState(NDM_EXCLUSIVE_STATE_INFRASTRUCTURE));
+        ndm_locked = ndm_entered && R_SUCCEEDED(NDMU_LockState());
+    } else {
+        if (ndm_locked) NDMU_UnlockState();
+        if (ndm_entered) NDMU_LeaveExclusiveState();
+        if (ndm_ok) ndmuExit();
+        ndm_locked = ndm_entered = ndm_ok = false;
+        aptSetSleepAllowed(true);
+    }
+}
+
 void background_update(bool busy, bool input) {
     if (busy != sleep_blocked) {
-        aptSetSleepAllowed(!busy);
+        network_hold(busy);
         sleep_blocked = busy;
     }
     if (++poll_frames >= 10) {  // six times a second is enough for a lid
@@ -75,6 +94,6 @@ bool background_lid_closed(void) { return lid_closed && lcd_off; }
 void background_exit(void) {
     if (led_on) led_write(false);
     screens(true);
-    if (sleep_blocked) aptSetSleepAllowed(true);
+    if (sleep_blocked) network_hold(false);
     sleep_blocked = false;
 }

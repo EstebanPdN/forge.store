@@ -29,7 +29,8 @@
     "native.update": "Actualizar",
     "uninstall.app": "Solo desinstalar",
     "uninstall.all": "Desinstalar y borrar archivos",
-    "uninstall.allHint": "También borra la ROM, los datos y la carpeta."
+    "uninstall.allHint": "También borra la ROM, los datos y la carpeta.",
+    "install.step.downloadRoms": "Descargar ROMs ({n})"
   },
   "en": {
     "native.checkFiles": "Check files",
@@ -61,7 +62,8 @@
     "native.update": "Update",
     "uninstall.app": "Uninstall only",
     "uninstall.all": "Uninstall and delete files",
-    "uninstall.allHint": "Also deletes the ROM, data and game folder."
+    "uninstall.allHint": "Also deletes the ROM, data and game folder.",
+    "install.step.downloadRoms": "Download ROMs ({n})"
   },
   "pt": {
     "native.checkFiles": "Verificar arquivos",
@@ -93,7 +95,8 @@
     "native.update": "Atualizar",
     "uninstall.app": "Só desinstalar",
     "uninstall.all": "Desinstalar e apagar arquivos",
-    "uninstall.allHint": "Também apaga a ROM, os dados e a pasta."
+    "uninstall.allHint": "Também apaga a ROM, os dados e a pasta.",
+    "install.step.downloadRoms": "Baixar ROMs ({n})"
   },
   "it": {
     "native.checkFiles": "Controlla i file",
@@ -125,7 +128,8 @@
     "native.update": "Aggiorna",
     "uninstall.app": "Solo disinstalla",
     "uninstall.all": "Disinstalla ed elimina i file",
-    "uninstall.allHint": "Elimina anche ROM, dati e cartella del gioco."
+    "uninstall.allHint": "Elimina anche ROM, dati e cartella del gioco.",
+    "install.step.downloadRoms": "Scarica ROM ({n})"
   },
   "fr": {
     "native.checkFiles": "Vérifier les fichiers",
@@ -157,7 +161,8 @@
     "native.update": "Mettre à jour",
     "uninstall.app": "Désinstaller seulement",
     "uninstall.all": "Désinstaller et supprimer les fichiers",
-    "uninstall.allHint": "Supprime aussi la ROM, les données et le dossier."
+    "uninstall.allHint": "Supprime aussi la ROM, les données et le dossier.",
+    "install.step.downloadRoms": "Télécharger les ROM ({n})"
   },
   "de": {
     "native.checkFiles": "Dateien prüfen",
@@ -189,7 +194,8 @@
     "native.update": "Aktualisieren",
     "uninstall.app": "Nur deinstallieren",
     "uninstall.all": "Deinstallieren und Dateien löschen",
-    "uninstall.allHint": "Löscht auch ROM, Daten und Spielordner."
+    "uninstall.allHint": "Löscht auch ROM, Daten und Spielordner.",
+    "install.step.downloadRoms": "ROMs herunterladen ({n})"
   },
   "ru": {
     "native.checkFiles": "Проверить файлы",
@@ -221,7 +227,8 @@
     "native.update": "Обновить",
     "uninstall.app": "Только удалить",
     "uninstall.all": "Удалить вместе с файлами",
-    "uninstall.allHint": "Также удаляет ROM, данные и папку игры."
+    "uninstall.allHint": "Также удаляет ROM, данные и папку игры.",
+    "install.step.downloadRoms": "Загрузка ROM ({n})"
   },
   "ja": {
     "native.checkFiles": "ファイルを確認",
@@ -253,6 +260,7 @@
     "native.update": "更新",
     "uninstall.app": "アンインストールのみ",
     "uninstall.all": "アンインストールしてファイルも削除",
-    "uninstall.allHint": "ROM・データ・フォルダーも削除します。"
+    "uninstall.allHint": "ROM・データ・フォルダーも削除します。",
+    "install.step.downloadRoms": "ROMをダウンロード（{n}）"
   }
 }

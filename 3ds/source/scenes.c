@@ -2372,7 +2372,24 @@ static u32 mix_rgb(u32 a, u32 b, float t) {
     return out;
 }
 static bool ilog_manual;
+// A grouped row (see JobStep.group) shows the state and progress of all its downloads.
+static JobStep install_view(int i) {
+    JobStep v=ij->steps[i];
+    if(!v.group) return v;
+    int done=0,errors=0,active=0;float part=0;
+    for(int k=i;k<i+v.group && k<ij->nsteps;k++){
+        StepState s=ij->steps[k].state;
+        done+=s>=STEP_DONE;errors+=s==STEP_ERROR;
+        if(s==STEP_ACTIVE){active=1;part=clampf(ij->steps[k].progress,0,1);}
+    }
+    v.state=errors?STEP_ERROR:done==v.group?STEP_DONE:(active||done)?STEP_ACTIVE:STEP_PENDING;
+    v.progress=(done+part)/v.group;
+    v.bytes=true;
+    if(v.state!=STEP_ERROR)v.result[0]=0;
+    return v;
+}
 static float install_row_h(const JobStep *s) {
+    if(s->leader) return 0;  // shown by its group's row
     float h=text_wrap_h_style(s->label,11,600,242)+6;
     if(s->result[0] && s->state!=STEP_ACTIVE) h+=text_wrap_h(s->result,10,268)+3;
     if(s->state==STEP_ACTIVE && (s->bytes || s->progress>0)) h+=8;
@@ -2394,7 +2411,7 @@ static float install_tail(float y,float a,bool draw) {
     return y-start+6;
 }
 static float install_log_h(void) {
-    float h=0; for(int i=0;i<ij->nsteps;i++) h+=install_row_h(&ij->steps[i]); return h+install_tail(0,0,false);
+    float h=0; for(int i=0;i<ij->nsteps;i++){JobStep v=install_view(i);h+=install_row_h(&v);} return h+install_tail(0,0,false);
 }
 
 
@@ -2433,8 +2450,10 @@ static void install_update(void) {
     float total=install_log_h(), view=174;
     if(ij->state==JOB_DONE&&ij->warnings&&!ij->uninstall)view=80;
     if(!ilog_manual && running) {
-        float active=0; for(int i=0;i<ij->cur && i<ij->nsteps;i++) active+=install_row_h(&ij->steps[i]);
-        float row=ij->cur<ij->nsteps?install_row_h(&ij->steps[ij->cur]):0;
+        int cur=ij->cur<ij->nsteps&&ij->steps[ij->cur].leader?ij->steps[ij->cur].leader-1:ij->cur;
+        float active=0; for(int i=0;i<cur && i<ij->nsteps;i++){JobStep v=install_view(i);active+=install_row_h(&v);}
+        JobStep cv=cur<ij->nsteps?install_view(cur):(JobStep){0};
+        float row=cur<ij->nsteps?install_row_h(&cv):0;
         if(active<ilog_target+14)ilog_target=active-14;else if(active+row>ilog_target+view-14)ilog_target=active+row-view+14;
     }
     ilog_target=clampf(ilog_target,0,fmaxf(0,total-view));
@@ -2612,10 +2631,14 @@ static void install_bottom(float sa) {
     icon_at(a, 7, 6, 20, 1, sa);
     text_fit_style(a->title,31,9,11,700,240,C(TH.ink,sa));
     char cnt[16];
-    int done_n = 0;
-    for (int i = 0; i < ij->nsteps; i++)
-        done_n += ij->steps[i].state >= STEP_DONE;
-    snprintf(cnt, sizeof cnt, "%d/%d", done_n, ij->nsteps);
+    int done_n = 0, shown_n = 0;
+    for (int i = 0; i < ij->nsteps; i++) {
+        if (ij->steps[i].leader) continue;
+        JobStep v = install_view(i);
+        shown_n++;
+        done_n += v.state >= STEP_DONE;
+    }
+    snprintf(cnt, sizeof cnt, "%d/%d", done_n, shown_n);
     if(!ij->uninstall)text_dyn(cnt,312,10,10,C(TH.ink_faint,sa),AL_RIGHT);
     float top=30,view=174,extra_h=0;char next_text[512]="";
     install_check_y=-1000;
@@ -2627,7 +2650,8 @@ static void install_bottom(float sa) {
     float y=top-ilog_scroll;
     scissor(BOT_W,0,top,BOT_W,view);
     for(int i=0;i<ij->nsteps;i++) {
-        JobStep *st=&ij->steps[i]; float h=install_row_h(st);
+        if(ij->steps[i].leader) continue;
+        JobStep row_view=install_view(i),*st=&row_view; float h=install_row_h(st);
         if(y+h<top || y>top+view) { y+=h; continue; }
         float al=sa*(st->state==STEP_PENDING?.8f:1);
         u32 color=st->state==STEP_WARN?AMBER:st->state==STEP_ERROR?DANGER:st->state==STEP_DONE?MINT:FORGE;

@@ -10,9 +10,13 @@ static void frames(int n, bool busy) { for (int i = 0; i < n; i++) background_up
 int main(void) {
     frames(600, false);
     assert(lcd_sessions == 0 && !sleep_rejected);
+    assert(ndm_sessions == 0);
     frames(600, true);
-    assert(lcd_sessions == 0 && sleep_rejected);
-    puts("PASS lid open, idle or downloading: no gsp::Lcd session held");
+    assert(lcd_sessions == 0 && sleep_rejected && ndm_sessions == 1 && ndm_exclusive && ndm_locks);
+    frames(1, false);
+    assert(ndm_sessions == 0 && !ndm_exclusive && !ndm_locks && !sleep_rejected);
+    frames(1, true);
+    puts("PASS lid open, idle or downloading: no gsp::Lcd session; ndm:u only while downloading");
 
     shell_open = 0; frames(20, true);
     assert(lcd_sessions == 1 && backlights_off && lid_music && background_lid_closed());
@@ -26,7 +30,7 @@ int main(void) {
 
     frames(20, true); assert(lcd_sessions == 1);
     background_exit();
-    assert(lcd_sessions == 0 && !backlights_off && !sleep_rejected);
+    assert(lcd_sessions == 0 && ndm_sessions == 0 && !backlights_off && !sleep_rejected);
     puts("PASS exit with the lid closed: screens on, session closed, sleep allowed");
     return 0;
 }
