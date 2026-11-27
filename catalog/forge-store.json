@@ -4113,24 +4113,50 @@
       },
       "releases": {
         "stable": {
-          "tag": "v1.0.3",
-          "date": "2026-11-24",
+          "tag": "v1.1",
+          "date": "2026-11-27",
           "assets": {
             "3dsx": {
               "name": "Celeste3DS.3dsx",
-              "size": 910720,
-              "url": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.0.3/Celeste3DS.3dsx",
-              "sha256": "109c466f610a36be1ef3539323e25b8d5ce24891bfa9e0d4ad7da8eeb18455e4"
+              "size": 930316,
+              "url": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.1/Celeste3DS.3dsx",
+              "sha256": "e1ca919a402aa515adc531b35d4f4b20878d7b35f75909d5faadeab461270c34"
             },
             "cia": {
               "name": "Celeste3DS.cia",
-              "size": 647104,
-              "url": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.0.3/Celeste3DS.cia",
-              "sha256": "f7ee96a3bc277336ee162ace2ff5e6fb070456a9373ddbe5ca332adfea614320"
+              "size": 659392,
+              "url": "https://github.com/alberdura/Celeste3DS-releases/releases/download/v1.1/Celeste3DS.cia",
+              "sha256": "0a27d33e10568d2755ee270dd236083b8b7222d0be5cb8b3a2be81f279413526"
             }
           },
-          "publishedAt": "2026-11-24T23:55:38Z",
-          "assetUpdated": "2026-11-24T23:55:38Z",
+          "publishedAt": "2026-11-27T13:05:52Z",
+          "assetUpdated": "2026-11-27T13:05:51Z",
+          "notes": {
+            "es": [
+              "Consulta el historial completo en GitHub."
+            ],
+            "en": [
+              "Read the full changelog on GitHub."
+            ],
+            "pt": [
+              "Veja o histórico completo no GitHub."
+            ],
+            "it": [
+              "Leggi il changelog completo su GitHub."
+            ],
+            "fr": [
+              "Consultez l’historique complet sur GitHub."
+            ],
+            "de": [
+              "Den vollständigen Changelog gibt es auf GitHub."
+            ],
+            "ru": [
+              "Полный список изменений — на GitHub."
+            ],
+            "ja": [
+              "変更履歴の全文は GitHub をご覧ください。"
+            ]
+          },
           "ciaTitle": "000400000f3d5c00",
           "ciaVersion": 0
         }
@@ -7642,9 +7668,6 @@
         "ids": [
           6686
         ],
-        "files": [
-          "%3DSX%/mgba.3dsx"
-        ],
         "uu": "mGBA"
       }
     },
@@ -8485,7 +8508,6 @@
           868562
         ],
         "files": [
-          "%3DSX%/nimbus.3dsx",
           "/3ds/nimbus.3dsx"
         ],
         "uu": "Nimbus"
